@@ -1,0 +1,174 @@
+# Node.js でビルド・テストを実行する。バージョンは .node-version に記載されているものを利用する
+
+name: Node CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+    types:
+      - opened
+      - synchronize
+  pull_request_target:
+    branches:
+      - main
+      - master
+    types:
+      - labeled
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  node-ci:
+    runs-on: ubuntu-latest
+    if: ${{
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false) ||
+      (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.fork == true && contains(github.event.label.name, '🚀request-ci'))
+      }}
+
+    steps:
+      - name: 🛎 Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: 🏗 Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .node-version
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - name: 📃 Check package.json definition
+        id: package-json
+        run: |
+          compile=$(jq '.scripts | has("compile")' package.json)
+          build=$(jq '.scripts | has("build")' package.json)
+          generate=$(jq '.scripts | has("generate")' package.json)
+          package=$(jq '.scripts | has("package")' package.json)
+          lint=$(jq '.scripts | has("lint")' package.json)
+          test=$(jq '.scripts | has("test")' package.json)
+
+          echo "compile: $compile"
+          echo "build: $build"
+          echo "generate: $generate"
+          echo "package: $package"
+          echo "lint: $lint"
+          echo "test: $test"
+
+          echo "compile=$compile" >> $GITHUB_OUTPUT
+          echo "build=$build" >> $GITHUB_OUTPUT
+          echo "generate=$generate" >> $GITHUB_OUTPUT
+          echo "package=$package" >> $GITHUB_OUTPUT
+          echo "lint=$lint" >> $GITHUB_OUTPUT
+          echo "test=$test" >> $GITHUB_OUTPUT
+
+      - name: 👨🏻‍💻 Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: 👀 Run linter
+        if: steps.package-json.outputs.lint == 'true'
+        run: yarn lint
+
+      - name: 🎁 Run package
+        if: steps.package-json.outputs.package == 'true'
+        run: yarn package
+
+      - name: 🏃 Run compile
+        if: steps.package-json.outputs.compile == 'true'
+        run: yarn compile
+
+      - name: 🏗️ Run build & generate (Nuxt.js)
+        if: >-
+          steps.package-json.outputs.build == 'true' &&
+          steps.package-json.outputs.disabled-build == 'false' &&
+          steps.package-json.outputs.generate == 'true' &&
+          steps.package-json.outputs.disabled-generate == 'false'
+        run: |
+          yarn build
+          yarn generate
+
+      - name: 🧪 Run tests
+        if: steps.package-json.outputs.test == 'true'
+        run: yarn test
+        env:
+          TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
+          TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
+          TWITTER_OTP_SECRET: ${{ secrets.TWITTER_OTP_SECRET }}
+
+      - name: ☑️ Check Dependencies
+        if: steps.package-json.outputs.disabled-depcheck == 'false'
+        run: npx depcheck
+
+      - name: Check exists dist directory
+        id: check-dist
+        run: |
+          IS_DIRECTORY=$(test -d dist && echo true || echo false)
+          IS_SYMLINK=$(test -L dist && echo true || echo false)
+          echo "exists=$(test $IS_DIRECTORY = true && $IS_NOT_SYMLINK = false && echo true || echo false)" >> $GITHUB_OUTPUT
+
+      - name: 📦 Upload dist artifact
+        if: steps.check-dist.outputs.exists == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist
+
+      - name: Check exists output directory
+        id: check-output
+        run: |
+          IS_DIRECTORY=$(test -d output && echo true || echo false)
+          IS_SYMLINK=$(test -L output && echo true || echo false)
+          echo "exists=$(test $IS_DIRECTORY = true && $IS_NOT_SYMLINK = false && echo true || echo false)" >> $GITHUB_OUTPUT
+
+      - name: 📦 Upload output artifact
+        if: steps.check-output.outputs.exists == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: output
+
+      - name: 👀 Check git status
+        run: |
+          git status
+          git diff --exit-code || (echo "Git status is not clean." && exit 1)
+
+  finished-node-ci:
+    name: Check finished Node CI
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - node-ci
+
+    steps:
+      - name: Workflow conclusion
+        uses: technote-space/workflow-conclusion-action@v3
+
+      - name: Check finished Node CI
+        run: |
+          if [ "${{ env.WORKFLOW_CONCLUSION }}" != "success" ]; then
+            echo "Build failed"
+            exit 1
+          fi
+
+      - name: Remove label
+        if: ${{ github.event_name == 'pull_request_target' && contains(github.event.label.name, '🚀request-ci') }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: ['🚀request-ci']
+            })

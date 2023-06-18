@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  pull_request_target:
+    branches:
+      - main
+      - master
+    types:
+      - closed
+
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    steps:
+      - name: 🛎 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .node-version
+          cache: yarn
+          cache-dependency-path: yarn.lock
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: 👨🏻‍💻 Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: 🗑️ Remove examples directory
+        run: rm -rfv src/examples
+
+      - name: 🏃 Build
+        run: yarn build
+
+      - name: 🏷 Bump version and push tag
+        id: tag-version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: 'minor'
+          custom_release_rules: 'feat:minor:✨ Features,fix:patch:🐛 Fixes,docs:patch:📰 Docs,chore:patch:🎨 Chore,pref:patch:🎈 Performance improvements,refactor:patch:🧹 Refactoring,build:patch:🔍 Build,ci:patch:🔍 CI,revert:patch:⏪ Revert,style:patch:🧹 Style,test:patch:👀 Test,release:major:📦 Release'
+
+      - name: 📦 Publish
+        run: |
+          yarn publish --access public --non-interactive --no-git-tag-version --no-git-reset --no-commit-hooks --new-version ${{ steps.tag-version.outputs.new_version }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: 📃 Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1.12.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ steps.tag-version.outputs.new_tag }}
+          name: ${{ steps.tag-version.outputs.new_tag }}
+          body: ${{ steps.tag-version.outputs.changelog }}
+          draft: false
+          prerelease: false
