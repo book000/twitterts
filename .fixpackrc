@@ -1,0 +1,53 @@
+{
+  "sortToTop": [
+    "name",
+    "version",
+    "description",
+    "keywords",
+    "homepage",
+    "bugs",
+    "license",
+    "author",
+    "files",
+    "main",
+    "types",
+    "bin",
+    "man",
+    "directories",
+    "repository",
+    "scripts",
+    "config",
+    "dependencies",
+    "devDependencies",
+    "peerDependencies",
+    "bundledDependencies",
+    "optionalDependencies",
+    "engines",
+    "os",
+    "cpu",
+    "private",
+    "publishConfig"
+  ],
+  "required": [
+    "name",
+    "version"
+  ],
+  "warn": [
+    "description",
+    "homepage",
+    "bugs",
+    "license",
+    "author",
+    "main",
+    "repository"
+  ],
+  "sortedSubItems": [
+    "files",
+    "directories",
+    "dependencies",
+    "devDependencies",
+    "peerDependencies",
+    "bundledDependencies",
+    "optionalDependencies"
+  ]
+}
