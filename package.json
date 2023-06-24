@@ -16,6 +16,8 @@
   "repository": "git@github.com:book000/twitterts.git",
   "scripts": {
     "build": "run-s clean ctix compile generate-docs",
+    "start": "ts-node -r tsconfig-paths/register ./src/main.ts",
+    "generate-types": "ts-node -r tsconfig-paths/register ./src/generate-types.ts",
     "clean": "rimraf dist output docs",
     "compile": "tsc -p tsconfig.build.json",
     "dev": "ts-node-dev --poll -r tsconfig-paths/register ./src/main.ts",
@@ -24,14 +26,13 @@
     "fix": "run-s fix:prettier fix:eslint ctix",
     "fix:eslint": "eslint . --ext ts,tsx --fix",
     "fix:prettier": "prettier --write src",
-    "test": "jest --passWithNoTests",
+    "test": "jest --runInBand --passWithNoTests --forceExit",
     "lint": "run-p -c lint:prettier lint:eslint lint:tsc",
     "lint:eslint": "eslint . --ext ts,tsx",
     "lint:prettier": "prettier --check src",
     "lint:tsc": "tsc",
     "prepare": "run-s build",
-    "prepublishOnly": "run-s lint",
-    "start": "ts-node -r tsconfig-paths/register ./src/main.ts"
+    "prepublishOnly": "run-s lint"
   },
   "devDependencies": {
     "@types/jest": "29.5.2",
@@ -73,6 +74,9 @@
     ]
   },
   "dependencies": {
+    "@book000/node-utils": "1.3.21",
+    "genson-js": "0.0.8",
+    "json-schema-to-typescript": "13.0.2",
     "otplib": "12.0.1",
     "puppeteer-core": "20.7.2"
   }

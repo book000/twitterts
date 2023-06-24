@@ -15,6 +15,17 @@ export class Twitter {
     return new Twitter(scraper)
   }
 
+  public async getUserByScreenName(screenName: string) {
+    const page = await this.scraper.getScraperPage()
+    const response = await page.waitSingleResponse(
+      `https://twitter.com/${screenName}`,
+      'GET',
+      'GRAPHQL',
+      'UserByScreenName'
+    )
+    return response
+  }
+
   public async close() {
     await this.scraper.close()
   }
