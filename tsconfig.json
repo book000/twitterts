@@ -8,7 +8,8 @@
     "moduleResolution": "Node",
     "lib": [
       "ESNext",
-      "esnext.AsyncIterable"
+      "esnext.AsyncIterable",
+      "DOM"
     ],
     "outDir": "./dist",
     "removeComments": false,

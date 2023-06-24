@@ -98,8 +98,10 @@ jobs:
           yarn generate
 
       - name: 🧪 Run tests
+        uses: coactions/setup-xvfb@v1
         if: steps.package-json.outputs.test == 'true'
-        run: yarn test
+        with:
+          run: yarn test
         env:
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
