@@ -112,7 +112,7 @@ export interface GraphQLGetListsManagementPageTimelineResponse {
                               media_count: number
                               name: string
                               normal_followers_count: number
-                              pinned_tweet_ids_str: unknown[]
+                              pinned_tweet_ids_str: string[]
                               possibly_sensitive: boolean
                               profile_banner_url: string
                               profile_image_url_https: string
@@ -130,6 +130,49 @@ export interface GraphQLGetListsManagementPageTimelineResponse {
                         facepile_urls: string[]
                         followers_context: string
                         members_context: string
+                        custom_banner_media?: {
+                          media_info: {
+                            original_img_url: string
+                            original_img_width: number
+                            original_img_height: number
+                            salient_rect: {
+                              left: number
+                              top: number
+                              width: number
+                              height: number
+                            }
+                          }
+                        }
+                        custom_banner_media_results?: {
+                          result: {
+                            id: string
+                            media_key: string
+                            media_id: string
+                            media_info: {
+                              __typename: string
+                              original_img_height: number
+                              original_img_width: number
+                              original_img_url: string
+                              salient_rect: {
+                                height: number
+                                left: number
+                                top: number
+                                width: number
+                              }
+                              color_info: {
+                                palette: {
+                                  percentage: number
+                                  rgb: {
+                                    blue: number
+                                    green: number
+                                    red: number
+                                  }
+                                }[]
+                              }
+                            }
+                            __typename: string
+                          }
+                        }
                       }
                     }
                     clientEventInfo?: {

@@ -182,6 +182,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                     icon_name: string
                                   }[]
                                 }
+                                super_follow_eligible?: boolean
                               }
                             }
                           }
@@ -247,6 +248,14 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       y: number
                                       h: number
                                       w: number
+                                    }[]
+                                  }
+                                  all?: {
+                                    tags: {
+                                      user_id: string
+                                      name: string
+                                      screen_name: string
+                                      type: string
                                     }[]
                                   }
                                 }
@@ -361,6 +370,14 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       w: number
                                     }[]
                                   }
+                                  all?: {
+                                    tags: {
+                                      user_id: string
+                                      name: string
+                                      screen_name: string
+                                      type: string
+                                    }[]
+                                  }
                                 }
                                 sizes: {
                                   large: {
@@ -418,6 +435,14 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                             retweeted: boolean
                             user_id_str: string
                             id_str: string
+                            quoted_status_id_str?: string
+                            quoted_status_permalink?: {
+                              url: string
+                              expanded: string
+                              display: string
+                            }
+                            in_reply_to_screen_name?: string
+                            in_reply_to_user_id_str?: string
                           }
                           card?: {
                             rest_id: string
@@ -531,6 +556,27 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                           }
                           unified_card?: {
                             card_fetch_state: string
+                          }
+                          quotedRefResult?: {
+                            result: {
+                              __typename: string
+                              rest_id: string
+                            }
+                          }
+                          note_tweet?: {
+                            is_expandable: boolean
+                            note_tweet_results: {
+                              result: {
+                                id: string
+                                text: string
+                                entity_set: {
+                                  user_mentions: unknown[]
+                                  urls: unknown[]
+                                  hashtags: unknown[]
+                                  symbols: unknown[]
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -738,13 +784,92 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                             source_user_id_str?: string
                             additional_media_info?: {
                               monetizable: boolean
+                              source_user?: {
+                                user_results: {
+                                  result: {
+                                    __typename: string
+                                    id: string
+                                    rest_id: string
+                                    affiliates_highlighted_label: {}
+                                    has_graduated_access: boolean
+                                    is_blue_verified: boolean
+                                    profile_image_shape: string
+                                    legacy: {
+                                      can_dm: boolean
+                                      can_media_tag: boolean
+                                      created_at: string
+                                      default_profile: boolean
+                                      default_profile_image: boolean
+                                      description: string
+                                      entities: {
+                                        description: {
+                                          urls: {
+                                            display_url: string
+                                            expanded_url: string
+                                            url: string
+                                            indices: number[]
+                                          }[]
+                                        }
+                                        url: {
+                                          urls: {
+                                            display_url: string
+                                            expanded_url: string
+                                            url: string
+                                            indices: number[]
+                                          }[]
+                                        }
+                                      }
+                                      fast_followers_count: number
+                                      favourites_count: number
+                                      followers_count: number
+                                      friends_count: number
+                                      has_custom_timelines: boolean
+                                      is_translator: boolean
+                                      listed_count: number
+                                      location: string
+                                      media_count: number
+                                      name: string
+                                      normal_followers_count: number
+                                      pinned_tweet_ids_str: string[]
+                                      possibly_sensitive: boolean
+                                      profile_banner_url: string
+                                      profile_image_url_https: string
+                                      profile_interstitial_type: string
+                                      screen_name: string
+                                      statuses_count: number
+                                      translator_type: string
+                                      url: string
+                                      verified: boolean
+                                      want_retweets: boolean
+                                      withheld_in_countries: unknown[]
+                                    }
+                                    professional: {
+                                      rest_id: string
+                                      professional_type: string
+                                      category: {
+                                        id: number
+                                        name: string
+                                        icon_name: string
+                                      }[]
+                                    }
+                                  }
+                                }
+                              }
+                              title?: string
+                              description?: string
+                              call_to_actions?: {
+                                visit_site: {
+                                  url: string
+                                }
+                              }
+                              embeddable?: boolean
                             }
                             mediaStats?: {
                               viewCount: number
                             }
                             video_info?: {
                               aspect_ratio: number[]
-                              duration_millis: number
+                              duration_millis?: number
                               variants: {
                                 bitrate?: number
                                 content_type: string
@@ -763,7 +888,20 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                   __typename: string
                                   id: string
                                   rest_id: string
-                                  affiliates_highlighted_label: {}
+                                  affiliates_highlighted_label: {
+                                    label?: {
+                                      url: {
+                                        url: string
+                                        urlType: string
+                                      }
+                                      badge: {
+                                        url: string
+                                      }
+                                      description: string
+                                      userLabelType: string
+                                      userLabelDisplayType: string
+                                    }
+                                  }
                                   has_graduated_access: boolean
                                   is_blue_verified: boolean
                                   profile_image_shape: string
@@ -820,8 +958,13 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                   professional?: {
                                     rest_id: string
                                     professional_type: string
-                                    category: unknown[]
+                                    category: {
+                                      id: number
+                                      name: string
+                                      icon_name: string
+                                    }[]
                                   }
+                                  has_nft_avatar?: boolean
                                 }
                               }
                             }
@@ -848,7 +991,12 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                               conversation_id_str: string
                               display_text_range: number[]
                               entities: {
-                                user_mentions: unknown[]
+                                user_mentions: {
+                                  id_str: string
+                                  name: string
+                                  screen_name: string
+                                  indices: number[]
+                                }[]
                                 urls: {
                                   display_url: string
                                   expanded_url: string
@@ -869,7 +1017,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                   type: string
                                   url: string
                                   features: {
-                                    large: {
+                                    large?: {
                                       faces: {
                                         x: number
                                         y: number
@@ -877,7 +1025,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                         w: number
                                       }[]
                                     }
-                                    medium: {
+                                    medium?: {
                                       faces: {
                                         x: number
                                         y: number
@@ -885,7 +1033,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                         w: number
                                       }[]
                                     }
-                                    small: {
+                                    small?: {
                                       faces: {
                                         x: number
                                         y: number
@@ -893,7 +1041,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                         w: number
                                       }[]
                                     }
-                                    orig: {
+                                    orig?: {
                                       faces: {
                                         x: number
                                         y: number
@@ -927,7 +1075,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                   original_info: {
                                     height: number
                                     width: number
-                                    focus_rects: {
+                                    focus_rects?: {
                                       x: number
                                       y: number
                                       w: number
@@ -961,7 +1109,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                     status: string
                                   }
                                   features: {
-                                    large: {
+                                    large?: {
                                       faces: {
                                         x: number
                                         y: number
@@ -969,7 +1117,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                         w: number
                                       }[]
                                     }
-                                    medium: {
+                                    medium?: {
                                       faces: {
                                         x: number
                                         y: number
@@ -977,7 +1125,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                         w: number
                                       }[]
                                     }
-                                    small: {
+                                    small?: {
                                       faces: {
                                         x: number
                                         y: number
@@ -985,7 +1133,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                         w: number
                                       }[]
                                     }
-                                    orig: {
+                                    orig?: {
                                       faces: {
                                         x: number
                                         y: number
@@ -1019,12 +1167,35 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                   original_info: {
                                     height: number
                                     width: number
-                                    focus_rects: {
+                                    focus_rects?: {
                                       x: number
                                       y: number
                                       w: number
                                       h: number
                                     }[]
+                                  }
+                                  video_info?: {
+                                    aspect_ratio: number[]
+                                    variants: {
+                                      bitrate?: number
+                                      content_type: string
+                                      url: string
+                                    }[]
+                                    duration_millis?: number
+                                  }
+                                  additional_media_info?: {
+                                    monetizable: boolean
+                                    title?: string
+                                    description?: string
+                                    call_to_actions?: {
+                                      visit_site: {
+                                        url: string
+                                      }
+                                    }
+                                    embeddable?: boolean
+                                  }
+                                  mediaStats?: {
+                                    viewCount: number
                                   }
                                 }[]
                               }
@@ -1036,6 +1207,9 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                 expanded: string
                                 display: string
                               }
+                              in_reply_to_screen_name?: string
+                              in_reply_to_status_id_str?: string
+                              in_reply_to_user_id_str?: string
                             }
                             card?: {
                               rest_id: string
@@ -1047,6 +1221,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       height: number
                                       width: number
                                       url: string
+                                      alt?: string
                                     }
                                     type: string
                                     string_value?: string
@@ -1098,7 +1273,12 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       description: string
                                       entities: {
                                         description: {
-                                          urls: unknown[]
+                                          urls: {
+                                            display_url: string
+                                            expanded_url: string
+                                            url: string
+                                            indices: number[]
+                                          }[]
                                         }
                                         url: {
                                           urls: {
@@ -1130,14 +1310,18 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       translator_type: string
                                       url: string
                                       verified: boolean
-                                      verified_type: string
+                                      verified_type?: string
                                       want_retweets: boolean
                                       withheld_in_countries: unknown[]
                                     }
                                     professional?: {
                                       rest_id: string
                                       professional_type: string
-                                      category: unknown[]
+                                      category: {
+                                        id: number
+                                        name: string
+                                        icon_name: string
+                                      }[]
                                     }
                                   }
                                 }[]
@@ -1176,7 +1360,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                               indices: number[]
                                             }[]
                                           }
-                                          url: {
+                                          url?: {
                                             urls: {
                                               display_url: string
                                               expanded_url: string
@@ -1198,15 +1382,15 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                         normal_followers_count: number
                                         pinned_tweet_ids_str: string[]
                                         possibly_sensitive: boolean
-                                        profile_banner_url: string
+                                        profile_banner_url?: string
                                         profile_image_url_https: string
                                         profile_interstitial_type: string
                                         screen_name: string
                                         statuses_count: number
                                         translator_type: string
-                                        url: string
+                                        url?: string
                                         verified: boolean
-                                        verified_type: string
+                                        verified_type?: string
                                         want_retweets: boolean
                                         withheld_in_countries: unknown[]
                                       }
@@ -1255,7 +1439,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                 }
                                 is_translatable: boolean
                                 views: {
-                                  count: string
+                                  count?: string
                                   state: string
                                 }
                                 source: string
@@ -1364,8 +1548,8 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                   full_text: string
                                   is_quote_status: boolean
                                   lang: string
-                                  possibly_sensitive: boolean
-                                  possibly_sensitive_editable: boolean
+                                  possibly_sensitive?: boolean
+                                  possibly_sensitive_editable?: boolean
                                   quote_count: number
                                   reply_count: number
                                   retweet_count: number
@@ -1453,6 +1637,56 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       }
                                     }[]
                                   }
+                                  quoted_status_id_str?: string
+                                  quoted_status_permalink?: {
+                                    url: string
+                                    expanded: string
+                                    display: string
+                                  }
+                                }
+                                quotedRefResult?: {
+                                  result: {
+                                    __typename: string
+                                    rest_id: string
+                                  }
+                                }
+                              }
+                            }
+                            note_tweet?: {
+                              is_expandable: boolean
+                              note_tweet_results: {
+                                result: {
+                                  id: string
+                                  text: string
+                                  entity_set: {
+                                    user_mentions: {
+                                      id_str: string
+                                      name: string
+                                      screen_name: string
+                                      indices: number[]
+                                    }[]
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                    hashtags: {
+                                      indices: number[]
+                                      text: string
+                                    }[]
+                                    symbols: unknown[]
+                                  }
+                                  richtext: {
+                                    richtext_tags: {
+                                      from_index: number
+                                      to_index: number
+                                      richtext_types: string[]
+                                    }[]
+                                  }
+                                  media: {
+                                    inline_media: unknown[]
+                                  }
                                 }
                               }
                             }
@@ -1471,6 +1705,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                 height: number
                                 width: number
                                 url: string
+                                alt?: string
                               }
                               scribe_key?: string
                               user_value?: {
@@ -1520,7 +1755,12 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                 description: string
                                 entities: {
                                   description: {
-                                    urls: unknown[]
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
                                   }
                                   url?: {
                                     urls: {
@@ -1698,7 +1938,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                 type: string
                                 url: string
                                 features: {
-                                  large: {
+                                  large?: {
                                     faces: {
                                       x: number
                                       y: number
@@ -1706,7 +1946,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       w: number
                                     }[]
                                   }
-                                  medium: {
+                                  medium?: {
                                     faces: {
                                       x: number
                                       y: number
@@ -1714,7 +1954,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       w: number
                                     }[]
                                   }
-                                  small: {
+                                  small?: {
                                     faces: {
                                       x: number
                                       y: number
@@ -1722,12 +1962,20 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       w: number
                                     }[]
                                   }
-                                  orig: {
+                                  orig?: {
                                     faces: {
                                       x: number
                                       y: number
                                       h: number
                                       w: number
+                                    }[]
+                                  }
+                                  all?: {
+                                    tags: {
+                                      user_id: string
+                                      name: string
+                                      screen_name: string
+                                      type: string
                                     }[]
                                   }
                                 }
@@ -1756,7 +2004,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                 original_info: {
                                   height: number
                                   width: number
-                                  focus_rects: {
+                                  focus_rects?: {
                                     x: number
                                     y: number
                                     w: number
@@ -1796,7 +2044,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                   status: string
                                 }
                                 features: {
-                                  large: {
+                                  large?: {
                                     faces: {
                                       x: number
                                       y: number
@@ -1804,7 +2052,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       w: number
                                     }[]
                                   }
-                                  medium: {
+                                  medium?: {
                                     faces: {
                                       x: number
                                       y: number
@@ -1812,7 +2060,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       w: number
                                     }[]
                                   }
-                                  small: {
+                                  small?: {
                                     faces: {
                                       x: number
                                       y: number
@@ -1820,12 +2068,20 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                       w: number
                                     }[]
                                   }
-                                  orig: {
+                                  orig?: {
                                     faces: {
                                       x: number
                                       y: number
                                       h: number
                                       w: number
+                                    }[]
+                                  }
+                                  all?: {
+                                    tags: {
+                                      user_id: string
+                                      name: string
+                                      screen_name: string
+                                      type: string
                                     }[]
                                   }
                                 }
@@ -1854,11 +2110,26 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                 original_info: {
                                   height: number
                                   width: number
-                                  focus_rects: {
+                                  focus_rects?: {
                                     x: number
                                     y: number
                                     w: number
                                     h: number
+                                  }[]
+                                }
+                                additional_media_info?: {
+                                  monetizable: boolean
+                                }
+                                mediaStats?: {
+                                  viewCount: number
+                                }
+                                video_info?: {
+                                  aspect_ratio: number[]
+                                  duration_millis: number
+                                  variants: {
+                                    bitrate?: number
+                                    content_type: string
+                                    url: string
                                   }[]
                                 }
                               }[]
@@ -1879,6 +2150,21 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                             in_reply_to_screen_name?: string
                             in_reply_to_status_id_str?: string
                             in_reply_to_user_id_str?: string
+                            place?: {
+                              attributes: {}
+                              bounding_box: {
+                                coordinates: number[][][]
+                                type: string
+                              }
+                              contained_within: unknown[]
+                              country: string
+                              country_code: string
+                              full_name: string
+                              name: string
+                              id: string
+                              place_type: string
+                              url: string
+                            }
                           }
                           card?: {
                             rest_id: string
@@ -1941,7 +2227,12 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                     description: string
                                     entities: {
                                       description: {
-                                        urls: unknown[]
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
                                       }
                                       url: {
                                         urls: {
@@ -1963,9 +2254,9 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                     media_count: number
                                     name: string
                                     normal_followers_count: number
-                                    pinned_tweet_ids_str: unknown[]
+                                    pinned_tweet_ids_str: string[]
                                     possibly_sensitive: boolean
-                                    profile_banner_url: string
+                                    profile_banner_url?: string
                                     profile_image_url_https: string
                                     profile_interstitial_type: string
                                     screen_name: string
@@ -1973,7 +2264,7 @@ export interface GraphQLGetListLatestTweetsTimelineResponse {
                                     translator_type: string
                                     url: string
                                     verified: boolean
-                                    verified_type: string
+                                    verified_type?: string
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
                                   }
