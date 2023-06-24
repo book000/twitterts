@@ -2,6 +2,11 @@ import fs from 'node:fs'
 import puppeteer, { Browser, HTTPResponse, Page } from 'puppeteer-core'
 import { authenticator } from 'otplib'
 import { dirname, join } from 'node:path'
+import {
+  EndPointResponseType,
+  GraphQLEndpoint,
+  RESTEndpoint,
+} from './models/endpoints'
 
 /**
  * レスポンスデバッグ出力オプション
@@ -131,11 +136,6 @@ export interface TwitterScraperGetResponseOptions {
   type: RequestType
 
   /**
-   * レスポンスを取得したいリクエストの名前
-   */
-  name: string
-
-  /**
    * 取得処理のタイムアウト (ミリ秒)
    *
    * 指定しない場合は 30 秒でタイムアウトします。
@@ -226,7 +226,11 @@ async function getResponseDetails(response: HTTPResponse) {
   const type = targetUrl.type
   const method = response.request().method() as HttpMethod
 
-  const key = `${type}-${name}-${method}`.toLocaleUpperCase()
+  const key = getResponseKey({
+    method,
+    type,
+    name,
+  })
 
   return {
     key,
@@ -235,6 +239,14 @@ async function getResponseDetails(response: HTTPResponse) {
     name,
     text,
   }
+}
+
+function getResponseKey(input: {
+  method: HttpMethod
+  type: RequestType
+  name: string
+}) {
+  return `${input.type}_${input.method}_${input.name}`.toLocaleUpperCase()
 }
 
 /**
@@ -262,34 +274,42 @@ export class TwitterScraperPage {
    * @param options レスポンス取得オプション
    * @returns レスポンス
    */
-  public async waitSingleResponse<T>(
-    options: TwitterScraperGetResponseOptions
-  ) {
+  public async waitSingleResponse<
+    M extends HttpMethod,
+    T extends RequestType,
+    N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint
+  >(
+    url: string,
+    method: M,
+    type: T,
+    name: N,
+    timeout?: number
+  ): Promise<EndPointResponseType<M, T, N>> {
     setTimeout(() => {
       throw new Error('Response timeout.')
-    }, options.timeout || 30_000)
+    }, timeout || 30_000)
 
-    const key = this.getResponseKey({
-      method: options.method,
-      type: options.type,
-      name: options.name,
+    const key = getResponseKey({
+      method,
+      type,
+      name,
     })
 
     // レスポンスを待つ
-    const promise = new Promise<T>((resolve) => {
+    const promise = new Promise<EndPointResponseType<M, T, N>>((resolve) => {
       setInterval(() => {
         const responses = this.responses[key]
         if (responses && responses.length > 0) {
           const response = responses.shift()
           if (response) {
-            resolve(JSON.parse(response) as T)
+            resolve(JSON.parse(response))
           }
         }
       }, 500)
     })
 
     // ページ遷移
-    await this.page.goto(options.url)
+    await this.page.goto(url)
 
     return await promise
   }
@@ -301,17 +321,19 @@ export class TwitterScraperPage {
    * @param options レスポンス取得オプション
    * @returns レスポンス。一致するレスポンスがない場合は null
    */
-  public shiftResponse<T extends object>(
-    options: TwitterScraperGetResponseOptions
-  ) {
-    const key = this.getResponseKey({
-      method: options.method,
-      type: options.type,
-      name: options.name,
+  public shiftResponse<
+    M extends HttpMethod,
+    T extends RequestType,
+    N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint
+  >(method: M, type: T, name: N): EndPointResponseType<M, T, N> | null {
+    const key = getResponseKey({
+      method,
+      type,
+      name,
     })
     const response = this.responses[key].shift()
 
-    return response ? (JSON.parse(response) as T) : null
+    return response ? JSON.parse(response) : null
   }
 
   /**
@@ -355,14 +377,6 @@ export class TwitterScraperPage {
         behavior: 'smooth',
       })
     })
-  }
-
-  private getResponseKey(input: {
-    method: HttpMethod
-    type: RequestType
-    name: string
-  }) {
-    return `${input.type}_${input.method}_${input.name}`.toLocaleUpperCase()
   }
 
   private setRetentionResponse(page: Page) {
@@ -577,12 +591,10 @@ export class TwitterScraper {
         type.toLowerCase(),
         name,
         method,
+        response.status().toString(),
         `${Date.now()}.`
       )
       fs.mkdirSync(dirname(pathNotIncludedExtension), { recursive: true })
-
-      // eslint-disable-next-line no-console
-      console.log(response.url())
 
       try {
         const data = JSON.parse(text)
