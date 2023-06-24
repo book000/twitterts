@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+/** GraphQL GET UserByScreenName レスポンスモデル */
+
 export interface GraphQLGetUserByScreenNameResponse {
   data: {
     user: {
@@ -55,6 +57,7 @@ export interface GraphQLGetUserByScreenNameResponse {
           want_retweets: boolean
           withheld_in_countries: unknown[]
           needs_phone_verification?: boolean
+          followed_by?: boolean
         }
         smart_blocked_by: boolean
         smart_blocking: boolean
