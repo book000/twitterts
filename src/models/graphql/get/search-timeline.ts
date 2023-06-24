@@ -877,7 +877,20 @@ export interface GraphQLGetSearchTimelineResponse {
                               __typename: string
                               id?: string
                               rest_id?: string
-                              affiliates_highlighted_label?: {}
+                              affiliates_highlighted_label?: {
+                                label?: {
+                                  url: {
+                                    url: string
+                                    urlType: string
+                                  }
+                                  badge: {
+                                    url: string
+                                  }
+                                  description: string
+                                  userLabelType: string
+                                  userLabelDisplayType: string
+                                }
+                              }
                               has_graduated_access?: boolean
                               is_blue_verified?: boolean
                               profile_image_shape?: string
@@ -897,7 +910,7 @@ export interface GraphQLGetSearchTimelineResponse {
                                       indices: number[]
                                     }[]
                                   }
-                                  url: {
+                                  url?: {
                                     urls: {
                                       display_url: string
                                       expanded_url: string
@@ -925,7 +938,7 @@ export interface GraphQLGetSearchTimelineResponse {
                                 screen_name: string
                                 statuses_count: number
                                 translator_type: string
-                                url: string
+                                url?: string
                                 verified: boolean
                                 want_retweets: boolean
                                 withheld_in_countries: unknown[]
@@ -1048,7 +1061,7 @@ export interface GraphQLGetSearchTimelineResponse {
                         normal_followers_count: number
                         pinned_tweet_ids_str: string[]
                         possibly_sensitive: boolean
-                        profile_banner_url: string
+                        profile_banner_url?: string
                         profile_image_url_https: string
                         profile_interstitial_type: string
                         screen_name: string
@@ -1059,6 +1072,7 @@ export interface GraphQLGetSearchTimelineResponse {
                         verified_type?: string
                         want_retweets: boolean
                         withheld_in_countries: unknown[]
+                        protected?: boolean
                       }
                       professional?: {
                         rest_id: string
@@ -1301,6 +1315,7 @@ export interface GraphQLGetSearchTimelineResponse {
               }
             }[]
             entry_id_to_replace?: string
+            direction?: string
           }[]
           responseObjects?: {
             feedbackActions: {

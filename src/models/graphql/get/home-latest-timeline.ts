@@ -1221,6 +1221,36 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                                   }
                                 }
                               }
+                              card?: {
+                                rest_id: string
+                                legacy: {
+                                  binding_values: {
+                                    key: string
+                                    value: {
+                                      string_value: string
+                                      type: string
+                                      scribe_key?: string
+                                    }
+                                  }[]
+                                  card_platform: {
+                                    platform: {
+                                      audience: {
+                                        name: string
+                                      }
+                                      device: {
+                                        name: string
+                                        version: string
+                                      }
+                                    }
+                                  }
+                                  name: string
+                                  url: string
+                                  user_refs_results: unknown[]
+                                }
+                              }
+                              unified_card?: {
+                                card_fetch_state: string
+                              }
                             }
                           }
                           card?: {
@@ -1597,8 +1627,8 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                             is_blue_verified: boolean
                             profile_image_shape: string
                             legacy: {
-                              followed_by: boolean
-                              following: boolean
+                              followed_by?: boolean
+                              following?: boolean
                               can_dm: boolean
                               can_media_tag: boolean
                               created_at: string
@@ -1607,7 +1637,20 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                               description: string
                               entities: {
                                 description: {
-                                  urls: unknown[]
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
+                                    indices: number[]
+                                  }[]
+                                }
+                                url?: {
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
+                                    indices: number[]
+                                  }[]
                                 }
                               }
                               fast_followers_count: number
@@ -1621,7 +1664,7 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                               media_count: number
                               name: string
                               normal_followers_count: number
-                              pinned_tweet_ids_str: unknown[]
+                              pinned_tweet_ids_str: string[]
                               possibly_sensitive: boolean
                               profile_banner_url: string
                               profile_image_url_https: string
@@ -1632,6 +1675,17 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                               verified: boolean
                               want_retweets: boolean
                               withheld_in_countries: unknown[]
+                              url?: string
+                              verified_type?: string
+                            }
+                            professional?: {
+                              rest_id: string
+                              professional_type: string
+                              category: {
+                                id: number
+                                name: string
+                                icon_name: string
+                              }[]
                             }
                           }
                         }
@@ -1649,6 +1703,7 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                       is_translatable: boolean
                       views: {
                         state: string
+                        count?: string
                       }
                       source: string
                       legacy: {
@@ -1676,7 +1731,10 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                             indices: number[]
                           }[]
                           urls: unknown[]
-                          hashtags: unknown[]
+                          hashtags: {
+                            indices: number[]
+                            text: string
+                          }[]
                           symbols: unknown[]
                         }
                         favorite_count: number
@@ -1691,7 +1749,7 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                         retweeted: boolean
                         user_id_str: string
                         id_str: string
-                        retweeted_status_result: {
+                        retweeted_status_result?: {
                           result: {
                             __typename: string
                             tweet: {
@@ -1948,6 +2006,115 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                             }
                           }
                         }
+                        possibly_sensitive?: boolean
+                        possibly_sensitive_editable?: boolean
+                        scopes?: {
+                          followers: boolean
+                        }
+                      }
+                      card?: {
+                        rest_id: string
+                        legacy: {
+                          binding_values: {
+                            key: string
+                            value: {
+                              string_value?: string
+                              type: string
+                              scribe_key?: string
+                              image_value?: {
+                                height: number
+                                width: number
+                                url: string
+                              }
+                              image_color_value?: {
+                                palette: {
+                                  rgb: {
+                                    blue: number
+                                    green: number
+                                    red: number
+                                  }
+                                  percentage: number
+                                }[]
+                              }
+                              user_value?: {
+                                id_str: string
+                                path: unknown[]
+                              }
+                            }
+                          }[]
+                          card_platform: {
+                            platform: {
+                              audience: {
+                                name: string
+                              }
+                              device: {
+                                name: string
+                                version: string
+                              }
+                            }
+                          }
+                          name: string
+                          url: string
+                          user_refs_results: {
+                            result: {
+                              __typename: string
+                              id: string
+                              rest_id: string
+                              affiliates_highlighted_label: {}
+                              has_graduated_access: boolean
+                              is_blue_verified: boolean
+                              profile_image_shape: string
+                              legacy: {
+                                can_dm: boolean
+                                can_media_tag: boolean
+                                created_at: string
+                                default_profile: boolean
+                                default_profile_image: boolean
+                                description: string
+                                entities: {
+                                  description: {
+                                    urls: unknown[]
+                                  }
+                                  url: {
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                }
+                                fast_followers_count: number
+                                favourites_count: number
+                                followers_count: number
+                                friends_count: number
+                                has_custom_timelines: boolean
+                                is_translator: boolean
+                                listed_count: number
+                                location: string
+                                media_count: number
+                                name: string
+                                normal_followers_count: number
+                                pinned_tweet_ids_str: unknown[]
+                                possibly_sensitive: boolean
+                                profile_banner_url: string
+                                profile_image_url_https: string
+                                profile_interstitial_type: string
+                                screen_name: string
+                                statuses_count: number
+                                translator_type: string
+                                url: string
+                                verified: boolean
+                                verified_type: string
+                                want_retweets: boolean
+                                withheld_in_countries: unknown[]
+                              }
+                            }
+                          }[]
+                        }
+                      }
+                      unified_card?: {
+                        card_fetch_state: string
                       }
                     }
                     limitedActionResults?: {
@@ -2312,7 +2479,7 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                               indices: number[]
                             }[]
                           }
-                          url: {
+                          url?: {
                             urls: {
                               display_url: string
                               expanded_url: string
@@ -2340,7 +2507,7 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                         screen_name: string
                         statuses_count: number
                         translator_type: string
-                        url: string
+                        url?: string
                         verified: boolean
                         verified_type?: string
                         want_retweets: boolean
@@ -2364,13 +2531,20 @@ export interface GraphQLGetHomeLatestTimelineResponse {
                   }[]
                   impressionId: string
                   impressionString: string
-                  clickTrackingInfo: {
+                  clickTrackingInfo?: {
                     urlParams: {
                       key: string
                       value: string
                     }[]
+                    urlOverride?: string
+                    urlOverrideType?: string
                   }
                   adMetadataContainer?: {}
+                  promotedTrendName?: string
+                  promotedTrendQueryTerm?: string
+                  promotedTrend?: {
+                    rest_id: string
+                  }
                 }
               }
               clientEventInfo?: {

@@ -107,7 +107,7 @@ export type EndPointResponseType<
   M extends HttpMethod,
   T extends RequestType,
   N extends GraphQLEndpoint | RESTEndpoint
-> = T extends 'GraphQL'
+> = T extends 'GRAPHQL'
   ? M extends 'GET'
     ? N extends GraphQLGETEndpoint
       ? GraphQLGETEndPointResponseType<N>
