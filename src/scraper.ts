@@ -379,6 +379,13 @@ export class TwitterScraperPage {
     })
   }
 
+  /**
+   * ページを閉じます。
+   */
+  public async close() {
+    await this.page.close()
+  }
+
   private setRetentionResponse(page: Page) {
     page.on('response', async (response) => {
       const details = await getResponseDetails(response)

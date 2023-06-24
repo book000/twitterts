@@ -313,7 +313,7 @@ class GenerateEndPointType {
         results.push(':')
       }
 
-      results.push(`T extends '${type}' ?`)
+      results.push(`T extends '${type.toUpperCase()}' ?`)
 
       const methods = this.getMethods(type)
       for (const method of methods) {
@@ -323,7 +323,7 @@ class GenerateEndPointType {
         }
 
         results.push(
-          `  M extends '${method.toUpperCase()}' ?`,
+          `  M extends '${method}' ?`,
           `    N extends ${type}${method}Endpoint ?`,
           `      ${type}${method}EndPointResponseType<N> :`,
           '      never :',

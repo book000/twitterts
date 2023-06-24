@@ -1,3 +1,4 @@
+import { SearchType } from './options'
 import { Twitter } from './twitter'
 
 jest.setTimeout(60_000)
@@ -30,8 +31,76 @@ describe('Twitter', () => {
   })
 
   test('getUserByScreenName', async () => {
-    const response = await twitter.getUserByScreenName('book000')
+    const response = await twitter.getUserByScreenName({
+      screenName: 'book000',
+    })
     expect(response).toBeTruthy()
+    expect(response.data).toBeTruthy()
+    expect(response.data.user.result.rest_id).toBe('286048624')
+  })
+
+  test('searchTweets:popular', async () => {
+    const response = await twitter.searchTweets({
+      query: 'from:book000',
+    })
+    expect(response).toBeTruthy()
+    expect(response.data).toBeTruthy()
+    expect(
+      response.data.search_by_raw_query.search_timeline.timeline.instructions
+        .length
+    ).toBeGreaterThan(0)
+  })
+
+  test('searchTweets:live', async () => {
+    const response = await twitter.searchTweets({
+      query: 'from:book000',
+      searchType: SearchType.LIVE,
+    })
+    expect(response).toBeTruthy()
+    expect(response.data).toBeTruthy()
+    expect(
+      response.data.search_by_raw_query.search_timeline.timeline.instructions
+        .length
+    ).toBeGreaterThan(0)
+  })
+
+  test('searchTweets:user', async () => {
+    const response = await twitter.searchTweets({
+      query: 'from:book000',
+      searchType: SearchType.USER,
+    })
+    expect(response).toBeTruthy()
+    expect(response.data).toBeTruthy()
+    expect(
+      response.data.search_by_raw_query.search_timeline.timeline.instructions
+        .length
+    ).toBeGreaterThan(0)
+  })
+
+  test('searchTweets:image', async () => {
+    const response = await twitter.searchTweets({
+      query: 'from:book000',
+      searchType: SearchType.IMAGE,
+    })
+    expect(response).toBeTruthy()
+    expect(response.data).toBeTruthy()
+    expect(
+      response.data.search_by_raw_query.search_timeline.timeline.instructions
+        .length
+    ).toBeGreaterThan(0)
+  })
+
+  test('searchTweets:video', async () => {
+    const response = await twitter.searchTweets({
+      query: 'from:book000',
+      searchType: SearchType.VIDEO,
+    })
+    expect(response).toBeTruthy()
+    expect(response.data).toBeTruthy()
+    expect(
+      response.data.search_by_raw_query.search_timeline.timeline.instructions
+        .length
+    ).toBeGreaterThan(0)
   })
 
   afterAll(async () => {

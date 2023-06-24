@@ -32,89 +32,64 @@ export type GraphQLGETEndpoint =
   | 'UserTweets'
 
 export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
-  T extends 'AuthenticatedUserTFLists'
-    ? GraphQLGetAuthenticatedUserTFListsResponse
-    : T extends 'Bookmarks'
-    ? GraphQLGetBookmarksResponse
-    : T extends 'DataSaverMode'
-    ? GraphQLGetDataSaverModeResponse
-    : T extends 'getAltTextPromptPreference'
-    ? GraphQLGetGetAltTextPromptPreferenceResponse
-    : T extends 'GetUserClaims'
-    ? GraphQLGetGetUserClaimsResponse
-    : T extends 'HomeLatestTimeline'
-    ? GraphQLGetHomeLatestTimelineResponse
-    : T extends 'HomeLatestTimeline'
-    ? GraphQLPostHomeLatestTimelineResponse
-    : T extends 'HomeTimeline'
-    ? GraphQLPostHomeTimelineResponse
-    : T extends 'ListPins'
-    ? GraphQLGetListPinsResponse
-    : T extends 'ListsManagementPageTimeline'
-    ? GraphQLGetListsManagementPageTimelineResponse
-    : T extends 'ProfileSpotlightsQuery'
-    ? GraphQLGetProfileSpotlightsQueryResponse
-    : T extends 'SearchTimeline'
-    ? GraphQLGetSearchTimelineResponse
-    : T extends 'TweetDetail'
-    ? GraphQLGetTweetDetailResponse
-    : T extends 'UserByScreenName'
-    ? GraphQLGetUserByScreenNameResponse
-    : T extends 'UserTweets'
-    ? GraphQLGetUserTweetsResponse
-    : never
+  T extends 'AuthenticatedUserTFLists' ? GraphQLGetAuthenticatedUserTFListsResponse :
+  T extends 'Bookmarks' ? GraphQLGetBookmarksResponse :
+  T extends 'DataSaverMode' ? GraphQLGetDataSaverModeResponse :
+  T extends 'getAltTextPromptPreference' ? GraphQLGetGetAltTextPromptPreferenceResponse :
+  T extends 'GetUserClaims' ? GraphQLGetGetUserClaimsResponse :
+  T extends 'HomeLatestTimeline' ? GraphQLGetHomeLatestTimelineResponse :
+  T extends 'HomeLatestTimeline' ? GraphQLPostHomeLatestTimelineResponse :
+  T extends 'HomeTimeline' ? GraphQLPostHomeTimelineResponse :
+  T extends 'ListPins' ? GraphQLGetListPinsResponse :
+  T extends 'ListsManagementPageTimeline' ? GraphQLGetListsManagementPageTimelineResponse :
+  T extends 'ProfileSpotlightsQuery' ? GraphQLGetProfileSpotlightsQueryResponse :
+  T extends 'SearchTimeline' ? GraphQLGetSearchTimelineResponse :
+  T extends 'TweetDetail' ? GraphQLGetTweetDetailResponse :
+  T extends 'UserByScreenName' ? GraphQLGetUserByScreenNameResponse :
+  T extends 'UserTweets' ? GraphQLGetUserTweetsResponse :
+  never
 
-export type GraphQLPOSTEndpoint = 'HomeLatestTimeline' | 'HomeTimeline'
+export type GraphQLPOSTEndpoint =
+  | 'HomeLatestTimeline'
+  | 'HomeTimeline'
 
 export type GraphQLPOSTEndPointResponseType<T extends GraphQLPOSTEndpoint> =
-  T extends 'AuthenticatedUserTFLists'
-    ? GraphQLGetAuthenticatedUserTFListsResponse
-    : T extends 'Bookmarks'
-    ? GraphQLGetBookmarksResponse
-    : T extends 'DataSaverMode'
-    ? GraphQLGetDataSaverModeResponse
-    : T extends 'getAltTextPromptPreference'
-    ? GraphQLGetGetAltTextPromptPreferenceResponse
-    : T extends 'GetUserClaims'
-    ? GraphQLGetGetUserClaimsResponse
-    : T extends 'HomeLatestTimeline'
-    ? GraphQLGetHomeLatestTimelineResponse
-    : T extends 'HomeLatestTimeline'
-    ? GraphQLPostHomeLatestTimelineResponse
-    : T extends 'HomeTimeline'
-    ? GraphQLPostHomeTimelineResponse
-    : T extends 'ListPins'
-    ? GraphQLGetListPinsResponse
-    : T extends 'ListsManagementPageTimeline'
-    ? GraphQLGetListsManagementPageTimelineResponse
-    : T extends 'ProfileSpotlightsQuery'
-    ? GraphQLGetProfileSpotlightsQueryResponse
-    : T extends 'SearchTimeline'
-    ? GraphQLGetSearchTimelineResponse
-    : T extends 'TweetDetail'
-    ? GraphQLGetTweetDetailResponse
-    : T extends 'UserByScreenName'
-    ? GraphQLGetUserByScreenNameResponse
-    : T extends 'UserTweets'
-    ? GraphQLGetUserTweetsResponse
-    : never
+  T extends 'AuthenticatedUserTFLists' ? GraphQLGetAuthenticatedUserTFListsResponse :
+  T extends 'Bookmarks' ? GraphQLGetBookmarksResponse :
+  T extends 'DataSaverMode' ? GraphQLGetDataSaverModeResponse :
+  T extends 'getAltTextPromptPreference' ? GraphQLGetGetAltTextPromptPreferenceResponse :
+  T extends 'GetUserClaims' ? GraphQLGetGetUserClaimsResponse :
+  T extends 'HomeLatestTimeline' ? GraphQLGetHomeLatestTimelineResponse :
+  T extends 'HomeLatestTimeline' ? GraphQLPostHomeLatestTimelineResponse :
+  T extends 'HomeTimeline' ? GraphQLPostHomeTimelineResponse :
+  T extends 'ListPins' ? GraphQLGetListPinsResponse :
+  T extends 'ListsManagementPageTimeline' ? GraphQLGetListsManagementPageTimelineResponse :
+  T extends 'ProfileSpotlightsQuery' ? GraphQLGetProfileSpotlightsQueryResponse :
+  T extends 'SearchTimeline' ? GraphQLGetSearchTimelineResponse :
+  T extends 'TweetDetail' ? GraphQLGetTweetDetailResponse :
+  T extends 'UserByScreenName' ? GraphQLGetUserByScreenNameResponse :
+  T extends 'UserTweets' ? GraphQLGetUserTweetsResponse :
+  never
 
-export type GraphQLEndpoint = GraphQLGETEndpoint | GraphQLPOSTEndpoint
+export type GraphQLEndpoint =
+  | GraphQLGETEndpoint
+  | GraphQLPOSTEndpoint
 
-export type RESTEndpoint = never
+export type RESTEndpoint =
+  | never
 
-export type EndPointResponseType<
-  M extends HttpMethod,
-  T extends RequestType,
-  N extends GraphQLEndpoint | RESTEndpoint
-> = T extends 'GraphQL'
-  ? M extends 'GET'
-    ? N extends GraphQLGETEndpoint
-      ? GraphQLGETEndPointResponseType<N>
-      : never
-    : never
-  : M extends 'POST'
-  ? N extends GraphQLPOSTEndpoint
-    ? GraphQLPOSTEndPointResponseType<N>
-    : never
-  : never
+export type EndPointResponseType<M extends HttpMethod, T extends RequestType, N extends GraphQLEndpoint | RESTEndpoint> = 
+T extends 'GRAPHQL' ?
+  M extends 'GET' ?
+    N extends GraphQLGETEndpoint ?
+      GraphQLGETEndPointResponseType<N> :
+      never :
+    never
+:
+  M extends 'POST' ?
+    N extends GraphQLPOSTEndpoint ?
+      GraphQLPOSTEndPointResponseType<N> :
+      never :
+    never
+:
+T extends 'REST' ?
