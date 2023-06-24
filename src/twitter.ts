@@ -48,12 +48,14 @@ export class Twitter {
     }
 
     const page = await this.scraper.getScraperPage()
-    return await page.waitSingleResponse(
+    const response = await page.waitSingleResponse(
       url.toString(),
       'GET',
       'GRAPHQL',
       'SearchTimeline'
     )
+    await page.close()
+    return response
   }
 
   public async close() {

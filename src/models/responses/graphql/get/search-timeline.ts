@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+/** GraphQL GET SearchTimeline レスポンスモデル */
+
 export interface GraphQLGetSearchTimelineResponse {
   data: {
     search_by_raw_query: {
@@ -191,6 +193,7 @@ export interface GraphQLGetSearchTimelineResponse {
                                 icon_name: string
                               }[]
                             }
+                            super_follow_eligible?: boolean
                           }
                         }
                       }
@@ -346,7 +349,20 @@ export interface GraphQLGetSearchTimelineResponse {
                                       description: string
                                       entities: {
                                         description: {
-                                          urls: unknown[]
+                                          urls: {
+                                            display_url: string
+                                            expanded_url: string
+                                            url: string
+                                            indices: number[]
+                                          }[]
+                                        }
+                                        url?: {
+                                          urls: {
+                                            display_url: string
+                                            expanded_url: string
+                                            url: string
+                                            indices: number[]
+                                          }[]
                                         }
                                       }
                                       fast_followers_count: number
@@ -360,7 +376,7 @@ export interface GraphQLGetSearchTimelineResponse {
                                       media_count: number
                                       name: string
                                       normal_followers_count: number
-                                      pinned_tweet_ids_str: unknown[]
+                                      pinned_tweet_ids_str: string[]
                                       possibly_sensitive: boolean
                                       profile_banner_url: string
                                       profile_image_url_https: string
@@ -371,6 +387,12 @@ export interface GraphQLGetSearchTimelineResponse {
                                       verified: boolean
                                       want_retweets: boolean
                                       withheld_in_countries: unknown[]
+                                      url?: string
+                                    }
+                                    professional?: {
+                                      rest_id: string
+                                      professional_type: string
+                                      category: unknown[]
                                     }
                                   }
                                 }
@@ -873,7 +895,7 @@ export interface GraphQLGetSearchTimelineResponse {
                           name: string
                           url: string
                           user_refs_results: {
-                            result: {
+                            result?: {
                               __typename: string
                               id?: string
                               rest_id?: string

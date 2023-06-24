@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+/** GraphQL GET TweetDetail レスポンスモデル */
+
 export interface GraphQLGetTweetDetailResponse {
   data: {
     threaded_conversation_with_injections_v2: {
@@ -26,7 +28,7 @@ export interface GraphQLGetTweetDetailResponse {
                         id: string
                         rest_id: string
                         affiliates_highlighted_label: {
-                          label: {
+                          label?: {
                             url: {
                               url: string
                               urlType: string
@@ -51,7 +53,12 @@ export interface GraphQLGetTweetDetailResponse {
                           description: string
                           entities: {
                             description: {
-                              urls: unknown[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
                             }
                             url: {
                               urls: {
@@ -73,7 +80,7 @@ export interface GraphQLGetTweetDetailResponse {
                           media_count: number
                           name: string
                           normal_followers_count: number
-                          pinned_tweet_ids_str: unknown[]
+                          pinned_tweet_ids_str: string[]
                           possibly_sensitive: boolean
                           profile_banner_url: string
                           profile_image_url_https: string
@@ -144,7 +151,12 @@ export interface GraphQLGetTweetDetailResponse {
                     display_text_range: number[]
                     entities: {
                       user_mentions: unknown[]
-                      urls: unknown[]
+                      urls: {
+                        display_url: string
+                        expanded_url: string
+                        url: string
+                        indices: number[]
+                      }[]
                       hashtags: {
                         indices: number[]
                         text: string
@@ -162,7 +174,7 @@ export interface GraphQLGetTweetDetailResponse {
                     reply_count: number
                     retweet_count: number
                     retweeted: boolean
-                    scopes: {
+                    scopes?: {
                       followers: boolean
                     }
                     user_id_str: string
@@ -213,7 +225,12 @@ export interface GraphQLGetTweetDetailResponse {
                               description: string
                               entities: {
                                 description: {
-                                  urls: unknown[]
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
+                                    indices: number[]
+                                  }[]
                                 }
                                 url?: {
                                   urls: {
@@ -365,7 +382,12 @@ export interface GraphQLGetTweetDetailResponse {
                             screen_name: string
                             indices: number[]
                           }[]
-                          urls: unknown[]
+                          urls: {
+                            display_url: string
+                            expanded_url: string
+                            url: string
+                            indices: number[]
+                          }[]
                           hashtags: {
                             indices: number[]
                             text: string
@@ -490,6 +512,36 @@ export interface GraphQLGetTweetDetailResponse {
                       }
                       quick_promote_eligibility: {
                         eligibility: string
+                      }
+                      card?: {
+                        rest_id: string
+                        legacy: {
+                          binding_values: {
+                            key: string
+                            value: {
+                              string_value: string
+                              type: string
+                              scribe_key?: string
+                            }
+                          }[]
+                          card_platform: {
+                            platform: {
+                              audience: {
+                                name: string
+                              }
+                              device: {
+                                name: string
+                                version: string
+                              }
+                            }
+                          }
+                          name: string
+                          url: string
+                          user_refs_results: unknown[]
+                        }
+                      }
+                      unified_card?: {
+                        card_fetch_state: string
                       }
                     }
                   }

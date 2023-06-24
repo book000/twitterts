@@ -5213,6 +5213,11 @@ tsutils@^3.21.0:
   dependencies:
     tslib "^1.8.1"
 
+twitter-d@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/twitter-d/-/twitter-d-0.6.0.tgz#5fa331c7f2ca2882a26aa112fa37669bb21d9eee"
+  integrity sha512-ql/rKDYwQ3qkSYAvOAQ8KzAUx0HxsaM/JpcM6AZ8RzLoHSdNy5f0W6KHQ8xKDO7sstaFwqq1qd97GUEQHR/IZg==
+
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/type-check/-/type-check-0.4.0.tgz#07b8203bfa7056c0657050e3ccd2c37730bab8f1"

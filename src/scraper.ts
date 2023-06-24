@@ -6,7 +6,28 @@ import {
   EndPointResponseType,
   GraphQLEndpoint,
   RESTEndpoint,
-} from './models/endpoints'
+} from './models/responses/endpoints'
+
+/**
+ * HTTP メソッド
+ */
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+
+/**
+ * レスポンス種別
+ */
+export type RequestType = 'REST' | 'GRAPHQL'
+
+/**
+ * レスポンスの詳細
+ */
+interface ResponseDetails {
+  key: string
+  type: RequestType
+  method: HttpMethod
+  name: string
+  text: string
+}
 
 /**
  * レスポンスデバッグ出力オプション
@@ -23,6 +44,13 @@ export interface TwitterScraperDebugOutputResponseOptions {
    * レスポンスを出力するディレクトリ
    */
   outputDirectory: string
+
+  /**
+   * レスポンス時に実行されるコールバック関数
+   *
+   * @param details レスポンスの詳細
+   */
+  onResponse?: (details: ResponseDetails) => void
 }
 
 /**
@@ -107,16 +135,6 @@ export interface TwitterScraperOptions {
 }
 
 /**
- * HTTP メソッド
- */
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
-
-/**
- * レスポンス種別
- */
-export type RequestType = 'REST' | 'GRAPHQL'
-
-/**
  * レスポンス取得オプション
  */
 export interface TwitterScraperGetResponseOptions {
@@ -174,7 +192,9 @@ const targetUrls: {
  * @param response チェックし、詳細を返したいレスポンス
  * @returns レスポンスの詳細。チェックに失敗した場合は null
  */
-async function getResponseDetails(response: HTTPResponse) {
+async function getResponseDetails(
+  response: HTTPResponse
+): Promise<ResponseDetails | null> {
   if (response.request().method() === 'OPTIONS') {
     return null
   }
@@ -591,6 +611,11 @@ export class TwitterScraper {
         return
       }
       const { type, name, method, text } = details
+
+      const onResponse = this.options.debugOptions?.outputResponse?.onResponse
+      if (onResponse) {
+        onResponse(details)
+      }
 
       const pathNotIncludedExtension = join(
         this.options.debugOptions?.outputResponse?.outputDirectory ||

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+/** GraphQL POST HomeTimeline レスポンスモデル */
+
 export interface GraphQLPostHomeTimelineResponse {
   data: {
     home: {
