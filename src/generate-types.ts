@@ -11,6 +11,12 @@ import { dirname, join } from 'node:path'
 import { GraphQLGetSearchTimelineResponse } from './models/responses/graphql/get/search-timeline'
 import { CustomSearchTimelineEntry } from './models/responses/custom/custom-search-timeline-entry'
 
+/**
+ * json-schema-to-typescript のコンパイルオプションを作成・取得する
+ *
+ * @param tsDocument コンパイル結果の先頭に追加する tsdoc
+ * @returns コンパイルオプション
+ */
 function getCompileOptions(tsDocument?: string): Partial<Options> {
   const compileOptions: Partial<Options> = {
     bannerComment: '/* eslint-disable @typescript-eslint/ban-types */',
@@ -29,35 +35,111 @@ function getCompileOptions(tsDocument?: string): Partial<Options> {
   return compileOptions
 }
 
+/**
+ * 型定義生成インスタンスオプション（TwitterGenerateTypes）
+ */
 interface TwitterGenerateTypesOptions {
+  /**
+   * デバッグデータの出力先ディレクトリ
+   */
   debugOutputDirectory: string
 }
 
+/**
+ * レスポンスファイル群からリクエストごとのレスポンス群型
+ */
 interface Result {
+  /**
+   * リクエストの種別（graphql または rest）
+   */
   type: string
+
+  /**
+   * レスポンスの名前
+   */
   name: string
+
+  /**
+   * レスポンスの HTTP メソッド
+   */
   method: string
+
+  /**
+   * レスポンスのステータスコード
+   */
   statusCode: string
+
+  /**
+   * このリクエストに該当するレスポンスのパス群
+   */
   paths: string[]
 }
 
+/**
+ * 単一型定義生成オプション（TwitterGenerateTypes.generateType）
+ */
 interface GenerateTypeOptions {
+  /**
+   * 保存先ファイルパス設定
+   */
   path: {
+    /**
+     * スキーマファイルのパス
+     */
     schema: string
+
+    /**
+     * 型定義ファイルのパス
+     */
     types: string
   }
+
+  /**
+   * リクエスト名
+   */
   name: string
+
+  /**
+   * 型定義の tsdoc
+   */
   tsDocument: string
 }
 
+/**
+ * 複数型定義生成オプション（TwitterGenerateTypes.generateTypes）
+ */
 interface GenerateTypesOptions {
+  /**
+   * 保存先ディレクトリパス設定
+   */
   directory: {
+    /**
+     * スキーマファイルのディレクトリパス
+     */
     schema: string
+
+    /**
+     * 型定義ファイルのディレクトリパス
+     */
     types: string
   }
 }
 
+// --- ここまで作業済み
+
+/**
+ * ユーティリティ
+ */
 const Utils = {
+  /**
+   * レスポンスの型定義名を取得する
+   *
+   * @param rawType リクエストの種別（graphql または rest）
+   * @param rawName レスポンスの名前
+   * @param rawMethod レスポンスの HTTP メソッド
+   * @param rawStatus レスポンスのステータスコード
+   * @returns 型定義名
+   */
   getName(
     rawType: string,
     rawName: string,
@@ -76,14 +158,35 @@ const Utils = {
     return `${type}${method}${name}${status}Response`
   },
 
+  /**
+   * キャメルケースに変換する
+   *
+   * @param string 変換する文字列
+   * @returns キャメルケース変換後の文字列
+   */
   toCamelCase(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
   },
 
+  /**
+   * 先頭文字を大文字に変換する
+   *
+   * @param string 変換する文字列
+   * @returns 変換後の文字列
+   */
   capitalize(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
   },
 
+  /**
+   * ファイル名を取得する
+   *
+   * @param rawType リクエストの種別（graphql または rest）
+   * @param rawName レスポンスの名前
+   * @param rawMethod レスポンスの HTTP メソッド
+   * @param rawStatus レスポンスのステータスコード
+   * @returns ファイル名
+   */
   getFilename(
     rawType: string,
     rawName: string,
@@ -99,9 +202,18 @@ const Utils = {
   },
 }
 
+/**
+ * レスポンス種別
+ */
 type RequestType = 'GraphQL' | 'REST'
 
+/**
+ * 型定義生成クラス
+ */
 class TwitterTypesGenerator {
+  /**
+   * 型定義生成クラスのオプション
+   */
   private readonly options: TwitterGenerateTypesOptions
 
   constructor(options: TwitterGenerateTypesOptions) {

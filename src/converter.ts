@@ -1,7 +1,16 @@
 import { Entities, ExtendedEntities } from 'twitter-d'
 import { CustomTweetLegacyObject } from './models/responses/custom/custom-tweet-legacy-object'
 
+/**
+ * オブジェクトを変換するクラス
+ */
 export const ObjectConverter = {
+  /**
+   * ツイートのレガシーオブジェクトからエンティティを変換する
+   *
+   * @param legacy ツイートのレガシーオブジェクト
+   * @returns エンティティ
+   */
   convertEntity(legacy: CustomTweetLegacyObject): Entities {
     const entities: Entities = {}
 
@@ -90,6 +99,12 @@ export const ObjectConverter = {
     return entities
   },
 
+  /**
+   * ツイートのレガシーオブジェクトから拡張エンティティを変換する
+   *
+   * @param legacy ツイートのレガシーオブジェクト
+   * @returns 拡張エンティティ
+   */
   convertExtendedEntity(legacy: CustomTweetLegacyObject): ExtendedEntities {
     const extendedEntities: ExtendedEntities = {}
 
