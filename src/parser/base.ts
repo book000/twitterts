@@ -4,5 +4,13 @@ import {
 } from '../models/responses/endpoints'
 
 export abstract class BaseParser<T extends GraphQLGETEndpoint> {
-  abstract parse(response: GraphQLGETEndPointResponseType<T>): void
+  protected readonly response: GraphQLGETEndPointResponseType<T>
+
+  constructor(response: GraphQLGETEndPointResponseType<T>) {
+    this.response = response
+
+    this.parse()
+  }
+
+  protected abstract parse(): void
 }
