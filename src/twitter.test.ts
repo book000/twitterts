@@ -1,4 +1,5 @@
 import { SearchType } from './options'
+import { SearchTimelineParser } from './parser/search-timeline'
 import { Twitter } from './twitter'
 
 jest.setTimeout(60_000)
@@ -49,6 +50,10 @@ describe('Twitter', () => {
       response.data.search_by_raw_query.search_timeline.timeline.instructions
         .length
     ).toBeGreaterThan(0)
+
+    const parser = new SearchTimelineParser(response)
+    expect(parser).toBeTruthy()
+    expect(parser.getTweets().length).toBeGreaterThan(0)
   })
 
   test('searchTweets:live', async () => {
@@ -62,6 +67,10 @@ describe('Twitter', () => {
       response.data.search_by_raw_query.search_timeline.timeline.instructions
         .length
     ).toBeGreaterThan(0)
+
+    const parser = new SearchTimelineParser(response)
+    expect(parser).toBeTruthy()
+    expect(parser.getTweets().length).toBeGreaterThan(0)
   })
 
   test('searchTweets:user', async () => {
@@ -88,6 +97,10 @@ describe('Twitter', () => {
       response.data.search_by_raw_query.search_timeline.timeline.instructions
         .length
     ).toBeGreaterThan(0)
+
+    const parser = new SearchTimelineParser(response)
+    expect(parser).toBeTruthy()
+    expect(parser.getTweets().length).toBeGreaterThan(0)
   })
 
   test('searchTweets:video', async () => {
@@ -101,6 +114,10 @@ describe('Twitter', () => {
       response.data.search_by_raw_query.search_timeline.timeline.instructions
         .length
     ).toBeGreaterThan(0)
+
+    const parser = new SearchTimelineParser(response)
+    expect(parser).toBeTruthy()
+    expect(parser.getTweets().length).toBeGreaterThan(0)
   })
 
   afterAll(async () => {
