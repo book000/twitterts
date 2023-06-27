@@ -1,6 +1,9 @@
 import { Logger } from '@book000/node-utils'
 import { Twitter } from './twitter'
 
+/**
+ * メイン処理
+ */
 async function main() {
   const username = process.env.TWITTER_USERNAME
   const password = process.env.TWITTER_PASSWORD

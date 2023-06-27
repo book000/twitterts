@@ -124,7 +124,7 @@ export interface PuppeteerOptions {
 }
 
 /**
- * TwitterScraper オプション
+ * {@link TwitterScraper} オプション
  */
 export interface TwitterScraperOptions {
   /**

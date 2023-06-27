@@ -1,7 +1,16 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Twitter } from './twitter'
+
+/**
+ * {@link Twitter.getUserByScreenName} のオプション
+ */
 export interface GetUserByScreenNameOptions {
   screenName: string
 }
 
+/**
+ * {@link Twitter.searchTweets} の検索種別
+ */
 export const SearchType = {
   /** 話題のツイート */
   POPULAR: null,
@@ -15,6 +24,9 @@ export const SearchType = {
   VIDEO: 'video',
 } as const
 
+/**
+ * {@link Twitter.searchTweets} のオプション
+ */
 export interface SearchTweetsOptions {
   /** 検索クエリ */
   query: string
