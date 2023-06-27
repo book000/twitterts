@@ -5,21 +5,42 @@ import {
 } from './options'
 import { TwitterScraper, TwitterScraperOptions } from './scraper'
 
+/**
+ * {@link TwitterOptions} オプション
+ */
 export type TwitterOptions = TwitterScraperOptions
 
+/**
+ * Twitter スクレイピングライブラリクラス
+ */
 export class Twitter {
   private readonly scraper: TwitterScraper
 
+  /**
+   * @param scraper {@link TwitterScraper} インスタンス
+   */
   private constructor(scraper: TwitterScraper) {
     this.scraper = scraper
   }
 
+  /**
+   * Twitter にログインする
+   *
+   * @param options ログインオプション
+   * @returns Twitter インスタンス
+   */
   public static async login(options: TwitterOptions) {
     const scraper = new TwitterScraper(options)
     await scraper.login()
     return new Twitter(scraper)
   }
 
+  /**
+   * スクリーンネームからユーザー情報を取得する
+   *
+   * @param options ユーザー情報取得オプション
+   * @returns ユーザー情報
+   */
   public async getUserByScreenName(options: GetUserByScreenNameOptions) {
     if (!options.screenName) {
       throw new Error('screenName is required')
@@ -35,6 +56,12 @@ export class Twitter {
     return response
   }
 
+  /**
+   * ツイートを検索する
+   *
+   * @param options 検索オプション
+   * @returns 検索結果
+   */
   public async searchTweets(options: SearchTweetsOptions) {
     if (!options.query) {
       throw new Error('query is required')
@@ -58,6 +85,9 @@ export class Twitter {
     return response
   }
 
+  /**
+   * ブラウザを閉じる
+   */
   public async close() {
     await this.scraper.close()
   }

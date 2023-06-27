@@ -22,10 +22,29 @@ export type RequestType = 'REST' | 'GRAPHQL'
  * レスポンスの詳細
  */
 interface ResponseDetails {
+  /**
+   * リクエストのキー（${type}_${name}_${method} の大文字）
+   */
   key: string
+
+  /**
+   * リクエストの種別（REST | GRAPHQL）
+   */
   type: RequestType
+
+  /**
+   * リクエストの HTTP メソッド（GET | POST | PUT | DELETE | PATCH）
+   */
   method: HttpMethod
+
+  /**
+   * リクエスト名
+   */
   name: string
+
+  /**
+   * レスポンステキスト
+   */
   text: string
 }
 
@@ -105,7 +124,7 @@ export interface PuppeteerOptions {
 }
 
 /**
- * TwitterScraper オプション
+ * {@link TwitterScraper} オプション
  */
 export interface TwitterScraperOptions {
   /**
@@ -163,16 +182,29 @@ export interface TwitterScraperGetResponseOptions {
 }
 
 /**
- * レスポンスの URL として対象とする URL の定義
- *
- * hostname: ホスト名
- * pathnames: パス名の配列。ワイルドカードとして * が使用できる。<NAME> のパス箇所は name として利用する
+ * 対象 URL 定義
  */
-const targetUrls: {
+interface TargetUrl {
+  /**
+   * レスポンスの種別
+   */
   type: RequestType
+
+  /**
+   * ホスト名
+   */
   hostname: string
+
+  /**
+   * パス名の配列。ワイルドカードとして * が使用できる。
+   */
   pathnames: string[]
-}[] = [
+}
+
+/**
+ * レスポンスの URL として対象とする URL の定義
+ */
+const targetUrls: TargetUrl[] = [
   {
     type: 'GRAPHQL',
     hostname: 'api.twitter.com',
@@ -261,6 +293,14 @@ async function getResponseDetails(
   }
 }
 
+/**
+ * レスポンスのキーを作成・取得します。
+ *
+ * @param input レスポンスのキーを作成・取得したいレスポンス
+ * @param input.method レスポンスの HTTP メソッド
+ * @param input.type レスポンスの種別
+ * @param input.name リクエストの名前
+ */
 function getResponseKey(input: {
   method: HttpMethod
   type: RequestType
@@ -273,7 +313,14 @@ function getResponseKey(input: {
  * Twitter スクレイピング ページクラス
  */
 export class TwitterScraperPage {
+  /**
+   * Puppeteer のページインスタンス
+   */
   public readonly page: Page
+
+  /**
+   * レスポンスの保持オブジェクト
+   */
   private readonly responses: {
     [key: string]: string[]
   } = {}
@@ -406,6 +453,11 @@ export class TwitterScraperPage {
     await this.page.close()
   }
 
+  /**
+   * レスポンスを保持するようにハンドラを設定します。
+   *
+   * @param page Puppeteer ページインスタンス
+   */
   private setRetentionResponse(page: Page) {
     page.on('response', async (response) => {
       const details = await getResponseDetails(response)
@@ -424,7 +476,14 @@ export class TwitterScraperPage {
  * Twitter スクレイピングクラス
  */
 export class TwitterScraper {
+  /**
+   * Twitter スクレイピングオプション
+   */
   private readonly options: TwitterScraperOptions
+
+  /**
+   * Puppeteer ブラウザインスタンス
+   */
   private browser: Browser | undefined
 
   /**
@@ -540,6 +599,11 @@ export class TwitterScraper {
     await this.browser.close()
   }
 
+  /**
+   * Puppeteer ブラウザインスタンスを作成します。
+   *
+   * @returns Puppeteer ブラウザインスタンス
+   */
   private async getBrowser() {
     const puppeteerArguments = [
       '--no-sandbox',
@@ -579,6 +643,9 @@ export class TwitterScraper {
     return browser
   }
 
+  /**
+   * 新しいページを作成します。
+   */
   private async newPage() {
     if (!this.browser) {
       throw new Error('Failed to create page. Browser is not initialized.')
@@ -601,6 +668,11 @@ export class TwitterScraper {
     return page
   }
 
+  /**
+   * レスポンスを自動保存するハンドラを設定します。
+   *
+   * @param page Puppeteer ページインスタンス
+   */
   private setAutoSaveResponse(page: Page) {
     if (!this.options.debugOptions?.outputResponse?.enable) {
       return
@@ -639,6 +711,14 @@ export class TwitterScraper {
     })
   }
 
+  /**
+   * 指定したセレクタの要素を取得します。
+   *
+   * @param page Puppeteer ページインスタンス
+   * @param selector セレクタ
+   * @param timeout タイムアウトミリ秒
+   * @returns 要素。見つからなかった場合は null
+   */
   private async getElement(page: Page, selector: string, timeout = 3000) {
     try {
       return await page.waitForSelector(selector, { timeout })
@@ -647,6 +727,12 @@ export class TwitterScraper {
     }
   }
 
+  /**
+   * シークレットをもとに OTP を生成します。
+   *
+   * @param secret シークレット
+   * @returns OTP コード
+   */
   private getOneTimePassword(secret: string) {
     return authenticator.generate(secret)
   }

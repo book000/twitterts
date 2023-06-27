@@ -11,6 +11,12 @@ import { dirname, join } from 'node:path'
 import { GraphQLGetSearchTimelineResponse } from './models/responses/graphql/get/search-timeline'
 import { CustomSearchTimelineEntry } from './models/responses/custom/custom-search-timeline-entry'
 
+/**
+ * json-schema-to-typescript のコンパイルオプションを作成・取得する
+ *
+ * @param tsDocument コンパイル結果の先頭に追加する tsdoc
+ * @returns コンパイルオプション
+ */
 function getCompileOptions(tsDocument?: string): Partial<Options> {
   const compileOptions: Partial<Options> = {
     bannerComment: '/* eslint-disable @typescript-eslint/ban-types */',
@@ -29,35 +35,111 @@ function getCompileOptions(tsDocument?: string): Partial<Options> {
   return compileOptions
 }
 
+/**
+ * 型定義生成インスタンスオプション（TwitterGenerateTypes）
+ */
 interface TwitterGenerateTypesOptions {
+  /**
+   * デバッグデータの出力先ディレクトリ
+   */
   debugOutputDirectory: string
 }
 
+/**
+ * レスポンスファイル群からの、エンドポイントごとのレスポンス群型
+ */
 interface Result {
+  /**
+   * エンドポイントの種別（graphql または rest）
+   */
   type: string
+
+  /**
+   * レスポンスの名前
+   */
   name: string
+
+  /**
+   * レスポンスの HTTP メソッド
+   */
   method: string
+
+  /**
+   * レスポンスのステータスコード
+   */
   statusCode: string
+
+  /**
+   * このエンドポイントに該当するレスポンスのパス群
+   */
   paths: string[]
 }
 
+/**
+ * 単一の型定義生成オプション（TwitterGenerateTypes.generateType）
+ */
 interface GenerateTypeOptions {
+  /**
+   * 保存先ファイルパス設定
+   */
   path: {
+    /**
+     * スキーマファイルのパス
+     */
     schema: string
+
+    /**
+     * 型定義ファイルのパス
+     */
     types: string
   }
+
+  /**
+   * リクエスト名
+   */
   name: string
+
+  /**
+   * 型定義の tsdoc
+   */
   tsDocument: string
 }
 
+/**
+ * 複数型定義生成オプション（TwitterGenerateTypes.generateTypes）
+ */
 interface GenerateTypesOptions {
+  /**
+   * 保存先ディレクトリパス設定
+   */
   directory: {
+    /**
+     * スキーマファイルのディレクトリパス
+     */
     schema: string
+
+    /**
+     * 型定義ファイルのディレクトリパス
+     */
     types: string
   }
 }
 
+// --- ここまで作業済み
+
+/**
+ * ユーティリティ
+ */
 const Utils = {
+  /**
+   * レスポンスの型定義名を取得する
+   *
+   * @param rawType リクエストの種別（graphql または rest）
+   * @param rawName レスポンスの名前
+   * @param rawMethod レスポンスの HTTP メソッド
+   * @param rawStatus レスポンスのステータスコード
+   * @returns 型定義名
+   */
   getName(
     rawType: string,
     rawName: string,
@@ -76,14 +158,35 @@ const Utils = {
     return `${type}${method}${name}${status}Response`
   },
 
+  /**
+   * キャメルケースに変換する
+   *
+   * @param string 変換する文字列
+   * @returns キャメルケース変換後の文字列
+   */
   toCamelCase(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
   },
 
+  /**
+   * 先頭文字を大文字に変換する
+   *
+   * @param string 変換する文字列
+   * @returns 変換後の文字列
+   */
   capitalize(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
   },
 
+  /**
+   * ファイル名を取得する
+   *
+   * @param rawType リクエストの種別（graphql または rest）
+   * @param rawName レスポンスの名前
+   * @param rawMethod レスポンスの HTTP メソッド
+   * @param rawStatus レスポンスのステータスコード
+   * @returns ファイル名
+   */
   getFilename(
     rawType: string,
     rawName: string,
@@ -99,15 +202,33 @@ const Utils = {
   },
 }
 
+/**
+ * レスポンス種別
+ */
 type RequestType = 'GraphQL' | 'REST'
 
+/**
+ * 型定義生成クラス
+ */
 class TwitterTypesGenerator {
+  /**
+   * 型定義生成クラスのオプション
+   */
   private readonly options: TwitterGenerateTypesOptions
 
+  /**
+   * @param options 型定義生成クラスのオプション
+   */
   constructor(options: TwitterGenerateTypesOptions) {
     this.options = options
   }
 
+  /**
+   * ディレクトリ内にあるディレクトリ群を取得する
+   *
+   * @param baseDirectories ディレクトリを取得するディレクトリパス
+   * @returns ディレクトリ群
+   */
   getDirectories(baseDirectories: string[] = []) {
     const baseDirectory = join(
       this.options.debugOutputDirectory,
@@ -122,6 +243,12 @@ class TwitterTypesGenerator {
       )
   }
 
+  /**
+   * ディレクトリ内にある JSON ファイル群を取得する
+   *
+   * @param baseDirectories ファイルを取得するディレクトリパス
+   * @returns JSON ファイル群
+   */
   getJSONFiles(baseDirectories: string[] = []) {
     const baseDirectory = join(
       this.options.debugOutputDirectory,
@@ -138,6 +265,11 @@ class TwitterTypesGenerator {
       .map((file) => join(baseDirectory, file))
   }
 
+  /**
+   * レスポンスデバッグ出力 JSON ファイルを元に、エンドポイントごとの情報をまとめて取得する
+   *
+   * @returns エンドポイントごとの情報
+   */
   get(): Result[] {
     const results = []
     for (const type of this.getDirectories()) {
@@ -158,6 +290,12 @@ class TwitterTypesGenerator {
     return results
   }
 
+  /**
+   * エンドポイントの型定義を生成する
+   *
+   * @param options 単一の型定義生成オプション
+   * @param result エンドポイントごとのレスポンス情報
+   */
   async generateType(options: GenerateTypeOptions, result: Result) {
     const logger = Logger.configure('TwitterGenerateTypes.generateType')
 
@@ -187,6 +325,12 @@ class TwitterTypesGenerator {
     logger.info(`📝 ${options.name} (from ${result.paths.length} files)`)
   }
 
+  /**
+   * 保存されたデバッグレスポンスを元に、全てのエンドポイントの型定義を生成する。
+   * カスタム型定義の生成（CustomTypeGenerator）や、エンドポイントのまとめ型定義も生成（EndPointTypeGenerator）する。
+   *
+   * @param options 型定義生成オプション
+   */
   async generateTypes(options: GenerateTypesOptions) {
     const results = this.get()
     for (const result of results) {
@@ -234,6 +378,9 @@ class TwitterTypesGenerator {
     new EndPointTypeGenerator(results, options.directory.types).generate()
   }
 
+  /**
+   * デバッグレスポンスを元に、型定義を生成するメイン関数
+   */
   static async main() {
     const debugOutputDirectory =
       process.env.DEBUG_OUTPUT_DIRECTORY || './data/responses'
@@ -253,11 +400,19 @@ class TwitterTypesGenerator {
   }
 }
 
+/**
+ * カスタム型定義を生成するクラス
+ */
 class CustomTypeGenerator {
   private readonly results: Result[]
   private readonly schemaDirectory: string
   private readonly typesDirectory: string
 
+  /**
+   * @param results エンドポイントごとのレスポンス情報
+   * @param schemaDirectory スキーマ保存ディレクトリ
+   * @param typesDirectory 型定義保存ディレクトリ
+   */
   constructor(
     results: Result[],
     schemaDirectory: string,
@@ -268,6 +423,9 @@ class CustomTypeGenerator {
     this.typesDirectory = typesDirectory
   }
 
+  /**
+   * 検索タイムラインツイートモデル（CustomSearchTimelineEntry）のカスタム型定義を生成する
+   */
   runGraphQLSearchTimeline() {
     const results = this.results.filter(
       (result) =>
@@ -312,6 +470,10 @@ class CustomTypeGenerator {
   }
 
   // --- twitter-d 変換用オブジェクト
+
+  /**
+   * レスポンスツイートレガシーオブジェクト（CustomTweetLegacyObject）のカスタム型定義を生成する
+   */
   runTweetLegacyObject() {
     // 各レスポンスからハッシュタグオブジェクトを抽出
     const schemas = [
@@ -354,6 +516,13 @@ class CustomTypeGenerator {
     )
   }
 
+  /**
+   * カスタム型定義を、スキーマを元に生成する
+   *
+   * @param schema スキーマ
+   * @param name 型名
+   * @param tsDocument 型定義の tsdoc（1 行で記述）
+   */
   async generateTypeFromSchema(
     schema: Schema,
     name: string,
@@ -379,6 +548,9 @@ class CustomTypeGenerator {
     logger.info(`📝 ${name}`)
   }
 
+  /**
+   * カスタム型定義を生成する
+   */
   generate() {
     this.runGraphQLSearchTimeline()
 
@@ -387,15 +559,27 @@ class CustomTypeGenerator {
   }
 }
 
+/**
+ * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成するクラス
+ */
 class EndPointTypeGenerator {
   private readonly results: Result[]
   private readonly typesDirectory: string
 
+  /**
+   * @param results エンドポイントごとのレスポンス情報
+   * @param typesDirectory 型定義の出力先ディレクトリ
+   */
   constructor(results: Result[], typesDirectory: string) {
     this.results = results
     this.typesDirectory = typesDirectory
   }
 
+  /**
+   * TypeScript インポート文群を生成する
+   *
+   * @returns インポート文群
+   */
   generateImport() {
     // import { GraphQLGetUserTweetsResponse } from './graphql/get/user-tweets'
     return this.results
@@ -417,6 +601,12 @@ class EndPointTypeGenerator {
       .join('\n')
   }
 
+  /**
+   * メソッド名の配列を取得する
+   *
+   * @param type エンドポイントの種類
+   * @returns メソッド名の配列
+   */
   getMethods(type: RequestType) {
     return this.results
       .filter((result) => result.type === type.toLowerCase())
@@ -424,12 +614,14 @@ class EndPointTypeGenerator {
       .filter((value, index, self) => self.indexOf(value) === index)
   }
 
+  /**
+   * エンドポイント名群（<TYPE><METHOD>Endpoint）の定義を生成する
+   *
+   * @param type エンドポイントの種類
+   * @param method メソッド名
+   * @returns エンドポイント名群の定義
+   */
   generateEndPointType(type: RequestType, method: string) {
-    /*
-    export type GraphQLGetEndpoint =
-      | 'AuthenticatedUserTFLists'
-      | 'Bookmarks'
-    */
     const head = `export type ${type}${method}Endpoint =`
     const types = this.results
       .filter(
@@ -445,6 +637,13 @@ class EndPointTypeGenerator {
     return `${head}\n${types.join('\n')}`
   }
 
+  /**
+   * エンドポイント名を元に、レスポンス型定義を紐づけるような型定義（<TYPE><METHOD>EndPointResponseType）を生成する。
+   *
+   * @param type エンドポイントの種類
+   * @param method メソッド名
+   * @returns レスポンス型定義を紐づけるような型定義
+   */
   generateResponseType(type: RequestType, method: string) {
     const head = `export type ${type}${method}EndPointResponseType<T extends ${type}${method}Endpoint> =`
     const types = this.results
@@ -461,6 +660,12 @@ class EndPointTypeGenerator {
     return `${head}\n${types.join('\n')}\n  never`
   }
 
+  /**
+   * エンドポイントの種類と HTTP メソッドを元に、「レスポンス型定義を紐づけるような型定義」を生成する。
+   *
+   * @param types エンドポイントの種類の配列
+   * @returns レスポンス型定義を紐づけるような型定義
+   */
   generateEndpointResponseType(types: readonly RequestType[]) {
     const head =
       'export type EndPointResponseType<M extends HttpMethod, T extends RequestType, N extends GraphQLEndpoint | RESTEndpoint> = '
@@ -497,6 +702,9 @@ class EndPointTypeGenerator {
     return `${head}\n${results.join('\n')}`
   }
 
+  /**
+   * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成する
+   */
   generate() {
     const logger = Logger.configure('EndPointTypeGenerator.generate')
 
