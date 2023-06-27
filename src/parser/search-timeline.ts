@@ -1,14 +1,16 @@
+import { GraphQLGetSearchTimelineResponse } from 'src/models/responses/graphql/get/search-timeline'
 import { ObjectConverter } from '../converter'
 import { CustomSearchTimelineEntry } from '../models/responses/custom/custom-search-timeline-entry'
 import { BaseParser } from './base'
 import { Status } from 'twitter-d'
 
 export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
-  private entries: CustomSearchTimelineEntry[] = []
   private tweets: Status[] = []
 
-  parse() {
-    this.entries =
+  constructor(response: GraphQLGetSearchTimelineResponse) {
+    super(response)
+
+    const entries =
       this.response.data.search_by_raw_query.search_timeline.timeline.instructions
         .filter(
           (instruction) =>
@@ -20,7 +22,7 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
           )
         ) as CustomSearchTimelineEntry[]
 
-    const rawTweets = this.entries.map(
+    const rawTweets = entries.map(
       (entry) => entry.content.itemContent.tweet_results.result
     )
     // @ts-ignore
@@ -49,11 +51,7 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
     })
   }
 
-  getEntries() {
-    return this.entries
-  }
-
-  getTweets() {
+  public getTweets() {
     return this.tweets
   }
 }

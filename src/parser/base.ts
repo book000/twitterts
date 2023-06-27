@@ -8,9 +8,5 @@ export abstract class BaseParser<T extends GraphQLGETEndpoint> {
 
   constructor(response: GraphQLGETEndPointResponseType<T>) {
     this.response = response
-
-    this.parse()
   }
-
-  protected abstract parse(): void
 }
