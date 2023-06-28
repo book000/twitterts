@@ -3,10 +3,18 @@ import { ObjectConverter } from '../converter'
 import { CustomSearchTimelineEntry } from '../models/responses/custom/custom-search-timeline-entry'
 import { BaseParser } from './base'
 import { Status } from 'twitter-d'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Twitter } from '../twitter'
 
+/**
+ * {@link Twitter.searchTweets} のレスポンスパーサー
+ */
 export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
   private tweets: Status[] = []
 
+  /**
+   * @param response {@link Twitter.searchTweets} のレスポンス
+   */
   constructor(response: GraphQLGetSearchTimelineResponse) {
     super(response)
 
@@ -51,6 +59,11 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
     })
   }
 
+  /**
+   * 検索結果のツイート群を取得する
+   *
+   * @returns ツイートの配列
+   */
   public getTweets() {
     return this.tweets
   }
