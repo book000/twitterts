@@ -54,6 +54,9 @@ export class Twitter {
       'UserByScreenName'
     )
     await page.close()
+    if (this.isErrorResponse(response)) {
+      throw new Error(response.errors[0].message)
+    }
     return response
   }
 
@@ -111,5 +114,9 @@ export class Twitter {
    */
   public async close() {
     await this.scraper.close()
+  }
+
+  public isErrorResponse(response: any): response is { errors: any[] } {
+    return response.errors && response.errors.length > 0
   }
 }

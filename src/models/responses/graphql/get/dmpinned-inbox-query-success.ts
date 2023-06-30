@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET DMPinnedInboxQuery レスポンスモデル */
+/** GraphQL GET DMPinnedInboxQuery 成功レスポンスモデル */
 
-export interface GraphQLGetDMPinnedInboxQueryResponse {
+export interface GraphQLGetDMPinnedInboxQuerySuccessResponse {
   data: {
     labeled_conversation_slice: {
       items: unknown[]

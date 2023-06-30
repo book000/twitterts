@@ -50,6 +50,14 @@ export interface CustomTweetLegacyObject {
             w: number
           }[]
         }
+        all?: {
+          tags: {
+            user_id: string
+            name: string
+            screen_name: string
+            type: string
+          }[]
+        }
       }
       sizes: {
         large: {
@@ -229,6 +237,14 @@ export interface CustomTweetLegacyObject {
             y: number
             h: number
             w: number
+          }[]
+        }
+        all?: {
+          tags: {
+            user_id: string
+            name: string
+            screen_name: string
+            type: string
           }[]
         }
       }

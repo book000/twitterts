@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET ConnectTabTimeline レスポンスモデル */
+/** GraphQL GET ConnectTabTimeline 成功レスポンスモデル */
 
-export interface GraphQLGetConnectTabTimelineResponse {
+export interface GraphQLGetConnectTabTimelineSuccessResponse {
   data: {
     connect_tab_timeline: {
       timeline: {

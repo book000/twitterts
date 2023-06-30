@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET TweetDetail レスポンスモデル */
+/** GraphQL GET TweetDetail 成功レスポンスモデル */
 
-export interface GraphQLGetTweetDetailResponse {
+export interface GraphQLGetTweetDetailSuccessResponse {
   data: {
     threaded_conversation_with_injections_v2: {
       instructions: {

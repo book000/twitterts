@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET UserByScreenName レスポンスモデル */
+/** GraphQL GET UserByScreenName 成功レスポンスモデル */
 
-export interface GraphQLGetUserByScreenNameResponse {
+export interface GraphQLGetUserByScreenNameSuccessResponse {
   data: {
     user: {
       result: {
