@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET UserTweets レスポンスモデル */
+/** GraphQL GET UserTweets 成功レスポンスモデル */
 
-export interface GraphQLGetUserTweetsResponse {
+export interface GraphQLGetUserTweetsSuccessResponse {
   data: {
     user: {
       result: {

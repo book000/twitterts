@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET SearchTimeline レスポンスモデル */
+/** GraphQL GET SearchTimeline 成功レスポンスモデル */
 
-export interface GraphQLGetSearchTimelineResponse {
+export interface GraphQLGetSearchTimelineSuccessResponse {
   data: {
     search_by_raw_query: {
       search_timeline: {
@@ -261,6 +261,14 @@ export interface GraphQLGetSearchTimelineResponse {
                                   w: number
                                 }[]
                               }
+                              all?: {
+                                tags: {
+                                  user_id: string
+                                  name: string
+                                  screen_name: string
+                                  type: string
+                                }[]
+                              }
                             }
                             sizes: {
                               large: {
@@ -442,6 +450,14 @@ export interface GraphQLGetSearchTimelineResponse {
                                   w: number
                                 }[]
                               }
+                              all?: {
+                                tags: {
+                                  user_id: string
+                                  name: string
+                                  screen_name: string
+                                  type: string
+                                }[]
+                              }
                             }
                             sizes: {
                               large: {
@@ -587,6 +603,7 @@ export interface GraphQLGetSearchTimelineResponse {
                                   verified: boolean
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
+                                  verified_type?: string
                                 }
                               }
                             }
@@ -614,7 +631,7 @@ export interface GraphQLGetSearchTimelineResponse {
                             conversation_id_str: string
                             display_text_range: number[]
                             entities: {
-                              media: {
+                              media?: {
                                 display_url: string
                                 expanded_url: string
                                 id_str: string
@@ -689,7 +706,12 @@ export interface GraphQLGetSearchTimelineResponse {
                                   }[]
                                 }
                               }[]
-                              user_mentions: unknown[]
+                              user_mentions: {
+                                id_str: string
+                                name: string
+                                screen_name: string
+                                indices: number[]
+                              }[]
                               urls: {
                                 display_url: string
                                 expanded_url: string
@@ -702,7 +724,7 @@ export interface GraphQLGetSearchTimelineResponse {
                               }[]
                               symbols: unknown[]
                             }
-                            extended_entities: {
+                            extended_entities?: {
                               media: {
                                 display_url: string
                                 expanded_url: string
@@ -847,6 +869,95 @@ export interface GraphQLGetSearchTimelineResponse {
                                 }
                               }
                             }
+                          }
+                          card?: {
+                            rest_id: string
+                            legacy: {
+                              binding_values: {
+                                key: string
+                                value: {
+                                  string_value?: string
+                                  type: string
+                                  scribe_key?: string
+                                  user_value?: {
+                                    id_str: string
+                                    path: unknown[]
+                                  }
+                                }
+                              }[]
+                              card_platform: {
+                                platform: {
+                                  audience: {
+                                    name: string
+                                  }
+                                  device: {
+                                    name: string
+                                    version: string
+                                  }
+                                }
+                              }
+                              name: string
+                              url: string
+                              user_refs_results: {
+                                result: {
+                                  __typename: string
+                                  id: string
+                                  rest_id: string
+                                  affiliates_highlighted_label: {}
+                                  has_graduated_access: boolean
+                                  is_blue_verified: boolean
+                                  profile_image_shape: string
+                                  legacy: {
+                                    can_dm: boolean
+                                    can_media_tag: boolean
+                                    created_at: string
+                                    default_profile: boolean
+                                    default_profile_image: boolean
+                                    description: string
+                                    entities: {
+                                      description: {
+                                        urls: unknown[]
+                                      }
+                                      url: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                    }
+                                    fast_followers_count: number
+                                    favourites_count: number
+                                    followers_count: number
+                                    friends_count: number
+                                    has_custom_timelines: boolean
+                                    is_translator: boolean
+                                    listed_count: number
+                                    location: string
+                                    media_count: number
+                                    name: string
+                                    normal_followers_count: number
+                                    pinned_tweet_ids_str: unknown[]
+                                    possibly_sensitive: boolean
+                                    profile_banner_url: string
+                                    profile_image_url_https: string
+                                    profile_interstitial_type: string
+                                    screen_name: string
+                                    statuses_count: number
+                                    translator_type: string
+                                    url: string
+                                    verified: boolean
+                                    verified_type: string
+                                    want_retweets: boolean
+                                    withheld_in_countries: unknown[]
+                                  }
+                                }
+                              }[]
+                            }
+                          }
+                          unified_card?: {
+                            card_fetch_state: string
                           }
                         }
                       }
@@ -1362,4 +1473,30 @@ export interface GraphQLGetSearchTimelineResponse {
       }
     }
   }
+  errors?: {
+    message: string
+    locations: {
+      line: number
+      column: number
+    }[]
+    path: (number | string)[]
+    extensions: {
+      name: string
+      source: string
+      retry_after: number
+      code: number
+      kind: string
+      tracing: {
+        trace_id: string
+      }
+    }
+    code: number
+    kind: string
+    name: string
+    source: string
+    retry_after: number
+    tracing: {
+      trace_id: string
+    }
+  }[]
 }

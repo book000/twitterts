@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET Bookmarks レスポンスモデル */
+/** GraphQL GET Bookmarks 成功レスポンスモデル */
 
-export interface GraphQLGetBookmarksResponse {
+export interface GraphQLGetBookmarksSuccessResponse {
   data: {
     bookmark_timeline_v2: {
       timeline: {

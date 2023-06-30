@@ -1,10 +1,10 @@
-import { GraphQLGetSearchTimelineResponse } from '../models/responses/graphql/get/search-timeline'
 import { ObjectConverter } from '../converter'
 import { CustomSearchTimelineEntry } from '../models/responses/custom/custom-search-timeline-entry'
 import { BaseParser } from './base'
 import { Status } from 'twitter-d'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Twitter } from '../twitter'
+import { GraphQLGetSearchTimelineResponse } from '../models/responses/endpoints'
 
 /**
  * {@link Twitter.searchTweets} のレスポンスパーサー
