@@ -3,6 +3,7 @@ import {
   SearchTweetsOptions,
   SearchType,
 } from './options'
+import { SearchTimelineParser } from './parser/search-timeline'
 import { TwitterScraper, TwitterScraperOptions } from './scraper'
 
 /**
@@ -75,14 +76,34 @@ export class Twitter {
     }
 
     const page = await this.scraper.getScraperPage()
-    const response = await page.waitSingleResponse(
-      url.toString(),
-      'GET',
-      'GRAPHQL',
-      'SearchTimeline'
-    )
+    await page.goto(url.toString())
+
+    let lastResponseAt = Date.now()
+    const results = []
+    while (true) {
+      if (Date.now() - lastResponseAt > 1000 * 30) {
+        // 30秒以上レスポンスがない場合はタイムアウト
+        throw new Error('Timeout')
+      }
+      const response = page.shiftResponse('GET', 'GRAPHQL', 'SearchTimeline')
+      if (!response) {
+        await page.scrollToBottom()
+        continue
+      }
+      const parser = new SearchTimelineParser(response)
+      const tweets = parser.getTweets()
+      if (tweets.length === 0) {
+        break
+      }
+      results.push(...tweets)
+      if (results.length >= (options.limit || 20)) {
+        break
+      }
+      lastResponseAt = Date.now()
+    }
+
     await page.close()
-    return response
+    return results
   }
 
   /**

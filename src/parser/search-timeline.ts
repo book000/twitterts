@@ -13,7 +13,7 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
   private tweets: Status[] = []
 
   /**
-   * @param response {@link Twitter.searchTweets} のレスポンス
+   * @param response {@link Twitter['searchTweets']} のレスポンス
    */
   constructor(response: GraphQLGetSearchTimelineResponse) {
     super(response)

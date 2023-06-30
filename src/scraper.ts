@@ -398,7 +398,11 @@ export class TwitterScraperPage {
       type,
       name,
     })
-    const response = this.responses[key].shift()
+    const responses = this.responses[key]
+    if (!responses || responses.length === 0) {
+      return null
+    }
+    const response = responses.shift()
 
     return response ? JSON.parse(response) : null
   }
