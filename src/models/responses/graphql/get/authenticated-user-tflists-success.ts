@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET AuthenticatedUserTFLists レスポンスモデル */
+/** GraphQL GET AuthenticatedUserTFLists 成功レスポンスモデル */
 
-export interface GraphQLGetAuthenticatedUserTFListsResponse {
+export interface GraphQLGetAuthenticatedUserTFListsSuccessResponse {
   data: {
     authenticated_user_trusted_friends_lists: {
       id: string

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET HomeLatestTimeline レスポンスモデル */
+/** GraphQL GET HomeLatestTimeline 成功レスポンスモデル */
 
-export interface GraphQLGetHomeLatestTimelineResponse {
+export interface GraphQLGetHomeLatestTimelineSuccessResponse {
   data: {
     home: {
       home_timeline_urt: {

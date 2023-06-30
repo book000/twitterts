@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET ListLatestTweetsTimeline レスポンスモデル */
+/** GraphQL GET ListLatestTweetsTimeline 成功レスポンスモデル */
 
-export interface GraphQLGetListLatestTweetsTimelineResponse {
+export interface GraphQLGetListLatestTweetsTimelineSuccessResponse {
   data: {
     list: {
       tweets_timeline: {

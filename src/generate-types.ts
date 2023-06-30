@@ -8,7 +8,7 @@ import {
   Schema,
 } from 'genson-js'
 import { dirname, join } from 'node:path'
-import { GraphQLGetSearchTimelineResponse } from './models/responses/graphql/get/search-timeline'
+import { GraphQLGetSearchTimelineSuccessResponse } from './models/responses/graphql/get/search-timeline-success'
 import { CustomSearchTimelineEntry } from './models/responses/custom/custom-search-timeline-entry'
 
 /**
@@ -125,8 +125,6 @@ interface GenerateTypesOptions {
   }
 }
 
-// --- ここまで作業済み
-
 /**
  * ユーティリティ
  */
@@ -144,16 +142,21 @@ const Utils = {
     rawType: string,
     rawName: string,
     rawMethod: string,
-    rawStatus: string
+    rawStatus: string | null
   ) {
     const type =
-      rawType === 'graphql' ? 'GraphQL' : rawType === 'rest' ? 'REST' : null
+      rawType.toLocaleLowerCase() === 'graphql'
+        ? 'GraphQL'
+        : rawType.toLocaleLowerCase() === 'rest'
+        ? 'REST'
+        : null
     if (!type) {
       throw new Error(`Invalid type: ${rawType}`)
     }
     const method = this.toCamelCase(rawMethod)
     const name = this.capitalize(rawName)
-    const status = rawStatus.startsWith('2') ? '' : 'Error'
+    const status =
+      rawStatus === null ? '' : rawStatus.startsWith('2') ? 'Success' : 'Error'
 
     return `${type}${method}${name}${status}Response`
   },
@@ -196,7 +199,7 @@ const Utils = {
     const type = rawType.toLowerCase()
     const method = rawMethod.toLowerCase()
     const name = rawName.replaceAll(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
-    const status = rawStatus.startsWith('2') ? '' : '-error'
+    const status = rawStatus.startsWith('2') ? '-success' : '-error'
 
     return `${type}/${method}/${name}${status}`
   },
@@ -363,7 +366,7 @@ class TwitterTypesGenerator {
           },
           name,
           tsDocument: `${type} ${result.method} ${result.name} ${
-            result.statusCode.startsWith('2') ? '' : 'エラー'
+            result.statusCode.startsWith('2') ? '成功' : '失敗'
           }レスポンスモデル`,
         },
         result
@@ -441,7 +444,7 @@ class CustomTypeGenerator {
 
     let schema
     for (const path of paths) {
-      const response: GraphQLGetSearchTimelineResponse = JSON.parse(
+      const response: GraphQLGetSearchTimelineSuccessResponse = JSON.parse(
         fs.readFileSync(path, 'utf8')
       )
       const entries =
@@ -488,7 +491,7 @@ class CustomTypeGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetSearchTimelineResponse = JSON.parse(
+          const response: GraphQLGetSearchTimelineSuccessResponse = JSON.parse(
             fs.readFileSync(path, 'utf8')
           )
           return response.data.search_by_raw_query.search_timeline.timeline.instructions
@@ -628,6 +631,10 @@ class EndPointTypeGenerator {
         (result) =>
           result.type === type.toLowerCase() && result.method === method
       )
+      .filter(
+        (value, index, self) =>
+          self.findIndex((v) => v.name === value.name) === index
+      )
       .map((result) => {
         return `  | '${result.name}'`
       })
@@ -635,6 +642,53 @@ class EndPointTypeGenerator {
       return null
     }
     return `${head}\n${types.join('\n')}`
+  }
+
+  /**
+   * エンドポイント名を元に、成功・失敗のレスポンス型定義をまとめる型定義（<TYPE><METHOD>Response）を生成する。
+   *
+   * @param type エンドポイントの種類
+   * @param method メソッド名
+   */
+  generateResponseMergeType(type: RequestType, method: string) {
+    const names = this.results
+      .filter((result) => result.type === type.toLowerCase())
+      .map((result) => result.name)
+      .filter((value, index, self) => self.indexOf(value) === index)
+
+    const types = names.map((name) => {
+      const successType = Utils.getName(type, name, method, '200')
+      const errorType = Utils.getName(type, name, method, '400')
+      const responseType = Utils.getName(type, name, method, null)
+
+      const isExistsSuccess = this.results.some(
+        (result) =>
+          result.type === type.toLowerCase() &&
+          result.name === name &&
+          result.method === method &&
+          result.statusCode.startsWith('2')
+      )
+      const isExistsError = this.results.some(
+        (result) =>
+          result.type === type.toLowerCase() &&
+          result.name === name &&
+          result.method === method &&
+          !result.statusCode.startsWith('2')
+      )
+
+      const tsDocument = `/** ${type} ${name} ${method} レスポンスモデル */`
+      if (isExistsSuccess && isExistsError) {
+        return `${tsDocument}\nexport type ${responseType} = ${successType} | ${errorType}`
+      }
+      if (isExistsSuccess) {
+        return `${tsDocument}\nexport type ${responseType} = ${successType}`
+      }
+      if (isExistsError) {
+        return `${tsDocument}\nexport type ${responseType} = ${errorType}`
+      }
+      return ''
+    })
+    return types.filter((type) => type !== '').join('\n')
   }
 
   /**
@@ -647,13 +701,20 @@ class EndPointTypeGenerator {
   generateResponseType(type: RequestType, method: string) {
     const head = `export type ${type}${method}EndPointResponseType<T extends ${type}${method}Endpoint> =`
     const types = this.results
-      .filter((result) => result.type === type.toLowerCase())
+      .filter(
+        (result) =>
+          result.type === type.toLowerCase() && result.method === method
+      )
+      .filter(
+        (value, index, self) =>
+          self.findIndex((v) => v.name === value.name) === index
+      )
       .map((result) => {
         const name = Utils.getName(
           result.type,
           result.name,
           result.method,
-          result.statusCode
+          null
         )
         return `  T extends '${result.name}' ? ${name} :`
       })
@@ -723,6 +784,7 @@ class EndPointTypeGenerator {
 
       const methods = this.getMethods(type)
       for (const method of methods) {
+        const mergeTypes = this.generateResponseMergeType(type, method)
         const endpointType = this.generateEndPointType(type, method)
         const responseType = this.generateResponseType(type, method)
 
@@ -730,7 +792,7 @@ class EndPointTypeGenerator {
           continue
         }
 
-        data.push(endpointType, responseType)
+        data.push(mergeTypes, endpointType, responseType)
 
         unionTypes.push(`  | ${type}${method}Endpoint`)
       }

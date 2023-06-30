@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET ListsManagementPageTimeline レスポンスモデル */
+/** GraphQL GET ListsManagementPageTimeline 成功レスポンスモデル */
 
-export interface GraphQLGetListsManagementPageTimelineResponse {
+export interface GraphQLGetListsManagementPageTimelineSuccessResponse {
   data: {
     viewer: {
       list_management_timeline: {

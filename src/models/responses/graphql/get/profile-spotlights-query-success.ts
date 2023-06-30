@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET ProfileSpotlightsQuery レスポンスモデル */
+/** GraphQL GET ProfileSpotlightsQuery 成功レスポンスモデル */
 
-export interface GraphQLGetProfileSpotlightsQueryResponse {
+export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
   data: {
     user_result_by_screen_name: {
       result: {
