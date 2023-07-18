@@ -17,7 +17,7 @@ export const SearchType = {
   /** 最新 */
   LIVE: 'live',
   /** アカウント */
-  USER: 'user',
+  // USER: 'user', // searchTweets として適切ではない（ツイートではない）ため
   /** 画像 */
   IMAGE: 'image',
   /** 動画 */
@@ -32,4 +32,6 @@ export interface SearchTweetsOptions {
   query: string
   /** 検索種別。デフォルトは「話題のツイート」 */
   searchType?: (typeof SearchType)[keyof typeof SearchType]
+  /** 取得するツイートの最大数。デフォルトは 20 */
+  limit?: number
 }

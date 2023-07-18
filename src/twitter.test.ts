@@ -1,5 +1,4 @@
 import { SearchType } from './options'
-import { SearchTimelineParser } from './parser/search-timeline'
 import { Twitter } from './twitter'
 
 jest.setTimeout(60_000)
@@ -45,45 +44,17 @@ describe('Twitter', () => {
       query: 'from:book000',
     })
     expect(response).toBeTruthy()
-    expect(response.data).toBeTruthy()
-    expect(
-      response.data.search_by_raw_query.search_timeline.timeline.instructions
-        .length
-    ).toBeGreaterThan(0)
-
-    const parser = new SearchTimelineParser(response)
-    expect(parser).toBeTruthy()
-    expect(parser.getTweets().length).toBeGreaterThan(0)
+    expect(response.length).toBeGreaterThan(0)
   })
 
-  test('searchTweets:live', async () => {
+  test('searchTweets:live(limit100)', async () => {
     const response = await twitter.searchTweets({
       query: 'from:book000',
       searchType: SearchType.LIVE,
+      limit: 100,
     })
     expect(response).toBeTruthy()
-    expect(response.data).toBeTruthy()
-    expect(
-      response.data.search_by_raw_query.search_timeline.timeline.instructions
-        .length
-    ).toBeGreaterThan(0)
-
-    const parser = new SearchTimelineParser(response)
-    expect(parser).toBeTruthy()
-    expect(parser.getTweets().length).toBeGreaterThan(0)
-  })
-
-  test('searchTweets:user', async () => {
-    const response = await twitter.searchTweets({
-      query: 'from:book000',
-      searchType: SearchType.USER,
-    })
-    expect(response).toBeTruthy()
-    expect(response.data).toBeTruthy()
-    expect(
-      response.data.search_by_raw_query.search_timeline.timeline.instructions
-        .length
-    ).toBeGreaterThan(0)
+    expect(response.length).toBeGreaterThan(0)
   })
 
   test('searchTweets:image', async () => {
@@ -92,15 +63,7 @@ describe('Twitter', () => {
       searchType: SearchType.IMAGE,
     })
     expect(response).toBeTruthy()
-    expect(response.data).toBeTruthy()
-    expect(
-      response.data.search_by_raw_query.search_timeline.timeline.instructions
-        .length
-    ).toBeGreaterThan(0)
-
-    const parser = new SearchTimelineParser(response)
-    expect(parser).toBeTruthy()
-    expect(parser.getTweets().length).toBeGreaterThan(0)
+    expect(response.length).toBeGreaterThan(0)
   })
 
   test('searchTweets:video', async () => {
@@ -109,15 +72,7 @@ describe('Twitter', () => {
       searchType: SearchType.VIDEO,
     })
     expect(response).toBeTruthy()
-    expect(response.data).toBeTruthy()
-    expect(
-      response.data.search_by_raw_query.search_timeline.timeline.instructions
-        .length
-    ).toBeGreaterThan(0)
-
-    const parser = new SearchTimelineParser(response)
-    expect(parser).toBeTruthy()
-    expect(parser.getTweets().length).toBeGreaterThan(0)
+    expect(response.length).toBeGreaterThan(0)
   })
 
   afterAll(async () => {

@@ -352,7 +352,7 @@ export class TwitterScraperPage {
     name: N,
     timeout?: number
   ): Promise<EndPointResponseType<M, T, N>> {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       throw new Error('Response timeout.')
     }, timeout || 30_000)
 
@@ -369,6 +369,7 @@ export class TwitterScraperPage {
         if (responses && responses.length > 0) {
           const response = responses.shift()
           if (response) {
+            clearTimeout(timeoutId)
             resolve(JSON.parse(response))
           }
         }
@@ -398,7 +399,11 @@ export class TwitterScraperPage {
       type,
       name,
     })
-    const response = this.responses[key].shift()
+    const responses = this.responses[key]
+    if (!responses || responses.length === 0) {
+      return null
+    }
+    const response = responses.shift()
 
     return response ? JSON.parse(response) : null
   }
