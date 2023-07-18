@@ -7,7 +7,6 @@ import {
   GraphQLEndpoint,
   RESTEndpoint,
 } from './models/responses/endpoints'
-import { Logger } from '@book000/node-utils'
 
 /**
  * HTTP メソッド
@@ -235,20 +234,6 @@ async function getResponseDetails(
   const url = new URL(response.url())
   if (!url) {
     return null
-  }
-
-  if (process.env.RESPONSE_DEBUG) {
-    const logger = Logger.configure('getResponseDetails')
-    const urlObject = new URL(response.url())
-    // search以外
-    const urlWithoutSearch = urlObject.origin + urlObject.pathname
-    logger.info(
-      response.request().method() +
-        ' ' +
-        urlWithoutSearch +
-        ' ' +
-        response.status()
-    )
   }
 
   const targetUrl = targetUrls.find(

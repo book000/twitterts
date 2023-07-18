@@ -85,8 +85,8 @@ export class Twitter {
     const results = []
     while (true) {
       if (Date.now() - lastResponseAt > 1000 * 30) {
-        // 30秒以上レスポンスがない場合はタイムアウト
-        throw new Error('Timeout')
+        // 30秒以上レスポンスがない場合はタイムアウトとして終了
+        break
       }
       const response = page.shiftResponse('GET', 'GRAPHQL', 'SearchTimeline')
       if (!response) {
