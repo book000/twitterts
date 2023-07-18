@@ -106,6 +106,7 @@ jobs:
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
           TWITTER_OTP_SECRET: ${{ secrets.TWITTER_OTP_SECRET }}
+          RESPONSE_DEBUG: true
 
       - name: ☑️ Check Dependencies
         if: steps.package-json.outputs.disabled-depcheck == 'false'
