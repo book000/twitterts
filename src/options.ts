@@ -5,6 +5,7 @@ import { Twitter } from './twitter'
  * {@link Twitter.getUserByScreenName} のオプション
  */
 export interface GetUserByScreenNameOptions {
+  /** スクリーンネーム */
   screenName: string
 }
 
@@ -32,6 +33,16 @@ export interface SearchTweetsOptions {
   query: string
   /** 検索種別。デフォルトは「話題のツイート」 */
   searchType?: (typeof SearchType)[keyof typeof SearchType]
+  /** 取得するツイートの最大数。デフォルトは 20 */
+  limit?: number
+}
+
+/**
+ * {@link Twitter["getUserTweets"]} のオプション
+ */
+export interface UserTweetsOptions {
+  /** スクリーンネーム */
+  screenName: string
   /** 取得するツイートの最大数。デフォルトは 20 */
   limit?: number
 }

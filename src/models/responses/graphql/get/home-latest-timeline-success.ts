@@ -361,6 +361,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     icon_name: string
                                   }[]
                                 }
+                                has_nft_avatar?: boolean
                               }
                             }
                           }
@@ -1062,7 +1063,12 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                         description: string
                                         entities: {
                                           description: {
-                                            urls: unknown[]
+                                            urls: {
+                                              display_url: string
+                                              expanded_url: string
+                                              url: string
+                                              indices: number[]
+                                            }[]
                                           }
                                           url?: {
                                             urls: {
@@ -1814,7 +1820,12 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     description: string
                                     entities: {
                                       description: {
-                                        urls: unknown[]
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
                                       }
                                       url?: {
                                         urls: {
@@ -1855,6 +1866,11 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             title?: string
                             description?: string
                             embeddable?: boolean
+                            call_to_actions?: {
+                              visit_site: {
+                                url: string
+                              }
+                            }
                           }
                           mediaStats?: {
                             viewCount: number
@@ -2101,7 +2117,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                         bookmark_count: number
                         bookmarked: boolean
                         created_at: string
-                        conversation_control: {
+                        conversation_control?: {
                           policy: string
                           conversation_owner_results: {
                             result: {
@@ -2698,7 +2714,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                     limitedActionResults?: {
                       limited_actions: {
                         action: string
-                        prompt: {
+                        prompt?: {
                           __typename: string
                           cta_type: string
                           headline: {
@@ -2816,7 +2832,11 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               professional?: {
                                 rest_id: string
                                 professional_type: string
-                                category: unknown[]
+                                category: {
+                                  id: number
+                                  name: string
+                                  icon_name: string
+                                }[]
                               }
                             }
                           }
@@ -3046,6 +3066,18 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                           retweeted: boolean
                           user_id_str: string
                           id_str: string
+                          quoted_status_id_str?: string
+                          quoted_status_permalink?: {
+                            url: string
+                            expanded: string
+                            display: string
+                          }
+                        }
+                        quotedRefResult?: {
+                          result: {
+                            __typename: string
+                            rest_id: string
+                          }
                         }
                       }
                     }
@@ -3153,6 +3185,46 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                   }
                   adMetadataContainer?: {
                     remove_promoted_attribution_for_preroll?: boolean
+                    unifiedCardOverride?: string
+                    dynamicCardContent?: {
+                      card_type: string
+                      layout: {
+                        __typename: string
+                        components: {
+                          __typename: string
+                          media?: {
+                            id: string
+                            media_key: string
+                            media_id: string
+                            media_info: {
+                              __typename: string
+                              original_img_height: number
+                              original_img_width: number
+                              original_img_url: string
+                              color_info: {
+                                palette: {
+                                  percentage: number
+                                  rgb: {
+                                    blue: number
+                                    green: number
+                                    red: number
+                                  }
+                                }[]
+                              }
+                            }
+                          }
+                          destination_obj?: {
+                            __typename: string
+                            user_id: string
+                          }
+                          user?: {
+                            rest_id: string
+                          }
+                        }[]
+                      }
+                      display_options: {}
+                      card_fetch_state: string
+                    }
                   }
                   promotedTrendName?: string
                   promotedTrendQueryTerm?: string
@@ -3319,6 +3391,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                           verified_type?: string
                           want_retweets: boolean
                           withheld_in_countries: unknown[]
+                          followed_by?: boolean
                         }
                         professional?: {
                           rest_id: string

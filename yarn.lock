@@ -3281,6 +3281,11 @@ jest-environment-node@^29.6.1:
     jest-mock "^29.6.1"
     jest-util "^29.6.1"
 
+jest-expect-message@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/jest-expect-message/-/jest-expect-message-1.1.3.tgz#a3f6bd4503f5bd5d2e37b70d3126a2bdb215ec58"
+  integrity sha512-bTK77T4P+zto+XepAX3low8XVQxDgaEqh3jSTQOG8qvPpD69LsIdyJTa+RmnJh3HNSzJng62/44RPPc7OIlFxg==
+
 jest-get-type@^29.4.3:
   version "29.4.3"
   resolved "https://registry.yarnpkg.com/jest-get-type/-/jest-get-type-29.4.3.tgz#1ab7a5207c995161100b5187159ca82dd48b3dd5"
@@ -4494,7 +4499,7 @@ punycode@^2.1.0:
 puppeteer-core@20.9.0:
   version "20.9.0"
   resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-20.9.0.tgz#6f4b420001b64419deab38d398a4d9cd071040e6"
-  integrity sha512-H9fYZQzMTRrkboEfPmf7m3CLDN6JvbxXA3qTtS+dFt27tR+CsFHzPsT6pzp6lYL6bJbAPaR0HaPO6uSi+F94Pg==
+  integrity "sha1-b0tCAAG2RBneqzjTmKTZzQcQQOY= sha512-H9fYZQzMTRrkboEfPmf7m3CLDN6JvbxXA3qTtS+dFt27tR+CsFHzPsT6pzp6lYL6bJbAPaR0HaPO6uSi+F94Pg=="
   dependencies:
     "@puppeteer/browsers" "1.4.6"
     chromium-bidi "0.4.16"

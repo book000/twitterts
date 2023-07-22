@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
 import {
   GetUserByScreenNameOptions,
   SearchTweetsOptions,
   SearchType,
+  UserTweetsOptions,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
+import { UserTweetsParser } from './parser/user-tweets'
 import { TwitterScraper, TwitterScraperOptions } from './scraper'
 
 /**
@@ -71,6 +74,7 @@ export class Twitter {
       throw new Error('query is required')
     }
     const searchType = options.searchType || SearchType.POPULAR
+    const limit = options.limit || 20
 
     const url = new URL(`https://twitter.com/search`)
     url.searchParams.set('q', options.query)
@@ -99,7 +103,55 @@ export class Twitter {
         break
       }
       results.push(...tweets)
-      if (results.length >= (options.limit || 20)) {
+      if (results.length >= limit) {
+        break
+      }
+      lastResponseAt = Date.now()
+    }
+
+    await page.close()
+    return results
+  }
+
+  /**
+   * ユーザーのツイートを取得する
+   *
+   * @param options ユーザーツイート取得オプション
+   * @returns ユーザーのツイート
+   */
+  public async getUserTweets(options: UserTweetsOptions) {
+    if (!options.screenName) {
+      throw new Error('screenName is required')
+    }
+    if (options.screenName.includes('/')) {
+      throw new Error('screenName must not include "/"')
+    }
+
+    const limit = options.limit || 20
+    const url = `https://twitter.com/${options.screenName}`
+
+    const page = await this.scraper.getScraperPage()
+    await page.goto(url)
+
+    let lastResponseAt = Date.now()
+    const results = []
+    while (true) {
+      if (Date.now() - lastResponseAt > 1000 * 30) {
+        // 30秒以上レスポンスがない場合はタイムアウトとして終了
+        break
+      }
+      const response = page.shiftResponse('GET', 'GRAPHQL', 'UserTweets')
+      if (!response) {
+        await page.scrollToBottom()
+        continue
+      }
+      const parser = new UserTweetsParser(response)
+      const tweets = parser.getTweets()
+      if (tweets.length === 0) {
+        break
+      }
+      results.push(...tweets)
+      if (results.length >= limit) {
         break
       }
       lastResponseAt = Date.now()

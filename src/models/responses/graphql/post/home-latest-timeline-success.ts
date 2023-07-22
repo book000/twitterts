@@ -368,6 +368,11 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                             title?: string
                             description?: string
                             embeddable?: boolean
+                            call_to_actions?: {
+                              visit_site: {
+                                url: string
+                              }
+                            }
                           }
                           mediaStats?: {
                             viewCount: number
@@ -2921,7 +2926,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                           conversation_id_str: string
                           display_text_range: number[]
                           entities: {
-                            media: {
+                            media?: {
                               display_url: string
                               expanded_url: string
                               id_str: string
@@ -3014,7 +3019,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                             }[]
                             symbols: unknown[]
                           }
-                          extended_entities: {
+                          extended_entities?: {
                             media: {
                               display_url: string
                               expanded_url: string
@@ -3096,10 +3101,17 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                               video_info?: {
                                 aspect_ratio: number[]
                                 variants: {
-                                  bitrate: number
+                                  bitrate?: number
                                   content_type: string
                                   url: string
                                 }[]
+                                duration_millis?: number
+                              }
+                              additional_media_info?: {
+                                monetizable: boolean
+                              }
+                              mediaStats?: {
+                                viewCount: number
                               }
                             }[]
                           }
@@ -3108,14 +3120,20 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                           full_text: string
                           is_quote_status: boolean
                           lang: string
-                          possibly_sensitive: boolean
-                          possibly_sensitive_editable: boolean
+                          possibly_sensitive?: boolean
+                          possibly_sensitive_editable?: boolean
                           quote_count: number
                           reply_count: number
                           retweet_count: number
                           retweeted: boolean
                           user_id_str: string
                           id_str: string
+                          quoted_status_id_str?: string
+                          quoted_status_permalink?: {
+                            url: string
+                            expanded: string
+                            display: string
+                          }
                         }
                         tweet?: {
                           rest_id: string
@@ -3353,6 +3371,12 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                               }
                             }
                           }[]
+                        }
+                        quotedRefResult?: {
+                          result: {
+                            __typename: string
+                            rest_id: string
+                          }
                         }
                       }
                     }
