@@ -866,16 +866,17 @@ class EndPointTypeGenerator {
         }
 
         results.push(
-          `  M extends '${method}' ?`,
-          `    N extends ${type}${method}Endpoint ?`,
-          `      ${type}${method}EndPointResponseType<N> :`,
-          '      never :',
+          `M extends '${method}' ?`,
+          `  N extends ${type}${method}Endpoint ?`,
+          `    ${type}${method}EndPointResponseType<N> :`,
           '    never'
         )
       }
+
+      results.push('  : never')
     }
 
-    return `${head}\n${results.join('\n')}`
+    return `${head}\n${results.join('\n')}\n: never`
   }
 
   /**

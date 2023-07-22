@@ -1,5 +1,11 @@
 import {
+  AlreadyLikedError,
+  IllegalArgumentError,
+  TwitterOperationError,
+} from './models/exceptions'
+import {
   GetUserByScreenNameOptions,
+  LikeTweetOptions,
   SearchTweetsOptions,
   SearchType,
   UserLikeTweetsOptions,
@@ -48,7 +54,7 @@ export class Twitter {
    */
   public async getUserByScreenName(options: GetUserByScreenNameOptions) {
     if (!options.screenName) {
-      throw new Error('screenName is required')
+      throw new IllegalArgumentError('screenName is required')
     }
     const page = await this.scraper.getScraperPage()
     const response = await page.waitSingleResponse(
@@ -59,7 +65,7 @@ export class Twitter {
     )
     await page.close()
     if (this.isErrorResponse(response)) {
-      throw new Error(response.errors[0].message)
+      throw new TwitterOperationError(response.errors[0].message)
     }
     return response
   }
@@ -72,7 +78,7 @@ export class Twitter {
    */
   public async searchTweets(options: SearchTweetsOptions) {
     if (!options.query) {
-      throw new Error('query is required')
+      throw new IllegalArgumentError('query is required')
     }
     const searchType = options.searchType || SearchType.POPULAR
     const limit = options.limit || 20
@@ -122,10 +128,10 @@ export class Twitter {
    */
   public async getUserTweets(options: UserTweetsOptions) {
     if (!options.screenName) {
-      throw new Error('screenName is required')
+      throw new IllegalArgumentError('screenName is required')
     }
     if (options.screenName.includes('/')) {
-      throw new Error('screenName must not include "/"')
+      throw new IllegalArgumentError('screenName must not include "/"')
     }
 
     const limit = options.limit || 20
@@ -170,10 +176,10 @@ export class Twitter {
    */
   public async getUserLikeTweets(options: UserLikeTweetsOptions) {
     if (!options.screenName) {
-      throw new Error('screenName is required')
+      throw new IllegalArgumentError('screenName is required')
     }
     if (options.screenName.includes('/')) {
-      throw new Error('screenName must not include "/"')
+      throw new IllegalArgumentError('screenName must not include "/"')
     }
 
     const limit = options.limit || 20
@@ -208,6 +214,47 @@ export class Twitter {
 
     await page.close()
     return results
+  }
+
+  /**
+   * ツイートをいいねする
+   *
+   * @param options いいねオプション
+   * @returns いいねしたツイート
+   */
+  public async likeTweet(options: LikeTweetOptions) {
+    if (!options.tweetId) {
+      throw new IllegalArgumentError('tweetId is required')
+    }
+    const page = await this.scraper.getScraperPage()
+    await page.goto(
+      `https://twitter.com/intent/like?tweet_id=${options.tweetId}`
+    )
+    const responseDetail = page.shiftResponse('GET', 'GRAPHQL', 'TweetDetail')
+    if (!responseDetail) {
+      throw new TwitterOperationError('Failed to get tweet detail')
+    }
+    if (this.isErrorResponse(responseDetail)) {
+      throw new TwitterOperationError(responseDetail.errors[0].message)
+    }
+
+    await page.waitAndClick(
+      'div[role="button"][data-testid="confirmationSheetConfirm"]'
+    )
+    const responseFavorite = page.shiftResponse(
+      'POST',
+      'GRAPHQL',
+      'FavoriteTweet'
+    )
+    if (!responseFavorite) {
+      throw new AlreadyLikedError()
+    }
+    await page.close()
+
+    if (this.isErrorResponse(responseFavorite)) {
+      throw new TwitterOperationError(responseFavorite.errors[0].message)
+    }
+    return responseFavorite.data.favorite_tweet
   }
 
   /**

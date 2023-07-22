@@ -1,3 +1,4 @@
+import { TwitterOperationError } from './models/exceptions'
 import { SearchType } from './options'
 import { Twitter } from './twitter'
 
@@ -89,6 +90,14 @@ describe('Twitter', () => {
     })
     expect(response).toBeTruthy()
     expect(response.length).toBeGreaterThan(0)
+  })
+
+  test('likeTweet', async () => {
+    await expect(
+      twitter.likeTweet({
+        tweetId: '1682894968913022976',
+      })
+    ).rejects.not.toThrow(TwitterOperationError)
   })
 
   afterAll(async () => {

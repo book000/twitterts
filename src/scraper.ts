@@ -346,7 +346,7 @@ export class TwitterScraperPage {
     T extends RequestType,
     N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint
   >(
-    url: string,
+    url: string | null,
     method: M,
     type: T,
     name: N,
@@ -377,7 +377,9 @@ export class TwitterScraperPage {
     })
 
     // ページ遷移
-    await this.page.goto(url)
+    if (url) {
+      await this.page.goto(url)
+    }
 
     return await promise
   }
