@@ -46,3 +46,13 @@ export interface UserTweetsOptions {
   /** 取得するツイートの最大数。デフォルトは 20 */
   limit?: number
 }
+
+/**
+ * {@link Twitter["getUserLikeTweets"]} のオプション
+ */
+export interface UserLikeTweetsOptions {
+  /** スクリーンネーム */
+  screenName: string
+  /** 取得するツイートの最大数。デフォルトは 20 */
+  limit?: number
+}
