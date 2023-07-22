@@ -1,11 +1,12 @@
-/* eslint-disable no-console */
 import {
   GetUserByScreenNameOptions,
   SearchTweetsOptions,
   SearchType,
+  UserLikeTweetsOptions,
   UserTweetsOptions,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
+import { UserLikeTweetsParser } from './parser/user-like-tweets'
 import { UserTweetsParser } from './parser/user-tweets'
 import { TwitterScraper, TwitterScraperOptions } from './scraper'
 
@@ -146,6 +147,54 @@ export class Twitter {
         continue
       }
       const parser = new UserTweetsParser(response)
+      const tweets = parser.getTweets()
+      if (tweets.length === 0) {
+        break
+      }
+      results.push(...tweets)
+      if (results.length >= limit) {
+        break
+      }
+      lastResponseAt = Date.now()
+    }
+
+    await page.close()
+    return results
+  }
+
+  /**
+   * ユーザーのいいねしたツイートを取得する
+   *
+   * @param options ユーザーいいねツイート取得オプション
+   * @returns ユーザーのツイート
+   */
+  public async getUserLikeTweets(options: UserLikeTweetsOptions) {
+    if (!options.screenName) {
+      throw new Error('screenName is required')
+    }
+    if (options.screenName.includes('/')) {
+      throw new Error('screenName must not include "/"')
+    }
+
+    const limit = options.limit || 20
+    const url = `https://twitter.com/${options.screenName}/likes`
+
+    const page = await this.scraper.getScraperPage()
+    await page.goto(url)
+
+    let lastResponseAt = Date.now()
+    const results = []
+    while (true) {
+      if (Date.now() - lastResponseAt > 1000 * 30) {
+        // 30秒以上レスポンスがない場合はタイムアウトとして終了
+        break
+      }
+      const response = page.shiftResponse('GET', 'GRAPHQL', 'Likes')
+      if (!response) {
+        await page.scrollToBottom()
+        continue
+      }
+      const parser = new UserLikeTweetsParser(response)
       const tweets = parser.getTweets()
       if (tweets.length === 0) {
         break

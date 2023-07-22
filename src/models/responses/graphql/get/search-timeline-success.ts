@@ -629,7 +629,7 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                           }
                           is_translatable: boolean
                           views: {
-                            count: string
+                            count?: string
                             state: string
                           }
                           source: string

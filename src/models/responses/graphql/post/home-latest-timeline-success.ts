@@ -318,7 +318,12 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                                     description: string
                                     entities: {
                                       description: {
-                                        urls: unknown[]
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
                                       }
                                       url?: {
                                         urls: {
@@ -3421,6 +3426,44 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                       reply_count: number
                       retweet_count: number
                     }
+                    birdwatch_pivot?: {
+                      callToAction: {
+                        prompt: string
+                        title: string
+                        destinationUrl: string
+                      }
+                      destinationUrl: string
+                      footer: {
+                        text: string
+                        entities: {
+                          fromIndex: number
+                          toIndex: number
+                          ref: {
+                            type: string
+                            url: string
+                            urlType: string
+                          }
+                        }[]
+                      }
+                      note: {
+                        rest_id: string
+                      }
+                      subtitle: {
+                        text: string
+                        entities: {
+                          fromIndex: number
+                          toIndex: number
+                          ref: {
+                            type: string
+                            url: string
+                            urlType: string
+                          }
+                        }[]
+                      }
+                      title: string
+                      shorttitle: string
+                      iconType: string
+                    }
                   }
                 }
                 tweetDisplayType: string
@@ -3530,6 +3573,45 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                   }
                   adMetadataContainer?: {
                     remove_promoted_attribution_for_preroll?: boolean
+                    dynamicCardContent?: {
+                      card_type: string
+                      layout: {
+                        __typename: string
+                        components: {
+                          __typename: string
+                          media?: {
+                            id: string
+                            media_key: string
+                            media_id: string
+                            media_info: {
+                              __typename: string
+                              original_img_height: number
+                              original_img_width: number
+                              original_img_url: string
+                              color_info: {
+                                palette: {
+                                  percentage: number
+                                  rgb: {
+                                    blue: number
+                                    green: number
+                                    red: number
+                                  }
+                                }[]
+                              }
+                            }
+                          }
+                          destination_obj?: {
+                            __typename: string
+                            user_id: string
+                          }
+                          user?: {
+                            rest_id: string
+                          }
+                        }[]
+                      }
+                      display_options: {}
+                      card_fetch_state: string
+                    }
                   }
                 }
                 prerollMetadata?: {

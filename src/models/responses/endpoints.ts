@@ -16,6 +16,7 @@ import { GraphQLPostHomeLatestTimelineSuccessResponse } from './graphql/post/hom
 import { GraphQLPostHomeLatestTimelineErrorResponse } from './graphql/post/home-latest-timeline-error'
 import { GraphQLGetHomeTimelineSuccessResponse } from './graphql/get/home-timeline-success'
 import { GraphQLPostHomeTimelineSuccessResponse } from './graphql/post/home-timeline-success'
+import { GraphQLGetLikesSuccessResponse } from './graphql/get/likes-success'
 import { GraphQLGetListLatestTweetsTimelineSuccessResponse } from './graphql/get/list-latest-tweets-timeline-success'
 import { GraphQLGetListPinsSuccessResponse } from './graphql/get/list-pins-success'
 import { GraphQLGetListPinsErrorResponse } from './graphql/get/list-pins-error'
@@ -26,7 +27,9 @@ import { GraphQLGetSearchTimelineSuccessResponse } from './graphql/get/search-ti
 import { GraphQLGetTweetDetailSuccessResponse } from './graphql/get/tweet-detail-success'
 import { GraphQLGetUserByScreenNameSuccessResponse } from './graphql/get/user-by-screen-name-success'
 import { GraphQLGetUserByScreenNameErrorResponse } from './graphql/get/user-by-screen-name-error'
+import { GraphQLGetUserMediaSuccessResponse } from './graphql/get/user-media-success'
 import { GraphQLGetUserTweetsSuccessResponse } from './graphql/get/user-tweets-success'
+import { GraphQLGetUserTweetsAndRepliesSuccessResponse } from './graphql/get/user-tweets-and-replies-success'
 import { GraphQLGetViewerSuccessResponse } from './graphql/get/viewer-success'
 
 import { HttpMethod, RequestType } from '../../scraper'
@@ -67,6 +70,8 @@ export type GraphQLGetHomeLatestTimelineResponse =
 /** GraphQL HomeTimeline GET レスポンスモデル */
 export type GraphQLGetHomeTimelineResponse =
   GraphQLGetHomeTimelineSuccessResponse
+/** GraphQL Likes GET レスポンスモデル */
+export type GraphQLGetLikesResponse = GraphQLGetLikesSuccessResponse
 /** GraphQL ListLatestTweetsTimeline GET レスポンスモデル */
 export type GraphQLGetListLatestTweetsTimelineResponse =
   GraphQLGetListLatestTweetsTimelineSuccessResponse
@@ -89,8 +94,13 @@ export type GraphQLGetTweetDetailResponse = GraphQLGetTweetDetailSuccessResponse
 export type GraphQLGetUserByScreenNameResponse =
   | GraphQLGetUserByScreenNameSuccessResponse
   | GraphQLGetUserByScreenNameErrorResponse
+/** GraphQL UserMedia GET レスポンスモデル */
+export type GraphQLGetUserMediaResponse = GraphQLGetUserMediaSuccessResponse
 /** GraphQL UserTweets GET レスポンスモデル */
 export type GraphQLGetUserTweetsResponse = GraphQLGetUserTweetsSuccessResponse
+/** GraphQL UserTweetsAndReplies GET レスポンスモデル */
+export type GraphQLGetUserTweetsAndRepliesResponse =
+  GraphQLGetUserTweetsAndRepliesSuccessResponse
 /** GraphQL Viewer GET レスポンスモデル */
 export type GraphQLGetViewerResponse = GraphQLGetViewerSuccessResponse
 
@@ -106,6 +116,7 @@ export type GraphQLGETEndpoint =
   | 'GetUserClaims'
   | 'HomeLatestTimeline'
   | 'HomeTimeline'
+  | 'Likes'
   | 'ListLatestTweetsTimeline'
   | 'ListPins'
   | 'ListsManagementPageTimeline'
@@ -113,7 +124,9 @@ export type GraphQLGETEndpoint =
   | 'SearchTimeline'
   | 'TweetDetail'
   | 'UserByScreenName'
+  | 'UserMedia'
   | 'UserTweets'
+  | 'UserTweetsAndReplies'
   | 'Viewer'
 
 export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
@@ -139,6 +152,8 @@ export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
     ? GraphQLGetHomeLatestTimelineResponse
     : T extends 'HomeTimeline'
     ? GraphQLGetHomeTimelineResponse
+    : T extends 'Likes'
+    ? GraphQLGetLikesResponse
     : T extends 'ListLatestTweetsTimeline'
     ? GraphQLGetListLatestTweetsTimelineResponse
     : T extends 'ListPins'
@@ -153,8 +168,12 @@ export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
     ? GraphQLGetTweetDetailResponse
     : T extends 'UserByScreenName'
     ? GraphQLGetUserByScreenNameResponse
+    : T extends 'UserMedia'
+    ? GraphQLGetUserMediaResponse
     : T extends 'UserTweets'
     ? GraphQLGetUserTweetsResponse
+    : T extends 'UserTweetsAndReplies'
+    ? GraphQLGetUserTweetsAndRepliesResponse
     : T extends 'Viewer'
     ? GraphQLGetViewerResponse
     : never

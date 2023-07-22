@@ -8,7 +8,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
       home_timeline_urt: {
         instructions: {
           type: string
-          entries: {
+          entries?: {
             entryId: string
             sortIndex: string
             content: {
@@ -1860,6 +1860,11 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     withheld_in_countries: unknown[]
                                     url?: string
                                   }
+                                  professional?: {
+                                    rest_id: string
+                                    professional_type: string
+                                    category: unknown[]
+                                  }
                                 }
                               }
                             }
@@ -2148,6 +2153,81 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             text: string
                           }[]
                           symbols: unknown[]
+                          media?: {
+                            display_url: string
+                            expanded_url: string
+                            id_str: string
+                            indices: number[]
+                            media_url_https: string
+                            type: string
+                            url: string
+                            features: {
+                              large: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              medium: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              small: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              orig: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                            }
+                            sizes: {
+                              large: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              medium: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              small: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              thumb: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                            }
+                            original_info: {
+                              height: number
+                              width: number
+                              focus_rects: {
+                                x: number
+                                y: number
+                                w: number
+                                h: number
+                              }[]
+                            }
+                          }[]
                         }
                         favorite_count: number
                         favorited: boolean
@@ -2604,6 +2684,87 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                         possibly_sensitive_editable?: boolean
                         scopes?: {
                           followers: boolean
+                        }
+                        extended_entities?: {
+                          media: {
+                            display_url: string
+                            expanded_url: string
+                            id_str: string
+                            indices: number[]
+                            media_key: string
+                            media_url_https: string
+                            type: string
+                            url: string
+                            ext_media_availability: {
+                              status: string
+                            }
+                            features: {
+                              large: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              medium: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              small: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              orig: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                            }
+                            sizes: {
+                              large: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              medium: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              small: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              thumb: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                            }
+                            original_info: {
+                              height: number
+                              width: number
+                              focus_rects: {
+                                x: number
+                                y: number
+                                w: number
+                                h: number
+                              }[]
+                            }
+                          }[]
                         }
                       }
                       card?: {
@@ -3080,6 +3241,44 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                           }
                         }
                       }
+                    }
+                    birdwatch_pivot?: {
+                      callToAction: {
+                        prompt: string
+                        title: string
+                        destinationUrl: string
+                      }
+                      destinationUrl: string
+                      footer: {
+                        text: string
+                        entities: {
+                          fromIndex: number
+                          toIndex: number
+                          ref: {
+                            type: string
+                            url: string
+                            urlType: string
+                          }
+                        }[]
+                      }
+                      note: {
+                        rest_id: string
+                      }
+                      subtitle: {
+                        text: string
+                        entities: {
+                          fromIndex: number
+                          toIndex: number
+                          ref: {
+                            type: string
+                            url: string
+                            urlType: string
+                          }
+                        }[]
+                      }
+                      title: string
+                      shorttitle: string
+                      iconType: string
                     }
                   }
                 }
@@ -3844,6 +4043,24 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
               }
             }
           }[]
+          alertType?: string
+          triggerDelayMs?: number
+          displayDurationMs?: number
+          usersResults?: unknown[]
+          richText?: {
+            text: string
+            entities: unknown[]
+          }
+          iconDisplayInfo?: {
+            icon: string
+            tint: string
+          }
+          colorConfig?: {
+            background: string
+            border: string
+            text: string
+          }
+          displayLocation?: string
         }[]
         responseObjects?: {
           feedbackActions: {
