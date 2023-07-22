@@ -8,7 +8,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
       home_timeline_urt: {
         instructions: {
           type: string
-          entries: {
+          entries?: {
             entryId: string
             sortIndex: string
             content: {
@@ -3118,6 +3118,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                               mediaStats?: {
                                 viewCount: number
                               }
+                              ext_alt_text?: string
                             }[]
                           }
                           favorite_count: number
@@ -3607,6 +3608,60 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                           user?: {
                             rest_id: string
                           }
+                          first_media?: {
+                            media: {
+                              id: string
+                              media_key: string
+                              media_id: string
+                              media_info: {
+                                __typename: string
+                                original_img_height: number
+                                original_img_width: number
+                                original_img_url: string
+                                color_info: {
+                                  palette: {
+                                    percentage: number
+                                    rgb: {
+                                      blue: number
+                                      green: number
+                                      red: number
+                                    }
+                                  }[]
+                                }
+                              }
+                            }
+                            destination_obj: {
+                              __typename: string
+                              user_id: string
+                            }
+                          }
+                          full_media_list?: {
+                            media: {
+                              id: string
+                              media_key: string
+                              media_id: string
+                              media_info: {
+                                __typename: string
+                                original_img_height: number
+                                original_img_width: number
+                                original_img_url: string
+                                color_info: {
+                                  palette: {
+                                    percentage: number
+                                    rgb: {
+                                      blue: number
+                                      green: number
+                                      red: number
+                                    }
+                                  }[]
+                                }
+                              }
+                            }
+                            destination_obj: {
+                              __typename: string
+                              user_id: string
+                            }
+                          }[]
                         }[]
                       }
                       display_options: {}
@@ -3663,7 +3718,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                                   indices: number[]
                                 }[]
                               }
-                              url: {
+                              url?: {
                                 urls: {
                                   display_url: string
                                   expanded_url: string
@@ -3691,7 +3746,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                             screen_name: string
                             statuses_count: number
                             translator_type: string
-                            url: string
+                            url?: string
                             verified: boolean
                             verified_type: string
                             want_retweets: boolean
@@ -3727,6 +3782,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                   timelinesDetails: {
                     injectionType?: string
                     controllerData: string
+                    sourceData?: string
                   }
                 }
               }
@@ -3736,7 +3792,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                   itemContent: {
                     itemType: string
                     __typename: string
-                    tweet_results: {
+                    tweet_results?: {
                       result: {
                         __typename: string
                         rest_id: string
@@ -4042,7 +4098,69 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                         }
                       }
                     }
-                    tweetDisplayType: string
+                    tweetDisplayType?: string
+                    user_results?: {
+                      result: {
+                        __typename: string
+                        id: string
+                        rest_id: string
+                        affiliates_highlighted_label: {}
+                        has_graduated_access: boolean
+                        is_blue_verified: boolean
+                        profile_image_shape: string
+                        legacy: {
+                          can_dm: boolean
+                          can_media_tag: boolean
+                          created_at: string
+                          default_profile: boolean
+                          default_profile_image: boolean
+                          description: string
+                          entities: {
+                            description: {
+                              urls: unknown[]
+                            }
+                            url?: {
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
+                            }
+                          }
+                          fast_followers_count: number
+                          favourites_count: number
+                          followers_count: number
+                          friends_count: number
+                          has_custom_timelines: boolean
+                          is_translator: boolean
+                          listed_count: number
+                          location: string
+                          media_count: number
+                          name: string
+                          normal_followers_count: number
+                          pinned_tweet_ids_str: string[]
+                          possibly_sensitive: boolean
+                          profile_image_url_https: string
+                          profile_interstitial_type: string
+                          screen_name: string
+                          statuses_count: number
+                          translator_type: string
+                          url?: string
+                          verified: boolean
+                          want_retweets: boolean
+                          withheld_in_countries: unknown[]
+                          followed_by?: boolean
+                          profile_banner_url?: string
+                        }
+                      }
+                    }
+                    userDisplayType?: string
+                    socialContext?: {
+                      type: string
+                      contextType: string
+                      text: string
+                    }
                   }
                   clientEventInfo: {
                     component: string
@@ -4051,6 +4169,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                       timelinesDetails: {
                         injectionType: string
                         controllerData: string
+                        sourceData?: string
                       }
                     }
                   }
@@ -4063,13 +4182,60 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                 }
               }
               displayType?: string
+              header?: {
+                displayType: string
+                text: string
+                sticky: boolean
+              }
+              footer?: {
+                displayType: string
+                text: string
+                landingUrl: {
+                  url: string
+                  urlType: string
+                }
+              }
+              feedbackInfo?: {
+                feedbackKeys: string[]
+              }
             }
           }[]
+          alertType?: string
+          triggerDelayMs?: number
+          displayDurationMs?: number
+          usersResults?: unknown[]
+          richText?: {
+            text: string
+            entities: unknown[]
+          }
+          iconDisplayInfo?: {
+            icon: string
+            tint: string
+          }
+          colorConfig?: {
+            background: string
+            border: string
+            text: string
+          }
+          displayLocation?: string
         }[]
         metadata: {
           scribeConfig: {
             page: string
           }
+        }
+        responseObjects?: {
+          feedbackActions: {
+            key: string
+            value: {
+              feedbackType: string
+              prompt: string
+              confirmation: string
+              encodedFeedbackRequest: string
+              hasUndoAction: boolean
+              icon: string
+            }
+          }[]
         }
       }
     }

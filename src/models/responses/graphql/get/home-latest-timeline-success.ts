@@ -3447,7 +3447,20 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                           __typename: string
                           id: string
                           rest_id: string
-                          affiliates_highlighted_label: {}
+                          affiliates_highlighted_label: {
+                            label?: {
+                              url: {
+                                url: string
+                                urlType: string
+                              }
+                              badge: {
+                                url: string
+                              }
+                              description: string
+                              userLabelType: string
+                              userLabelDisplayType: string
+                            }
+                          }
                           has_graduated_access: boolean
                           is_blue_verified: boolean
                           profile_image_shape: string
@@ -3467,7 +3480,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   indices: number[]
                                 }[]
                               }
-                              url: {
+                              url?: {
                                 urls: {
                                   display_url: string
                                   expanded_url: string
@@ -3495,11 +3508,20 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             screen_name: string
                             statuses_count: number
                             translator_type: string
-                            url: string
+                            url?: string
                             verified: boolean
                             verified_type: string
                             want_retweets: boolean
                             withheld_in_countries: unknown[]
+                          }
+                          professional?: {
+                            rest_id: string
+                            professional_type: string
+                            category: {
+                              id: number
+                              name: string
+                              icon_name: string
+                            }[]
                           }
                         }
                       }

@@ -56,3 +56,11 @@ export interface UserLikeTweetsOptions {
   /** 取得するツイートの最大数。デフォルトは 20 */
   limit?: number
 }
+
+/**
+ * {@link Twitter["likeTweet"]} のオプション
+ */
+export interface LikeTweetOptions {
+  /** ツイート ID */
+  tweetId: string
+}

@@ -346,7 +346,7 @@ export class TwitterScraperPage {
     T extends RequestType,
     N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint
   >(
-    url: string,
+    url: string | null,
     method: M,
     type: T,
     name: N,
@@ -377,7 +377,9 @@ export class TwitterScraperPage {
     })
 
     // ページ遷移
-    await this.page.goto(url)
+    if (url) {
+      await this.page.goto(url)
+    }
 
     return await promise
   }
@@ -405,7 +407,18 @@ export class TwitterScraperPage {
     }
     const response = responses.shift()
 
-    return response ? JSON.parse(response) : null
+    if (!response) {
+      return null
+    }
+
+    if (
+      !response.trimStart().startsWith('[') &&
+      !response.trimStart().startsWith('{')
+    ) {
+      throw new Error(`Invalid response: ${response.slice(0, 100)}`)
+    }
+
+    return JSON.parse(response)
   }
 
   /**
