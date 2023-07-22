@@ -407,7 +407,18 @@ export class TwitterScraperPage {
     }
     const response = responses.shift()
 
-    return response ? JSON.parse(response) : null
+    if (!response) {
+      return null
+    }
+
+    if (
+      !response.trimStart().startsWith('[') &&
+      !response.trimStart().startsWith('{')
+    ) {
+      throw new Error(`Invalid response: ${response.slice(0, 100)}`)
+    }
+
+    return JSON.parse(response)
   }
 
   /**
