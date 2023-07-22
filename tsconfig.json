@@ -6,11 +6,7 @@
     "target": "es2020",
     "module": "commonjs",
     "moduleResolution": "Node",
-    "lib": [
-      "ESNext",
-      "esnext.AsyncIterable",
-      "DOM"
-    ],
+    "lib": ["ESNext", "esnext.AsyncIterable", "DOM"],
     "outDir": "./dist",
     "removeComments": false,
     "esModuleInterop": true,
@@ -31,7 +27,6 @@
     "baseUrl": ".",
     "newLine": "LF"
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"],
+  "files": ["node_modules/jest-expect-message/types/index.d.ts"]
 }

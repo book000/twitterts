@@ -1,5 +1,6 @@
 import { GraphQLGetArticleNudgeDomainsSuccessResponse } from './graphql/get/article-nudge-domains-success'
 import { GraphQLGetArticleNudgeDomainsErrorResponse } from './graphql/get/article-nudge-domains-error'
+import { GraphQLGetAudioSpaceByIdSuccessResponse } from './graphql/get/audio-space-by-id-success'
 import { GraphQLGetAuthenticatedUserTFListsSuccessResponse } from './graphql/get/authenticated-user-tflists-success'
 import { GraphQLGetBookmarksSuccessResponse } from './graphql/get/bookmarks-success'
 import { GraphQLGetConnectTabTimelineSuccessResponse } from './graphql/get/connect-tab-timeline-success'
@@ -34,6 +35,9 @@ import { HttpMethod, RequestType } from '../../scraper'
 export type GraphQLGetArticleNudgeDomainsResponse =
   | GraphQLGetArticleNudgeDomainsSuccessResponse
   | GraphQLGetArticleNudgeDomainsErrorResponse
+/** GraphQL AudioSpaceById GET レスポンスモデル */
+export type GraphQLGetAudioSpaceByIdResponse =
+  GraphQLGetAudioSpaceByIdSuccessResponse
 /** GraphQL AuthenticatedUserTFLists GET レスポンスモデル */
 export type GraphQLGetAuthenticatedUserTFListsResponse =
   GraphQLGetAuthenticatedUserTFListsSuccessResponse
@@ -92,6 +96,7 @@ export type GraphQLGetViewerResponse = GraphQLGetViewerSuccessResponse
 
 export type GraphQLGETEndpoint =
   | 'articleNudgeDomains'
+  | 'AudioSpaceById'
   | 'AuthenticatedUserTFLists'
   | 'Bookmarks'
   | 'ConnectTabTimeline'
@@ -114,6 +119,8 @@ export type GraphQLGETEndpoint =
 export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
   T extends 'articleNudgeDomains'
     ? GraphQLGetArticleNudgeDomainsResponse
+    : T extends 'AudioSpaceById'
+    ? GraphQLGetAudioSpaceByIdResponse
     : T extends 'AuthenticatedUserTFLists'
     ? GraphQLGetAuthenticatedUserTFListsResponse
     : T extends 'Bookmarks'

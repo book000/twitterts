@@ -514,7 +514,7 @@ export interface CustomSearchTimelineEntry {
                       normal_followers_count: number
                       pinned_tweet_ids_str: string[]
                       possibly_sensitive: boolean
-                      profile_banner_url: string
+                      profile_banner_url?: string
                       profile_image_url_https: string
                       profile_interstitial_type: string
                       screen_name: string
@@ -525,6 +525,15 @@ export interface CustomSearchTimelineEntry {
                       want_retweets: boolean
                       withheld_in_countries: unknown[]
                       verified_type?: string
+                    }
+                    professional?: {
+                      rest_id: string
+                      professional_type: string
+                      category: {
+                        id: number
+                        name: string
+                        icon_name: string
+                      }[]
                     }
                   }
                 }
@@ -746,8 +755,8 @@ export interface CustomSearchTimelineEntry {
                 full_text: string
                 is_quote_status: boolean
                 lang: string
-                possibly_sensitive: boolean
-                possibly_sensitive_editable: boolean
+                possibly_sensitive?: boolean
+                possibly_sensitive_editable?: boolean
                 quote_count: number
                 reply_count: number
                 retweet_count: number
@@ -757,6 +766,12 @@ export interface CustomSearchTimelineEntry {
                 in_reply_to_screen_name?: string
                 in_reply_to_status_id_str?: string
                 in_reply_to_user_id_str?: string
+                quoted_status_id_str?: string
+                quoted_status_permalink?: {
+                  url: string
+                  expanded: string
+                  display: string
+                }
               }
               note_tweet?: {
                 is_expandable: boolean
@@ -879,6 +894,12 @@ export interface CustomSearchTimelineEntry {
               }
               unified_card?: {
                 card_fetch_state: string
+              }
+              quotedRefResult?: {
+                result: {
+                  __typename: string
+                  rest_id: string
+                }
               }
             }
           }

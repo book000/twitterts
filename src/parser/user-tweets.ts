@@ -1,26 +1,26 @@
 import { ObjectConverter } from '../converter'
-import { CustomSearchTimelineEntry } from '../models/responses/custom/custom-search-timeline-entry'
 import { BaseParser } from './base'
 import { Status } from 'twitter-d'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Twitter } from '../twitter'
-import { GraphQLGetSearchTimelineResponse } from '../models/responses/endpoints'
+import { GraphQLGetUserTweetsSuccessResponse } from '../models/responses/graphql/get/user-tweets-success'
+import { CustomUserTweetEntry } from '../models/responses/custom/custom-user-tweet-entry'
 import { CustomTweetLegacyObject } from '../models/responses/custom/custom-tweet-legacy-object'
 
 /**
- * {@link Twitter.searchTweets} のレスポンスパーサー
+ * {@link Twitter.getUserTweets} のレスポンスパーサー
  */
-export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
+export class UserTweetsParser extends BaseParser<'UserTweets'> {
   private tweets: Status[] = []
 
   /**
-   * @param response {@link Twitter['searchTweets']} のレスポンス
+   * @param response {@link Twitter['getUserTweets']} のレスポンス
    */
-  constructor(response: GraphQLGetSearchTimelineResponse) {
+  constructor(response: GraphQLGetUserTweetsSuccessResponse) {
     super(response)
 
     const entries =
-      this.response.data.search_by_raw_query.search_timeline.timeline.instructions
+      this.response.data.user.result.timeline_v2.timeline.instructions
         .filter(
           (instruction) =>
             instruction.type === 'TimelineAddEntries' && instruction.entries
@@ -29,24 +29,26 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
           instruction.entries?.filter((entry) =>
             entry.entryId.startsWith('tweet-')
           )
-        ) as CustomSearchTimelineEntry[]
+        ) as CustomUserTweetEntry[]
 
     const rawTweets = entries.map(
       (entry) => entry.content.itemContent.tweet_results.result
     )
-    // @ts-ignore
     this.tweets = rawTweets.map((tweet) => {
-      const legacy = tweet.legacy ?? undefined
+      const legacy = tweet.legacy ?? tweet.tweet?.legacy ?? undefined
       if (!legacy) {
         throw new Error('Failed to get legacy')
       }
-      const userResult = tweet.core.user_results.result ?? undefined
+      const userResult =
+        tweet.core?.user_results.result ??
+        tweet.tweet?.core.user_results.result ??
+        undefined
       if (!userResult) {
-        throw new Error('Failed to get userResult')
+        throw new Error(`Failed to get userResult ${legacy.id_str}`)
       }
       return {
         id: Number(legacy.id_str),
-        source: tweet.source,
+        source: tweet.source ?? 'NULL',
         truncated: false,
         user: {
           id: Number(userResult.rest_id),

@@ -8,7 +8,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
       home_timeline_urt: {
         instructions: {
           type: string
-          entries: {
+          entries?: {
             entryId: string
             sortIndex: string
             content: {
@@ -331,7 +331,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       description: {
                                         urls: unknown[]
                                       }
-                                      url: {
+                                      url?: {
                                         urls: {
                                           display_url: string
                                           expanded_url: string
@@ -359,7 +359,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     screen_name: string
                                     statuses_count: number
                                     translator_type: string
-                                    url: string
+                                    url?: string
                                     verified: boolean
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
@@ -670,7 +670,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                             description: {
                                               urls: unknown[]
                                             }
-                                            url: {
+                                            url?: {
                                               urls: {
                                                 display_url: string
                                                 expanded_url: string
@@ -690,7 +690,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           media_count: number
                                           name: string
                                           normal_followers_count: number
-                                          pinned_tweet_ids_str: unknown[]
+                                          pinned_tweet_ids_str: string[]
                                           possibly_sensitive: boolean
                                           profile_banner_url: string
                                           profile_image_url_https: string
@@ -698,15 +698,19 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           screen_name: string
                                           statuses_count: number
                                           translator_type: string
-                                          url: string
+                                          url?: string
                                           verified: boolean
                                           want_retweets: boolean
                                           withheld_in_countries: unknown[]
                                         }
-                                        professional: {
+                                        professional?: {
                                           rest_id: string
                                           professional_type: string
-                                          category: unknown[]
+                                          category: {
+                                            id: number
+                                            name: string
+                                            icon_name: string
+                                          }[]
                                         }
                                       }
                                     }
@@ -803,6 +807,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 }
                                 source_status_id_str?: string
                                 source_user_id_str?: string
+                                ext_alt_text?: string
                               }[]
                             }
                             favorite_count: number
@@ -1974,7 +1979,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     type: string
                                     url: string
                                     features: {
-                                      large: {
+                                      large?: {
                                         faces: {
                                           x: number
                                           y: number
@@ -1982,7 +1987,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           w: number
                                         }[]
                                       }
-                                      medium: {
+                                      medium?: {
                                         faces: {
                                           x: number
                                           y: number
@@ -1990,7 +1995,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           w: number
                                         }[]
                                       }
-                                      small: {
+                                      small?: {
                                         faces: {
                                           x: number
                                           y: number
@@ -1998,7 +2003,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           w: number
                                         }[]
                                       }
-                                      orig: {
+                                      orig?: {
                                         faces: {
                                           x: number
                                           y: number
@@ -2032,7 +2037,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     original_info: {
                                       height: number
                                       width: number
-                                      focus_rects: {
+                                      focus_rects?: {
                                         x: number
                                         y: number
                                         w: number
@@ -2047,7 +2052,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     url: string
                                     indices: number[]
                                   }[]
-                                  hashtags: unknown[]
+                                  hashtags: {
+                                    indices: number[]
+                                    text: string
+                                  }[]
                                   symbols: unknown[]
                                 }
                                 extended_entities?: {
@@ -2064,7 +2072,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       status: string
                                     }
                                     features: {
-                                      large: {
+                                      large?: {
                                         faces: {
                                           x: number
                                           y: number
@@ -2072,7 +2080,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           w: number
                                         }[]
                                       }
-                                      medium: {
+                                      medium?: {
                                         faces: {
                                           x: number
                                           y: number
@@ -2080,7 +2088,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           w: number
                                         }[]
                                       }
-                                      small: {
+                                      small?: {
                                         faces: {
                                           x: number
                                           y: number
@@ -2088,7 +2096,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           w: number
                                         }[]
                                       }
-                                      orig: {
+                                      orig?: {
                                         faces: {
                                           x: number
                                           y: number
@@ -2122,11 +2130,26 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     original_info: {
                                       height: number
                                       width: number
-                                      focus_rects: {
+                                      focus_rects?: {
                                         x: number
                                         y: number
                                         w: number
                                         h: number
+                                      }[]
+                                    }
+                                    additional_media_info?: {
+                                      monetizable: boolean
+                                    }
+                                    mediaStats?: {
+                                      viewCount: number
+                                    }
+                                    video_info?: {
+                                      aspect_ratio: number[]
+                                      duration_millis: number
+                                      variants: {
+                                        bitrate?: number
+                                        content_type: string
+                                        url: string
                                       }[]
                                     }
                                   }[]
@@ -2195,6 +2218,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               }[]
                             }
                           }
+                        }
+                        scopes?: {
+                          followers: boolean
                         }
                       }
                     }
@@ -2642,27 +2668,220 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                       value: string
                     }[]
                   }
+                  promotedTrendName?: string
+                  promotedTrendQueryTerm?: string
+                  promotedTrend?: {
+                    rest_id: string
+                  }
                 }
               }
               feedbackInfo?: {
                 feedbackKeys: string[]
-                feedbackMetadata: string
+                feedbackMetadata?: string
               }
               clientEventInfo?: {
                 component: string
-                element: string
+                element?: string
                 entityToken?: string
                 details: {
                   timelinesDetails: {
                     injectionType: string
                     controllerData: string
+                    sourceData?: string
                   }
                 }
               }
               value?: string
               cursorType?: string
+              items?: {
+                entryId: string
+                item: {
+                  itemContent: {
+                    itemType: string
+                    __typename: string
+                    user_results: {
+                      result: {
+                        __typename: string
+                        id: string
+                        rest_id: string
+                        affiliates_highlighted_label: {
+                          label?: {
+                            url: {
+                              url: string
+                              urlType: string
+                            }
+                            badge: {
+                              url: string
+                            }
+                            description: string
+                            userLabelType: string
+                            userLabelDisplayType: string
+                          }
+                        }
+                        has_graduated_access: boolean
+                        is_blue_verified: boolean
+                        profile_image_shape: string
+                        legacy: {
+                          can_dm: boolean
+                          can_media_tag: boolean
+                          created_at: string
+                          default_profile: boolean
+                          default_profile_image: boolean
+                          description: string
+                          entities: {
+                            description: {
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
+                            }
+                            url?: {
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
+                            }
+                          }
+                          fast_followers_count: number
+                          favourites_count: number
+                          followers_count: number
+                          friends_count: number
+                          has_custom_timelines: boolean
+                          is_translator: boolean
+                          listed_count: number
+                          location: string
+                          media_count: number
+                          name: string
+                          normal_followers_count: number
+                          pinned_tweet_ids_str: string[]
+                          possibly_sensitive: boolean
+                          profile_banner_url: string
+                          profile_image_url_https: string
+                          profile_interstitial_type: string
+                          screen_name: string
+                          statuses_count: number
+                          translator_type: string
+                          url?: string
+                          verified: boolean
+                          want_retweets: boolean
+                          withheld_in_countries: unknown[]
+                        }
+                        super_follow_eligible: boolean
+                        professional?: {
+                          rest_id: string
+                          professional_type: string
+                          category: {
+                            id: number
+                            name: string
+                            icon_name: string
+                          }[]
+                        }
+                      }
+                    }
+                    userDisplayType: string
+                  }
+                  clientEventInfo: {
+                    component: string
+                    element: string
+                    details: {
+                      timelinesDetails: {
+                        injectionType: string
+                        controllerData: string
+                        sourceData: string
+                      }
+                    }
+                  }
+                }
+              }[]
+              displayType?: string
+              header?: {
+                displayType: string
+                text: string
+                socialContext: {
+                  type: string
+                  contextType: string
+                  text: string
+                }
+                sticky: boolean
+              }
             }
           }[]
+          clientEventInfo?: {
+            component: string
+            element: string
+          }
+          cover?: {
+            type: string
+            halfCoverDisplayType: string
+            primaryText: {
+              alignment: string
+              text: string
+              entities: unknown[]
+            }
+            primaryCoverCta: {
+              text: string
+              ctaBehavior: {
+                type: string
+              }
+              callbacks: {
+                endpoint: string
+              }[]
+              clientEventInfo: {
+                action: string
+              }
+              buttonStyle: string
+            }
+            secondaryCoverCta: {
+              text: string
+              ctaBehavior: {
+                type: string
+              }
+              callbacks: {
+                endpoint: string
+              }[]
+              clientEventInfo: {
+                action: string
+              }
+              buttonStyle: string
+            }
+            secondaryText: {
+              text: string
+              entities: unknown[]
+            }
+            impressionCallbacks: {
+              endpoint: string
+            }[]
+            coverImage: {
+              image: {
+                url: string
+                width: number
+                height: number
+              }
+              imageDisplayType: string
+            }
+          }
+          alertType?: string
+          triggerDelayMs?: number
+          displayDurationMs?: number
+          usersResults?: unknown[]
+          richText?: {
+            text: string
+            entities: unknown[]
+          }
+          iconDisplayInfo?: {
+            icon: string
+            tint: string
+          }
+          colorConfig?: {
+            background: string
+            border: string
+            text: string
+          }
+          displayLocation?: string
         }[]
         responseObjects: {
           feedbackActions: {
@@ -2687,6 +2906,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                   not_interested: boolean
                 }
               }
+              encodedFeedbackRequest?: string
             }
           }[]
         }

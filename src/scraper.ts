@@ -449,6 +449,7 @@ export class TwitterScraperPage {
         behavior: 'smooth',
       })
     })
+    await new Promise<void>((resolve) => setTimeout(resolve, 1000))
   }
 
   /**
