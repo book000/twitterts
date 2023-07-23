@@ -13,6 +13,15 @@ export class AlreadyLikedError extends Error {
 }
 
 /**
+ * ユーザーが存在しない場合
+ */
+export class UserNotFoundError extends Error {
+  constructor() {
+    super('User not found')
+  }
+}
+
+/**
  * Twitterでの操作に失敗した場合
  */
 export class TwitterOperationError extends Error {}

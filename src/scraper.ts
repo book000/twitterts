@@ -452,6 +452,29 @@ export class TwitterScraperPage {
   }
 
   /**
+   * リダイレクトを待ち、リダイレクト先の URL を返します。
+   *
+   * @param sourceUrl リダイレクト前の URL
+   * @returns リダイレクト先の URL
+   */
+  public async getRedirectTo(sourceUrl: string, timeout = 30_000) {
+    return new Promise<string>((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
+        clearInterval(intervalId)
+        reject(new Error('Redirect timeout.'))
+      }, timeout)
+      const intervalId = setInterval(() => {
+        if (this.page.url() === sourceUrl) {
+          return
+        }
+        clearInterval(intervalId)
+        clearTimeout(timeoutId)
+        resolve(this.page.url())
+      })
+    })
+  }
+
+  /**
    * ページの最下部までスクロールします。
    */
   public async scrollToBottom() {

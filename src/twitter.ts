@@ -2,6 +2,7 @@ import {
   AlreadyLikedError,
   IllegalArgumentError,
   TwitterOperationError,
+  UserNotFoundError,
 } from './models/exceptions'
 import {
   GetUserByScreenNameOptions,
@@ -68,6 +69,28 @@ export class Twitter {
       throw new TwitterOperationError(response.errors[0].message)
     }
     return response
+  }
+
+  /**
+   * ユーザー ID からスクリーンネームを取得する
+   *
+   * @param userId ユーザー ID
+   * @returns スクリーンネーム
+   */
+  public async getScreenNameByUserId(userId: string) {
+    const page = await this.scraper.getScraperPage()
+    const url = `https://twitter.com/intent/user?user_id=${userId}`
+    await page.goto(url)
+    const newUrl = await page.getRedirectTo(url)
+    await page.close()
+    const screenName = new URL(newUrl).pathname.replace('/', '')
+    if (!screenName) {
+      throw new TwitterOperationError('Failed to get screen name')
+    }
+    if (screenName === '404') {
+      throw new UserNotFoundError()
+    }
+    return screenName
   }
 
   /**
