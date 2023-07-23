@@ -163,6 +163,81 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                         text: string
                       }[]
                       symbols: unknown[]
+                      media?: {
+                        display_url: string
+                        expanded_url: string
+                        id_str: string
+                        indices: number[]
+                        media_url_https: string
+                        type: string
+                        url: string
+                        features: {
+                          large: {
+                            faces: {
+                              x: number
+                              y: number
+                              h: number
+                              w: number
+                            }[]
+                          }
+                          medium: {
+                            faces: {
+                              x: number
+                              y: number
+                              h: number
+                              w: number
+                            }[]
+                          }
+                          small: {
+                            faces: {
+                              x: number
+                              y: number
+                              h: number
+                              w: number
+                            }[]
+                          }
+                          orig: {
+                            faces: {
+                              x: number
+                              y: number
+                              h: number
+                              w: number
+                            }[]
+                          }
+                        }
+                        sizes: {
+                          large: {
+                            h: number
+                            w: number
+                            resize: string
+                          }
+                          medium: {
+                            h: number
+                            w: number
+                            resize: string
+                          }
+                          small: {
+                            h: number
+                            w: number
+                            resize: string
+                          }
+                          thumb: {
+                            h: number
+                            w: number
+                            resize: string
+                          }
+                        }
+                        original_info: {
+                          height: number
+                          width: number
+                          focus_rects: {
+                            x: number
+                            y: number
+                            w: number
+                            h: number
+                          }[]
+                        }
+                      }[]
                     }
                     favorite_count: number
                     favorited: boolean
@@ -180,6 +255,87 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                     }
                     user_id_str: string
                     id_str: string
+                    extended_entities?: {
+                      media: {
+                        display_url: string
+                        expanded_url: string
+                        id_str: string
+                        indices: number[]
+                        media_key: string
+                        media_url_https: string
+                        type: string
+                        url: string
+                        ext_media_availability: {
+                          status: string
+                        }
+                        features: {
+                          large: {
+                            faces: {
+                              x: number
+                              y: number
+                              h: number
+                              w: number
+                            }[]
+                          }
+                          medium: {
+                            faces: {
+                              x: number
+                              y: number
+                              h: number
+                              w: number
+                            }[]
+                          }
+                          small: {
+                            faces: {
+                              x: number
+                              y: number
+                              h: number
+                              w: number
+                            }[]
+                          }
+                          orig: {
+                            faces: {
+                              x: number
+                              y: number
+                              h: number
+                              w: number
+                            }[]
+                          }
+                        }
+                        sizes: {
+                          large: {
+                            h: number
+                            w: number
+                            resize: string
+                          }
+                          medium: {
+                            h: number
+                            w: number
+                            resize: string
+                          }
+                          small: {
+                            h: number
+                            w: number
+                            resize: string
+                          }
+                          thumb: {
+                            h: number
+                            w: number
+                            resize: string
+                          }
+                        }
+                        original_info: {
+                          height: number
+                          width: number
+                          focus_rects: {
+                            x: number
+                            y: number
+                            w: number
+                            h: number
+                          }[]
+                        }
+                      }[]
+                    }
                   }
                   quick_promote_eligibility: {
                     eligibility: string

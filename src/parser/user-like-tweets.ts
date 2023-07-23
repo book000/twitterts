@@ -3,11 +3,11 @@ import { BaseParser } from './base'
 import { Status } from 'twitter-d'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Twitter } from '../twitter'
-import { CustomUserTweetEntry } from '../models/responses/custom/custom-user-tweet-entry'
-import { CustomTweetLegacyObject } from '../models/responses/custom/custom-tweet-legacy-object'
 import { GraphQLGetLikesResponse } from '../models/responses/endpoints'
 import { GraphQLGetLikesErrorResponse } from '../models/responses/graphql/get/likes-error'
-import { ResponseParseError, TwitterOperationError } from '../models/exceptions'
+import { TwitterOperationError } from '../models/exceptions'
+import { CustomUserLikeTweetEntry } from '../models/responses/custom/custom-user-like-tweet-entry'
+import { CustomTweetObject } from '../models/responses/custom/custom-tweet-object'
 
 /**
  * {@link Twitter.getUserLikeTweets} のレスポンスパーサー
@@ -35,46 +35,14 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
           instruction.entries?.filter((entry) =>
             entry.entryId.startsWith('tweet-')
           )
-        ) as CustomUserTweetEntry[]
+        ) as CustomUserLikeTweetEntry[]
 
     const rawTweets = entries.map(
       (entry) => entry.content.itemContent.tweet_results.result
     )
-    this.tweets = rawTweets.map((tweet) => {
-      const legacy = tweet.legacy ?? tweet.tweet?.legacy ?? undefined
-      if (!legacy) {
-        throw new ResponseParseError('Failed to get legacy')
-      }
-      const userResult =
-        tweet.core?.user_results.result ??
-        tweet.tweet?.core.user_results.result ??
-        undefined
-      if (!userResult) {
-        throw new ResponseParseError(
-          `Failed to get userResult ${legacy.id_str}`
-        )
-      }
-      return {
-        id: Number(legacy.id_str),
-        source: tweet.source ?? 'NULL',
-        truncated: false,
-        user: {
-          id: Number(userResult.rest_id),
-          id_str: userResult.rest_id,
-          ...userResult.legacy,
-        },
-        ...legacy,
-        display_text_range: legacy.display_text_range
-          ? [legacy.display_text_range[0], legacy.display_text_range[1]]
-          : undefined,
-        entities: ObjectConverter.convertEntity(
-          legacy as CustomTweetLegacyObject
-        ),
-        extended_entities: ObjectConverter.convertExtendedEntity(
-          legacy as CustomTweetLegacyObject
-        ),
-      }
-    })
+    this.tweets = rawTweets.map((tweet) =>
+      ObjectConverter.convertToStatus(tweet as CustomTweetObject)
+    )
   }
 
   /**

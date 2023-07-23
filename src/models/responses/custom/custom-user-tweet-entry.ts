@@ -47,7 +47,12 @@ export interface CustomUserTweetEntry {
                   description: string
                   entities: {
                     description: {
-                      urls: unknown[]
+                      urls: {
+                        display_url: string
+                        expanded_url: string
+                        url: string
+                        indices: number[]
+                      }[]
                     }
                     url?: {
                       urls: {
@@ -325,6 +330,14 @@ export interface CustomUserTweetEntry {
                       y: number
                       h: number
                       w: number
+                    }[]
+                  }
+                  all?: {
+                    tags: {
+                      user_id: string
+                      name: string
+                      screen_name: string
+                      type: string
                     }[]
                   }
                 }
@@ -706,6 +719,14 @@ export interface CustomUserTweetEntry {
                             w: number
                           }[]
                         }
+                        all?: {
+                          tags: {
+                            user_id: string
+                            name: string
+                            screen_name: string
+                            type: string
+                          }[]
+                        }
                       }
                       sizes: {
                         large: {
@@ -800,6 +821,14 @@ export interface CustomUserTweetEntry {
                             y: number
                             h: number
                             w: number
+                          }[]
+                        }
+                        all?: {
+                          tags: {
+                            user_id: string
+                            name: string
+                            screen_name: string
+                            type: string
                           }[]
                         }
                       }
@@ -1818,6 +1847,14 @@ export interface CustomUserTweetEntry {
                       w: number
                     }[]
                   }
+                  all?: {
+                    tags: {
+                      user_id: string
+                      name: string
+                      screen_name: string
+                      type: string
+                    }[]
+                  }
                 }
                 sizes: {
                   large: {
@@ -1965,6 +2002,29 @@ export interface CustomUserTweetEntry {
             in_reply_to_screen_name?: string
             in_reply_to_status_id_str?: string
             in_reply_to_user_id_str?: string
+            coordinates?: {
+              type: string
+              coordinates: number[]
+            }
+            geo?: {
+              type: string
+              coordinates: number[]
+            }
+            place?: {
+              attributes: {}
+              bounding_box: {
+                coordinates: number[][][]
+                type: string
+              }
+              contained_within: unknown[]
+              country: string
+              country_code: string
+              full_name: string
+              name: string
+              id: string
+              place_type: string
+              url: string
+            }
           }
           quick_promote_eligibility?: {
             eligibility: string

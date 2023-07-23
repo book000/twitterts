@@ -43,6 +43,8 @@ export * from './models/responses/graphql/post/put-client-education-flag-success
 export * from './models/responses/graphql/post/unfavorite-tweet-success'
 export * from './models/responses/custom/custom-search-timeline-entry'
 export * from './models/responses/custom/custom-tweet-legacy-object'
+export * from './models/responses/custom/custom-tweet-object'
+export * from './models/responses/custom/custom-user-like-tweet-entry'
 export * from './models/responses/custom/custom-user-tweet-entry'
 export * from './models/responses/endpoints'
 export * from './models/exceptions'

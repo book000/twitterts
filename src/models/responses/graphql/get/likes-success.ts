@@ -406,6 +406,10 @@ export interface GraphQLGetLikesSuccessResponse {
                               }
                               source_status_id_str?: string
                               source_user_id_str?: string
+                              ext_alt_text?: string
+                              sensitive_media_warning?: {
+                                other: boolean
+                              }
                             }[]
                           }
                           favorite_count: number
@@ -430,6 +434,29 @@ export interface GraphQLGetLikesSuccessResponse {
                           in_reply_to_screen_name?: string
                           in_reply_to_status_id_str?: string
                           in_reply_to_user_id_str?: string
+                          coordinates?: {
+                            type: string
+                            coordinates: number[]
+                          }
+                          geo?: {
+                            type: string
+                            coordinates: number[]
+                          }
+                          place?: {
+                            attributes: {}
+                            bounding_box: {
+                              coordinates: number[][][]
+                              type: string
+                            }
+                            contained_within: unknown[]
+                            country: string
+                            country_code: string
+                            full_name: string
+                            name: string
+                            id: string
+                            place_type: string
+                            url: string
+                          }
                         }
                         quoted_status_result?: {
                           result: {
@@ -1071,7 +1098,20 @@ export interface GraphQLGetLikesSuccessResponse {
                                 __typename: string
                                 id: string
                                 rest_id: string
-                                affiliates_highlighted_label: {}
+                                affiliates_highlighted_label: {
+                                  label?: {
+                                    url: {
+                                      url: string
+                                      urlType: string
+                                    }
+                                    badge: {
+                                      url: string
+                                    }
+                                    description: string
+                                    userLabelType: string
+                                    userLabelDisplayType: string
+                                  }
+                                }
                                 has_graduated_access: boolean
                                 is_blue_verified: boolean
                                 profile_image_shape: string
@@ -1153,7 +1193,10 @@ export interface GraphQLGetLikesSuccessResponse {
                               entity_set: {
                                 user_mentions: unknown[]
                                 urls: unknown[]
-                                hashtags: unknown[]
+                                hashtags: {
+                                  indices: number[]
+                                  text: string
+                                }[]
                                 symbols: unknown[]
                               }
                               richtext?: {

@@ -5,8 +5,7 @@ import { Status } from 'twitter-d'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Twitter } from '../twitter'
 import { GraphQLGetSearchTimelineResponse } from '../models/responses/endpoints'
-import { CustomTweetLegacyObject } from '../models/responses/custom/custom-tweet-legacy-object'
-import { ResponseParseError } from '../models/exceptions'
+import { CustomTweetObject } from 'src/models/responses/custom/custom-tweet-object'
 
 /**
  * {@link Twitter.searchTweets} のレスポンスパーサー
@@ -35,37 +34,9 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
     const rawTweets = entries.map(
       (entry) => entry.content.itemContent.tweet_results.result
     )
-    // @ts-ignore
-    this.tweets = rawTweets.map((tweet) => {
-      const legacy = tweet.legacy ?? undefined
-      if (!legacy) {
-        throw new ResponseParseError('Failed to get legacy')
-      }
-      const userResult = tweet.core.user_results.result ?? undefined
-      if (!userResult) {
-        throw new ResponseParseError('Failed to get userResult')
-      }
-      return {
-        id: Number(legacy.id_str),
-        source: tweet.source,
-        truncated: false,
-        user: {
-          id: Number(userResult.rest_id),
-          id_str: userResult.rest_id,
-          ...userResult.legacy,
-        },
-        ...legacy,
-        display_text_range: legacy.display_text_range
-          ? [legacy.display_text_range[0], legacy.display_text_range[1]]
-          : undefined,
-        entities: ObjectConverter.convertEntity(
-          legacy as CustomTweetLegacyObject
-        ),
-        extended_entities: ObjectConverter.convertExtendedEntity(
-          legacy as CustomTweetLegacyObject
-        ),
-      }
-    })
+    this.tweets = rawTweets.map((tweet) =>
+      ObjectConverter.convertToStatus(tweet as CustomTweetObject)
+    )
   }
 
   /**
