@@ -5,7 +5,7 @@ import { Status } from 'twitter-d'
 import { Twitter } from '../twitter'
 import { CustomUserTweetEntry } from '../models/responses/custom/custom-user-tweet-entry'
 import { CustomTweetLegacyObject } from '../models/responses/custom/custom-tweet-legacy-object'
-import { GraphQLGetLikesSuccessResponse } from 'src/models/responses/graphql/get/likes-success'
+import { GraphQLGetLikesSuccessResponse } from '../models/responses/graphql/get/likes-success'
 
 /**
  * {@link Twitter.getUserLikeTweets} のレスポンスパーサー
