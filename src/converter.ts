@@ -1,5 +1,13 @@
-import { Entities, ExtendedEntities } from 'twitter-d'
+import {
+  Coordinates,
+  Entities,
+  ExtendedEntities,
+  Place,
+  Status,
+} from 'twitter-d'
 import { CustomTweetLegacyObject } from './models/responses/custom/custom-tweet-legacy-object'
+import { CustomTweetObject } from './models/responses/custom/custom-tweet-object'
+import { ResponseParseError } from './models/exceptions'
 
 /**
  * オブジェクトを変換するクラス
@@ -148,5 +156,100 @@ export const ObjectConverter = {
     }
 
     return extendedEntities
+  },
+
+  /**
+   * ツイートのレガシーオブジェクトから座標を変換する
+   *
+   * @param legacy ツイートのレガシーオブジェクト
+   * @returns 座標
+   */
+  convertCoordinates(legacy: CustomTweetLegacyObject): Coordinates | undefined {
+    if (!legacy.geo) {
+      return
+    }
+
+    return {
+      coordinates: [legacy.geo.coordinates[1], legacy.geo.coordinates[0]],
+      type: legacy.geo.type,
+    }
+  },
+
+  /**
+   * ツイートのレガシーオブジェクトから場所を変換する
+   *
+   * @param legacy ツイートのレガシーオブジェクト
+   * @returns 場所
+   */
+  convertPlace(legacy: CustomTweetLegacyObject): Place | undefined {
+    if (!legacy.place) {
+      return
+    }
+
+    return {
+      attributes: legacy.place.attributes,
+      bounding_box: {
+        coordinates: legacy.place.bounding_box.coordinates.map((coordinate) =>
+          coordinate.map(
+            (coordinate) => [coordinate[1], coordinate[0]] as [number, number]
+          )
+        ),
+        type: legacy.place.bounding_box.type,
+      },
+      contained_within: legacy.place.contained_within as
+        | string[]
+        | null
+        | undefined,
+      country_code: legacy.place.country_code,
+      country: legacy.place.country,
+      full_name: legacy.place.full_name,
+      id: legacy.place.id,
+      name: legacy.place.name,
+      place_type: legacy.place.place_type,
+      url: legacy.place.url,
+    }
+  },
+
+  /**
+   * GraphQLのレスポンスにあるツイートオブジェクトをStatusに変換する。
+   *
+   * @param tweet ツイートオブジェクト
+   * @returns Status
+   */
+  convertToStatus(tweet: CustomTweetObject): Status {
+    // ここはエラー出てもts-ignoreで黙らせるのではなく、型定義を変更するべき。
+    // ObjectConverterで適宜対応（number[] -> [number, number] で大体死んでる）
+    const legacy = tweet.legacy ?? undefined
+    if (!legacy) {
+      throw new ResponseParseError('Failed to get legacy')
+    }
+    const userResult = tweet.core?.user_results.result ?? undefined
+    if (!userResult) {
+      throw new ResponseParseError('Failed to get userResult')
+    }
+    return {
+      id: Number(legacy.id_str),
+      source: tweet.source ?? 'NULL',
+      truncated: false,
+      user: {
+        id: Number(userResult.rest_id),
+        id_str: userResult.rest_id,
+        ...userResult.legacy,
+      },
+      ...legacy,
+      display_text_range: legacy.display_text_range
+        ? [legacy.display_text_range[0], legacy.display_text_range[1]]
+        : undefined,
+      entities: ObjectConverter.convertEntity(
+        legacy as CustomTweetLegacyObject
+      ),
+      extended_entities: ObjectConverter.convertExtendedEntity(
+        legacy as CustomTweetLegacyObject
+      ),
+      coordinates: ObjectConverter.convertCoordinates(
+        legacy as CustomTweetLegacyObject
+      ),
+      place: ObjectConverter.convertPlace(legacy as CustomTweetLegacyObject),
+    }
   },
 }

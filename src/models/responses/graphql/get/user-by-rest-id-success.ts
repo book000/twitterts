@@ -1,28 +1,15 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** GraphQL GET UserByScreenName 成功レスポンスモデル */
+/** GraphQL GET UserByRestId 成功レスポンスモデル */
 
-export interface GraphQLGetUserByScreenNameSuccessResponse {
+export interface GraphQLGetUserByRestIdSuccessResponse {
   data: {
     user: {
       result: {
         __typename: string
         id: string
         rest_id: string
-        affiliates_highlighted_label: {
-          label?: {
-            url: {
-              url: string
-              urlType: string
-            }
-            badge: {
-              url: string
-            }
-            description: string
-            userLabelType: string
-            userLabelDisplayType: string
-          }
-        }
+        affiliates_highlighted_label: {}
         has_graduated_access: boolean
         is_blue_verified: boolean
         profile_image_shape: string
@@ -74,56 +61,18 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           verified: boolean
           want_retweets: boolean
           withheld_in_countries: unknown[]
-          needs_phone_verification?: boolean
           followed_by?: boolean
           following?: boolean
           muting?: boolean
         }
         smart_blocked_by: boolean
         smart_blocking: boolean
-        legacy_extended_profile: {
-          birthdate?: {
-            day: number
-            month: number
-            visibility: string
-            year_visibility: string
-            year?: number
-          }
-        }
-        is_profile_translatable: boolean
-        verification_info: {
-          reason?: {
-            description: {
-              text: string
-              entities: {
-                from_index: number
-                to_index: number
-                ref: {
-                  url: string
-                  url_type: string
-                }
-              }[]
-            }
-            verified_since_msec: string
-            override_verified_year: number
-          }
-        }
+        business_account: {}
         highlights_info: {
           can_highlight_tweets: boolean
           highlighted_tweets: string
         }
-        business_account: {}
         creator_subscriptions_count: number
-        professional?: {
-          rest_id: string
-          professional_type: string
-          category: {
-            id: number
-            name: string
-            icon_name: string
-          }[]
-        }
-        super_follow_eligible?: boolean
       }
     }
   }

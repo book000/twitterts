@@ -1889,6 +1889,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               url: string
                             }[]
                           }
+                          ext_alt_text?: string
                         }[]
                       }
                     }
@@ -3212,6 +3213,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               mediaStats?: {
                                 viewCount: number
                               }
+                              ext_alt_text?: string
                             }[]
                           }
                           favorite_count: number

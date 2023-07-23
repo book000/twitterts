@@ -12,6 +12,8 @@ import { GraphQLGetSearchTimelineSuccessResponse } from './models/responses/grap
 import { CustomSearchTimelineEntry } from './models/responses/custom/custom-search-timeline-entry'
 import { GraphQLGetUserTweetsSuccessResponse } from './models/responses/graphql/get/user-tweets-success'
 import { CustomUserTweetEntry } from './models/responses/custom/custom-user-tweet-entry'
+import { GraphQLGetLikesSuccessResponse } from './models/responses/graphql/get/likes-success'
+import { CustomUserLikeTweetEntry } from './models/responses/custom/custom-user-like-tweet-entry'
 
 /**
  * json-schema-to-typescript のコンパイルオプションを作成・取得する
@@ -301,7 +303,7 @@ class TwitterTypesGenerator {
    * @param options 単一の型定義生成オプション
    * @param result エンドポイントごとのレスポンス情報
    */
-  async generateType(options: GenerateTypeOptions, result: Result) {
+  private async generateType(options: GenerateTypeOptions, result: Result) {
     const logger = Logger.configure('TwitterGenerateTypes.generateType')
 
     if (result.paths.length === 0) {
@@ -336,7 +338,7 @@ class TwitterTypesGenerator {
    *
    * @param options 型定義生成オプション
    */
-  async generateTypes(options: GenerateTypesOptions) {
+  private async generateTypes(options: GenerateTypesOptions) {
     const results = this.get()
     for (const result of results) {
       const name = Utils.getName(
@@ -386,7 +388,7 @@ class TwitterTypesGenerator {
   /**
    * デバッグレスポンスを元に、型定義を生成するメイン関数
    */
-  static async main() {
+  public static async main() {
     const debugOutputDirectory =
       process.env.DEBUG_OUTPUT_DIRECTORY || './data/responses'
     const schemaDirectory = process.env.SCHEMA_DIRECTORY || './data/schema'
@@ -431,7 +433,7 @@ class CustomTypeGenerator {
   /**
    * 検索タイムラインツイートモデル（CustomSearchTimelineEntry）のカスタム型定義を生成する
    */
-  async runGraphQLSearchTimeline() {
+  private async runGraphQLSearchTimeline() {
     const results = this.results.filter(
       (result) =>
         result.type === 'graphql' &&
@@ -474,7 +476,10 @@ class CustomTypeGenerator {
     )
   }
 
-  async runGraphQLUserTweets() {
+  /**
+   * ユーザーツイートモデル（CustomUserTweetEntry）のカスタム型定義を生成する
+   */
+  private async runGraphQLUserTweets() {
     const results = this.results.filter(
       (result) =>
         result.type === 'graphql' &&
@@ -517,13 +522,164 @@ class CustomTypeGenerator {
     )
   }
 
+  /**
+   * ユーザーいいねツイートモデル（CustomUserLikeTweetEntry）のカスタム型定義を生成する
+   */
+  private async runGraphQLUserLikeTweets() {
+    const results = this.results.filter(
+      (result) =>
+        result.type === 'graphql' &&
+        result.name === 'Likes' &&
+        result.method === 'GET' &&
+        result.statusCode === '200'
+    )
+    if (results.length === 0) {
+      return
+    }
+    const paths = results.flatMap((result) => result.paths)
+
+    let schema
+    for (const path of paths) {
+      const response: GraphQLGetLikesSuccessResponse = JSON.parse(
+        fs.readFileSync(path, 'utf8')
+      )
+      const entries =
+        response.data.user.result.timeline_v2.timeline.instructions
+          .filter(
+            (instruction) =>
+              instruction.type === 'TimelineAddEntries' && instruction.entries
+          )
+          .flatMap((instruction) =>
+            instruction.entries?.filter((entry) =>
+              entry.entryId.startsWith('tweet-')
+            )
+          )
+      const fileSchema = createCompoundSchema(entries)
+      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
+    }
+    if (!schema) {
+      return
+    }
+
+    await this.generateTypeFromSchema(
+      schema,
+      'CustomUserLikeTweetEntry',
+      'ユーザーいいねツイートモデル'
+    )
+  }
+
   // --- twitter-d 変換用オブジェクト
+
+  /**
+   * レスポンスツイートオブジェクト（CustomTweetObject）のカスタム型定義を生成する
+   */
+  private async runTweetObject() {
+    // 各レスポンスからツイートオブジェクトを抽出
+    const schemas = [
+      // SearchTimeline
+      this.results
+        .filter(
+          (result) =>
+            result.type === 'graphql' &&
+            result.name === 'SearchTimeline' &&
+            result.method === 'GET' &&
+            result.statusCode === '200'
+        )
+        .flatMap((result) => result.paths)
+        .flatMap((path) => {
+          const response: GraphQLGetSearchTimelineSuccessResponse = JSON.parse(
+            fs.readFileSync(path, 'utf8')
+          )
+          return response.data.search_by_raw_query.search_timeline.timeline.instructions
+            .filter(
+              (instruction) =>
+                instruction.type === 'TimelineAddEntries' && instruction.entries
+            )
+            .flatMap((instruction) =>
+              instruction.entries?.filter((entry) =>
+                entry.entryId.startsWith('tweet-')
+              )
+            )
+        })
+        .map((entry) => {
+          return (entry as CustomSearchTimelineEntry).content.itemContent
+            .tweet_results.result
+        })
+        .map((entry) => createSchema(entry)),
+      // UserTweets
+      this.results
+        .filter(
+          (result) =>
+            result.type === 'graphql' &&
+            result.name === 'UserTweets' &&
+            result.method === 'GET' &&
+            result.statusCode === '200'
+        )
+        .flatMap((result) => result.paths)
+        .flatMap((path) => {
+          const response: GraphQLGetUserTweetsSuccessResponse = JSON.parse(
+            fs.readFileSync(path, 'utf8')
+          )
+          return response.data.user.result.timeline_v2.timeline.instructions
+            .filter(
+              (instruction) =>
+                instruction.type === 'TimelineAddEntries' && instruction.entries
+            )
+            .flatMap((instruction) =>
+              instruction.entries?.filter((entry) =>
+                entry.entryId.startsWith('tweet-')
+              )
+            )
+        })
+        .map((entry) => {
+          return (entry as CustomUserTweetEntry).content.itemContent
+            .tweet_results.result
+        })
+        .map((entry) => createSchema(entry)),
+      // Likes
+      this.results
+        .filter(
+          (result) =>
+            result.type === 'graphql' &&
+            result.name === 'Likes' &&
+            result.method === 'GET' &&
+            result.statusCode === '200'
+        )
+        .flatMap((result) => result.paths)
+        .flatMap((path) => {
+          const response: GraphQLGetLikesSuccessResponse = JSON.parse(
+            fs.readFileSync(path, 'utf8')
+          )
+          return response.data.user.result.timeline_v2.timeline.instructions
+            .filter(
+              (instruction) =>
+                instruction.type === 'TimelineAddEntries' && instruction.entries
+            )
+            .flatMap((instruction) =>
+              instruction.entries?.filter((entry) =>
+                entry.entryId.startsWith('tweet-')
+              )
+            )
+        })
+        .map((entry) => {
+          return (entry as CustomUserLikeTweetEntry).content.itemContent
+            .tweet_results.result
+        })
+        .map((entry) => createSchema(entry)),
+    ].flat()
+
+    await this.generateTypeFromSchema(
+      mergeSchemas(schemas),
+      'CustomTweetObject',
+      'レスポンスツイートオブジェクト'
+    )
+  }
 
   /**
    * レスポンスツイートレガシーオブジェクト（CustomTweetLegacyObject）のカスタム型定義を生成する
    */
-  async runTweetLegacyObject() {
-    // 各レスポンスからハッシュタグオブジェクトを抽出
+  private async runTweetLegacyObject() {
+    // 各レスポンスからレガシーツイートオブジェクトを抽出
     const schemas = [
       // SearchTimeline
       this.results
@@ -640,7 +796,7 @@ class CustomTypeGenerator {
    * @param name 型名
    * @param tsDocument 型定義の tsdoc（1 行で記述）
    */
-  async generateTypeFromSchema(
+  private async generateTypeFromSchema(
     schema: Schema,
     name: string,
     tsDocument: string
@@ -671,6 +827,8 @@ class CustomTypeGenerator {
   async generate() {
     await this.runGraphQLSearchTimeline()
     await this.runGraphQLUserTweets()
+    await this.runGraphQLUserLikeTweets()
+    await this.runTweetObject()
 
     // twitter-d 変換用オブジェクト
     await this.runTweetLegacyObject()

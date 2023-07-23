@@ -17,7 +17,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
               itemContent?: {
                 itemType: string
                 __typename: string
-                tweet_results: {
+                tweet_results?: {
                   result: {
                     __typename: string
                     rest_id?: string
@@ -1777,7 +1777,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                     }
                   }
                 }
-                tweetDisplayType: string
+                tweetDisplayType?: string
                 promotedMetadata?: {
                   advertiser_results: {
                     result: {
@@ -1864,6 +1864,18 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                   }
                   adMetadataContainer?: {}
                 }
+                content?: {
+                  contentType: string
+                  headerText: string
+                  bodyText: string
+                  primaryButtonAction: {
+                    text: string
+                    action: {
+                      url: string
+                      dismissOnClick: boolean
+                    }
+                  }
+                }
               }
               feedbackInfo?: {
                 feedbackKeys: string[]
@@ -1873,7 +1885,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                 component: string
                 element: string
                 entityToken?: string
-                details: {
+                details?: {
                   timelinesDetails: {
                     injectionType: string
                     controllerData: string
@@ -1939,7 +1951,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
             }
           }
         }[]
-        responseObjects: {
+        responseObjects?: {
           feedbackActions: {
             key: string
             value: {

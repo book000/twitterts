@@ -296,6 +296,13 @@ export class Twitter {
     await this.scraper.close()
   }
 
+  /**
+   * エラーレスポンスかどうかを判定する。
+   * これを使うことでエラーがどうかは判定できるが、レスポンス型は保証されないので利用側で型保証されるメソッドを書いたほうがよい。
+   *
+   * @param response レスポンス
+   * @returns エラーレスポンスかどうか
+   */
   public isErrorResponse(response: any): response is { errors: any[] } {
     return response.errors && response.errors.length > 0
   }
