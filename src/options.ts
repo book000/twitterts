@@ -10,6 +10,14 @@ export interface GetUserByScreenNameOptions {
 }
 
 /**
+ * {@link Twitter.getScreenNameByUserId} のオプション
+ */
+export interface GetScreenNameByUserIdOptions {
+  /** ユーザー ID */
+  userId: string
+}
+
+/**
  * {@link Twitter.searchTweets} の検索種別
  */
 export const SearchType = {

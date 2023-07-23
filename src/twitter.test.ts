@@ -41,7 +41,9 @@ describe('Twitter', () => {
   })
 
   test('getScreenNameByUserId', async () => {
-    const response = await twitter.getScreenNameByUserId('286048624')
+    const response = await twitter.getScreenNameByUserId({
+      userId: '286048624',
+    })
     expect(response).toBeTruthy()
     expect(response).toBe('book000')
   })

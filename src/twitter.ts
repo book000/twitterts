@@ -9,8 +9,9 @@ import {
   LikeTweetOptions,
   SearchTweetsOptions,
   SearchType,
-  UserLikeTweetsOptions,
-  UserTweetsOptions,
+  UserLikeTweetsOptions as GetUserLikeTweetsOptions,
+  UserTweetsOptions as GetUserTweetsOptions,
+  GetScreenNameByUserIdOptions,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
 import { UserLikeTweetsParser } from './parser/user-like-tweets'
@@ -77,9 +78,13 @@ export class Twitter {
    * @param userId ユーザー ID
    * @returns スクリーンネーム
    */
-  public async getScreenNameByUserId(userId: string) {
+  public async getScreenNameByUserId(options: GetScreenNameByUserIdOptions) {
+    if (!options.userId) {
+      throw new IllegalArgumentError('userId is required')
+    }
+
     const page = await this.scraper.getScraperPage()
-    const url = `https://twitter.com/intent/user?user_id=${userId}`
+    const url = `https://twitter.com/intent/user?user_id=${options.userId}`
     await page.goto(url)
     const newUrl = await page.getRedirectTo(url)
     await page.close()
@@ -153,7 +158,7 @@ export class Twitter {
    * @param options ユーザーツイート取得オプション
    * @returns ユーザーのツイート
    */
-  public async getUserTweets(options: UserTweetsOptions) {
+  public async getUserTweets(options: GetUserTweetsOptions) {
     if (!options.screenName) {
       throw new IllegalArgumentError('screenName is required')
     }
@@ -201,7 +206,7 @@ export class Twitter {
    * @param options ユーザーいいねツイート取得オプション
    * @returns ユーザーのツイート
    */
-  public async getUserLikeTweets(options: UserLikeTweetsOptions) {
+  public async getUserLikeTweets(options: GetUserLikeTweetsOptions) {
     if (!options.screenName) {
       throw new IllegalArgumentError('screenName is required')
     }
