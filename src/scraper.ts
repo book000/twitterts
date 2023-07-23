@@ -463,14 +463,15 @@ export class TwitterScraperPage {
         clearInterval(intervalId)
         reject(new Error('Redirect timeout.'))
       }, timeout)
-      const intervalId = setInterval(() => {
-        if (this.page.url() === sourceUrl) {
+      const intervalId = setInterval(async () => {
+        const url = await this.page.evaluate(() => document.location.href)
+        if (url === sourceUrl) {
           return
         }
         clearInterval(intervalId)
         clearTimeout(timeoutId)
-        resolve(this.page.url())
-      })
+        resolve(url)
+      }, 500)
     })
   }
 

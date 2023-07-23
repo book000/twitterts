@@ -83,14 +83,18 @@ export class Twitter {
     await page.goto(url)
     const newUrl = await page.getRedirectTo(url)
     await page.close()
-    const screenName = new URL(newUrl).pathname.replace('/', '')
-    if (!screenName) {
-      throw new TwitterOperationError('Failed to get screen name')
-    }
-    if (screenName === '404') {
+
+    if (newUrl.endsWith('/404')) {
+      // https://twitter.com/404
       throw new UserNotFoundError()
     }
-    return screenName
+
+    const regex = /https:\/\/twitter.com\/intent\/user\?screen_name=(.+)/
+    const match = newUrl.match(regex)
+    if (!match) {
+      throw new TwitterOperationError('Failed to get screen name')
+    }
+    return match[1]
   }
 
   /**
