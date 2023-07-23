@@ -5,7 +5,7 @@ import { Status } from 'twitter-d'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Twitter } from '../twitter'
 import { GraphQLGetSearchTimelineResponse } from '../models/responses/endpoints'
-import { CustomTweetObject } from 'src/models/responses/custom/custom-tweet-object'
+import { CustomTweetObject } from '../models/responses/custom/custom-tweet-object'
 
 /**
  * {@link Twitter.searchTweets} のレスポンスパーサー
