@@ -1,0 +1,29 @@
+name: Check using src-import
+
+on: [pull_request_target]
+
+jobs:
+  check-import:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Check using System.out.print
+        run: |
+          COUNT=`grep -rEn "from 'src/" --include=*.ts src | tee ../import-src.txt | wc -l || true`
+          echo count: $COUNT
+          cat ../import-src.txt
+          cat ../import-src.txt | reviewdog -efm="%f:%l:%m" -name="Check using src-import" -reporter=github-pr-review -level=warning
+          if [ "$COUNT" != "0" ]; then
+            echo "Found src-import in $COUNT files"
+            exit 1
+          fi
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
