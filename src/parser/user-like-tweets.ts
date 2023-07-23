@@ -5,7 +5,9 @@ import { Status } from 'twitter-d'
 import { Twitter } from '../twitter'
 import { CustomUserTweetEntry } from '../models/responses/custom/custom-user-tweet-entry'
 import { CustomTweetLegacyObject } from '../models/responses/custom/custom-tweet-legacy-object'
-import { GraphQLGetLikesSuccessResponse } from '../models/responses/graphql/get/likes-success'
+import { GraphQLGetLikesResponse } from '../models/responses/endpoints'
+import { GraphQLGetLikesErrorResponse } from '../models/responses/graphql/get/likes-error'
+import { ResponseParseError, TwitterOperationError } from '../models/exceptions'
 
 /**
  * {@link Twitter.getUserLikeTweets} のレスポンスパーサー
@@ -16,8 +18,12 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
   /**
    * @param response {@link Twitter['getUserLikeTweets']} のレスポンス
    */
-  constructor(response: GraphQLGetLikesSuccessResponse) {
+  constructor(response: GraphQLGetLikesResponse) {
     super(response)
+
+    if (this.isErrorResponse(this.response)) {
+      throw new TwitterOperationError(this.response.errors[0].message)
+    }
 
     const entries =
       this.response.data.user.result.timeline_v2.timeline.instructions
@@ -37,14 +43,16 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
     this.tweets = rawTweets.map((tweet) => {
       const legacy = tweet.legacy ?? tweet.tweet?.legacy ?? undefined
       if (!legacy) {
-        throw new Error('Failed to get legacy')
+        throw new ResponseParseError('Failed to get legacy')
       }
       const userResult =
         tweet.core?.user_results.result ??
         tweet.tweet?.core.user_results.result ??
         undefined
       if (!userResult) {
-        throw new Error(`Failed to get userResult ${legacy.id_str}`)
+        throw new ResponseParseError(
+          `Failed to get userResult ${legacy.id_str}`
+        )
       }
       return {
         id: Number(legacy.id_str),
@@ -76,5 +84,11 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
    */
   public getTweets() {
     return this.tweets
+  }
+
+  private isErrorResponse(
+    response: GraphQLGetLikesResponse
+  ): response is GraphQLGetLikesErrorResponse {
+    return 'errors' in response && response.errors && response.errors.length > 0
   }
 }

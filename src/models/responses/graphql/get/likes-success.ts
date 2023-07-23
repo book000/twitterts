@@ -97,6 +97,7 @@ export interface GraphQLGetLikesSuccessResponse {
                                 url?: string
                                 following?: boolean
                                 verified_type?: string
+                                followed_by?: boolean
                               }
                               professional?: {
                                 rest_id: string
@@ -493,6 +494,7 @@ export interface GraphQLGetLikesSuccessResponse {
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
                                     verified_type?: string
+                                    following?: boolean
                                   }
                                   professional?: {
                                     rest_id: string
@@ -846,6 +848,179 @@ export interface GraphQLGetLikesSuccessResponse {
                                 rest_id: string
                               }
                             }
+                            tweet?: {
+                              rest_id: string
+                              core: {
+                                user_results: {
+                                  result: {
+                                    __typename: string
+                                    id: string
+                                    rest_id: string
+                                    affiliates_highlighted_label: {}
+                                    has_graduated_access: boolean
+                                    is_blue_verified: boolean
+                                    profile_image_shape: string
+                                    legacy: {
+                                      blocking: boolean
+                                      can_dm: boolean
+                                      can_media_tag: boolean
+                                      created_at: string
+                                      default_profile: boolean
+                                      default_profile_image: boolean
+                                      description: string
+                                      entities: {
+                                        description: {
+                                          urls: {
+                                            display_url: string
+                                            expanded_url: string
+                                            url: string
+                                            indices: number[]
+                                          }[]
+                                        }
+                                        url: {
+                                          urls: {
+                                            display_url: string
+                                            expanded_url: string
+                                            url: string
+                                            indices: number[]
+                                          }[]
+                                        }
+                                      }
+                                      fast_followers_count: number
+                                      favourites_count: number
+                                      followers_count: number
+                                      friends_count: number
+                                      has_custom_timelines: boolean
+                                      is_translator: boolean
+                                      listed_count: number
+                                      location: string
+                                      media_count: number
+                                      name: string
+                                      normal_followers_count: number
+                                      pinned_tweet_ids_str: unknown[]
+                                      possibly_sensitive: boolean
+                                      profile_banner_url: string
+                                      profile_image_url_https: string
+                                      profile_interstitial_type: string
+                                      screen_name: string
+                                      statuses_count: number
+                                      translator_type: string
+                                      url: string
+                                      verified: boolean
+                                      verified_type: string
+                                      want_retweets: boolean
+                                      withheld_in_countries: unknown[]
+                                    }
+                                  }
+                                }
+                              }
+                              card: {
+                                rest_id: string
+                                legacy: {
+                                  binding_values: {
+                                    key: string
+                                    value: {
+                                      image_value?: {
+                                        height: number
+                                        width: number
+                                        url: string
+                                      }
+                                      type: string
+                                      string_value?: string
+                                      scribe_key?: string
+                                      image_color_value?: {
+                                        palette: {
+                                          rgb: {
+                                            blue: number
+                                            green: number
+                                            red: number
+                                          }
+                                          percentage: number
+                                        }[]
+                                      }
+                                    }
+                                  }[]
+                                  card_platform: {
+                                    platform: {
+                                      audience: {
+                                        name: string
+                                      }
+                                      device: {
+                                        name: string
+                                        version: string
+                                      }
+                                    }
+                                  }
+                                  name: string
+                                  url: string
+                                  user_refs_results: unknown[]
+                                }
+                              }
+                              unified_card: {
+                                card_fetch_state: string
+                              }
+                              edit_control: {
+                                edit_tweet_ids: string[]
+                                editable_until_msecs: string
+                                is_edit_eligible: boolean
+                                edits_remaining: string
+                              }
+                              edit_perspective: {
+                                favorited: boolean
+                                retweeted: boolean
+                              }
+                              is_translatable: boolean
+                              views: {
+                                count: string
+                                state: string
+                              }
+                              source: string
+                              legacy: {
+                                bookmark_count: number
+                                bookmarked: boolean
+                                created_at: string
+                                conversation_id_str: string
+                                display_text_range: number[]
+                                entities: {
+                                  user_mentions: unknown[]
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
+                                    indices: number[]
+                                  }[]
+                                  hashtags: unknown[]
+                                  symbols: unknown[]
+                                }
+                                favorite_count: number
+                                favorited: boolean
+                                full_text: string
+                                is_quote_status: boolean
+                                lang: string
+                                possibly_sensitive: boolean
+                                possibly_sensitive_editable: boolean
+                                quote_count: number
+                                reply_count: number
+                                retweet_count: number
+                                retweeted: boolean
+                                user_id_str: string
+                                id_str: string
+                              }
+                            }
+                            tweetInterstitial?: {
+                              __typename: string
+                              displayType: string
+                              text: {
+                                rtl: boolean
+                                text: string
+                                entities: unknown[]
+                              }
+                              revealText: {
+                                rtl: boolean
+                                text: string
+                                entities: unknown[]
+                              }
+                            }
                           }
                         }
                         card?: {
@@ -949,6 +1124,9 @@ export interface GraphQLGetLikesSuccessResponse {
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
                                   verified_type?: string
+                                  followed_by?: boolean
+                                  following?: boolean
+                                  blocking?: boolean
                                 }
                                 professional?: {
                                   rest_id: string

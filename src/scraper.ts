@@ -7,6 +7,7 @@ import {
   GraphQLEndpoint,
   RESTEndpoint,
 } from './models/responses/endpoints'
+import { TwitterOperationError, TwitterTimeoutError } from './models/exceptions'
 
 /**
  * HTTP メソッド
@@ -353,7 +354,7 @@ export class TwitterScraperPage {
     timeout?: number
   ): Promise<EndPointResponseType<M, T, N>> {
     const timeoutId = setTimeout(() => {
-      throw new Error('Response timeout.')
+      throw new TwitterTimeoutError('Response timeout.')
     }, timeout || 30_000)
 
     const key = getResponseKey({
@@ -415,7 +416,9 @@ export class TwitterScraperPage {
       !response.trimStart().startsWith('[') &&
       !response.trimStart().startsWith('{')
     ) {
-      throw new Error(`Invalid response: ${response.slice(0, 100)}`)
+      throw new TwitterOperationError(
+        `Invalid response: ${response.slice(0, 100)}`
+      )
     }
 
     return JSON.parse(response)
@@ -445,7 +448,7 @@ export class TwitterScraperPage {
       })
       .catch(() => null)
     if (!element) {
-      throw new Error(`Element not found: ${selector}`)
+      throw new TwitterOperationError(`Element not found: ${selector}`)
     }
     await this.page.evaluate((element) => element?.scrollIntoView(), element)
     await element.click()
@@ -461,7 +464,7 @@ export class TwitterScraperPage {
     return new Promise<string>((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         clearInterval(intervalId)
-        reject(new Error('Redirect timeout.'))
+        reject(new TwitterTimeoutError('Redirect timeout.'))
       }, timeout)
       const intervalId = setInterval(async () => {
         const url = await this.page.evaluate(() => document.location.href)
@@ -563,20 +566,28 @@ export class TwitterScraper {
       await loginPage
         .waitForSelector('input[autocomplete="username"]')
         .then((element) => element?.type(username, { delay: 100 }))
-        .catch((error) => new Error('Username input not found.', error))
+        .catch(
+          (error) =>
+            new TwitterOperationError('Username input not found.', error)
+        )
 
       // next button
       await loginPage
         .waitForSelector('div[role="button"]:not([data-testid])')
         .then((element) => element?.click())
-        .catch((error) => new Error('Next button not found.', error))
+        .catch(
+          (error) => new TwitterOperationError('Next button not found.', error)
+        )
 
       const password = this.options.password
       // password
       await loginPage
         .waitForSelector('input[autocomplete="current-password"]')
         .then((element) => element?.type(password, { delay: 100 }))
-        .catch((error) => new Error('Password input not found.', error))
+        .catch(
+          (error) =>
+            new TwitterOperationError('Password input not found.', error)
+        )
 
       // login button
       await loginPage
@@ -584,7 +595,9 @@ export class TwitterScraper {
           'div[role="button"][data-testid="LoginForm_Login_Button"]'
         )
         .then((element) => element?.click())
-        .catch((error) => new Error('Login button not found.', error))
+        .catch(
+          (error) => new TwitterOperationError('Login button not found.', error)
+        )
 
       // need auth code ?
       const authCodeInput = await this.getElement(
@@ -595,7 +608,7 @@ export class TwitterScraper {
       if (authCodeInput) {
         const authCodeSecret = this.options.otpSecret
         if (!authCodeSecret) {
-          throw new Error('OTP secret not found.')
+          throw new TwitterOperationError('OTP secret not found.')
         }
         const authCode = this.getOneTimePassword(authCodeSecret)
         await authCodeInput.type(authCode, { delay: 100 })
@@ -604,11 +617,14 @@ export class TwitterScraper {
             'div[role="button"][data-testid="ocfEnterTextNextButton"]'
           )
           .then((element) => element?.click())
-          .catch((error) => new Error('OTP next button not found.', error))
+          .catch(
+            (error) =>
+              new TwitterOperationError('OTP next button not found.', error)
+          )
 
         await new Promise<void>((resolve, reject) => {
           setTimeout(() => {
-            reject(new Error('Login timeout.'))
+            reject(new TwitterTimeoutError('Login timeout.'))
           }, 10_000)
           const interval = setInterval(() => {
             if (loginPage.url() === 'https://twitter.com/home') {
@@ -691,7 +707,9 @@ export class TwitterScraper {
    */
   private async newPage() {
     if (!this.browser) {
-      throw new Error('Failed to create page. Browser is not initialized.')
+      throw new TwitterOperationError(
+        'Failed to create page. Browser is not initialized.'
+      )
     }
     const page = await this.browser.newPage()
 

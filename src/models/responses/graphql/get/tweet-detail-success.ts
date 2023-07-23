@@ -4,7 +4,7 @@
 
 export interface GraphQLGetTweetDetailSuccessResponse {
   data: {
-    threaded_conversation_with_injections_v2: {
+    threaded_conversation_with_injections_v2?: {
       instructions: {
         type: string
         entries?: {
@@ -60,7 +60,7 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                                 indices: number[]
                               }[]
                             }
-                            url: {
+                            url?: {
                               urls: {
                                 display_url: string
                                 expanded_url: string
@@ -88,11 +88,12 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                           screen_name: string
                           statuses_count: number
                           translator_type: string
-                          url: string
+                          url?: string
                           verified: boolean
                           verified_type?: string
                           want_retweets: boolean
                           withheld_in_countries: unknown[]
+                          needs_phone_verification?: boolean
                         }
                       }
                     }
@@ -168,8 +169,8 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                     full_text: string
                     is_quote_status: boolean
                     lang: string
-                    possibly_sensitive: boolean
-                    possibly_sensitive_editable: boolean
+                    possibly_sensitive?: boolean
+                    possibly_sensitive_editable?: boolean
                     quote_count: number
                     reply_count: number
                     retweet_count: number
@@ -699,4 +700,28 @@ export interface GraphQLGetTweetDetailSuccessResponse {
       }
     }
   }
+  errors?: {
+    message: string
+    locations: {
+      line: number
+      column: number
+    }[]
+    path: string[]
+    extensions: {
+      name: string
+      source: string
+      code: number
+      kind: string
+      tracing: {
+        trace_id: string
+      }
+    }
+    code: number
+    kind: string
+    name: string
+    source: string
+    tracing: {
+      trace_id: string
+    }
+  }[]
 }

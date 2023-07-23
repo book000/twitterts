@@ -3,9 +3,11 @@ import { BaseParser } from './base'
 import { Status } from 'twitter-d'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Twitter } from '../twitter'
-import { GraphQLGetUserTweetsSuccessResponse } from '../models/responses/graphql/get/user-tweets-success'
 import { CustomUserTweetEntry } from '../models/responses/custom/custom-user-tweet-entry'
 import { CustomTweetLegacyObject } from '../models/responses/custom/custom-tweet-legacy-object'
+import { GraphQLGetUserTweetsResponse } from '../models/responses/endpoints'
+import { GraphQLGetUserTweetsErrorResponse } from '../models/responses/graphql/get/user-tweets-error'
+import { ResponseParseError, TwitterOperationError } from '../models/exceptions'
 
 /**
  * {@link Twitter.getUserTweets} のレスポンスパーサー
@@ -16,8 +18,12 @@ export class UserTweetsParser extends BaseParser<'UserTweets'> {
   /**
    * @param response {@link Twitter['getUserTweets']} のレスポンス
    */
-  constructor(response: GraphQLGetUserTweetsSuccessResponse) {
+  constructor(response: GraphQLGetUserTweetsResponse) {
     super(response)
+
+    if (this.isErrorResponse(this.response)) {
+      throw new TwitterOperationError(this.response.errors[0].message)
+    }
 
     const entries =
       this.response.data.user.result.timeline_v2.timeline.instructions
@@ -37,14 +43,16 @@ export class UserTweetsParser extends BaseParser<'UserTweets'> {
     this.tweets = rawTweets.map((tweet) => {
       const legacy = tweet.legacy ?? tweet.tweet?.legacy ?? undefined
       if (!legacy) {
-        throw new Error('Failed to get legacy')
+        throw new ResponseParseError('Failed to get legacy')
       }
       const userResult =
         tweet.core?.user_results.result ??
         tweet.tweet?.core.user_results.result ??
         undefined
       if (!userResult) {
-        throw new Error(`Failed to get userResult ${legacy.id_str}`)
+        throw new ResponseParseError(
+          `Failed to get userResult ${legacy.id_str}`
+        )
       }
       return {
         id: Number(legacy.id_str),
@@ -76,5 +84,11 @@ export class UserTweetsParser extends BaseParser<'UserTweets'> {
    */
   public getTweets() {
     return this.tweets
+  }
+
+  private isErrorResponse(
+    response: GraphQLGetUserTweetsResponse
+  ): response is GraphQLGetUserTweetsErrorResponse {
+    return 'errors' in response && response.errors && response.errors.length > 0
   }
 }

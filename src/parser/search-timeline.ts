@@ -6,6 +6,7 @@ import { Status } from 'twitter-d'
 import { Twitter } from '../twitter'
 import { GraphQLGetSearchTimelineResponse } from '../models/responses/endpoints'
 import { CustomTweetLegacyObject } from '../models/responses/custom/custom-tweet-legacy-object'
+import { ResponseParseError } from '../models/exceptions'
 
 /**
  * {@link Twitter.searchTweets} のレスポンスパーサー
@@ -38,11 +39,11 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
     this.tweets = rawTweets.map((tweet) => {
       const legacy = tweet.legacy ?? undefined
       if (!legacy) {
-        throw new Error('Failed to get legacy')
+        throw new ResponseParseError('Failed to get legacy')
       }
       const userResult = tweet.core.user_results.result ?? undefined
       if (!userResult) {
-        throw new Error('Failed to get userResult')
+        throw new ResponseParseError('Failed to get userResult')
       }
       return {
         id: Number(legacy.id_str),

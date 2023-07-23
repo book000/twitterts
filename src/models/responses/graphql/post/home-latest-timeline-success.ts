@@ -97,6 +97,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                             verified_type?: string
                             url?: string
                             followed_by?: boolean
+                            needs_phone_verification?: boolean
                           }
                           professional?: {
                             rest_id: string
@@ -4117,7 +4118,12 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                           description: string
                           entities: {
                             description: {
-                              urls: unknown[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
                             }
                             url?: {
                               urls: {
@@ -4152,6 +4158,16 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                           withheld_in_countries: unknown[]
                           followed_by?: boolean
                           profile_banner_url?: string
+                          verified_type?: string
+                        }
+                        professional?: {
+                          rest_id: string
+                          professional_type: string
+                          category: {
+                            id: number
+                            name: string
+                            icon_name: string
+                          }[]
                         }
                       }
                     }
