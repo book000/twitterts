@@ -219,12 +219,17 @@ export const ObjectConverter = {
   convertToStatus(tweet: CustomTweetObject): Status {
     // ここはエラー出てもts-ignoreで黙らせるのではなく、型定義を変更するべき。
     // ObjectConverterで適宜対応（number[] -> [number, number] で大体死んでる）
-    const legacy = tweet.legacy ?? undefined
+    const legacy = tweet.legacy ?? tweet.tweet?.legacy ?? undefined
     if (!legacy) {
       throw new ResponseParseError('Failed to get legacy')
     }
-    const userResult = tweet.core?.user_results.result ?? undefined
+    const userResult =
+      tweet.core?.user_results.result ??
+      tweet.tweet?.core?.user_results.result ??
+      undefined
     if (!userResult) {
+      // eslint-disable-next-line no-console
+      console.log(tweet)
       throw new ResponseParseError('Failed to get userResult')
     }
     return {

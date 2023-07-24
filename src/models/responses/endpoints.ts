@@ -31,6 +31,7 @@ import { GraphQLPostPutClientEducationFlagSuccessResponse } from './graphql/post
 import { GraphQLGetQuickPromoteEligibilitySuccessResponse } from './graphql/get/quick-promote-eligibility-success'
 import { GraphQLGetSearchTimelineSuccessResponse } from './graphql/get/search-timeline-success'
 import { GraphQLGetTweetDetailSuccessResponse } from './graphql/get/tweet-detail-success'
+import { GraphQLGetTweetDetailErrorResponse } from './graphql/get/tweet-detail-error'
 import { GraphQLPostUnfavoriteTweetSuccessResponse } from './graphql/post/unfavorite-tweet-success'
 import { GraphQLGetUserByRestIdSuccessResponse } from './graphql/get/user-by-rest-id-success'
 import { GraphQLGetUserByScreenNameSuccessResponse } from './graphql/get/user-by-screen-name-success'
@@ -107,7 +108,9 @@ export type GraphQLGetQuickPromoteEligibilityResponse =
 export type GraphQLGetSearchTimelineResponse =
   GraphQLGetSearchTimelineSuccessResponse
 /** GraphQL TweetDetail GET レスポンスモデル */
-export type GraphQLGetTweetDetailResponse = GraphQLGetTweetDetailSuccessResponse
+export type GraphQLGetTweetDetailResponse =
+  | GraphQLGetTweetDetailSuccessResponse
+  | GraphQLGetTweetDetailErrorResponse
 /** GraphQL UserByRestId GET レスポンスモデル */
 export type GraphQLGetUserByRestIdResponse =
   GraphQLGetUserByRestIdSuccessResponse

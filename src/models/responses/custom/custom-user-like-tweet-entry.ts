@@ -84,7 +84,7 @@ export interface CustomUserLikeTweetEntry {
                   translator_type: string
                   verified: boolean
                   want_retweets: boolean
-                  withheld_in_countries: unknown[]
+                  withheld_in_countries: string[]
                   url?: string
                   following?: boolean
                   verified_type?: string
@@ -610,6 +610,14 @@ export interface CustomUserLikeTweetEntry {
                           w: number
                         }[]
                       }
+                      all?: {
+                        tags: {
+                          user_id: string
+                          name: string
+                          screen_name: string
+                          type: string
+                        }[]
+                      }
                     }
                     sizes: {
                       large: {
@@ -702,6 +710,14 @@ export interface CustomUserLikeTweetEntry {
                           y: number
                           h: number
                           w: number
+                        }[]
+                      }
+                      all?: {
+                        tags: {
+                          user_id: string
+                          name: string
+                          screen_name: string
+                          type: string
                         }[]
                       }
                     }
@@ -1183,7 +1199,12 @@ export interface CustomUserLikeTweetEntry {
                 text: string
                 entity_set: {
                   user_mentions: unknown[]
-                  urls: unknown[]
+                  urls: {
+                    display_url: string
+                    expanded_url: string
+                    url: string
+                    indices: number[]
+                  }[]
                   hashtags: {
                     indices: number[]
                     text: string
@@ -1278,7 +1299,7 @@ export interface CustomUserLikeTweetEntry {
               is_edit_eligible: boolean
               edits_remaining: string
             }
-            edit_perspective: {
+            edit_perspective?: {
               favorited: boolean
               retweeted: boolean
             }
@@ -1347,6 +1368,14 @@ export interface CustomUserLikeTweetEntry {
                         w: number
                       }[]
                     }
+                    all?: {
+                      tags: {
+                        user_id: string
+                        name: string
+                        screen_name: string
+                        type: string
+                      }[]
+                    }
                   }
                   sizes: {
                     large: {
@@ -1382,7 +1411,12 @@ export interface CustomUserLikeTweetEntry {
                   }
                 }[]
                 user_mentions: unknown[]
-                urls: unknown[]
+                urls: {
+                  display_url: string
+                  expanded_url: string
+                  url: string
+                  indices: number[]
+                }[]
                 hashtags: {
                   indices: number[]
                   text: string
@@ -1433,6 +1467,14 @@ export interface CustomUserLikeTweetEntry {
                         y: number
                         h: number
                         w: number
+                      }[]
+                    }
+                    all?: {
+                      tags: {
+                        user_id: string
+                        name: string
+                        screen_name: string
+                        type: string
                       }[]
                     }
                   }

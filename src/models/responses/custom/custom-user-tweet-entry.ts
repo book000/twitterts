@@ -644,7 +644,7 @@ export interface CustomUserTweetEntry {
                     edits_remaining: string
                   }
                 }
-                edit_perspective: {
+                edit_perspective?: {
                   favorited: boolean
                   retweeted: boolean
                 }

@@ -874,6 +874,7 @@ class EndPointTypeGenerator {
         )
         return `import { ${name} } from './${filename}'`
       })
+      .filter((value, index, self) => self.indexOf(value) === index)
       .join('\n')
   }
 

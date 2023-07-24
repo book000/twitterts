@@ -95,7 +95,7 @@ export interface CustomTweetObject {
           url?: string
           verified: boolean
           want_retweets: boolean
-          withheld_in_countries: unknown[]
+          withheld_in_countries: string[]
           verified_type?: string
           needs_phone_verification?: boolean
           followed_by?: boolean
@@ -743,7 +743,7 @@ export interface CustomTweetObject {
             edits_remaining: string
           }
         }
-        edit_perspective: {
+        edit_perspective?: {
           favorited: boolean
           retweeted: boolean
         }
@@ -2070,6 +2070,14 @@ export interface CustomTweetObject {
                   w: number
                 }[]
               }
+              all?: {
+                tags: {
+                  user_id: string
+                  name: string
+                  screen_name: string
+                  type: string
+                }[]
+              }
             }
             sizes: {
               large: {
@@ -2175,6 +2183,14 @@ export interface CustomTweetObject {
                   y: number
                   h: number
                   w: number
+                }[]
+              }
+              all?: {
+                tags: {
+                  user_id: string
+                  name: string
+                  screen_name: string
+                  type: string
                 }[]
               }
             }
@@ -2752,7 +2768,12 @@ export interface CustomTweetObject {
         text: string
         entity_set: {
           user_mentions: unknown[]
-          urls: unknown[]
+          urls: {
+            display_url: string
+            expanded_url: string
+            url: string
+            indices: number[]
+          }[]
           hashtags: {
             indices: number[]
             text: string
@@ -2865,7 +2886,7 @@ export interface CustomTweetObject {
       is_edit_eligible: boolean
       edits_remaining: string
     }
-    edit_perspective: {
+    edit_perspective?: {
       favorited: boolean
       retweeted: boolean
     }
@@ -2949,6 +2970,14 @@ export interface CustomTweetObject {
                 y: number
                 h: number
                 w: number
+              }[]
+            }
+            all?: {
+              tags: {
+                user_id: string
+                name: string
+                screen_name: string
+                type: string
               }[]
             }
           }
@@ -3340,6 +3369,14 @@ export interface CustomTweetObject {
                 y: number
                 h: number
                 w: number
+              }[]
+            }
+            all?: {
+              tags: {
+                user_id: string
+                name: string
+                screen_name: string
+                type: string
               }[]
             }
           }
