@@ -245,7 +245,7 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                               is_edit_eligible: boolean
                               edits_remaining: string
                             }
-                            edit_perspective: {
+                            edit_perspective?: {
                               favorited: boolean
                               retweeted: boolean
                             }
@@ -274,7 +274,10 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                                   url: string
                                   indices: number[]
                                 }[]
-                                hashtags: unknown[]
+                                hashtags: {
+                                  indices: number[]
+                                  text: string
+                                }[]
                                 symbols: unknown[]
                                 media?: {
                                   display_url: string
@@ -1515,7 +1518,7 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                                   edits_remaining: string
                                 }
                               }
-                              edit_perspective: {
+                              edit_perspective?: {
                                 favorited: boolean
                                 retweeted: boolean
                               }
@@ -4094,7 +4097,7 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                           is_edit_eligible: boolean
                           edits_remaining: string
                         }
-                        edit_perspective: {
+                        edit_perspective?: {
                           favorited: boolean
                           retweeted: boolean
                         }

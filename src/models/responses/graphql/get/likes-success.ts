@@ -93,7 +93,7 @@ export interface GraphQLGetLikesSuccessResponse {
                                 translator_type: string
                                 verified: boolean
                                 want_retweets: boolean
-                                withheld_in_countries: unknown[]
+                                withheld_in_countries: string[]
                                 url?: string
                                 following?: boolean
                                 verified_type?: string
@@ -619,6 +619,14 @@ export interface GraphQLGetLikesSuccessResponse {
                                         w: number
                                       }[]
                                     }
+                                    all?: {
+                                      tags: {
+                                        user_id: string
+                                        name: string
+                                        screen_name: string
+                                        type: string
+                                      }[]
+                                    }
                                   }
                                   sizes: {
                                     large: {
@@ -711,6 +719,14 @@ export interface GraphQLGetLikesSuccessResponse {
                                         y: number
                                         h: number
                                         w: number
+                                      }[]
+                                    }
+                                    all?: {
+                                      tags: {
+                                        user_id: string
+                                        name: string
+                                        screen_name: string
+                                        type: string
                                       }[]
                                     }
                                   }
@@ -1192,7 +1208,12 @@ export interface GraphQLGetLikesSuccessResponse {
                               text: string
                               entity_set: {
                                 user_mentions: unknown[]
-                                urls: unknown[]
+                                urls: {
+                                  display_url: string
+                                  expanded_url: string
+                                  url: string
+                                  indices: number[]
+                                }[]
                                 hashtags: {
                                   indices: number[]
                                   text: string
@@ -1287,7 +1308,7 @@ export interface GraphQLGetLikesSuccessResponse {
                             is_edit_eligible: boolean
                             edits_remaining: string
                           }
-                          edit_perspective: {
+                          edit_perspective?: {
                             favorited: boolean
                             retweeted: boolean
                           }
@@ -1356,6 +1377,14 @@ export interface GraphQLGetLikesSuccessResponse {
                                       w: number
                                     }[]
                                   }
+                                  all?: {
+                                    tags: {
+                                      user_id: string
+                                      name: string
+                                      screen_name: string
+                                      type: string
+                                    }[]
+                                  }
                                 }
                                 sizes: {
                                   large: {
@@ -1391,7 +1420,12 @@ export interface GraphQLGetLikesSuccessResponse {
                                 }
                               }[]
                               user_mentions: unknown[]
-                              urls: unknown[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
                               hashtags: {
                                 indices: number[]
                                 text: string
@@ -1442,6 +1476,14 @@ export interface GraphQLGetLikesSuccessResponse {
                                       y: number
                                       h: number
                                       w: number
+                                    }[]
+                                  }
+                                  all?: {
+                                    tags: {
+                                      user_id: string
+                                      name: string
+                                      screen_name: string
+                                      type: string
                                     }[]
                                   }
                                 }
@@ -1538,4 +1580,30 @@ export interface GraphQLGetLikesSuccessResponse {
       }
     }
   }
+  errors?: {
+    message: string
+    locations: {
+      line: number
+      column: number
+    }[]
+    path: (number | string)[]
+    extensions: {
+      name: string
+      source: string
+      retry_after: number
+      code: number
+      kind: string
+      tracing: {
+        trace_id: string
+      }
+    }
+    code: number
+    kind: string
+    name: string
+    source: string
+    retry_after: number
+    tracing: {
+      trace_id: string
+    }
+  }[]
 }

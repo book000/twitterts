@@ -23,6 +23,7 @@ export * from './models/responses/graphql/get/lists-management-page-timeline-suc
 export * from './models/responses/graphql/get/profile-spotlights-query-success'
 export * from './models/responses/graphql/get/quick-promote-eligibility-success'
 export * from './models/responses/graphql/get/search-timeline-success'
+export * from './models/responses/graphql/get/tweet-detail-error'
 export * from './models/responses/graphql/get/tweet-detail-success'
 export * from './models/responses/graphql/get/user-by-rest-id-success'
 export * from './models/responses/graphql/get/user-by-screen-name-error'

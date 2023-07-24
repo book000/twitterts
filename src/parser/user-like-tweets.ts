@@ -57,6 +57,8 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
   private isErrorResponse(
     response: GraphQLGetLikesResponse
   ): response is GraphQLGetLikesErrorResponse {
-    return 'errors' in response && response.errors && response.errors.length > 0
+    return (
+      'errors' in response && !!response.errors && response.errors.length > 0
+    )
   }
 }
