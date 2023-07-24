@@ -228,8 +228,6 @@ export const ObjectConverter = {
       tweet.tweet?.core?.user_results.result ??
       undefined
     if (!userResult) {
-      // eslint-disable-next-line no-console
-      console.log(tweet)
       throw new ResponseParseError('Failed to get userResult')
     }
     return {
