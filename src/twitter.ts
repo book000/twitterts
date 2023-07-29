@@ -12,6 +12,7 @@ import {
   UserLikeTweetsOptions as GetUserLikeTweetsOptions,
   UserTweetsOptions as GetUserTweetsOptions,
   GetScreenNameByUserIdOptions,
+  GetUserByUserIdOptions,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
 import { UserLikeTweetsParser } from './parser/user-like-tweets'
@@ -55,6 +56,7 @@ export class Twitter {
    * @returns ユーザー情報
    */
   public async getUserByScreenName(options: GetUserByScreenNameOptions) {
+    // TODO: ユーザー情報をv1.1あたりのモデルに変換する処理を入れた方がいい
     if (!options.screenName) {
       throw new IllegalArgumentError('screenName is required')
     }
@@ -79,6 +81,22 @@ export class Twitter {
    * @returns スクリーンネーム
    */
   public async getScreenNameByUserId(options: GetScreenNameByUserIdOptions) {
+    if (!options.userId) {
+      throw new IllegalArgumentError('userId is required')
+    }
+
+    const user = await this.getUserByUserId(options)
+    return user.data.user.result.legacy.screen_name
+  }
+
+  /**
+   * ユーザー ID からスクリーンネームを取得する
+   *
+   * @param userId ユーザー ID
+   * @returns スクリーンネーム
+   */
+  public async getUserByUserId(options: GetUserByUserIdOptions) {
+    // TODO: ユーザー情報をv1.1あたりのモデルに変換する処理を入れた方がいい
     if (!options.userId) {
       throw new IllegalArgumentError('userId is required')
     }
