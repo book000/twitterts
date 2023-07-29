@@ -203,7 +203,7 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                         is_edit_eligible: boolean
                         edits_remaining: string
                       }
-                      edit_perspective: {
+                      edit_perspective?: {
                         favorited: boolean
                         retweeted: boolean
                       }
@@ -623,7 +623,7 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                             is_edit_eligible: boolean
                             edits_remaining: string
                           }
-                          edit_perspective: {
+                          edit_perspective?: {
                             favorited: boolean
                             retweeted: boolean
                           }

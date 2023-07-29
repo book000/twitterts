@@ -400,6 +400,7 @@ export interface CustomUserLikeTweetEntry {
                 ext_alt_text?: string
                 sensitive_media_warning?: {
                   other: boolean
+                  adult_content?: boolean
                 }
               }[]
             }
@@ -1212,7 +1213,11 @@ export interface CustomUserLikeTweetEntry {
                   symbols: unknown[]
                 }
                 richtext?: {
-                  richtext_tags: unknown[]
+                  richtext_tags: {
+                    from_index: number
+                    to_index: number
+                    richtext_types: string[]
+                  }[]
                 }
                 media?: {
                   inline_media: unknown[]

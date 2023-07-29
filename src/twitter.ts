@@ -12,6 +12,7 @@ import {
   UserLikeTweetsOptions as GetUserLikeTweetsOptions,
   UserTweetsOptions as GetUserTweetsOptions,
   GetScreenNameByUserIdOptions,
+  GetUserByUserIdOptions,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
 import { UserLikeTweetsParser } from './parser/user-like-tweets'
@@ -55,6 +56,7 @@ export class Twitter {
    * @returns ユーザー情報
    */
   public async getUserByScreenName(options: GetUserByScreenNameOptions) {
+    // TODO: ユーザー情報をv1.1あたりのモデルに変換する処理を入れた方がいい
     if (!options.screenName) {
       throw new IllegalArgumentError('screenName is required')
     }
@@ -83,23 +85,38 @@ export class Twitter {
       throw new IllegalArgumentError('userId is required')
     }
 
-    const page = await this.scraper.getScraperPage()
-    const url = `https://twitter.com/intent/user?user_id=${options.userId}`
-    await page.goto(url)
-    const newUrl = await page.getRedirectTo(url)
-    await page.close()
+    const user = await this.getUserByUserId(options)
+    return user.data.user.result.legacy.screen_name
+  }
 
-    if (newUrl.endsWith('/404')) {
-      // https://twitter.com/404
+  /**
+   * ユーザー ID からスクリーンネームを取得する
+   *
+   * @param userId ユーザー ID
+   * @returns スクリーンネーム
+   */
+  public async getUserByUserId(options: GetUserByUserIdOptions) {
+    // TODO: ユーザー情報をv1.1あたりのモデルに変換する処理を入れた方がいい
+    if (!options.userId) {
+      throw new IllegalArgumentError('userId is required')
+    }
+
+    const page = await this.scraper.getScraperPage()
+    const response = await page.waitSingleResponse(
+      `https://twitter.com/intent/user?user_id=${options.userId}`,
+      'GET',
+      'GRAPHQL',
+      'UserByRestId'
+    )
+    await page.close()
+    if (this.isErrorResponse(response)) {
+      throw new TwitterOperationError(response.errors[0].message)
+    }
+    if (!response.data.user.result) {
       throw new UserNotFoundError()
     }
 
-    const regex = /https:\/\/twitter.com\/intent\/user\?screen_name=(.+)/
-    const match = newUrl.match(regex)
-    if (!match) {
-      throw new TwitterOperationError('Failed to get screen name')
-    }
-    return match[1]
+    return response
   }
 
   /**

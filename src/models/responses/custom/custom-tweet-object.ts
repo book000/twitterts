@@ -447,6 +447,7 @@ export interface CustomTweetObject {
         ext_alt_text?: string
         sensitive_media_warning?: {
           other: boolean
+          adult_content?: boolean
         }
       }[]
     }
@@ -2781,7 +2782,11 @@ export interface CustomTweetObject {
           symbols: unknown[]
         }
         richtext?: {
-          richtext_tags: unknown[]
+          richtext_tags: {
+            from_index: number
+            to_index: number
+            richtext_types: string[]
+          }[]
         }
         media?: {
           inline_media: unknown[]
@@ -3101,7 +3106,7 @@ export interface CustomTweetObject {
               is_edit_eligible: boolean
               edits_remaining: string
             }
-            edit_perspective: {
+            edit_perspective?: {
               favorited: boolean
               retweeted: boolean
             }

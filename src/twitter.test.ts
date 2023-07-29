@@ -48,6 +48,15 @@ describe('Twitter', () => {
     expect(response).toBe('book000')
   })
 
+  test('getUserByUserId', async () => {
+    const response = await twitter.getUserByUserId({
+      userId: '286048624',
+    })
+    expect(response).toBeTruthy()
+    expect(response.data).toBeTruthy()
+    expect(response.data.user.result.legacy.screen_name).toBe('book000')
+  })
+
   test('searchTweets:popular', async () => {
     const response = await twitter.searchTweets({
       query: 'from:book000',

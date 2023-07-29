@@ -18,6 +18,14 @@ export interface GetScreenNameByUserIdOptions {
 }
 
 /**
+ * {@link Twitter.getUserByUserId} のオプション
+ */
+export interface GetUserByUserIdOptions {
+  /** ユーザー ID */
+  userId: string
+}
+
+/**
  * {@link Twitter.searchTweets} の検索種別
  */
 export const SearchType = {

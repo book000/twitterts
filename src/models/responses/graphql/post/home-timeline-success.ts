@@ -82,7 +82,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             normal_followers_count: number
                             pinned_tweet_ids_str: string[]
                             possibly_sensitive: boolean
-                            profile_banner_url: string
+                            profile_banner_url?: string
                             profile_image_url_https: string
                             profile_interstitial_type: string
                             screen_name: string
@@ -373,6 +373,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       icon_name: string
                                     }[]
                                   }
+                                  has_nft_avatar?: boolean
                                 }
                               }
                             }
@@ -491,6 +492,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
                                   verified_type?: string
+                                  following?: boolean
                                 }
                                 professional?: {
                                   rest_id: string
@@ -501,6 +503,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     icon_name: string
                                   }[]
                                 }
+                                has_nft_avatar?: boolean
                               }
                             }
                           }
@@ -517,7 +520,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               edits_remaining: string
                             }
                           }
-                          edit_perspective: {
+                          edit_perspective?: {
                             favorited: boolean
                             retweeted: boolean
                           }
@@ -1645,7 +1648,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         is_edit_eligible: boolean
                         edits_remaining: string
                       }
-                      edit_perspective: {
+                      edit_perspective?: {
                         favorited: boolean
                         retweeted: boolean
                       }
@@ -1942,7 +1945,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 is_edit_eligible: boolean
                                 edits_remaining: string
                               }
-                              edit_perspective: {
+                              edit_perspective?: {
                                 favorited: boolean
                                 retweeted: boolean
                               }
@@ -2045,7 +2048,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       }[]
                                     }
                                   }[]
-                                  user_mentions: unknown[]
+                                  user_mentions: {
+                                    id_str: string
+                                    name: string
+                                    screen_name: string
+                                    indices: number[]
+                                  }[]
                                   urls: {
                                     display_url: string
                                     expanded_url: string
@@ -2673,6 +2681,47 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                   promotedTrend?: {
                     rest_id: string
                   }
+                  adMetadataContainer?: {
+                    dynamicCardContent: {
+                      card_type: string
+                      layout: {
+                        __typename: string
+                        components: {
+                          __typename: string
+                          media?: {
+                            id: string
+                            media_key: string
+                            media_id: string
+                            media_info: {
+                              __typename: string
+                              original_img_height: number
+                              original_img_width: number
+                              original_img_url: string
+                              color_info: {
+                                palette: {
+                                  percentage: number
+                                  rgb: {
+                                    blue: number
+                                    green: number
+                                    red: number
+                                  }
+                                }[]
+                              }
+                            }
+                          }
+                          destination_obj?: {
+                            __typename: string
+                            user_id: string
+                          }
+                          user?: {
+                            rest_id: string
+                          }
+                        }[]
+                      }
+                      display_options: {}
+                      card_fetch_state: string
+                    }
+                  }
                 }
               }
               feedbackInfo?: {
@@ -2769,8 +2818,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           verified: boolean
                           want_retweets: boolean
                           withheld_in_countries: unknown[]
+                          verified_type?: string
                         }
-                        super_follow_eligible: boolean
+                        super_follow_eligible?: boolean
                         professional?: {
                           rest_id: string
                           professional_type: string
@@ -2783,6 +2833,87 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                       }
                     }
                     userDisplayType: string
+                    socialContext?: {
+                      type: string
+                      contextType: string
+                      text: string
+                    }
+                    promotedMetadata?: {
+                      advertiser_results: {
+                        result: {
+                          __typename: string
+                          id: string
+                          rest_id: string
+                          affiliates_highlighted_label: {}
+                          has_graduated_access: boolean
+                          is_blue_verified: boolean
+                          profile_image_shape: string
+                          legacy: {
+                            can_dm: boolean
+                            can_media_tag: boolean
+                            created_at: string
+                            default_profile: boolean
+                            default_profile_image: boolean
+                            description: string
+                            entities: {
+                              description: {
+                                urls: {
+                                  display_url: string
+                                  expanded_url: string
+                                  url: string
+                                  indices: number[]
+                                }[]
+                              }
+                              url: {
+                                urls: {
+                                  display_url: string
+                                  expanded_url: string
+                                  url: string
+                                  indices: number[]
+                                }[]
+                              }
+                            }
+                            fast_followers_count: number
+                            favourites_count: number
+                            followers_count: number
+                            friends_count: number
+                            has_custom_timelines: boolean
+                            is_translator: boolean
+                            listed_count: number
+                            location: string
+                            media_count: number
+                            name: string
+                            normal_followers_count: number
+                            pinned_tweet_ids_str: unknown[]
+                            possibly_sensitive: boolean
+                            profile_banner_url: string
+                            profile_image_url_https: string
+                            profile_interstitial_type: string
+                            screen_name: string
+                            statuses_count: number
+                            translator_type: string
+                            url: string
+                            verified: boolean
+                            verified_type: string
+                            want_retweets: boolean
+                            withheld_in_countries: unknown[]
+                          }
+                        }
+                      }
+                      disclosureType: string
+                      experimentValues: {
+                        key: string
+                        value: string
+                      }[]
+                      impressionId: string
+                      impressionString: string
+                      clickTrackingInfo: {
+                        urlParams: {
+                          key: string
+                          value: string
+                        }[]
+                      }
+                    }
                   }
                   clientEventInfo: {
                     component: string
@@ -2801,12 +2932,20 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
               header?: {
                 displayType: string
                 text: string
-                socialContext: {
+                socialContext?: {
                   type: string
                   contextType: string
                   text: string
                 }
                 sticky: boolean
+              }
+              footer?: {
+                displayType: string
+                text: string
+                landingUrl: {
+                  url: string
+                  urlType: string
+                }
               }
             }
           }[]
