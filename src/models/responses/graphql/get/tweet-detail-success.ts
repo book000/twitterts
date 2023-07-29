@@ -82,7 +82,7 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                           normal_followers_count: number
                           pinned_tweet_ids_str: string[]
                           possibly_sensitive: boolean
-                          profile_banner_url: string
+                          profile_banner_url?: string
                           profile_image_url_https: string
                           profile_interstitial_type: string
                           screen_name: string
@@ -357,6 +357,7 @@ export interface GraphQLGetTweetDetailSuccessResponse {
               cursorType?: string
               displayTreatment?: {
                 actionText: string
+                labelText?: string
               }
               text?: string
               display_type?: string
@@ -378,7 +379,20 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                             __typename: string
                             id: string
                             rest_id: string
-                            affiliates_highlighted_label: {}
+                            affiliates_highlighted_label: {
+                              label?: {
+                                url: {
+                                  url: string
+                                  urlType: string
+                                }
+                                badge: {
+                                  url: string
+                                }
+                                description: string
+                                userLabelType: string
+                                userLabelDisplayType: string
+                              }
+                            }
                             has_graduated_access: boolean
                             is_blue_verified: boolean
                             profile_image_shape: string
@@ -450,13 +464,13 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                         is_edit_eligible: boolean
                         edits_remaining: string
                       }
-                      edit_perspective: {
+                      edit_perspective?: {
                         favorited: boolean
                         retweeted: boolean
                       }
                       is_translatable: boolean
                       views: {
-                        count: string
+                        count?: string
                         state: string
                       }
                       source: string
@@ -650,13 +664,14 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                             }
                             video_info?: {
                               aspect_ratio: number[]
-                              duration_millis: number
+                              duration_millis?: number
                               variants: {
                                 bitrate?: number
                                 content_type: string
                                 url: string
                               }[]
                             }
+                            ext_alt_text?: string
                           }[]
                         }
                         favorite_count: number
@@ -835,7 +850,20 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                         __typename: string
                         id: string
                         rest_id: string
-                        affiliates_highlighted_label: {}
+                        affiliates_highlighted_label: {
+                          label?: {
+                            url: {
+                              url: string
+                              urlType: string
+                            }
+                            badge: {
+                              url: string
+                            }
+                            description: string
+                            userLabelType: string
+                            userLabelDisplayType: string
+                          }
+                        }
                         has_graduated_access: boolean
                         is_blue_verified: boolean
                         profile_image_shape: string
@@ -848,7 +876,12 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                           description: string
                           entities: {
                             description: {
-                              urls: unknown[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
                             }
                             url: {
                               urls: {
@@ -870,7 +903,7 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                           media_count: number
                           name: string
                           normal_followers_count: number
-                          pinned_tweet_ids_str: unknown[]
+                          pinned_tweet_ids_str: string[]
                           possibly_sensitive: boolean
                           profile_banner_url: string
                           profile_image_url_https: string
@@ -880,11 +913,11 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                           translator_type: string
                           url: string
                           verified: boolean
-                          verified_type: string
+                          verified_type?: string
                           want_retweets: boolean
                           withheld_in_countries: unknown[]
                         }
-                        professional: {
+                        professional?: {
                           rest_id: string
                           professional_type: string
                           category: {
