@@ -276,10 +276,12 @@ export class Twitter {
       throw new IllegalArgumentError('tweetId is required')
     }
     const page = await this.scraper.getScraperPage()
-    await page.goto(
-      `https://twitter.com/intent/like?tweet_id=${options.tweetId}`
+    const responseDetail = page.waitSingleResponse(
+      `https://twitter.com/intent/like?tweet_id=${options.tweetId}`,
+      'GET',
+      'GRAPHQL',
+      'TweetDetail'
     )
-    const responseDetail = page.shiftResponse('GET', 'GRAPHQL', 'TweetDetail')
     if (!responseDetail) {
       throw new TwitterOperationError('Failed to get tweet detail')
     }
