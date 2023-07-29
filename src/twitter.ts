@@ -84,22 +84,21 @@ export class Twitter {
     }
 
     const page = await this.scraper.getScraperPage()
-    const url = `https://twitter.com/intent/user?user_id=${options.userId}`
-    await page.goto(url)
-    const newUrl = await page.getRedirectTo(url)
+    const response = await page.waitSingleResponse(
+      `https://twitter.com/intent/user?user_id=${options.userId}`,
+      'GET',
+      'GRAPHQL',
+      'UserByRestId'
+    )
     await page.close()
-
-    if (newUrl.endsWith('/404')) {
-      // https://twitter.com/404
+    if (this.isErrorResponse(response)) {
+      throw new TwitterOperationError(response.errors[0].message)
+    }
+    if (!response.data.user.result) {
       throw new UserNotFoundError()
     }
 
-    const regex = /https:\/\/twitter.com\/intent\/user\?screen_name=(.+)/
-    const match = newUrl.match(regex)
-    if (!match) {
-      throw new TwitterOperationError('Failed to get screen name')
-    }
-    return match[1]
+    return response
   }
 
   /**

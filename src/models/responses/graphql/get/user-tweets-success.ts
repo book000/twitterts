@@ -760,7 +760,7 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                               id: string
                               rest_id: string
                               affiliates_highlighted_label: {
-                                label: {
+                                label?: {
                                   url: {
                                     url: string
                                     urlType: string
@@ -785,7 +785,12 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                                 description: string
                                 entities: {
                                   description: {
-                                    urls: unknown[]
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
                                   }
                                   url: {
                                     urls: {
@@ -821,7 +826,7 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                                 want_retweets: boolean
                                 withheld_in_countries: unknown[]
                               }
-                              professional: {
+                              professional?: {
                                 rest_id: string
                                 professional_type: string
                                 category: {
@@ -3117,7 +3122,7 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                             is_edit_eligible: boolean
                             edits_remaining: string
                           }
-                          edit_perspective: {
+                          edit_perspective?: {
                             favorited: boolean
                             retweeted: boolean
                           }
@@ -3254,7 +3259,7 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                                     is_edit_eligible: boolean
                                     edits_remaining: string
                                   }
-                                  edit_perspective: {
+                                  edit_perspective?: {
                                     favorited: boolean
                                     retweeted: boolean
                                   }
@@ -3971,6 +3976,8 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                           key: string
                           value: string
                         }[]
+                        urlOverride?: string
+                        urlOverrideType?: string
                       }
                       impressionString?: string
                     }
