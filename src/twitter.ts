@@ -293,7 +293,7 @@ export class Twitter {
     // ツイートページを閉じる
     try {
       const url = `https://twitter.com/i/status/${options.tweetId}`
-      const responseDetail = page.waitSingleResponse(
+      const responseDetail = await page.waitSingleResponse(
         url,
         'GET',
         'GRAPHQL',
@@ -341,7 +341,7 @@ export class Twitter {
         10_000
       )
 
-      await page.waitAndClick(likeButtonSelector)
+      await page.waitAndClick(likeButtonSelector, true)
 
       // いいね完了まで待つ
       const responseFavorite = await responseFavoritePromise
@@ -385,7 +385,7 @@ export class Twitter {
     // ツイートページを閉じる
     try {
       const url = `https://twitter.com/i/status/${options.tweetId}`
-      const responseDetail = page.waitSingleResponse(
+      const responseDetail = await page.waitSingleResponse(
         url,
         'GET',
         'GRAPHQL',
@@ -433,7 +433,7 @@ export class Twitter {
         10_000
       )
 
-      await page.waitAndClick(unlikeButtonSelector)
+      await page.waitAndClick(unlikeButtonSelector, true)
 
       // いいね完了まで待つ
       const responseFavorite = await responseFavoritePromise

@@ -441,7 +441,11 @@ export class TwitterScraperPage {
    *
    * @param selector 要素のセレクタ
    */
-  public async waitAndClick(selector: string, timeout?: number) {
+  public async waitAndClick(
+    selector: string,
+    isEvaluate = false,
+    timeout?: number
+  ) {
     const element = await this.page
       .waitForSelector(selector, {
         timeout: timeout || 30_000,
@@ -451,7 +455,15 @@ export class TwitterScraperPage {
       throw new TwitterOperationError(`Element not found: ${selector}`)
     }
     await this.page.evaluate((element) => element?.scrollIntoView(), element)
-    await element.click()
+    await (isEvaluate
+      ? this.page.evaluate((selector) => {
+          const element = document.querySelector(selector)
+          if (element) {
+            // @ts-ignore
+            element.click()
+          }
+        }, selector)
+      : element.click())
   }
 
   /**
