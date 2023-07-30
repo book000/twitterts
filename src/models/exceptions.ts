@@ -18,6 +18,15 @@ export class AlreadyLikedError extends TwitterTsError {
 }
 
 /**
+ * ユーザーがすでに「いいね！」をしていないツイートに「いいね！」を解除しようとした場合
+ */
+export class NotLikedError extends TwitterTsError {
+  constructor() {
+    super('Not liked')
+  }
+}
+
+/**
  * ユーザーが存在しない場合
  */
 export class UserNotFoundError extends TwitterTsError {
@@ -39,4 +48,4 @@ export class TwitterOperationError extends TwitterTsError {}
 /**
  * Twitterでの操作でタイムアウトした場合
  */
-export class TwitterTimeoutError extends TwitterTsError {}
+export class TwitterTimeoutError extends TwitterOperationError {}

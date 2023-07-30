@@ -80,3 +80,11 @@ export interface LikeTweetOptions {
   /** ツイート ID */
   tweetId: string
 }
+
+/**
+ * {@link Twitter["unlikeTweet"]} のオプション
+ */
+export interface UnlikeTweetOptions {
+  /** ツイート ID */
+  tweetId: string
+}

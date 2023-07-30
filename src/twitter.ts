@@ -1,7 +1,10 @@
+import { TimeoutError } from 'puppeteer-core'
 import {
   AlreadyLikedError,
   IllegalArgumentError,
+  NotLikedError,
   TwitterOperationError,
+  TwitterTimeoutError,
   UserNotFoundError,
 } from './models/exceptions'
 import {
@@ -13,6 +16,7 @@ import {
   UserTweetsOptions as GetUserTweetsOptions,
   GetScreenNameByUserIdOptions,
   GetUserByUserIdOptions,
+  UnlikeTweetOptions,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
 import { UserLikeTweetsParser } from './parser/user-like-tweets'
@@ -276,36 +280,178 @@ export class Twitter {
       throw new IllegalArgumentError('tweetId is required')
     }
     const page = await this.scraper.getScraperPage()
-    const responseDetail = page.waitSingleResponse(
-      `https://twitter.com/intent/like?tweet_id=${options.tweetId}`,
-      'GET',
-      'GRAPHQL',
-      'TweetDetail'
-    )
-    if (!responseDetail) {
-      throw new TwitterOperationError('Failed to get tweet detail')
-    }
-    if (this.isErrorResponse(responseDetail)) {
-      throw new TwitterOperationError(responseDetail.errors[0].message)
-    }
 
-    await page.waitAndClick(
-      'div[role="button"][data-testid="confirmationSheetConfirm"]'
-    )
-    const responseFavorite = page.shiftResponse(
-      'POST',
-      'GRAPHQL',
-      'FavoriteTweet'
-    )
-    if (!responseFavorite) {
-      throw new AlreadyLikedError()
-    }
-    await page.close()
+    // ツイートページを開く (30sec timeout)
+    // -> 削除済みその他でツイートが存在しない場合は TwitterOperationError を投げる (TweetDetail のレスポンスがerrorになる)
 
-    if (this.isErrorResponse(responseFavorite)) {
-      throw new TwitterOperationError(responseFavorite.errors[0].message)
+    // いいねボタンが表示されるまで待つ (10sec timeout)
+    // -> いいねボタンがすでにクリック済みの場合は AlreadyLikedError を投げる
+    // -> いいねボタンが表示されなかった場合は TwitterOperationError を投げる
+    // いいねボタンをクリックする
+    // いいね完了まで待つ (10sec timeout)
+    // -> いいね完了しなかった場合は TwitterOperationError を投げる
+    // ツイートページを閉じる
+    try {
+      const url = `https://twitter.com/i/status/${options.tweetId}`
+      const responseDetail = page.waitSingleResponse(
+        url,
+        'GET',
+        'GRAPHQL',
+        'TweetDetail',
+        30_000
+      )
+      if (!responseDetail) {
+        throw new TwitterOperationError('Failed to get tweet detail')
+      }
+
+      // いいねボタンが表示されるまで待つ
+      const likeButtonSelector =
+        'article[tabindex="-1"] div[role="button"][data-testid="like"]'
+      const unlikeButtonSelector =
+        'article[tabindex="-1"] div[role="button"][data-testid="unlike"]'
+      const likeButton = await page.page.waitForSelector(
+        `${likeButtonSelector}, ${unlikeButtonSelector}`,
+        {
+          timeout: 10_000,
+        }
+      )
+      if (!likeButton) {
+        throw new TwitterOperationError('Failed to get like button')
+      }
+      const isLiked = await page.page.evaluate(
+        (likeButtonSelector, unlikeButtonSelector) => {
+          return (
+            document.querySelector(likeButtonSelector) === null &&
+            document.querySelector(unlikeButtonSelector) !== null
+          )
+        },
+        likeButtonSelector,
+        unlikeButtonSelector
+      )
+      if (isLiked) {
+        throw new AlreadyLikedError()
+      }
+
+      // いいねボタンをクリックする
+      const responseFavoritePromise = page.waitSingleResponse(
+        null,
+        'POST',
+        'GRAPHQL',
+        'FavoriteTweet',
+        10_000
+      )
+
+      await page.waitAndClick(likeButtonSelector)
+
+      // いいね完了まで待つ
+      const responseFavorite = await responseFavoritePromise
+      if (!responseFavorite) {
+        throw new TwitterOperationError('Failed to favorite tweet')
+      }
+
+      // ツイートページを閉じる
+      await page.close()
+      return responseFavorite.data.favorite_tweet
+    } catch (error) {
+      await page.close()
+      // if timeout
+      if (error instanceof TimeoutError) {
+        throw new TwitterTimeoutError('Failed to operate twitter')
+      }
+      throw error
     }
-    return responseFavorite.data.favorite_tweet
+  }
+
+  /**
+   * ツイートのいいねを解除する
+   *
+   * @param options いいね解除オプション
+   */
+  public async unlikeTweet(options: UnlikeTweetOptions) {
+    if (!options.tweetId) {
+      throw new IllegalArgumentError('tweetId is required')
+    }
+    const page = await this.scraper.getScraperPage()
+
+    // ツイートページを開く (30sec timeout)
+    // -> 削除済みその他でツイートが存在しない場合は TwitterOperationError を投げる (TweetDetail のレスポンスがerrorになる)
+
+    // いいね済みボタンが表示されるまで待つ (10sec timeout)
+    // -> いいねボタンがすでにクリック済みではない場合は NotLikedError を投げる
+    // -> いいねボタンが表示されなかった場合は TwitterOperationError を投げる
+    // いいねボタンをクリックする
+    // いいね完了まで待つ (10sec timeout)
+    // -> いいね完了しなかった場合は TwitterOperationError を投げる
+    // ツイートページを閉じる
+    try {
+      const url = `https://twitter.com/i/status/${options.tweetId}`
+      const responseDetail = page.waitSingleResponse(
+        url,
+        'GET',
+        'GRAPHQL',
+        'TweetDetail',
+        30_000
+      )
+      if (!responseDetail) {
+        throw new TwitterOperationError('Failed to get tweet detail')
+      }
+
+      // いいねボタンが表示されるまで待つ
+      const likeButtonSelector =
+        'article[tabindex="-1"] div[role="button"][data-testid="like"]'
+      const unlikeButtonSelector =
+        'article[tabindex="-1"] div[role="button"][data-testid="unlike"]'
+      const unlikeButton = await page.page.waitForSelector(
+        `${likeButtonSelector}, ${unlikeButtonSelector}`,
+        {
+          timeout: 10_000,
+        }
+      )
+      if (!unlikeButton) {
+        throw new TwitterOperationError('Failed to get unlike button')
+      }
+      const isLiked = await page.page.evaluate(
+        (likeButtonSelector, unlikeButtonSelector) => {
+          return (
+            document.querySelector(likeButtonSelector) === null &&
+            document.querySelector(unlikeButtonSelector) !== null
+          )
+        },
+        likeButtonSelector,
+        unlikeButtonSelector
+      )
+      if (!isLiked) {
+        throw new NotLikedError()
+      }
+
+      // いいねボタンをクリックする
+      const responseFavoritePromise = page.waitSingleResponse(
+        null,
+        'POST',
+        'GRAPHQL',
+        'UnfavoriteTweet',
+        10_000
+      )
+
+      await page.waitAndClick(unlikeButtonSelector)
+
+      // いいね完了まで待つ
+      const responseFavorite = await responseFavoritePromise
+      if (!responseFavorite) {
+        throw new TwitterOperationError('Failed to favorite tweet')
+      }
+
+      // ツイートページを閉じる
+      await page.close()
+      return responseFavorite.data.unfavorite_tweet
+    } catch (error) {
+      await page.close()
+      // if timeout
+      if (error instanceof TimeoutError) {
+        throw new TwitterTimeoutError('Failed to operate twitter')
+      }
+      throw error
+    }
   }
 
   /**
