@@ -114,7 +114,15 @@ describe('Twitter', () => {
       twitter.likeTweet({
         tweetId: '1682894968913022976',
       })
-    ).rejects.not.toThrow(TwitterOperationError)
+    ).resolves.not.toThrow(TwitterOperationError)
+  })
+
+  test('unlikeTweet', async () => {
+    await expect(
+      twitter.unlikeTweet({
+        tweetId: '1682894968913022976',
+      })
+    ).resolves.not.toThrow(TwitterOperationError)
   })
 
   afterAll(async () => {
