@@ -106,11 +106,12 @@ export class Twitter {
     }
 
     const page = await this.scraper.getScraperPage()
+    // UserByRestIdだとログインユーザー自分自身の場合に取得できない。
     const response = await page.waitSingleResponse(
       `https://twitter.com/intent/user?user_id=${options.userId}`,
       'GET',
       'GRAPHQL',
-      'UserByRestId'
+      'UserByScreenName'
     )
     await page.close()
     if (this.isErrorResponse(response)) {
