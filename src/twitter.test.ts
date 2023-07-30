@@ -111,7 +111,7 @@ describe('Twitter', () => {
   test('likeTweet', async () => {
     await expect(
       twitter.likeTweet({
-        tweetId: '1684269664631922688',
+        tweetId: '1685608131618086912',
       })
     ).resolves.toBe('Done')
   })
@@ -119,7 +119,7 @@ describe('Twitter', () => {
   test('unlikeTweet', async () => {
     await expect(
       twitter.unlikeTweet({
-        tweetId: '1684269664631922688',
+        tweetId: '1685608131618086912',
       })
     ).resolves.toBe('Done')
   })
