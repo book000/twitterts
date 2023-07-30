@@ -1,4 +1,3 @@
-import { TwitterOperationError } from './models/exceptions'
 import { SearchType } from './options'
 import { Twitter } from './twitter'
 
@@ -112,17 +111,17 @@ describe('Twitter', () => {
   test('likeTweet', async () => {
     await expect(
       twitter.likeTweet({
-        tweetId: '1682894968913022976',
+        tweetId: '1684269664631922688',
       })
-    ).resolves.not.toThrow(TwitterOperationError)
+    ).resolves.toBe('Done')
   })
 
   test('unlikeTweet', async () => {
     await expect(
       twitter.unlikeTweet({
-        tweetId: '1682894968913022976',
+        tweetId: '1684269664631922688',
       })
-    ).resolves.not.toThrow(TwitterOperationError)
+    ).resolves.toBe('Done')
   })
 
   afterAll(async () => {
