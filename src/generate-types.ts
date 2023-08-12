@@ -548,11 +548,6 @@ class CustomTypeGenerator {
       const response: GraphQLGetLikesSuccessResponse = JSON.parse(
         fs.readFileSync(path, 'utf8')
       )
-      if (!response.data.user.result.timeline_v2.timeline) {
-        // eslint-disable-next-line no-console
-        console.log(path, response)
-        continue
-      }
       const entries =
         response.data.user.result.timeline_v2.timeline.instructions
           .filter(
