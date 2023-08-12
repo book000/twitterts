@@ -518,6 +518,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   }[]
                                 }
                                 has_nft_avatar?: boolean
+                                super_follow_eligible?: boolean
                               }
                             }
                           }
@@ -3415,6 +3416,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     percentage: number
                                   }[]
                                 }
+                                boolean_value?: boolean
                               }
                             }[]
                             card_platform: {

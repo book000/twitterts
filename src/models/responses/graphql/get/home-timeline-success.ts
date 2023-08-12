@@ -2712,6 +2712,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     percentage: number
                                   }[]
                                 }
+                                boolean_value?: boolean
                               }
                             }[]
                             card_platform: {

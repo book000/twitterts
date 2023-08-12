@@ -2,7 +2,7 @@
 
 /** レスポンスツイートオブジェクト */
 
-export type CustomTweetObject = null | {
+export interface CustomTweetObject {
   __typename: string
   rest_id?: string
   core?: {

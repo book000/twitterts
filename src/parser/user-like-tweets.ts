@@ -37,9 +37,9 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
           )
         ) as CustomUserLikeTweetEntry[]
 
-    const rawTweets = entries.map(
-      (entry) => entry.content.itemContent.tweet_results.result
-    )
+    const rawTweets = entries
+      .map((entry) => entry.content.itemContent.tweet_results.result)
+      .filter((tweet) => !!tweet)
     this.tweets = rawTweets.map((tweet) =>
       ObjectConverter.convertToStatus(tweet as CustomTweetObject)
     )

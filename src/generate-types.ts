@@ -610,6 +610,7 @@ class CustomTypeGenerator {
           return (entry as CustomSearchTimelineEntry).content.itemContent
             .tweet_results.result
         })
+        .filter((entry) => !!entry)
         .map((entry) => createSchema(entry)),
       // UserTweets
       this.results
@@ -640,6 +641,7 @@ class CustomTypeGenerator {
           return (entry as CustomUserTweetEntry).content.itemContent
             .tweet_results.result
         })
+        .filter((entry) => !!entry)
         .map((entry) => createSchema(entry)),
       // Likes
       this.results
@@ -670,6 +672,7 @@ class CustomTypeGenerator {
           return (entry as CustomUserLikeTweetEntry).content.itemContent
             .tweet_results.result
         })
+        .filter((entry) => !!entry)
         .map((entry) => createSchema(entry)),
     ].flat()
 
