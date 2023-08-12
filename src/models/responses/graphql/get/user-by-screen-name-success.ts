@@ -124,6 +124,7 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           }[]
         }
         super_follow_eligible?: boolean
+        has_hidden_subscriptions_on_profile?: boolean
       }
     }
   }

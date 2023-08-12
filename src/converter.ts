@@ -217,6 +217,9 @@ export const ObjectConverter = {
    * @returns Status
    */
   convertToStatus(tweet: CustomTweetObject): Status {
+    if (!tweet) {
+      throw new ResponseParseError('Failed to get tweet')
+    }
     // ここはエラー出てもts-ignoreで黙らせるのではなく、型定義を変更するべき。
     // ObjectConverterで適宜対応（number[] -> [number, number] で大体死んでる）
     const legacy = tweet.legacy ?? tweet.tweet?.legacy ?? undefined

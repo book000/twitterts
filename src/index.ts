@@ -20,6 +20,7 @@ export * from './models/responses/graphql/get/list-latest-tweets-timeline-succes
 export * from './models/responses/graphql/get/list-pins-error'
 export * from './models/responses/graphql/get/list-pins-success'
 export * from './models/responses/graphql/get/lists-management-page-timeline-success'
+export * from './models/responses/graphql/get/profile-spotlights-query-error'
 export * from './models/responses/graphql/get/profile-spotlights-query-success'
 export * from './models/responses/graphql/get/quick-promote-eligibility-success'
 export * from './models/responses/graphql/get/search-timeline-success'

@@ -888,7 +888,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                 conversation_id_str: string
                                 display_text_range: number[]
                                 entities: {
-                                  media: {
+                                  media?: {
                                     display_url: string
                                     expanded_url: string
                                     id_str: string
@@ -969,14 +969,19 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     screen_name: string
                                     indices: number[]
                                   }[]
-                                  urls: unknown[]
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
+                                    indices: number[]
+                                  }[]
                                   hashtags: {
                                     indices: number[]
                                     text: string
                                   }[]
                                   symbols: unknown[]
                                 }
-                                extended_entities: {
+                                extended_entities?: {
                                   media: {
                                     display_url: string
                                     expanded_url: string
@@ -1088,6 +1093,18 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                 in_reply_to_screen_name?: string
                                 in_reply_to_status_id_str?: string
                                 in_reply_to_user_id_str?: string
+                                quoted_status_id_str?: string
+                                quoted_status_permalink?: {
+                                  url: string
+                                  expanded: string
+                                  display: string
+                                }
+                              }
+                              quotedRefResult?: {
+                                result: {
+                                  __typename: string
+                                  rest_id: string
+                                }
                               }
                             }
                           }
@@ -1181,6 +1198,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                       icon_name: string
                                     }[]
                                   }
+                                  super_follow_eligible?: boolean
                                 }
                               }
                             }
@@ -1551,7 +1569,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               media_count: number
                               name: string
                               normal_followers_count: number
-                              pinned_tweet_ids_str: unknown[]
+                              pinned_tweet_ids_str: string[]
                               possibly_sensitive: boolean
                               profile_banner_url: string
                               profile_image_url_https: string
@@ -1565,6 +1583,15 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               followed_by?: boolean
                               url?: string
                               verified_type?: string
+                            }
+                            professional?: {
+                              rest_id: string
+                              professional_type: string
+                              category: {
+                                id: number
+                                name: string
+                                icon_name: string
+                              }[]
                             }
                           }
                         }
@@ -2311,6 +2338,13 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                   landingUrl?: {
                     url: string
                     urlType: string
+                    urtEndpointOptions?: {
+                      title: string
+                      requestParams: {
+                        key: string
+                        value: string
+                      }[]
+                    }
                   }
                   topic?: {
                     description: string
@@ -2399,7 +2433,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                 normal_followers_count: number
                                 pinned_tweet_ids_str: string[]
                                 possibly_sensitive: boolean
-                                profile_banner_url: string
+                                profile_banner_url?: string
                                 profile_image_url_https: string
                                 profile_interstitial_type: string
                                 screen_name: string
@@ -2453,7 +2487,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               type: string
                               url: string
                               features: {
-                                large: {
+                                large?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -2461,7 +2495,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                medium: {
+                                medium?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -2469,7 +2503,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                small: {
+                                small?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -2477,7 +2511,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                orig: {
+                                orig?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -2511,7 +2545,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               original_info: {
                                 height: number
                                 width: number
-                                focus_rects: {
+                                focus_rects?: {
                                   x: number
                                   y: number
                                   w: number
@@ -2551,7 +2585,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                 status: string
                               }
                               features: {
-                                large: {
+                                large?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -2559,7 +2593,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                medium: {
+                                medium?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -2567,7 +2601,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                small: {
+                                small?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -2575,7 +2609,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                orig: {
+                                orig?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -2609,11 +2643,26 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               original_info: {
                                 height: number
                                 width: number
-                                focus_rects: {
+                                focus_rects?: {
                                   x: number
                                   y: number
                                   w: number
                                   h: number
+                                }[]
+                              }
+                              additional_media_info?: {
+                                monetizable: boolean
+                              }
+                              mediaStats?: {
+                                viewCount: number
+                              }
+                              video_info?: {
+                                aspect_ratio: number[]
+                                duration_millis: number
+                                variants: {
+                                  bitrate?: number
+                                  content_type: string
+                                  url: string
                                 }[]
                               }
                             }[]
@@ -2634,6 +2683,110 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                           in_reply_to_screen_name?: string
                           in_reply_to_status_id_str?: string
                           in_reply_to_user_id_str?: string
+                        }
+                        card?: {
+                          rest_id: string
+                          legacy: {
+                            binding_values: {
+                              key: string
+                              value: {
+                                image_value?: {
+                                  height: number
+                                  width: number
+                                  url: string
+                                }
+                                type: string
+                                string_value?: string
+                                scribe_key?: string
+                                user_value?: {
+                                  id_str: string
+                                  path: unknown[]
+                                }
+                                image_color_value?: {
+                                  palette: {
+                                    rgb: {
+                                      blue: number
+                                      green: number
+                                      red: number
+                                    }
+                                    percentage: number
+                                  }[]
+                                }
+                              }
+                            }[]
+                            card_platform: {
+                              platform: {
+                                audience: {
+                                  name: string
+                                }
+                                device: {
+                                  name: string
+                                  version: string
+                                }
+                              }
+                            }
+                            name: string
+                            url: string
+                            user_refs_results: {
+                              result: {
+                                __typename: string
+                                id: string
+                                rest_id: string
+                                affiliates_highlighted_label: {}
+                                has_graduated_access: boolean
+                                is_blue_verified: boolean
+                                profile_image_shape: string
+                                legacy: {
+                                  can_dm: boolean
+                                  can_media_tag: boolean
+                                  created_at: string
+                                  default_profile: boolean
+                                  default_profile_image: boolean
+                                  description: string
+                                  entities: {
+                                    description: {
+                                      urls: unknown[]
+                                    }
+                                    url: {
+                                      urls: {
+                                        display_url: string
+                                        expanded_url: string
+                                        url: string
+                                        indices: number[]
+                                      }[]
+                                    }
+                                  }
+                                  fast_followers_count: number
+                                  favourites_count: number
+                                  followers_count: number
+                                  friends_count: number
+                                  has_custom_timelines: boolean
+                                  is_translator: boolean
+                                  listed_count: number
+                                  location: string
+                                  media_count: number
+                                  name: string
+                                  normal_followers_count: number
+                                  pinned_tweet_ids_str: unknown[]
+                                  possibly_sensitive: boolean
+                                  profile_banner_url: string
+                                  profile_image_url_https: string
+                                  profile_interstitial_type: string
+                                  screen_name: string
+                                  statuses_count: number
+                                  translator_type: string
+                                  url: string
+                                  verified: boolean
+                                  verified_type: string
+                                  want_retweets: boolean
+                                  withheld_in_countries: unknown[]
+                                }
+                              }
+                            }[]
+                          }
+                        }
+                        unified_card?: {
+                          card_fetch_state: string
                         }
                       }
                     }

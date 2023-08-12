@@ -12,7 +12,7 @@ export interface CustomUserLikeTweetEntry {
       itemType: string
       __typename: string
       tweet_results: {
-        result: {
+        result?: {
           __typename: string
           rest_id?: string
           core?: {

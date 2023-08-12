@@ -309,6 +309,9 @@ class TwitterTypesGenerator {
     if (result.paths.length === 0) {
       return
     }
+
+    logger.info(`🔍 Generating: ${options.name}`)
+
     let schema
     for (const path of result.paths) {
       const data = JSON.parse(fs.readFileSync(path, 'utf8'))
@@ -329,7 +332,9 @@ class TwitterTypesGenerator {
       getCompileOptions(options.tsDocument)
     )
     fs.writeFileSync(options.path.types, types)
-    logger.info(`📝 ${options.name} (from ${result.paths.length} files)`)
+    logger.info(
+      `📝 Successful: ${options.name} (from ${result.paths.length} files)`
+    )
   }
 
   /**
@@ -543,6 +548,11 @@ class CustomTypeGenerator {
       const response: GraphQLGetLikesSuccessResponse = JSON.parse(
         fs.readFileSync(path, 'utf8')
       )
+      if (!response.data.user.result.timeline_v2.timeline) {
+        // eslint-disable-next-line no-console
+        console.log(path, response)
+        continue
+      }
       const entries =
         response.data.user.result.timeline_v2.timeline.instructions
           .filter(
