@@ -106,14 +106,22 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             }[]
                           }
                           super_follow_eligible?: boolean
+                          has_nft_avatar?: boolean
                         }
                       }
                     }
                     edit_control?: {
-                      edit_tweet_ids: string[]
-                      editable_until_msecs: string
-                      is_edit_eligible: boolean
-                      edits_remaining: string
+                      edit_tweet_ids?: string[]
+                      editable_until_msecs?: string
+                      is_edit_eligible?: boolean
+                      edits_remaining?: string
+                      initial_tweet_id?: string
+                      edit_control_initial?: {
+                        edit_tweet_ids: string[]
+                        editable_until_msecs: string
+                        is_edit_eligible: boolean
+                        edits_remaining: string
+                      }
                     }
                     edit_perspective?: {
                       favorited: boolean
@@ -329,7 +337,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     description: string
                                     entities: {
                                       description: {
-                                        urls: unknown[]
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
                                       }
                                       url?: {
                                         urls: {
@@ -374,6 +387,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }[]
                                   }
                                   has_nft_avatar?: boolean
+                                  super_follow_eligible?: boolean
                                 }
                               }
                             }
@@ -504,6 +518,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   }[]
                                 }
                                 has_nft_avatar?: boolean
+                                super_follow_eligible?: boolean
                               }
                             }
                           }
@@ -705,6 +720,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           verified: boolean
                                           want_retweets: boolean
                                           withheld_in_countries: unknown[]
+                                          verified_type?: string
                                         }
                                         professional?: {
                                           rest_id: string
@@ -718,6 +734,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       }
                                     }
                                   }
+                                  title?: string
+                                  description?: string
+                                  embeddable?: boolean
                                 }
                                 mediaStats?: {
                                   viewCount: number
@@ -831,6 +850,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               url: string
                               expanded: string
                               display: string
+                            }
+                            scopes?: {
+                              followers: boolean
                             }
                           }
                           card?: {
@@ -1087,7 +1109,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 is_edit_eligible: boolean
                                 edits_remaining: string
                               }
-                              edit_perspective: {
+                              edit_perspective?: {
                                 favorited: boolean
                                 retweeted: boolean
                               }
@@ -1104,7 +1126,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 conversation_id_str: string
                                 display_text_range: number[]
                                 entities: {
-                                  media: {
+                                  media?: {
                                     display_url: string
                                     expanded_url: string
                                     id_str: string
@@ -1193,14 +1215,19 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     screen_name: string
                                     indices: number[]
                                   }[]
-                                  urls: unknown[]
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
+                                    indices: number[]
+                                  }[]
                                   hashtags: {
                                     indices: number[]
                                     text: string
                                   }[]
                                   symbols: unknown[]
                                 }
-                                extended_entities: {
+                                extended_entities?: {
                                   media: {
                                     display_url: string
                                     expanded_url: string
@@ -1317,6 +1344,18 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 retweeted: boolean
                                 user_id_str: string
                                 id_str: string
+                                quoted_status_id_str?: string
+                                quoted_status_permalink?: {
+                                  url: string
+                                  expanded: string
+                                  display: string
+                                }
+                              }
+                              quotedRefResult?: {
+                                result: {
+                                  __typename: string
+                                  rest_id: string
+                                }
                               }
                             }
                           }
@@ -1358,6 +1397,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               id_str: string
                               path: unknown[]
                             }
+                            boolean_value?: boolean
                           }
                         }[]
                         card_platform: {
@@ -1643,10 +1683,17 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         card_fetch_state: string
                       }
                       edit_control: {
-                        edit_tweet_ids: string[]
-                        editable_until_msecs: string
-                        is_edit_eligible: boolean
-                        edits_remaining: string
+                        edit_tweet_ids?: string[]
+                        editable_until_msecs?: string
+                        is_edit_eligible?: boolean
+                        edits_remaining?: string
+                        initial_tweet_id?: string
+                        edit_control_initial?: {
+                          edit_tweet_ids: string[]
+                          editable_until_msecs: string
+                          is_edit_eligible: boolean
+                          edits_remaining: string
+                        }
                       }
                       edit_perspective?: {
                         favorited: boolean
@@ -1694,12 +1741,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             id_str: string
                             indices: number[]
                             media_url_https: string
-                            source_status_id_str: string
-                            source_user_id_str: string
+                            source_status_id_str?: string
+                            source_user_id_str?: string
                             type: string
                             url: string
                             features: {
-                              large: {
+                              large?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -1707,7 +1754,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              medium: {
+                              medium?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -1715,7 +1762,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              small: {
+                              small?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -1723,7 +1770,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              orig: {
+                              orig?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -1757,7 +1804,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             original_info: {
                               height: number
                               width: number
-                              focus_rects: {
+                              focus_rects?: {
                                 x: number
                                 y: number
                                 w: number
@@ -1788,15 +1835,15 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             indices: number[]
                             media_key: string
                             media_url_https: string
-                            source_status_id_str: string
-                            source_user_id_str: string
+                            source_status_id_str?: string
+                            source_user_id_str?: string
                             type: string
                             url: string
                             ext_media_availability: {
                               status: string
                             }
                             features: {
-                              large: {
+                              large?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -1804,7 +1851,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              medium: {
+                              medium?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -1812,7 +1859,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              small: {
+                              small?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -1820,7 +1867,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              orig: {
+                              orig?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -1854,11 +1901,26 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             original_info: {
                               height: number
                               width: number
-                              focus_rects: {
+                              focus_rects?: {
                                 x: number
                                 y: number
                                 w: number
                                 h: number
+                              }[]
+                            }
+                            additional_media_info?: {
+                              monetizable: boolean
+                            }
+                            mediaStats?: {
+                              viewCount: number
+                            }
+                            video_info?: {
+                              aspect_ratio: number[]
+                              duration_millis: number
+                              variants: {
+                                bitrate?: number
+                                content_type: string
+                                url: string
                               }[]
                             }
                           }[]
@@ -2231,6 +2293,42 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           followers: boolean
                         }
                       }
+                      previous_counts?: {
+                        bookmark_count: number
+                        favorite_count: number
+                        quote_count: number
+                        reply_count: number
+                        retweet_count: number
+                      }
+                      note_tweet?: {
+                        is_expandable: boolean
+                        note_tweet_results: {
+                          result: {
+                            id: string
+                            text: string
+                            entity_set: {
+                              user_mentions: {
+                                id_str: string
+                                name: string
+                                screen_name: string
+                                indices: number[]
+                              }[]
+                              urls: unknown[]
+                              hashtags: {
+                                indices: number[]
+                                text: string
+                              }[]
+                              symbols: unknown[]
+                            }
+                            richtext: {
+                              richtext_tags: unknown[]
+                            }
+                            media: {
+                              inline_media: unknown[]
+                            }
+                          }
+                        }
+                      }
                     }
                     limitedActionResults?: {
                       limited_actions: {
@@ -2558,6 +2656,13 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         }
                       }
                     }
+                    previous_counts?: {
+                      bookmark_count: number
+                      favorite_count: number
+                      quote_count: number
+                      reply_count: number
+                      retweet_count: number
+                    }
                   }
                 }
                 tweetDisplayType: string
@@ -2724,6 +2829,60 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           user?: {
                             rest_id: string
                           }
+                          first_media?: {
+                            media: {
+                              id: string
+                              media_key: string
+                              media_id: string
+                              media_info: {
+                                __typename: string
+                                original_img_height: number
+                                original_img_width: number
+                                original_img_url: string
+                                color_info: {
+                                  palette: {
+                                    percentage: number
+                                    rgb: {
+                                      blue: number
+                                      green: number
+                                      red: number
+                                    }
+                                  }[]
+                                }
+                              }
+                            }
+                            destination_obj: {
+                              __typename: string
+                              user_id: string
+                            }
+                          }
+                          full_media_list?: {
+                            media: {
+                              id: string
+                              media_key: string
+                              media_id: string
+                              media_info: {
+                                __typename: string
+                                original_img_height: number
+                                original_img_width: number
+                                original_img_url: string
+                                color_info: {
+                                  palette: {
+                                    percentage: number
+                                    rgb: {
+                                      blue: number
+                                      green: number
+                                      red: number
+                                    }
+                                  }[]
+                                }
+                              }
+                            }
+                            destination_obj: {
+                              __typename: string
+                              user_id: string
+                            }
+                          }[]
                         }[]
                       }
                       display_options: {}
@@ -2743,7 +2902,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                 details: {
                   timelinesDetails: {
                     injectionType?: string
-                    controllerData: string
+                    controllerData?: string
                     sourceData?: string
                   }
                 }
@@ -2896,7 +3055,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             media_count: number
                             name: string
                             normal_followers_count: number
-                            pinned_tweet_ids_str: unknown[]
+                            pinned_tweet_ids_str: string[]
                             possibly_sensitive: boolean
                             profile_banner_url: string
                             profile_image_url_https: string
@@ -2978,7 +3137,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 normal_followers_count: number
                                 pinned_tweet_ids_str: string[]
                                 possibly_sensitive: boolean
-                                profile_banner_url: string
+                                profile_banner_url?: string
                                 profile_image_url_https: string
                                 profile_interstitial_type: string
                                 screen_name: string
@@ -3032,7 +3191,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               type: string
                               url: string
                               features: {
-                                large: {
+                                large?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -3040,7 +3199,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                medium: {
+                                medium?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -3048,7 +3207,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                small: {
+                                small?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -3056,7 +3215,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                orig: {
+                                orig?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -3090,7 +3249,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               original_info: {
                                 height: number
                                 width: number
-                                focus_rects: {
+                                focus_rects?: {
                                   x: number
                                   y: number
                                   w: number
@@ -3130,7 +3289,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 status: string
                               }
                               features: {
-                                large: {
+                                large?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -3138,7 +3297,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                medium: {
+                                medium?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -3146,7 +3305,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                small: {
+                                small?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -3154,7 +3313,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     w: number
                                   }[]
                                 }
-                                orig: {
+                                orig?: {
                                   faces: {
                                     x: number
                                     y: number
@@ -3188,11 +3347,26 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               original_info: {
                                 height: number
                                 width: number
-                                focus_rects: {
+                                focus_rects?: {
                                   x: number
                                   y: number
                                   w: number
                                   h: number
+                                }[]
+                              }
+                              additional_media_info?: {
+                                monetizable: boolean
+                              }
+                              mediaStats?: {
+                                viewCount: number
+                              }
+                              video_info?: {
+                                aspect_ratio: number[]
+                                duration_millis: number
+                                variants: {
+                                  bitrate?: number
+                                  content_type: string
+                                  url: string
                                 }[]
                               }
                             }[]
@@ -3214,6 +3388,111 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           in_reply_to_status_id_str?: string
                           in_reply_to_user_id_str?: string
                         }
+                        card?: {
+                          rest_id: string
+                          legacy: {
+                            binding_values: {
+                              key: string
+                              value: {
+                                image_value?: {
+                                  height: number
+                                  width: number
+                                  url: string
+                                }
+                                type: string
+                                string_value?: string
+                                scribe_key?: string
+                                user_value?: {
+                                  id_str: string
+                                  path: unknown[]
+                                }
+                                image_color_value?: {
+                                  palette: {
+                                    rgb: {
+                                      blue: number
+                                      green: number
+                                      red: number
+                                    }
+                                    percentage: number
+                                  }[]
+                                }
+                                boolean_value?: boolean
+                              }
+                            }[]
+                            card_platform: {
+                              platform: {
+                                audience: {
+                                  name: string
+                                }
+                                device: {
+                                  name: string
+                                  version: string
+                                }
+                              }
+                            }
+                            name: string
+                            url: string
+                            user_refs_results: {
+                              result: {
+                                __typename: string
+                                id: string
+                                rest_id: string
+                                affiliates_highlighted_label: {}
+                                has_graduated_access: boolean
+                                is_blue_verified: boolean
+                                profile_image_shape: string
+                                legacy: {
+                                  can_dm: boolean
+                                  can_media_tag: boolean
+                                  created_at: string
+                                  default_profile: boolean
+                                  default_profile_image: boolean
+                                  description: string
+                                  entities: {
+                                    description: {
+                                      urls: unknown[]
+                                    }
+                                    url: {
+                                      urls: {
+                                        display_url: string
+                                        expanded_url: string
+                                        url: string
+                                        indices: number[]
+                                      }[]
+                                    }
+                                  }
+                                  fast_followers_count: number
+                                  favourites_count: number
+                                  followers_count: number
+                                  friends_count: number
+                                  has_custom_timelines: boolean
+                                  is_translator: boolean
+                                  listed_count: number
+                                  location: string
+                                  media_count: number
+                                  name: string
+                                  normal_followers_count: number
+                                  pinned_tweet_ids_str: unknown[]
+                                  possibly_sensitive: boolean
+                                  profile_banner_url: string
+                                  profile_image_url_https: string
+                                  profile_interstitial_type: string
+                                  screen_name: string
+                                  statuses_count: number
+                                  translator_type: string
+                                  url: string
+                                  verified: boolean
+                                  verified_type: string
+                                  want_retweets: boolean
+                                  withheld_in_countries: unknown[]
+                                }
+                              }
+                            }[]
+                          }
+                        }
+                        unified_card?: {
+                          card_fetch_state: string
+                        }
                       }
                     }
                     tweetDisplayType?: string
@@ -3224,7 +3503,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                     details: {
                       timelinesDetails: {
                         injectionType: string
-                        controllerData: string
+                        controllerData?: string
                         sourceData?: string
                       }
                     }

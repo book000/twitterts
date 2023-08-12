@@ -31,9 +31,9 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
           )
         ) as CustomSearchTimelineEntry[]
 
-    const rawTweets = entries.map(
-      (entry) => entry.content.itemContent.tweet_results.result
-    )
+    const rawTweets = entries
+      .map((entry) => entry.content.itemContent.tweet_results.result)
+      .filter((tweet) => !!tweet)
     this.tweets = rawTweets.map((tweet) =>
       ObjectConverter.convertToStatus(tweet as CustomTweetObject)
     )
