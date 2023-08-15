@@ -31,10 +31,11 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
           (instruction) =>
             instruction.type === 'TimelineAddEntries' && instruction.entries
         )
-        .flatMap((instruction) =>
-          instruction.entries?.filter((entry) =>
-            entry.entryId.startsWith('tweet-')
-          )
+        .flatMap(
+          (instruction) =>
+            instruction.entries?.filter((entry) =>
+              entry.entryId.startsWith('tweet-')
+            )
         ) as CustomUserLikeTweetEntry[]
 
     const rawTweets = entries
