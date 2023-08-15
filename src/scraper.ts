@@ -345,7 +345,7 @@ export class TwitterScraperPage {
   public async waitSingleResponse<
     M extends HttpMethod,
     T extends RequestType,
-    N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint
+    N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint,
   >(
     url: string | null,
     method: M,
@@ -395,7 +395,7 @@ export class TwitterScraperPage {
   public shiftResponse<
     M extends HttpMethod,
     T extends RequestType,
-    N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint
+    N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint,
   >(method: M, type: T, name: N): EndPointResponseType<M, T, N> | null {
     const key = getResponseKey({
       method,
