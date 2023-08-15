@@ -381,7 +381,7 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                             rest_id: string
                             affiliates_highlighted_label: {
                               label?: {
-                                url: {
+                                url?: {
                                   url: string
                                   urlType: string
                                 }
@@ -390,7 +390,27 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                                 }
                                 description: string
                                 userLabelType: string
-                                userLabelDisplayType: string
+                                userLabelDisplayType?: string
+                                longDescription?: {
+                                  text: string
+                                  entities: {
+                                    fromIndex: number
+                                    toIndex: number
+                                    ref: {
+                                      type: string
+                                      screen_name: string
+                                      mention_results: {
+                                        result: {
+                                          __typename: string
+                                          legacy: {
+                                            screen_name: string
+                                          }
+                                          rest_id: string
+                                        }
+                                      }
+                                    }
+                                  }[]
+                                }
                               }
                             }
                             has_graduated_access: boolean

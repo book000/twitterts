@@ -73,6 +73,7 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           highlighted_tweets: string
         }
         creator_subscriptions_count: number
+        has_hidden_subscriptions_on_profile?: boolean
       }
     }
   }

@@ -309,6 +309,9 @@ class TwitterTypesGenerator {
     if (result.paths.length === 0) {
       return
     }
+
+    logger.info(`🔍 Generating: ${options.name}`)
+
     let schema
     for (const path of result.paths) {
       const data = JSON.parse(fs.readFileSync(path, 'utf8'))
@@ -329,7 +332,9 @@ class TwitterTypesGenerator {
       getCompileOptions(options.tsDocument)
     )
     fs.writeFileSync(options.path.types, types)
-    logger.info(`📝 ${options.name} (from ${result.paths.length} files)`)
+    logger.info(
+      `📝 Successful: ${options.name} (from ${result.paths.length} files)`
+    )
   }
 
   /**
@@ -605,6 +610,7 @@ class CustomTypeGenerator {
           return (entry as CustomSearchTimelineEntry).content.itemContent
             .tweet_results.result
         })
+        .filter((entry) => !!entry)
         .map((entry) => createSchema(entry)),
       // UserTweets
       this.results
@@ -635,6 +641,7 @@ class CustomTypeGenerator {
           return (entry as CustomUserTweetEntry).content.itemContent
             .tweet_results.result
         })
+        .filter((entry) => !!entry)
         .map((entry) => createSchema(entry)),
       // Likes
       this.results
@@ -665,6 +672,7 @@ class CustomTypeGenerator {
           return (entry as CustomUserLikeTweetEntry).content.itemContent
             .tweet_results.result
         })
+        .filter((entry) => !!entry)
         .map((entry) => createSchema(entry)),
     ].flat()
 

@@ -5,6 +5,7 @@ import {
   NotLikedError,
   TwitterOperationError,
   TwitterTimeoutError,
+  TwitterTsError,
   UserNotFoundError,
 } from './models/exceptions'
 import {
@@ -65,13 +66,23 @@ export class Twitter {
       throw new IllegalArgumentError('screenName is required')
     }
     const page = await this.scraper.getScraperPage()
-    const response = await page.waitSingleResponse(
-      `https://twitter.com/${options.screenName}`,
-      'GET',
-      'GRAPHQL',
-      'UserByScreenName'
-    )
-    await page.close()
+    let response
+    try {
+      response = await page.waitSingleResponse(
+        `https://twitter.com/${options.screenName}`,
+        'GET',
+        'GRAPHQL',
+        'UserByScreenName'
+      )
+    } catch (error) {
+      if (error instanceof TwitterTsError) {
+        throw error
+      }
+
+      throw new TwitterOperationError((error as Error).message)
+    } finally {
+      await page.close()
+    }
     if (this.isErrorResponse(response)) {
       throw new TwitterOperationError(response.errors[0].message)
     }
@@ -106,14 +117,24 @@ export class Twitter {
     }
 
     const page = await this.scraper.getScraperPage()
-    // UserByRestIdだとログインユーザー自分自身の場合に取得できない。
-    const response = await page.waitSingleResponse(
-      `https://twitter.com/intent/user?user_id=${options.userId}`,
-      'GET',
-      'GRAPHQL',
-      'UserByScreenName'
-    )
-    await page.close()
+    let response
+    try {
+      // UserByRestIdだとログインユーザー自分自身の場合に取得できない。
+      response = await page.waitSingleResponse(
+        `https://twitter.com/intent/user?user_id=${options.userId}`,
+        'GET',
+        'GRAPHQL',
+        'UserByScreenName'
+      )
+    } catch (error) {
+      if (error instanceof TwitterTsError) {
+        throw error
+      }
+
+      throw new TwitterOperationError((error as Error).message)
+    } finally {
+      await page.close()
+    }
     if (this.isErrorResponse(response)) {
       throw new TwitterOperationError(response.errors[0].message)
     }
@@ -144,33 +165,42 @@ export class Twitter {
     }
 
     const page = await this.scraper.getScraperPage()
-    await page.goto(url.toString())
-
-    let lastResponseAt = Date.now()
     const results = []
-    while (true) {
-      if (Date.now() - lastResponseAt > 1000 * 30) {
-        // 30秒以上レスポンスがない場合はタイムアウトとして終了
-        break
+    try {
+      await page.goto(url.toString())
+
+      let lastResponseAt = Date.now()
+      while (true) {
+        if (Date.now() - lastResponseAt > 1000 * 30) {
+          // 30秒以上レスポンスがない場合はタイムアウトとして終了
+          break
+        }
+        const response = page.shiftResponse('GET', 'GRAPHQL', 'SearchTimeline')
+        if (!response) {
+          await page.scrollToBottom()
+          continue
+        }
+        const parser = new SearchTimelineParser(response)
+        const tweets = parser.getTweets()
+        if (tweets.length === 0) {
+          break
+        }
+        results.push(...tweets)
+        if (results.length >= limit) {
+          break
+        }
+        lastResponseAt = Date.now()
       }
-      const response = page.shiftResponse('GET', 'GRAPHQL', 'SearchTimeline')
-      if (!response) {
-        await page.scrollToBottom()
-        continue
+    } catch (error) {
+      if (error instanceof TwitterTsError) {
+        throw error
       }
-      const parser = new SearchTimelineParser(response)
-      const tweets = parser.getTweets()
-      if (tweets.length === 0) {
-        break
-      }
-      results.push(...tweets)
-      if (results.length >= limit) {
-        break
-      }
-      lastResponseAt = Date.now()
+
+      throw new TwitterOperationError((error as Error).message)
+    } finally {
+      await page.close()
     }
 
-    await page.close()
     return results
   }
 
@@ -192,33 +222,42 @@ export class Twitter {
     const url = `https://twitter.com/${options.screenName}`
 
     const page = await this.scraper.getScraperPage()
-    await page.goto(url)
-
-    let lastResponseAt = Date.now()
     const results = []
-    while (true) {
-      if (Date.now() - lastResponseAt > 1000 * 30) {
-        // 30秒以上レスポンスがない場合はタイムアウトとして終了
-        break
+    try {
+      await page.goto(url)
+
+      let lastResponseAt = Date.now()
+      while (true) {
+        if (Date.now() - lastResponseAt > 1000 * 30) {
+          // 30秒以上レスポンスがない場合はタイムアウトとして終了
+          break
+        }
+        const response = page.shiftResponse('GET', 'GRAPHQL', 'UserTweets')
+        if (!response) {
+          await page.scrollToBottom()
+          continue
+        }
+        const parser = new UserTweetsParser(response)
+        const tweets = parser.getTweets()
+        if (tweets.length === 0) {
+          break
+        }
+        results.push(...tweets)
+        if (results.length >= limit) {
+          break
+        }
+        lastResponseAt = Date.now()
       }
-      const response = page.shiftResponse('GET', 'GRAPHQL', 'UserTweets')
-      if (!response) {
-        await page.scrollToBottom()
-        continue
+    } catch (error) {
+      if (error instanceof TwitterTsError) {
+        throw error
       }
-      const parser = new UserTweetsParser(response)
-      const tweets = parser.getTweets()
-      if (tweets.length === 0) {
-        break
-      }
-      results.push(...tweets)
-      if (results.length >= limit) {
-        break
-      }
-      lastResponseAt = Date.now()
+
+      throw new TwitterOperationError((error as Error).message)
+    } finally {
+      await page.close()
     }
 
-    await page.close()
     return results
   }
 
@@ -240,33 +279,43 @@ export class Twitter {
     const url = `https://twitter.com/${options.screenName}/likes`
 
     const page = await this.scraper.getScraperPage()
-    await page.goto(url)
-
-    let lastResponseAt = Date.now()
     const results = []
-    while (true) {
-      if (Date.now() - lastResponseAt > 1000 * 30) {
-        // 30秒以上レスポンスがない場合はタイムアウトとして終了
-        break
+
+    try {
+      await page.goto(url)
+
+      let lastResponseAt = Date.now()
+      while (true) {
+        if (Date.now() - lastResponseAt > 1000 * 30) {
+          // 30秒以上レスポンスがない場合はタイムアウトとして終了
+          break
+        }
+        const response = page.shiftResponse('GET', 'GRAPHQL', 'Likes')
+        if (!response) {
+          await page.scrollToBottom()
+          continue
+        }
+        const parser = new UserLikeTweetsParser(response)
+        const tweets = parser.getTweets()
+        if (tweets.length === 0) {
+          break
+        }
+        results.push(...tweets)
+        if (results.length >= limit) {
+          break
+        }
+        lastResponseAt = Date.now()
       }
-      const response = page.shiftResponse('GET', 'GRAPHQL', 'Likes')
-      if (!response) {
-        await page.scrollToBottom()
-        continue
+    } catch (error) {
+      if (error instanceof TwitterTsError) {
+        throw error
       }
-      const parser = new UserLikeTweetsParser(response)
-      const tweets = parser.getTweets()
-      if (tweets.length === 0) {
-        break
-      }
-      results.push(...tweets)
-      if (results.length >= limit) {
-        break
-      }
-      lastResponseAt = Date.now()
+
+      throw new TwitterOperationError((error as Error).message)
+    } finally {
+      await page.close()
     }
 
-    await page.close()
     return results
   }
 
