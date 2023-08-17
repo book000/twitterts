@@ -1,4 +1,4 @@
-import { SearchType } from './options'
+import { SearchType, TimelineType } from './options'
 import { Twitter } from './twitter'
 
 jest.setTimeout(60_000)
@@ -54,6 +54,38 @@ describe('Twitter', () => {
     expect(response).toBeTruthy()
     expect(response.data).toBeTruthy()
     expect(response.data.user.result.legacy.screen_name).toBe('book000')
+  })
+
+  test('getHomeTimelineRawTweets', async () => {
+    const response = await twitter.getHomeTimelineRawTweets({
+      timelineType: TimelineType.RECOMMEND,
+    })
+    expect(response).toBeTruthy()
+    expect(response.length).toBeGreaterThan(0)
+  })
+
+  test('getHomeTimelineTweets:recommend', async () => {
+    const response = await twitter.getHomeTimelineTweets({
+      timelineType: TimelineType.RECOMMEND,
+    })
+    expect(response).toBeTruthy()
+    expect(response.length).toBeGreaterThan(0)
+  })
+
+  test('getHomeTimelineTweets:following', async () => {
+    const response = await twitter.getHomeTimelineTweets({
+      timelineType: TimelineType.FOLLOWING,
+    })
+    expect(response).toBeTruthy()
+    expect(response.length).toBeGreaterThan(0)
+  })
+
+  test('searchRawTweets', async () => {
+    const response = await twitter.searchRawTweets({
+      query: 'from:book000',
+    })
+    expect(response).toBeTruthy()
+    expect(response.length).toBeGreaterThan(0)
   })
 
   test('searchTweets:popular', async () => {

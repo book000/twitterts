@@ -18,12 +18,15 @@ import {
   GetScreenNameByUserIdOptions,
   GetUserByUserIdOptions,
   UnlikeTweetOptions,
+  GetHomeTimelineTweetsOptions,
+  TimelineType,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
 import { UserLikeTweetsParser } from './parser/user-like-tweets'
 import { UserTweetsParser } from './parser/user-tweets'
 import { TwitterScraper, TwitterScraperOptions } from './scraper'
 import { ObjectConverter } from './converter'
+import { HomeTimelineParser } from './parser/home-timeline-parser'
 
 /**
  * {@link TwitterOptions} オプション
@@ -147,6 +150,96 @@ export class Twitter {
   }
 
   /**
+   * ホームタイムラインのツイートを取得する。
+   *
+   * @param options ホームタイムライン取得オプション
+   * @returns ホームタイムラインのツイート
+   */
+  public async getHomeTimelineTweets(options: GetHomeTimelineTweetsOptions) {
+    const rawTweets = await this.getHomeTimelineRawTweets(options)
+
+    return rawTweets.map((rawTweet) =>
+      ObjectConverter.convertToStatus(rawTweet)
+    )
+  }
+
+  /**
+   * ホームタイムラインのツイートを取得する。ツイートは非正規化ツイート（CustomTweetObject）で返す
+   *
+   * @param options ホームタイムライン取得オプション
+   * @returns ホームタイムラインのツイート（非正規化ツイート）
+   */
+  public async getHomeTimelineRawTweets(options: GetHomeTimelineTweetsOptions) {
+    // おすすめタブ: HomeTimeline
+    // フォロー中タブ: HomeLatestTimeline
+    if (!options.timelineType) {
+      throw new IllegalArgumentError('timelineType is required')
+    }
+
+    const endpointNames: {
+      [key in (typeof TimelineType)[keyof typeof TimelineType]]:
+        | 'HomeTimeline'
+        | 'HomeLatestTimeline'
+    } = {
+      [TimelineType.RECOMMEND]: 'HomeTimeline',
+      [TimelineType.FOLLOWING]: 'HomeLatestTimeline',
+    }
+    const endpointName = endpointNames[options.timelineType]
+
+    const url = 'https://twitter.com/home'
+    const limit = options.limit || 20
+
+    const page = await this.scraper.getScraperPage()
+    const results = []
+    try {
+      await page.goto(url)
+
+      // タブ選択
+      const tabs = await page.page.$$(
+        'nav[aria-live="polite"] div[role="tablist"] > div'
+      )
+      const tabIndex = options.timelineType === TimelineType.RECOMMEND ? 0 : 1
+      if (!tabs[tabIndex]) {
+        throw new TwitterOperationError('Failed to get tab')
+      }
+      await tabs[tabIndex].click()
+
+      let lastResponseAt = Date.now()
+      while (true) {
+        if (Date.now() - lastResponseAt > 1000 * 30) {
+          // 30秒以上レスポンスがない場合はタイムアウトとして終了
+          break
+        }
+        const response = page.shiftResponse('GET', 'GRAPHQL', endpointName)
+        if (!response) {
+          await page.scrollToBottom()
+          continue
+        }
+        const parser = new HomeTimelineParser(response)
+        const rawTweets = parser.getRawTweets()
+        if (rawTweets.length === 0) {
+          break
+        }
+        results.push(...rawTweets)
+        if (results.length >= limit) {
+          break
+        }
+        lastResponseAt = Date.now()
+      }
+    } catch (error) {
+      if (error instanceof TwitterTsError) {
+        throw error
+      }
+
+      throw new TwitterOperationError((error as Error).message)
+    } finally {
+      await page.close()
+    }
+
+    return results
+  }
+
+  /**
    * ツイートを検索する。
    *
    * @param options 検索オプション
@@ -164,7 +257,7 @@ export class Twitter {
    * ツイートを検索する。ツイートは非正規化ツイート（CustomTweetObject）で返す
    *
    * @param options 検索オプション
-   * @returns 検索結果
+   * @returns 検索結果（非正規化ツイート）
    */
   public async searchRawTweets(options: SearchTweetsOptions) {
     if (!options.query) {

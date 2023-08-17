@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-/** ユーザーいいねツイートモデル */
+/** ユーザーいいねツイートエントリモデル */
 
 export interface CustomUserLikeTweetEntry {
   entryId: string
