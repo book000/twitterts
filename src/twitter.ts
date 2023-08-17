@@ -23,6 +23,7 @@ import { SearchTimelineParser } from './parser/search-timeline'
 import { UserLikeTweetsParser } from './parser/user-like-tweets'
 import { UserTweetsParser } from './parser/user-tweets'
 import { TwitterScraper, TwitterScraperOptions } from './scraper'
+import { ObjectConverter } from './converter'
 
 /**
  * {@link TwitterOptions} オプション
@@ -146,12 +147,26 @@ export class Twitter {
   }
 
   /**
-   * ツイートを検索する
+   * ツイートを検索する。
    *
    * @param options 検索オプション
    * @returns 検索結果
    */
   public async searchTweets(options: SearchTweetsOptions) {
+    const rawTweets = await this.searchRawTweets(options)
+
+    return rawTweets.map((rawTweet) =>
+      ObjectConverter.convertToStatus(rawTweet)
+    )
+  }
+
+  /**
+   * ツイートを検索する。ツイートは非正規化ツイート（CustomTweetObject）で返す
+   *
+   * @param options 検索オプション
+   * @returns 検索結果
+   */
+  public async searchRawTweets(options: SearchTweetsOptions) {
     if (!options.query) {
       throw new IllegalArgumentError('query is required')
     }
@@ -181,11 +196,11 @@ export class Twitter {
           continue
         }
         const parser = new SearchTimelineParser(response)
-        const tweets = parser.getTweets()
-        if (tweets.length === 0) {
+        const rawTweets = parser.getRawTweets()
+        if (rawTweets.length === 0) {
           break
         }
-        results.push(...tweets)
+        results.push(...rawTweets)
         if (results.length >= limit) {
           break
         }
