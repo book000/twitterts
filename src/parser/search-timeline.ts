@@ -1,7 +1,5 @@
-import { ObjectConverter } from '../converter'
 import { CustomSearchTimelineEntry } from '../models/responses/custom/custom-search-timeline-entry'
 import { BaseParser } from './base'
-import { Status } from 'twitter-d'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Twitter } from '../twitter'
 import { GraphQLGetSearchTimelineResponse } from '../models/responses/endpoints'
@@ -11,7 +9,7 @@ import { CustomTweetObject } from '../models/responses/custom/custom-tweet-objec
  * {@link Twitter.searchTweets} のレスポンスパーサー
  */
 export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
-  private tweets: Status[] = []
+  private rawTweets: CustomTweetObject[] = []
 
   /**
    * @param response {@link Twitter['searchTweets']} のレスポンス
@@ -32,20 +30,18 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
             )
         ) as CustomSearchTimelineEntry[]
 
-    const rawTweets = entries
+    const rawTweets: CustomTweetObject[] = entries
       .map((entry) => entry.content.itemContent.tweet_results.result)
-      .filter((tweet) => !!tweet)
-    this.tweets = rawTweets.map((tweet) =>
-      ObjectConverter.convertToStatus(tweet as CustomTweetObject)
-    )
+      .filter((tweet) => !!tweet) as CustomTweetObject[]
+    this.rawTweets = rawTweets
   }
 
   /**
-   * 検索結果のツイート群を取得する
+   * 検索結果の非正規化ツイート群を取得する
    *
-   * @returns ツイートの配列
+   * @returns 非正規化ツイートの配列
    */
-  public getTweets() {
-    return this.tweets
+  public getRawTweets() {
+    return this.rawTweets
   }
 }

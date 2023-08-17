@@ -26,6 +26,27 @@ export interface GetUserByUserIdOptions {
 }
 
 /**
+ * {@link Twitter.getHomeTimelineTweets} のタイムライン種別
+ */
+export const TimelineType = {
+  /** おすすめ */
+  RECOMMEND: 'recommend',
+  /** フォロー中 */
+  FOLLOWING: 'following',
+} as const
+
+/**
+ * {@link Twitter.getHomeTimelineTweets} のオプション
+ */
+export interface GetHomeTimelineTweetsOptions {
+  /** タイムライン種別 */
+  timelineType: (typeof TimelineType)[keyof typeof TimelineType]
+
+  /** 取得するツイートの最大数。デフォルトは 20 */
+  limit?: number
+}
+
+/**
  * {@link Twitter.searchTweets} の検索種別
  */
 export const SearchType = {

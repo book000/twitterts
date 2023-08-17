@@ -14,6 +14,9 @@ import { GraphQLGetUserTweetsSuccessResponse } from './models/responses/graphql/
 import { CustomUserTweetEntry } from './models/responses/custom/custom-user-tweet-entry'
 import { GraphQLGetLikesSuccessResponse } from './models/responses/graphql/get/likes-success'
 import { CustomUserLikeTweetEntry } from './models/responses/custom/custom-user-like-tweet-entry'
+import { GraphQLGetHomeLatestTimelineSuccessResponse } from './models/responses/graphql/get/home-latest-timeline-success'
+import { GraphQLGetHomeTimelineSuccessResponse } from './models/responses/graphql/get/home-timeline-success'
+import { CustomTimelineTweetEntry } from './models/responses/custom/custom-timeline-tweet-entry'
 
 /**
  * json-schema-to-typescript のコンパイルオプションを作成・取得する
@@ -572,7 +575,85 @@ class CustomTypeGenerator {
     await this.generateTypeFromSchema(
       schema,
       'CustomUserLikeTweetEntry',
-      'ユーザーいいねツイートモデル'
+      'ユーザーいいねツイートエントリモデル'
+    )
+  }
+
+  private async runGraphQLTimelineInstruction() {
+    const homeTimelineResults = this.results.filter(
+      (result) =>
+        result.type === 'graphql' &&
+        result.name === 'HomeTimeline' &&
+        result.method === 'GET' &&
+        result.statusCode === '200'
+    )
+    const homeLatestTimelineResults = this.results.filter(
+      (result) =>
+        result.type === 'graphql' &&
+        result.name === 'HomeLatestTimeline' &&
+        result.method === 'GET' &&
+        result.statusCode === '200'
+    )
+    if (
+      homeTimelineResults.length === 0 &&
+      homeLatestTimelineResults.length === 0
+    ) {
+      return
+    }
+    const hometimelinePaths = homeTimelineResults.flatMap(
+      (result) => result.paths
+    )
+    const homeLatestTimelinePaths = homeLatestTimelineResults.flatMap(
+      (result) => result.paths
+    )
+
+    let schema
+    for (const path of hometimelinePaths) {
+      const response: GraphQLGetHomeTimelineSuccessResponse = JSON.parse(
+        fs.readFileSync(path, 'utf8')
+      )
+      const entries = response.data.home.home_timeline_urt.instructions
+        .filter(
+          (instruction) =>
+            instruction.type === 'TimelineAddEntries' && instruction.entries
+        )
+        .flatMap(
+          (instruction) =>
+            instruction.entries?.filter((entry) =>
+              entry.entryId.startsWith('tweet-')
+            )
+        )
+      const fileSchema = createCompoundSchema(entries)
+      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
+    }
+
+    for (const path of homeLatestTimelinePaths) {
+      const response: GraphQLGetHomeLatestTimelineSuccessResponse = JSON.parse(
+        fs.readFileSync(path, 'utf8')
+      )
+      const instructions = response.data.home.home_timeline_urt.instructions
+        .filter(
+          (instruction) =>
+            instruction.type === 'TimelineAddEntries' && instruction.entries
+        )
+        .flatMap(
+          (instruction) =>
+            instruction.entries?.filter((entry) =>
+              entry.entryId.startsWith('tweet-')
+            )
+        )
+      const fileSchema = createCompoundSchema(instructions)
+      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
+    }
+
+    if (!schema) {
+      return
+    }
+
+    await this.generateTypeFromSchema(
+      schema,
+      'CustomTimelineTweetEntry',
+      'ホームタイムラインツイートエントリモデル'
     )
   }
 
@@ -584,6 +665,69 @@ class CustomTypeGenerator {
   private async runTweetObject() {
     // 各レスポンスからツイートオブジェクトを抽出
     const schemas = [
+      // HomeTimeline
+      this.results
+        .filter(
+          (result) =>
+            result.type === 'graphql' &&
+            result.name === 'HomeTimeline' &&
+            result.method === 'GET' &&
+            result.statusCode === '200'
+        )
+        .flatMap((result) => result.paths)
+        .flatMap((path) => {
+          const response: GraphQLGetHomeTimelineSuccessResponse = JSON.parse(
+            fs.readFileSync(path, 'utf8')
+          )
+          return response.data.home.home_timeline_urt.instructions
+            .filter(
+              (instruction) =>
+                instruction.type === 'TimelineAddEntries' && instruction.entries
+            )
+            .flatMap(
+              (instruction) =>
+                instruction.entries?.filter((entry) =>
+                  entry.entryId.startsWith('tweet-')
+                )
+            )
+        })
+        .map((entry) => {
+          return (entry as CustomTimelineTweetEntry).content.itemContent
+            .tweet_results.result
+        })
+        .filter((entry) => !!entry)
+        .map((entry) => createSchema(entry)),
+      // HomeLatestTimeline
+      this.results
+        .filter(
+          (result) =>
+            result.type === 'graphql' &&
+            result.name === 'HomeLatestTimeline' &&
+            result.method === 'GET' &&
+            result.statusCode === '200'
+        )
+        .flatMap((result) => result.paths)
+        .flatMap((path) => {
+          const response: GraphQLGetHomeLatestTimelineSuccessResponse =
+            JSON.parse(fs.readFileSync(path, 'utf8'))
+          return response.data.home.home_timeline_urt.instructions
+            .filter(
+              (instruction) =>
+                instruction.type === 'TimelineAddEntries' && instruction.entries
+            )
+            .flatMap(
+              (instruction) =>
+                instruction.entries?.filter((entry) =>
+                  entry.entryId.startsWith('tweet-')
+                )
+            )
+        })
+        .map((entry) => {
+          return (entry as CustomTimelineTweetEntry).content.itemContent
+            .tweet_results.result
+        })
+        .filter((entry) => !!entry)
+        .map((entry) => createSchema(entry)),
       // SearchTimeline
       this.results
         .filter(
@@ -845,6 +989,7 @@ class CustomTypeGenerator {
     await this.runGraphQLSearchTimeline()
     await this.runGraphQLUserTweets()
     await this.runGraphQLUserLikeTweets()
+    await this.runGraphQLTimelineInstruction()
     await this.runTweetObject()
 
     // twitter-d 変換用オブジェクト
