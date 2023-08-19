@@ -86,6 +86,24 @@ export interface TwitterScraperDebugOptions {
 }
 
 /**
+ * Puppeteer プロキシオプション
+ */
+export interface PuppeteerProxyOptions {
+  /**
+   * プロキシサーバー URL
+   */
+  server: string
+  /**
+   * プロキシサーバーのユーザー名
+   */
+  username?: string
+  /**
+   * プロキシサーバーのパスワード
+   */
+  password?: string
+}
+
+/**
  * Puppeteer オプション
  */
 export interface PuppeteerOptions {
@@ -122,6 +140,11 @@ export interface PuppeteerOptions {
    * DevTools を有効にするか
    */
   enableDevtools?: boolean
+
+  /**
+   * プロキシ設定
+   */
+  proxy?: PuppeteerProxyOptions
 }
 
 /**
@@ -691,6 +714,14 @@ export class TwitterScraper {
     if (this.options.puppeteerOptions?.enableDevtools) {
       puppeteerArguments.push('--auto-open-devtools-for-tabs')
     }
+    if (
+      this.options.puppeteerOptions?.proxy &&
+      this.options.puppeteerOptions?.proxy.server
+    ) {
+      puppeteerArguments.push(
+        '--proxy-server=' + this.options.puppeteerOptions.proxy.server
+      )
+    }
 
     const userDataDirectory =
       this.options.puppeteerOptions?.userDataDirectory || '/data/userdata'
@@ -735,6 +766,17 @@ export class TwitterScraper {
       // eslint-disable-next-line no-proto
       delete navigator.__proto__.webdriver
     })
+
+    if (
+      this.options.puppeteerOptions?.proxy &&
+      this.options.puppeteerOptions?.proxy.username &&
+      this.options.puppeteerOptions?.proxy.password
+    ) {
+      await page.authenticate({
+        username: this.options.puppeteerOptions.proxy.username,
+        password: this.options.puppeteerOptions.proxy.password,
+      })
+    }
 
     this.setAutoSaveResponse(page)
 
