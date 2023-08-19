@@ -1715,30 +1715,4 @@ export interface GraphQLGetLikesSuccessResponse {
       }
     }
   }
-  errors?: {
-    message: string
-    locations: {
-      line: number
-      column: number
-    }[]
-    path: (number | string)[]
-    extensions: {
-      name: string
-      source: string
-      retry_after: number
-      code: number
-      kind: string
-      tracing: {
-        trace_id: string
-      }
-    }
-    code: number
-    kind: string
-    name: string
-    source: string
-    retry_after: number
-    tracing: {
-      trace_id: string
-    }
-  }[]
 }

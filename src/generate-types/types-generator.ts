@@ -33,6 +33,11 @@ interface GenerateTypeOptions {
    * 型定義の tsdoc
    */
   tsDocument: string
+
+  /**
+   * エラーを無視するかどうか
+   */
+  ignoreError: boolean
 }
 
 /**
@@ -94,6 +99,13 @@ export class TwitterTypesGenerator {
     let schema
     for (const path of result.paths) {
       const data = Utils.parseJsonc(fs.readFileSync(path, 'utf8'))
+      if (!data) continue
+
+      if (options.ignoreError && 'errors' in data && data.errors.length > 0) {
+        logger.warn(`⚠️ ${path}: ${data.errors[0].message}`)
+        continue
+      }
+
       const fileSchema = createSchema(data)
       schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
     }
@@ -151,6 +163,7 @@ export class TwitterTypesGenerator {
           tsDocument: `${type} ${result.method} ${result.name} ${
             result.statusCode.startsWith('2') ? '成功' : '失敗'
           }レスポンスモデル`,
+          ignoreError: result.statusCode.startsWith('2'),
         },
         result
       )

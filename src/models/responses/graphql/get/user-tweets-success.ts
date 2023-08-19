@@ -134,14 +134,22 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                           conversation_id_str: string
                           display_text_range: number[]
                           entities: {
-                            user_mentions: unknown[]
+                            user_mentions: {
+                              id_str: string
+                              name: string
+                              screen_name: string
+                              indices: number[]
+                            }[]
                             urls: {
                               display_url: string
                               expanded_url: string
                               url: string
                               indices: number[]
                             }[]
-                            hashtags: unknown[]
+                            hashtags: {
+                              indices: number[]
+                              text: string
+                            }[]
                             symbols: unknown[]
                             media?: {
                               display_url: string
@@ -151,7 +159,20 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                               media_url_https: string
                               type: string
                               url: string
-                              features: {}
+                              features: {
+                                large?: {
+                                  faces: unknown[]
+                                }
+                                medium?: {
+                                  faces: unknown[]
+                                }
+                                small?: {
+                                  faces: unknown[]
+                                }
+                                orig?: {
+                                  faces: unknown[]
+                                }
+                              }
                               sizes: {
                                 large: {
                                   h: number
@@ -177,6 +198,12 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                               original_info: {
                                 height: number
                                 width: number
+                                focus_rects?: {
+                                  x: number
+                                  y: number
+                                  w: number
+                                  h: number
+                                }[]
                               }
                             }[]
                           }
@@ -209,17 +236,30 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                               media_url_https: string
                               type: string
                               url: string
-                              additional_media_info: {
+                              additional_media_info?: {
                                 title: string
                                 monetizable: boolean
                               }
-                              mediaStats: {
+                              mediaStats?: {
                                 viewCount: number
                               }
                               ext_media_availability: {
                                 status: string
                               }
-                              features: {}
+                              features: {
+                                large?: {
+                                  faces: unknown[]
+                                }
+                                medium?: {
+                                  faces: unknown[]
+                                }
+                                small?: {
+                                  faces: unknown[]
+                                }
+                                orig?: {
+                                  faces: unknown[]
+                                }
+                              }
                               sizes: {
                                 large: {
                                   h: number
@@ -245,8 +285,14 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                               original_info: {
                                 height: number
                                 width: number
+                                focus_rects?: {
+                                  x: number
+                                  y: number
+                                  w: number
+                                  h: number
+                                }[]
                               }
-                              video_info: {
+                              video_info?: {
                                 aspect_ratio: number[]
                                 duration_millis: number
                                 variants: {

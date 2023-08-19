@@ -53,8 +53,8 @@ export interface CustomUserLegacyObject {
   followed_by?: boolean
   following?: boolean
   muting?: boolean
+  blocking?: boolean
   needs_phone_verification?: boolean
   protected?: boolean
   verified_type?: string
-  blocking?: boolean
 }
