@@ -44,7 +44,7 @@ export type TwitterOptions = TwitterScraperOptions
  * Twitter スクレイピングライブラリクラス
  */
 export class Twitter {
-  private readonly scraper: TwitterScraper
+  public readonly scraper: TwitterScraper
 
   /**
    * @param scraper {@link TwitterScraper} インスタンス
