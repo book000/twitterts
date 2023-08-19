@@ -2253,6 +2253,7 @@ export interface GraphQLGetUserTweetsSuccessResponse {
                                               percentage: number
                                             }[]
                                           }
+                                          boolean_value?: boolean
                                         }
                                       }[]
                                       card_platform: {

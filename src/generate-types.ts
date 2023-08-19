@@ -150,7 +150,7 @@ const Utils = {
     rawName: string,
     rawMethod: string,
     rawStatus: string | null
-  ) {
+  ): string {
     const type =
       rawType.toLocaleLowerCase() === 'graphql'
         ? 'GraphQL'
@@ -174,7 +174,7 @@ const Utils = {
    * @param string 変換する文字列
    * @returns キャメルケース変換後の文字列
    */
-  toCamelCase(string: string) {
+  toCamelCase(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
   },
 
@@ -184,7 +184,7 @@ const Utils = {
    * @param string 変換する文字列
    * @returns 変換後の文字列
    */
-  capitalize(string: string) {
+  capitalize(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1)
   },
 
@@ -202,7 +202,7 @@ const Utils = {
     rawName: string,
     rawMethod: string,
     rawStatus: string
-  ) {
+  ): string {
     const type = rawType.toLowerCase()
     const method = rawMethod.toLowerCase()
     const name = rawName.replaceAll(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
@@ -239,7 +239,7 @@ class TwitterTypesGenerator {
    * @param baseDirectories ディレクトリを取得するディレクトリパス
    * @returns ディレクトリ群
    */
-  getDirectories(baseDirectories: string[] = []) {
+  getDirectories(baseDirectories: string[] = []): string[] {
     const baseDirectory = join(
       this.options.debugOutputDirectory,
       ...baseDirectories
@@ -259,7 +259,7 @@ class TwitterTypesGenerator {
    * @param baseDirectories ファイルを取得するディレクトリパス
    * @returns JSON ファイル群
    */
-  getJSONFiles(baseDirectories: string[] = []) {
+  getJSONFiles(baseDirectories: string[] = []): string[] {
     const baseDirectory = join(
       this.options.debugOutputDirectory,
       ...baseDirectories
@@ -306,7 +306,10 @@ class TwitterTypesGenerator {
    * @param options 単一の型定義生成オプション
    * @param result エンドポイントごとのレスポンス情報
    */
-  private async generateType(options: GenerateTypeOptions, result: Result) {
+  private async generateType(
+    options: GenerateTypeOptions,
+    result: Result
+  ): Promise<void> {
     const logger = Logger.configure('TwitterGenerateTypes.generateType')
 
     if (result.paths.length === 0) {
@@ -346,7 +349,7 @@ class TwitterTypesGenerator {
    *
    * @param options 型定義生成オプション
    */
-  private async generateTypes(options: GenerateTypesOptions) {
+  private async generateTypes(options: GenerateTypesOptions): Promise<void> {
     const results = this.get()
     for (const result of results) {
       const name = Utils.getName(
@@ -396,7 +399,7 @@ class TwitterTypesGenerator {
   /**
    * デバッグレスポンスを元に、型定義を生成するメイン関数
    */
-  public static async main() {
+  public static async main(): Promise<void> {
     const debugOutputDirectory =
       process.env.DEBUG_OUTPUT_DIRECTORY || './data/responses'
     const schemaDirectory = process.env.SCHEMA_DIRECTORY || './data/schema'
@@ -441,7 +444,7 @@ class CustomTypeGenerator {
   /**
    * 検索タイムラインツイートモデル（CustomSearchTimelineEntry）のカスタム型定義を生成する
    */
-  private async runGraphQLSearchTimeline() {
+  private async runGraphQLSearchTimeline(): Promise<void> {
     const results = this.results.filter(
       (result) =>
         result.type === 'graphql' &&
@@ -488,7 +491,7 @@ class CustomTypeGenerator {
   /**
    * ユーザーツイートモデル（CustomUserTweetEntry）のカスタム型定義を生成する
    */
-  private async runGraphQLUserTweets() {
+  private async runGraphQLUserTweets(): Promise<void> {
     const results = this.results.filter(
       (result) =>
         result.type === 'graphql' &&
@@ -535,7 +538,7 @@ class CustomTypeGenerator {
   /**
    * ユーザーいいねツイートモデル（CustomUserLikeTweetEntry）のカスタム型定義を生成する
    */
-  private async runGraphQLUserLikeTweets() {
+  private async runGraphQLUserLikeTweets(): Promise<void> {
     const results = this.results.filter(
       (result) =>
         result.type === 'graphql' &&
@@ -579,7 +582,7 @@ class CustomTypeGenerator {
     )
   }
 
-  private async runGraphQLTimelineInstruction() {
+  private async runGraphQLTimelineInstruction(): Promise<void> {
     const homeTimelineResults = this.results.filter(
       (result) =>
         result.type === 'graphql' &&
@@ -662,7 +665,7 @@ class CustomTypeGenerator {
   /**
    * レスポンスツイートオブジェクト（CustomTweetObject）のカスタム型定義を生成する
    */
-  private async runTweetObject() {
+  private async runTweetObject(): Promise<void> {
     // 各レスポンスからツイートオブジェクトを抽出
     const schemas = [
       // HomeTimeline
@@ -836,7 +839,7 @@ class CustomTypeGenerator {
   /**
    * レスポンスツイートレガシーオブジェクト（CustomTweetLegacyObject）のカスタム型定義を生成する
    */
-  private async runTweetLegacyObject() {
+  private async runTweetLegacyObject(): Promise<void> {
     // 各レスポンスからレガシーツイートオブジェクトを抽出
     const schemas = [
       // SearchTimeline
@@ -961,7 +964,7 @@ class CustomTypeGenerator {
     schema: Schema,
     name: string,
     tsDocument: string
-  ) {
+  ): Promise<void> {
     const logger = Logger.configure(
       'CustomTypeGenerator.generateTypeFromSchema'
     )
@@ -985,7 +988,7 @@ class CustomTypeGenerator {
   /**
    * カスタム型定義を生成する
    */
-  async generate() {
+  async generate(): Promise<void> {
     await this.runGraphQLSearchTimeline()
     await this.runGraphQLUserTweets()
     await this.runGraphQLUserLikeTweets()
@@ -1009,7 +1012,9 @@ class EndPointTypeGenerator {
    * @param typesDirectory 型定義の出力先ディレクトリ
    */
   constructor(results: Result[], typesDirectory: string) {
-    this.results = results
+    this.results = results.filter((result) =>
+      result.paths.some((path) => path.endsWith('.json'))
+    )
     this.typesDirectory = typesDirectory
   }
 
@@ -1018,7 +1023,7 @@ class EndPointTypeGenerator {
    *
    * @returns インポート文群
    */
-  generateImport() {
+  generateImport(): string {
     // import { GraphQLGetUserTweetsResponse } from './graphql/get/user-tweets'
     return this.results
       .map((result) => {
@@ -1046,7 +1051,7 @@ class EndPointTypeGenerator {
    * @param type エンドポイントの種類
    * @returns メソッド名の配列
    */
-  getMethods(type: RequestType) {
+  getMethods(type: RequestType): string[] {
     return this.results
       .filter((result) => result.type === type.toLowerCase())
       .map((result) => result.method)
@@ -1060,7 +1065,7 @@ class EndPointTypeGenerator {
    * @param method メソッド名
    * @returns エンドポイント名群の定義
    */
-  generateEndPointType(type: RequestType, method: string) {
+  generateEndPointType(type: RequestType, method: string): string | null {
     const head = `export type ${type}${method}Endpoint =`
     const types = this.results
       .filter(
@@ -1086,7 +1091,7 @@ class EndPointTypeGenerator {
    * @param type エンドポイントの種類
    * @param method メソッド名
    */
-  generateResponseMergeType(type: RequestType, method: string) {
+  generateResponseMergeType(type: RequestType, method: string): string {
     const names = this.results
       .filter((result) => result.type === type.toLowerCase())
       .map((result) => result.name)
@@ -1134,7 +1139,7 @@ class EndPointTypeGenerator {
    * @param method メソッド名
    * @returns レスポンス型定義を紐づけるような型定義
    */
-  generateResponseType(type: RequestType, method: string) {
+  generateResponseType(type: RequestType, method: string): string {
     const head = `export type ${type}${method}EndPointResponseType<T extends ${type}${method}Endpoint> =`
     const types = this.results
       .filter(
@@ -1163,7 +1168,7 @@ class EndPointTypeGenerator {
    * @param types エンドポイントの種類の配列
    * @returns レスポンス型定義を紐づけるような型定義
    */
-  generateEndpointResponseType(types: readonly RequestType[]) {
+  generateEndpointResponseType(types: readonly RequestType[]): string {
     const head =
       'export type EndPointResponseType<M extends HttpMethod, T extends RequestType, N extends GraphQLEndpoint | RESTEndpoint> = '
 
@@ -1203,7 +1208,7 @@ class EndPointTypeGenerator {
   /**
    * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成する
    */
-  generate() {
+  generate(): void {
     const logger = Logger.configure('EndPointTypeGenerator.generate')
 
     const types = ['GraphQL', 'REST'] as const

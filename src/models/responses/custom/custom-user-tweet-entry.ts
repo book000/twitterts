@@ -1364,6 +1364,7 @@ export interface CustomUserTweetEntry {
                                 percentage: number
                               }[]
                             }
+                            boolean_value?: boolean
                           }
                         }[]
                         card_platform: {

@@ -19,7 +19,7 @@ export const ObjectConverter = {
    * @param legacy ツイートのレガシーオブジェクト
    * @returns エンティティ
    */
-  convertEntity(legacy: CustomTweetLegacyObject): Entities {
+  convertTweetEntities(legacy: CustomTweetLegacyObject): Entities {
     const entities: Entities = {}
 
     if (legacy.entities.hashtags) {
@@ -113,7 +113,7 @@ export const ObjectConverter = {
    * @param legacy ツイートのレガシーオブジェクト
    * @returns 拡張エンティティ
    */
-  convertExtendedEntity(legacy: CustomTweetLegacyObject): ExtendedEntities {
+  convertExtendedEntities(legacy: CustomTweetLegacyObject): ExtendedEntities {
     const extendedEntities: ExtendedEntities = {}
 
     if (legacy.extended_entities?.media) {
@@ -243,10 +243,10 @@ export const ObjectConverter = {
       display_text_range: legacy.display_text_range
         ? [legacy.display_text_range[0], legacy.display_text_range[1]]
         : undefined,
-      entities: ObjectConverter.convertEntity(
+      entities: ObjectConverter.convertTweetEntities(
         legacy as CustomTweetLegacyObject
       ),
-      extended_entities: ObjectConverter.convertExtendedEntity(
+      extended_entities: ObjectConverter.convertExtendedEntities(
         legacy as CustomTweetLegacyObject
       ),
       coordinates: ObjectConverter.convertCoordinates(

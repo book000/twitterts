@@ -1066,8 +1066,8 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                                   }
                                   url?: {
                                     urls: {
-                                      display_url: string
-                                      expanded_url: string
+                                      display_url?: string
+                                      expanded_url?: string
                                       url: string
                                       indices: number[]
                                     }[]

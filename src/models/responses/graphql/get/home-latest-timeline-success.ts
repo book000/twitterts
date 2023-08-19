@@ -362,6 +362,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   }[]
                                 }
                                 has_nft_avatar?: boolean
+                                super_follow_eligible?: boolean
                               }
                             }
                           }
@@ -378,7 +379,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               edits_remaining: string
                             }
                           }
-                          edit_perspective: {
+                          edit_perspective?: {
                             favorited: boolean
                             retweeted: boolean
                           }
@@ -664,9 +665,27 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                           withheld_in_countries: unknown[]
                                           url?: string
                                         }
+                                        professional?: {
+                                          rest_id: string
+                                          professional_type: string
+                                          category: {
+                                            id: number
+                                            name: string
+                                            icon_name: string
+                                          }[]
+                                        }
+                                        super_follow_eligible?: boolean
                                       }
                                     }
                                   }
+                                  title?: string
+                                  description?: string
+                                  call_to_actions?: {
+                                    watch_now: {
+                                      url: string
+                                    }
+                                  }
+                                  embeddable?: boolean
                                 }
                                 mediaStats?: {
                                   viewCount: number
@@ -1863,8 +1882,13 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   professional?: {
                                     rest_id: string
                                     professional_type: string
-                                    category: unknown[]
+                                    category: {
+                                      id: number
+                                      name: string
+                                      icon_name: string
+                                    }[]
                                   }
+                                  super_follow_eligible?: boolean
                                 }
                               }
                             }
@@ -3009,7 +3033,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                           is_edit_eligible: boolean
                           edits_remaining: string
                         }
-                        edit_perspective: {
+                        edit_perspective?: {
                           favorited: boolean
                           retweeted: boolean
                         }

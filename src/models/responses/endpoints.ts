@@ -11,6 +11,7 @@ import { GraphQLGetDataSaverModeErrorResponse } from './graphql/get/data-saver-m
 import { GraphQLPostDeleteRetweetSuccessResponse } from './graphql/post/delete-retweet-success'
 import { GraphQLGetDMPinnedInboxQuerySuccessResponse } from './graphql/get/dmpinned-inbox-query-success'
 import { GraphQLPostFavoriteTweetSuccessResponse } from './graphql/post/favorite-tweet-success'
+import { GraphQLGetFollowHostButtonQuerySuccessResponse } from './graphql/get/follow-host-button-query-success'
 import { GraphQLGetGetAltTextPromptPreferenceSuccessResponse } from './graphql/get/get-alt-text-prompt-preference-success'
 import { GraphQLGetGetAltTextPromptPreferenceErrorResponse } from './graphql/get/get-alt-text-prompt-preference-error'
 import { GraphQLGetGetUserClaimsSuccessResponse } from './graphql/get/get-user-claims-success'
@@ -70,6 +71,9 @@ export type GraphQLGetDataSaverModeResponse =
 /** GraphQL DMPinnedInboxQuery GET レスポンスモデル */
 export type GraphQLGetDMPinnedInboxQueryResponse =
   GraphQLGetDMPinnedInboxQuerySuccessResponse
+/** GraphQL FollowHostButtonQuery GET レスポンスモデル */
+export type GraphQLGetFollowHostButtonQueryResponse =
+  GraphQLGetFollowHostButtonQuerySuccessResponse
 /** GraphQL getAltTextPromptPreference GET レスポンスモデル */
 export type GraphQLGetGetAltTextPromptPreferenceResponse =
   | GraphQLGetGetAltTextPromptPreferenceSuccessResponse
@@ -142,6 +146,7 @@ export type GraphQLGETEndpoint =
   | 'ConnectTabTimeline'
   | 'DataSaverMode'
   | 'DMPinnedInboxQuery'
+  | 'FollowHostButtonQuery'
   | 'getAltTextPromptPreference'
   | 'GetUserClaims'
   | 'HomeLatestTimeline'
@@ -179,6 +184,8 @@ export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
     ? GraphQLGetDataSaverModeResponse
     : T extends 'DMPinnedInboxQuery'
     ? GraphQLGetDMPinnedInboxQueryResponse
+    : T extends 'FollowHostButtonQuery'
+    ? GraphQLGetFollowHostButtonQueryResponse
     : T extends 'getAltTextPromptPreference'
     ? GraphQLGetGetAltTextPromptPreferenceResponse
     : T extends 'GetUserClaims'
