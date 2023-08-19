@@ -14,7 +14,10 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
   /**
    * @param response {@link Twitter['searchTweets']} のレスポンス
    */
-  constructor(response: GraphQLGetSearchTimelineResponse) {
+  constructor(
+    response: GraphQLGetSearchTimelineResponse,
+    isIncludingPromotedTweets: boolean
+  ) {
     super(response)
 
     const entries =
@@ -25,9 +28,14 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
         )
         .flatMap(
           (instruction) =>
-            instruction.entries?.filter((entry) =>
-              entry.entryId.startsWith('tweet-')
-            )
+            instruction.entries
+              ?.filter((entry) => entry.entryId.startsWith('tweet-'))
+              .filter((entry) =>
+                isIncludingPromotedTweets
+                  ? true
+                  : entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
+              )
         ) as CustomSearchTimelineEntry[]
 
     const rawTweets: CustomTweetObject[] = entries

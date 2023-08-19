@@ -28,7 +28,8 @@ export class HomeTimelineParser extends BaseParser<
   constructor(
     response:
       | GraphQLGetHomeTimelineResponse
-      | GraphQLGetHomeLatestTimelineResponse
+      | GraphQLGetHomeLatestTimelineResponse,
+    isIncludingPromotedTweets: boolean
   ) {
     super(response)
 
@@ -41,9 +42,14 @@ export class HomeTimelineParser extends BaseParser<
       )
       .flatMap(
         (instruction) =>
-          instruction.entries?.filter((entry) =>
-            entry.entryId.startsWith('tweet-')
-          )
+          instruction.entries
+            ?.filter((entry) => entry.entryId.startsWith('tweet-'))
+            .filter((entry) =>
+              isIncludingPromotedTweets
+                ? true
+                : entry.entryId.startsWith('promoted-tweet') ||
+                  entry.entryId.startsWith('promotedTweet')
+            )
       ) as CustomTimelineTweetEntry[]
 
     const rawTweets: CustomTweetObject[] = entries

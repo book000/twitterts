@@ -31,6 +31,7 @@ export interface GetUserByUserIdOptions {
 export const TimelineType = {
   /** おすすめ */
   RECOMMEND: 'recommend',
+
   /** フォロー中 */
   FOLLOWING: 'following',
 } as const
@@ -44,6 +45,9 @@ export interface GetHomeTimelineTweetsOptions {
 
   /** 取得するツイートの最大数。デフォルトは 20 */
   limit?: number
+
+  /** プロモーションツイートを含めるかどうか。デフォルトは false */
+  isIncludingPromotedTweets?: boolean
 }
 
 /**
@@ -52,12 +56,16 @@ export interface GetHomeTimelineTweetsOptions {
 export const SearchType = {
   /** 話題のツイート */
   POPULAR: null,
+
   /** 最新 */
   LIVE: 'live',
+
   /** アカウント */
   // USER: 'user', // searchTweets として適切ではない（ツイートではない）ため
+
   /** 画像 */
   IMAGE: 'image',
+
   /** 動画 */
   VIDEO: 'video',
 } as const
@@ -68,10 +76,15 @@ export const SearchType = {
 export interface SearchTweetsOptions {
   /** 検索クエリ */
   query: string
+
   /** 検索種別。デフォルトは「話題のツイート」 */
   searchType?: (typeof SearchType)[keyof typeof SearchType]
+
   /** 取得するツイートの最大数。デフォルトは 20 */
   limit?: number
+
+  /** プロモーションツイートを含めるかどうか。デフォルトは false */
+  isIncludingPromotedTweets?: boolean
 }
 
 /**
@@ -80,8 +93,12 @@ export interface SearchTweetsOptions {
 export interface GetUserTweetsOptions {
   /** スクリーンネーム */
   screenName: string
+
   /** 取得するツイートの最大数。デフォルトは 20 */
   limit?: number
+
+  /** プロモーションツイートを含めるかどうか。デフォルトは false */
+  isIncludingPromotedTweets?: boolean
 }
 
 /**
@@ -90,8 +107,12 @@ export interface GetUserTweetsOptions {
 export interface GetUserLikeTweetsOptions {
   /** スクリーンネーム */
   screenName: string
+
   /** 取得するツイートの最大数。デフォルトは 20 */
   limit?: number
+
+  /** プロモーションツイートを含めるかどうか。デフォルトは false */
+  isIncludingPromotedTweets?: boolean
 }
 
 /**
@@ -116,6 +137,7 @@ export interface UnlikeTweetOptions {
 export interface BlockUserOptions {
   /** スクリーンネーム */
   screenName?: string
+
   /** ユーザー ID */
   userId?: string
 }
@@ -126,6 +148,7 @@ export interface BlockUserOptions {
 export interface UnblockUserOptions {
   /** スクリーンネーム */
   screenName?: string
+
   /** ユーザー ID */
   userId?: string
 }

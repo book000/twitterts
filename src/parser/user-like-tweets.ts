@@ -18,7 +18,10 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
   /**
    * @param response {@link Twitter['getUserLikeTweets']} のレスポンス
    */
-  constructor(response: GraphQLGetLikesResponse) {
+  constructor(
+    response: GraphQLGetLikesResponse,
+    isIncludingPromotedTweets: boolean
+  ) {
     super(response)
 
     if (this.isErrorResponse(this.response)) {
@@ -33,9 +36,14 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
         )
         .flatMap(
           (instruction) =>
-            instruction.entries?.filter((entry) =>
-              entry.entryId.startsWith('tweet-')
-            )
+            instruction.entries
+              ?.filter((entry) => entry.entryId.startsWith('tweet-'))
+              .filter((entry) =>
+                isIncludingPromotedTweets
+                  ? true
+                  : entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
+              )
         ) as CustomUserLikeTweetEntry[]
 
     const rawTweets = entries

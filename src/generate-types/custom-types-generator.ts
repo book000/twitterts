@@ -74,8 +74,11 @@ export class CustomTypesGenerator {
           )
           .flatMap(
             (instruction) =>
-              instruction.entries?.filter((entry) =>
-                entry.entryId.startsWith('tweet-')
+              instruction.entries?.filter(
+                (entry) =>
+                  entry.entryId.startsWith('tweet-') ||
+                  entry.entryId.startsWith('promoted-tweet') ||
+                  entry.entryId.startsWith('promotedTweet')
               )
           )
       const fileSchema = createCompoundSchema(entries)
@@ -121,8 +124,11 @@ export class CustomTypesGenerator {
           )
           .flatMap(
             (instruction) =>
-              instruction.entries?.filter((entry) =>
-                entry.entryId.startsWith('tweet-')
+              instruction.entries?.filter(
+                (entry) =>
+                  entry.entryId.startsWith('tweet-') ||
+                  entry.entryId.startsWith('promoted-tweet') ||
+                  entry.entryId.startsWith('promotedTweet')
               )
           )
       const fileSchema = createCompoundSchema(entries)
@@ -168,8 +174,11 @@ export class CustomTypesGenerator {
           )
           .flatMap(
             (instruction) =>
-              instruction.entries?.filter((entry) =>
-                entry.entryId.startsWith('tweet-')
+              instruction.entries?.filter(
+                (entry) =>
+                  entry.entryId.startsWith('tweet-') ||
+                  entry.entryId.startsWith('promoted-tweet') ||
+                  entry.entryId.startsWith('promotedTweet')
               )
           )
       const fileSchema = createCompoundSchema(entries)
@@ -226,8 +235,11 @@ export class CustomTypesGenerator {
         )
         .flatMap(
           (instruction) =>
-            instruction.entries?.filter((entry) =>
-              entry.entryId.startsWith('tweet-')
+            instruction.entries?.filter(
+              (entry) =>
+                entry.entryId.startsWith('tweet-') ||
+                entry.entryId.startsWith('promoted-tweet') ||
+                entry.entryId.startsWith('promotedTweet')
             )
         )
       const fileSchema = createCompoundSchema(entries)
@@ -246,8 +258,11 @@ export class CustomTypesGenerator {
         )
         .flatMap(
           (instruction) =>
-            instruction.entries?.filter((entry) =>
-              entry.entryId.startsWith('tweet-')
+            instruction.entries?.filter(
+              (entry) =>
+                entry.entryId.startsWith('tweet-') ||
+                entry.entryId.startsWith('promoted-tweet') ||
+                entry.entryId.startsWith('promotedTweet')
             )
         )
       const fileSchema = createCompoundSchema(instructions)
@@ -295,8 +310,11 @@ export class CustomTypesGenerator {
             )
             .flatMap(
               (instruction) =>
-                instruction.entries?.filter((entry) =>
-                  entry.entryId.startsWith('tweet-')
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
                 )
             )
         })
@@ -328,8 +346,11 @@ export class CustomTypesGenerator {
             )
             .flatMap(
               (instruction) =>
-                instruction.entries?.filter((entry) =>
-                  entry.entryId.startsWith('tweet-')
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
                 )
             )
         })
@@ -361,8 +382,11 @@ export class CustomTypesGenerator {
             )
             .flatMap(
               (instruction) =>
-                instruction.entries?.filter((entry) =>
-                  entry.entryId.startsWith('tweet-')
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
                 )
             )
         })
@@ -394,8 +418,11 @@ export class CustomTypesGenerator {
             )
             .flatMap(
               (instruction) =>
-                instruction.entries?.filter((entry) =>
-                  entry.entryId.startsWith('tweet-')
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
                 )
             )
         })
@@ -426,8 +453,11 @@ export class CustomTypesGenerator {
             )
             .flatMap(
               (instruction) =>
-                instruction.entries?.filter((entry) =>
-                  entry.entryId.startsWith('tweet-')
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
                 )
             )
         })
@@ -474,8 +504,11 @@ export class CustomTypesGenerator {
             )
             .flatMap(
               (instruction) =>
-                instruction.entries?.filter((entry) =>
-                  entry.entryId.startsWith('tweet-')
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
                 )
             )
         })
@@ -506,8 +539,11 @@ export class CustomTypesGenerator {
             )
             .flatMap(
               (instruction) =>
-                instruction.entries?.filter((entry) =>
-                  entry.entryId.startsWith('tweet-')
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
                 )
             )
         })
@@ -543,8 +579,11 @@ export class CustomTypesGenerator {
             )
             .flatMap(
               (instruction) =>
-                instruction.entries?.filter((entry) =>
-                  entry.entryId.startsWith('tweet-')
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
                 )
             )
         })

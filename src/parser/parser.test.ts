@@ -31,7 +31,7 @@ describe('Parser', () => {
       const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
 
       expect(
-        () => new HomeTimelineParser(response),
+        () => new HomeTimelineParser(response, true),
         `Failed parse ${file}`
       ).not.toThrow()
     }
@@ -56,7 +56,7 @@ describe('Parser', () => {
       const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
 
       expect(
-        () => new HomeTimelineParser(response),
+        () => new HomeTimelineParser(response, true),
         `Failed parse ${file}`
       ).not.toThrow()
     }
@@ -81,7 +81,7 @@ describe('Parser', () => {
       const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
 
       expect(
-        () => new SearchTimelineParser(response),
+        () => new SearchTimelineParser(response, true),
         `Failed parse ${file}`
       ).not.toThrow()
     }
@@ -114,7 +114,7 @@ describe('Parser', () => {
       }
 
       expect(
-        () => new UserLikeTweetsParser(response),
+        () => new UserLikeTweetsParser(response, true),
         `Failed parse ${file}`
       ).not.toThrow()
     }
@@ -139,7 +139,7 @@ describe('Parser', () => {
       const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
 
       expect(
-        () => new UserTweetsParser(response),
+        () => new UserTweetsParser(response, true),
         `Failed parse ${file}`
       ).not.toThrow()
     }
