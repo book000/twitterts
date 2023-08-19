@@ -1,7 +1,7 @@
 import { SearchType, TimelineType } from './options'
 import { Twitter } from './twitter'
 
-jest.setTimeout(0)
+jest.setTimeout(90_000)
 
 describe('Twitter', () => {
   let twitter: Twitter
