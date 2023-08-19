@@ -218,6 +218,8 @@ export class Twitter {
       [TimelineType.RECOMMEND]: 'HomeTimeline',
       [TimelineType.FOLLOWING]: 'HomeLatestTimeline',
     }
+    const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
+
     const endpointName = endpointNames[options.timelineType]
 
     const url = 'https://twitter.com/home'
@@ -249,7 +251,10 @@ export class Twitter {
           await page.scrollToBottom()
           continue
         }
-        const parser = new HomeTimelineParser(response)
+        const parser = new HomeTimelineParser(
+          response,
+          isIncludingPromotedTweets
+        )
         const rawTweets = parser.getRawTweets()
         if (rawTweets.length === 0) {
           break
@@ -301,6 +306,7 @@ export class Twitter {
     }
     const searchType = options.searchType || SearchType.POPULAR
     const limit = options.limit || 20
+    const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
     const url = new URL(`https://twitter.com/search`)
     url.searchParams.set('q', options.query)
@@ -324,7 +330,10 @@ export class Twitter {
           await page.scrollToBottom()
           continue
         }
-        const parser = new SearchTimelineParser(response)
+        const parser = new SearchTimelineParser(
+          response,
+          isIncludingPromotedTweets
+        )
         const rawTweets = parser.getRawTweets()
         if (rawTweets.length === 0) {
           break
@@ -364,6 +373,7 @@ export class Twitter {
 
     const limit = options.limit || 20
     const url = `https://twitter.com/${options.screenName}`
+    const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
     const page = await this.scraper.getScraperPage()
     const results = []
@@ -381,7 +391,7 @@ export class Twitter {
           await page.scrollToBottom()
           continue
         }
-        const parser = new UserTweetsParser(response)
+        const parser = new UserTweetsParser(response, isIncludingPromotedTweets)
         const tweets = parser.getTweets()
         if (tweets.length === 0) {
           break
@@ -423,6 +433,7 @@ export class Twitter {
 
     const limit = options.limit || 20
     const url = `https://twitter.com/${options.screenName}/likes`
+    const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
     const page = await this.scraper.getScraperPage()
     const results = []
@@ -441,7 +452,10 @@ export class Twitter {
           await page.scrollToBottom()
           continue
         }
-        const parser = new UserLikeTweetsParser(response)
+        const parser = new UserLikeTweetsParser(
+          response,
+          isIncludingPromotedTweets
+        )
         const tweets = parser.getTweets()
         if (tweets.length === 0) {
           break
