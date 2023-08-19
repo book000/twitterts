@@ -10,7 +10,6 @@ import { dirname, join } from 'node:path'
 import {
   EndPointResponseType,
   GraphQLEndpoint,
-  RESTEndpoint,
 } from './models/responses/endpoints'
 import { TwitterOperationError, TwitterTimeoutError } from './models/exceptions'
 
@@ -228,6 +227,11 @@ interface TargetUrl {
    * パス名の配列。ワイルドカードとして * が使用できる。
    */
   pathnames: string[]
+
+  /**
+   * エンドポイント名の上書き
+   */
+  overrideName?: string
 }
 
 /**
@@ -244,7 +248,83 @@ const targetUrls: TargetUrl[] = [
     hostname: 'twitter.com',
     pathnames: ['i', 'api', 'graphql', '*', '<NAME>'],
   },
+  {
+    type: 'REST',
+    hostname: 'twitter.com',
+    pathnames: ['i', 'api', '1.1', '<NAME*>'],
+    overrideName: 'V1<NAME>',
+  },
+  {
+    type: 'REST',
+    hostname: 'twitter.com',
+    pathnames: ['i', 'api', '2', '<NAME*>'],
+    overrideName: 'V2<NAME>',
+  },
 ]
+
+function getEndpoint(url: string): {
+  type: RequestType
+  name: string
+  overrideName?: string
+} | null {
+  const urlObject = new URL(url)
+  if (!urlObject) {
+    return null
+  }
+
+  const targets = targetUrls.filter(
+    (targetUrl) => targetUrl.hostname === urlObject.hostname
+  )
+  if (!targets || targets.length === 0) {
+    return null
+  }
+
+  for (const target of targets) {
+    const pathnames = target.pathnames
+    const pathname = urlObject.pathname
+    const pathnameParts = pathname.split('/').filter((part) => part !== '')
+
+    let name
+    for (const [index, path] of pathnames.entries()) {
+      const part = pathnameParts[index]
+      if (path === '*') {
+        continue
+      }
+      if (path === '<NAME>') {
+        if (!part) {
+          break
+        }
+        name = part
+        continue
+      }
+      if (path === '<NAME*>') {
+        if (!part) {
+          break
+        }
+        // 以降の値を結合。但し拡張子は除く
+        // 例: blocks/create.json -> blocks/create
+        name = pathnameParts
+          .slice(index)
+          .join('/')
+          .replace(/\.json$/, '')
+        continue
+      }
+      if (path !== part) {
+        break
+      }
+    }
+
+    if (name) {
+      return {
+        type: target.type,
+        name,
+        overrideName: target.overrideName,
+      }
+    }
+  }
+
+  return null
+}
 
 /**
  * 取得したレスポンスのチェックを行い、詳細を返します。
@@ -260,43 +340,6 @@ async function getResponseDetails(
     return null
   }
 
-  const url = new URL(response.url())
-  if (!url) {
-    return null
-  }
-
-  const targetUrl = targetUrls.find(
-    (targetUrl) => targetUrl.hostname === url.hostname
-  )
-  if (!targetUrl) {
-    return null
-  }
-
-  const pathnames = targetUrl.pathnames
-  const pathname = url.pathname
-  const pathnameParts = pathname.split('/').filter((part) => part !== '')
-
-  let name
-  for (const [index, path] of pathnames.entries()) {
-    const part = pathnameParts[index]
-    if (path === '*') {
-      continue
-    }
-    if (path === '<NAME>') {
-      if (!part) {
-        return null
-      }
-      name = part
-      continue
-    }
-    if (path !== part) {
-      return null
-    }
-  }
-  if (!name) {
-    return null
-  }
-
   let text
   try {
     text = await response.text()
@@ -304,8 +347,24 @@ async function getResponseDetails(
     return null
   }
 
-  const type = targetUrl.type
+  const endpoint = getEndpoint(response.url())
+  if (!endpoint) {
+    return null
+  }
+
   const method = response.request().method() as HttpMethod
+  const type = endpoint.type
+
+  // name に / がある場合は、その次の文字を大文字にする
+  // name に _ がある場合は、その次の文字を大文字にする
+  let name = endpoint.name.replaceAll(/[/_](.)/g, (_, p1) =>
+    p1.toLocaleUpperCase()
+  )
+
+  const overrideName = endpoint.overrideName
+  if (overrideName) {
+    name = overrideName.replace('<NAME>', name)
+  }
 
   const key = getResponseKey({
     method,
@@ -373,7 +432,7 @@ export class TwitterScraperPage {
   public async waitSingleResponse<
     M extends HttpMethod,
     T extends RequestType,
-    N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint,
+    N extends GraphQLEndpoint,
   >(
     url: string | null,
     method: M,
@@ -423,7 +482,7 @@ export class TwitterScraperPage {
   public shiftResponse<
     M extends HttpMethod,
     T extends RequestType,
-    N extends T extends 'GRAPHQL' ? GraphQLEndpoint : RESTEndpoint,
+    N extends GraphQLEndpoint,
   >(method: M, type: T, name: N): EndPointResponseType<M, T, N> | null {
     const key = getResponseKey({
       method,
@@ -805,6 +864,7 @@ export class TwitterScraper {
       if (!details) {
         return
       }
+      const url = response.url()
       const { type, name, method, text } = details
 
       const onResponse = this.options.debugOptions?.outputResponse?.onResponse
@@ -826,7 +886,8 @@ export class TwitterScraper {
       try {
         const data = JSON.parse(text)
         const path = `${pathNotIncludedExtension}json`
-        fs.writeFileSync(path, JSON.stringify(data, null, 2))
+        const body = `// ${method} ${url}\n\n${JSON.stringify(data, null, 2)}`
+        fs.writeFileSync(path, body)
       } catch {
         const path = `${pathNotIncludedExtension}txt`
         fs.writeFileSync(path, text)

@@ -5,7 +5,7 @@ import fs from 'node:fs'
 /**
  * レスポンス種別
  */
-type RequestType = 'GraphQL' | 'REST'
+type RequestType = 'GraphQL'
 
 /**
  * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成するクラス
@@ -19,8 +19,10 @@ export class EndPointTypeGenerator {
    * @param typesDirectory 型定義の出力先ディレクトリ
    */
   constructor(results: Result[], typesDirectory: string) {
-    this.results = results.filter((result) =>
-      result.paths.some((path) => path.endsWith('.json'))
+    this.results = results.filter(
+      (result) =>
+        result.paths.some((path) => path.endsWith('.json')) &&
+        result.type === 'graphql'
     )
     this.typesDirectory = typesDirectory
   }
@@ -177,7 +179,7 @@ export class EndPointTypeGenerator {
    */
   generateEndpointResponseType(types: readonly RequestType[]): string {
     const head =
-      'export type EndPointResponseType<M extends HttpMethod, T extends RequestType, N extends GraphQLEndpoint | RESTEndpoint> = '
+      'export type EndPointResponseType<M extends HttpMethod, T extends RequestType, N extends GraphQLEndpoint> = '
 
     const results = []
     for (const type of types) {
@@ -218,7 +220,7 @@ export class EndPointTypeGenerator {
   generate(): void {
     const logger = Logger.configure('EndPointTypeGenerator.generate')
 
-    const types = ['GraphQL', 'REST'] as const
+    const types = ['GraphQL'] as const
 
     const data = []
 

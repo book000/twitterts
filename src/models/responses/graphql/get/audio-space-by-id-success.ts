@@ -77,10 +77,14 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
               verified_type?: string
               want_retweets: boolean
               withheld_in_countries: unknown[]
+              blocking?: boolean
             }
           }
         }
         scheduled_start?: number
+        mentioned_users?: {
+          rest_id: string
+        }[]
       }
       is_subscribed: boolean
       sharings: {

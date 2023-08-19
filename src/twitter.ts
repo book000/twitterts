@@ -1,7 +1,9 @@
-import { TimeoutError } from 'puppeteer-core'
+import { Page, TimeoutError } from 'puppeteer-core'
 import {
+  AlreadyBlockedError,
   AlreadyLikedError,
   IllegalArgumentError,
+  NotBlockedError,
   NotLikedError,
   TwitterOperationError,
   TwitterTimeoutError,
@@ -20,6 +22,8 @@ import {
   UnlikeTweetOptions,
   GetHomeTimelineTweetsOptions,
   TimelineType,
+  BlockUserOptions,
+  UnblockUserOptions,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
 import { UserLikeTweetsParser } from './parser/user-like-tweets'
@@ -652,6 +656,127 @@ export class Twitter {
   }
 
   /**
+   * ユーザーをブロックする
+   *
+   * @param options ブロックオプション
+   */
+  public async blockUser(options: BlockUserOptions): Promise<void> {
+    if (!options.screenName && !options.userId) {
+      throw new IllegalArgumentError('screenName or userId is required')
+    }
+
+    const url = options.screenName
+      ? `https://twitter.com/${options.screenName}`
+      : `https://twitter.com/i/user/${options.userId}`
+
+    const page = await this.scraper.getScraperPage()
+
+    try {
+      const response = await page.waitSingleResponse(
+        url,
+        'GET',
+        'GRAPHQL',
+        'UserByScreenName'
+      )
+      if (this.isErrorResponse(response)) {
+        throw new TwitterOperationError(response.errors[0].message)
+      }
+
+      // プロフィールの表示制限
+      const viewProfileButton = await page.page.$(
+        'div[data-testid="emptyState"] div[role="button"]'
+      )
+      if (viewProfileButton) {
+        await viewProfileButton.click()
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
+
+      const userStatus = await this.getUserStatus(page.page)
+      if (!userStatus) {
+        throw new TwitterOperationError('Failed to get user status')
+      }
+
+      if (userStatus === 'unblock') {
+        // 既にブロック済み
+        throw new AlreadyBlockedError()
+      }
+
+      await page.waitAndClick('div[data-testid="userActions"]', true)
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      await page.waitAndClick('div[role="menuitem"][data-testid="block"]', true)
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      await page.waitAndClick(
+        'div[data-testid="confirmationSheetConfirm"]',
+        true
+      )
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+    } catch (error) {
+      await page.close()
+      // if timeout
+      if (error instanceof TimeoutError) {
+        throw new TwitterTimeoutError('Failed to operate twitter')
+      }
+      throw error
+    }
+  }
+
+  /**
+   * ユーザーのブロックを解除する
+   *
+   * @param options ブロック解除オプション
+   */
+  public async unblockUser(options: UnblockUserOptions): Promise<void> {
+    if (!options.screenName && !options.userId) {
+      throw new IllegalArgumentError('screenName or userId is required')
+    }
+
+    const url = options.screenName
+      ? `https://twitter.com/${options.screenName}`
+      : `https://twitter.com/i/user/${options.userId}`
+
+    const page = await this.scraper.getScraperPage()
+    await page.goto(url)
+
+    try {
+      // プロフィールの表示制限
+      const viewProfileButton = await page.page.$(
+        'div[data-testid="emptyState"] div[role="button"]'
+      )
+      if (viewProfileButton) {
+        await viewProfileButton.click()
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
+
+      const userStatus = await this.getUserStatus(page.page)
+      if (!userStatus) {
+        throw new TwitterOperationError('Failed to get user status')
+      }
+
+      if (userStatus !== 'unblock') {
+        // 既にブロック解除済み
+        throw new NotBlockedError()
+      }
+
+      await page.waitAndClick('div[data-testid="userActions"]', true)
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      await page.waitAndClick('div[role="menuitem"][data-testid="block"]', true)
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      await page.waitAndClick(
+        'div[data-testid="confirmationSheetConfirm"]',
+        true
+      )
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+    } catch (error) {
+      await page.close()
+      // if timeout
+      if (error instanceof TimeoutError) {
+        throw new TwitterTimeoutError('Failed to operate twitter')
+      }
+      throw error
+    }
+  }
+
+  /**
    * ブラウザを閉じる
    */
   public async close(): Promise<void> {
@@ -667,5 +792,30 @@ export class Twitter {
    */
   public isErrorResponse(response: any): response is { errors: any[] } {
     return response.errors && response.errors.length > 0
+  }
+
+  private async getUserStatus(page: Page): Promise<string | void> {
+    // 1234567890-follow
+    // 1234567890-unblock
+    const testId = await page.evaluate(() => {
+      return new Promise<string | void>((resolve) => {
+        const interval = setInterval(() => {
+          const element = document.querySelector(
+            'div[data-testid="placementTracking"] div[role="button"]'
+          ) as HTMLElement
+          if (element) {
+            resolve(element.dataset.testid?.split('-')[1])
+          }
+        }, 100)
+        setTimeout(
+          () => {
+            clearInterval(interval)
+            resolve()
+          },
+          1000 * 60 * 2
+        ) // 2分
+      })
+    })
+    return testId
   }
 }

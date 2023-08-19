@@ -1,6 +1,8 @@
 import { Options } from 'json-schema-to-typescript'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
 import fs from 'node:fs'
+import { parse } from 'jsonc-parser'
+import { Logger } from '@book000/node-utils'
 
 /**
  * レスポンスファイル群からの、エンドポイントごとのレスポンス群型
@@ -36,6 +38,16 @@ export interface Result {
  * ユーティリティ
  */
 export const Utils = {
+  /**
+   * JSONC をパースする
+   *
+   * @param data パースする JSONC 文字列
+   * @returns パース結果
+   */
+  parseJsonc<T = any>(data: string): T {
+    return parse(data)
+  },
+
   /**
    * ディレクトリ内にあるディレクトリ群を取得する
    *
@@ -86,6 +98,7 @@ export const Utils = {
    * @returns エンドポイントごとの情報
    */
   getEndPointResponses(debugOutputDirectory: string): Result[] {
+    const logger = Logger.configure('Utils:getEndPointResponses')
     const results = []
     for (const type of this.getDirectories(debugOutputDirectory)) {
       for (const name of this.getDirectories(debugOutputDirectory, [type])) {
@@ -98,17 +111,37 @@ export const Utils = {
             name,
             method,
           ])) {
+            const paths = this.getJSONFiles(debugOutputDirectory, [
+              type,
+              name,
+              method,
+              statusCode,
+            ])
+
+            // 1687602187259.json (unixtime[ms].json)
+            // 30日以上前のファイルは削除する
+            const now = Date.now()
+            const deleteFiles = paths.filter((path) => {
+              const file = basename(path)
+              if (!file) {
+                return false
+              }
+              const unixtime = Number.parseInt(file.split('.')[0])
+              return now - unixtime > 1000 * 60 * 60 * 24 * 30
+            })
+            for (const deleteFile of deleteFiles) {
+              logger.info(
+                `🚮 Delete: ${deleteFile.replace(debugOutputDirectory, '')}`
+              )
+              fs.unlinkSync(deleteFile)
+            }
+
             results.push({
               type,
               name,
               method,
               statusCode,
-              paths: this.getJSONFiles(debugOutputDirectory, [
-                type,
-                name,
-                method,
-                statusCode,
-              ]),
+              paths: paths.filter((path) => !deleteFiles.includes(path)),
             })
           }
         }

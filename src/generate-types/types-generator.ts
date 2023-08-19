@@ -93,7 +93,7 @@ export class TwitterTypesGenerator {
 
     let schema
     for (const path of result.paths) {
-      const data = JSON.parse(fs.readFileSync(path, 'utf8'))
+      const data = Utils.parseJsonc(fs.readFileSync(path, 'utf8'))
       const fileSchema = createSchema(data)
       schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
     }
@@ -138,12 +138,8 @@ export class TwitterTypesGenerator {
       )
       const schemaPath = `${options.directory.schema}/${filename}.json`
       const typesPath = `${options.directory.types}/${filename}.ts`
-      const type =
-        result.type === 'graphql'
-          ? 'GraphQL'
-          : result.type === 'rest'
-          ? 'REST'
-          : null
+      const type = result.type === 'graphql' ? 'GraphQL' : null
+      if (!type) continue
 
       const generator = this.generateType(
         {
@@ -158,15 +154,12 @@ export class TwitterTypesGenerator {
         },
         result
       )
-      generators.push(generator)
-    }
-
-    if (options.parallel) {
-      await Promise.all(generators)
-    } else {
-      for (const generator of generators) {
+      if (options.parallel) {
+        generators.push(generator)
+      } else {
         await generator
       }
     }
+    await Promise.all(generators)
   }
 }

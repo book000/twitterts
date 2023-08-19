@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import { join } from 'node:path'
 import { SearchTimelineParser } from './search-timeline'
 import { UserTweetsParser } from './user-tweets'
+import { Utils } from '../generate-types/utils'
 
 jest.setTimeout(60_000)
 
@@ -25,7 +26,7 @@ describe('Parser', () => {
       .map((file) => join(baseDirectory, file))
 
     for (const file of files) {
-      const response = JSON.parse(fs.readFileSync(file, 'utf8'))
+      const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
 
       expect(
         () => new SearchTimelineParser(response),
@@ -50,7 +51,7 @@ describe('Parser', () => {
       .map((file) => join(baseDirectory, file))
 
     for (const file of files) {
-      const response = JSON.parse(fs.readFileSync(file, 'utf8'))
+      const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
 
       expect(
         () => new UserTweetsParser(response),

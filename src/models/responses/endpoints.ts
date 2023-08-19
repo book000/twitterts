@@ -2,14 +2,11 @@ import { GraphQLGetArticleNudgeDomainsSuccessResponse } from './graphql/get/arti
 import { GraphQLGetArticleNudgeDomainsErrorResponse } from './graphql/get/article-nudge-domains-error'
 import { GraphQLGetAudioSpaceByIdSuccessResponse } from './graphql/get/audio-space-by-id-success'
 import { GraphQLGetAuthenticatedUserTFListsSuccessResponse } from './graphql/get/authenticated-user-tflists-success'
-import { GraphQLGetBookmarksSuccessResponse } from './graphql/get/bookmarks-success'
 import { GraphQLGetCommunitiesTabBarItemQuerySuccessResponse } from './graphql/get/communities-tab-bar-item-query-success'
-import { GraphQLGetConnectTabTimelineSuccessResponse } from './graphql/get/connect-tab-timeline-success'
 import { GraphQLPostCreateRetweetSuccessResponse } from './graphql/post/create-retweet-success'
 import { GraphQLGetDataSaverModeSuccessResponse } from './graphql/get/data-saver-mode-success'
 import { GraphQLGetDataSaverModeErrorResponse } from './graphql/get/data-saver-mode-error'
 import { GraphQLPostDeleteRetweetSuccessResponse } from './graphql/post/delete-retweet-success'
-import { GraphQLGetDMPinnedInboxQuerySuccessResponse } from './graphql/get/dmpinned-inbox-query-success'
 import { GraphQLPostFavoriteTweetSuccessResponse } from './graphql/post/favorite-tweet-success'
 import { GraphQLGetFollowHostButtonQuerySuccessResponse } from './graphql/get/follow-host-button-query-success'
 import { GraphQLGetGetAltTextPromptPreferenceSuccessResponse } from './graphql/get/get-alt-text-prompt-preference-success'
@@ -23,12 +20,9 @@ import { GraphQLGetHomeTimelineSuccessResponse } from './graphql/get/home-timeli
 import { GraphQLPostHomeTimelineSuccessResponse } from './graphql/post/home-timeline-success'
 import { GraphQLGetLikesSuccessResponse } from './graphql/get/likes-success'
 import { GraphQLGetLikesErrorResponse } from './graphql/get/likes-error'
-import { GraphQLGetListLatestTweetsTimelineSuccessResponse } from './graphql/get/list-latest-tweets-timeline-success'
 import { GraphQLGetListPinsSuccessResponse } from './graphql/get/list-pins-success'
 import { GraphQLGetListPinsErrorResponse } from './graphql/get/list-pins-error'
-import { GraphQLGetListsManagementPageTimelineSuccessResponse } from './graphql/get/lists-management-page-timeline-success'
 import { GraphQLGetProfileSpotlightsQuerySuccessResponse } from './graphql/get/profile-spotlights-query-success'
-import { GraphQLPostPutClientEducationFlagSuccessResponse } from './graphql/post/put-client-education-flag-success'
 import { GraphQLGetQuickPromoteEligibilitySuccessResponse } from './graphql/get/quick-promote-eligibility-success'
 import { GraphQLGetSearchTimelineSuccessResponse } from './graphql/get/search-timeline-success'
 import { GraphQLGetTweetDetailSuccessResponse } from './graphql/get/tweet-detail-success'
@@ -36,13 +30,12 @@ import { GraphQLGetTweetDetailErrorResponse } from './graphql/get/tweet-detail-e
 import { GraphQLPostUnfavoriteTweetSuccessResponse } from './graphql/post/unfavorite-tweet-success'
 import { GraphQLGetUserByRestIdSuccessResponse } from './graphql/get/user-by-rest-id-success'
 import { GraphQLGetUserByScreenNameSuccessResponse } from './graphql/get/user-by-screen-name-success'
-import { GraphQLGetUserByScreenNameErrorResponse } from './graphql/get/user-by-screen-name-error'
 import { GraphQLGetUserMediaSuccessResponse } from './graphql/get/user-media-success'
 import { GraphQLGetUsersByRestIdsSuccessResponse } from './graphql/get/users-by-rest-ids-success'
+import { GraphQLGetUsersVerifiedAvatarsSuccessResponse } from './graphql/get/users-verified-avatars-success'
 import { GraphQLGetUserTweetsSuccessResponse } from './graphql/get/user-tweets-success'
 import { GraphQLGetUserTweetsErrorResponse } from './graphql/get/user-tweets-error'
 import { GraphQLGetUserTweetsAndRepliesSuccessResponse } from './graphql/get/user-tweets-and-replies-success'
-import { GraphQLGetViewerSuccessResponse } from './graphql/get/viewer-success'
 
 import { HttpMethod, RequestType } from '../../scraper'
 
@@ -56,21 +49,13 @@ export type GraphQLGetAudioSpaceByIdResponse =
 /** GraphQL AuthenticatedUserTFLists GET レスポンスモデル */
 export type GraphQLGetAuthenticatedUserTFListsResponse =
   GraphQLGetAuthenticatedUserTFListsSuccessResponse
-/** GraphQL Bookmarks GET レスポンスモデル */
-export type GraphQLGetBookmarksResponse = GraphQLGetBookmarksSuccessResponse
 /** GraphQL CommunitiesTabBarItemQuery GET レスポンスモデル */
 export type GraphQLGetCommunitiesTabBarItemQueryResponse =
   GraphQLGetCommunitiesTabBarItemQuerySuccessResponse
-/** GraphQL ConnectTabTimeline GET レスポンスモデル */
-export type GraphQLGetConnectTabTimelineResponse =
-  GraphQLGetConnectTabTimelineSuccessResponse
 /** GraphQL DataSaverMode GET レスポンスモデル */
 export type GraphQLGetDataSaverModeResponse =
   | GraphQLGetDataSaverModeSuccessResponse
   | GraphQLGetDataSaverModeErrorResponse
-/** GraphQL DMPinnedInboxQuery GET レスポンスモデル */
-export type GraphQLGetDMPinnedInboxQueryResponse =
-  GraphQLGetDMPinnedInboxQuerySuccessResponse
 /** GraphQL FollowHostButtonQuery GET レスポンスモデル */
 export type GraphQLGetFollowHostButtonQueryResponse =
   GraphQLGetFollowHostButtonQuerySuccessResponse
@@ -92,16 +77,10 @@ export type GraphQLGetHomeTimelineResponse =
 export type GraphQLGetLikesResponse =
   | GraphQLGetLikesSuccessResponse
   | GraphQLGetLikesErrorResponse
-/** GraphQL ListLatestTweetsTimeline GET レスポンスモデル */
-export type GraphQLGetListLatestTweetsTimelineResponse =
-  GraphQLGetListLatestTweetsTimelineSuccessResponse
 /** GraphQL ListPins GET レスポンスモデル */
 export type GraphQLGetListPinsResponse =
   | GraphQLGetListPinsSuccessResponse
   | GraphQLGetListPinsErrorResponse
-/** GraphQL ListsManagementPageTimeline GET レスポンスモデル */
-export type GraphQLGetListsManagementPageTimelineResponse =
-  GraphQLGetListsManagementPageTimelineSuccessResponse
 /** GraphQL ProfileSpotlightsQuery GET レスポンスモデル */
 export type GraphQLGetProfileSpotlightsQueryResponse =
   GraphQLGetProfileSpotlightsQuerySuccessResponse
@@ -120,13 +99,15 @@ export type GraphQLGetUserByRestIdResponse =
   GraphQLGetUserByRestIdSuccessResponse
 /** GraphQL UserByScreenName GET レスポンスモデル */
 export type GraphQLGetUserByScreenNameResponse =
-  | GraphQLGetUserByScreenNameSuccessResponse
-  | GraphQLGetUserByScreenNameErrorResponse
+  GraphQLGetUserByScreenNameSuccessResponse
 /** GraphQL UserMedia GET レスポンスモデル */
 export type GraphQLGetUserMediaResponse = GraphQLGetUserMediaSuccessResponse
 /** GraphQL UsersByRestIds GET レスポンスモデル */
 export type GraphQLGetUsersByRestIdsResponse =
   GraphQLGetUsersByRestIdsSuccessResponse
+/** GraphQL UsersVerifiedAvatars GET レスポンスモデル */
+export type GraphQLGetUsersVerifiedAvatarsResponse =
+  GraphQLGetUsersVerifiedAvatarsSuccessResponse
 /** GraphQL UserTweets GET レスポンスモデル */
 export type GraphQLGetUserTweetsResponse =
   | GraphQLGetUserTweetsSuccessResponse
@@ -134,27 +115,20 @@ export type GraphQLGetUserTweetsResponse =
 /** GraphQL UserTweetsAndReplies GET レスポンスモデル */
 export type GraphQLGetUserTweetsAndRepliesResponse =
   GraphQLGetUserTweetsAndRepliesSuccessResponse
-/** GraphQL Viewer GET レスポンスモデル */
-export type GraphQLGetViewerResponse = GraphQLGetViewerSuccessResponse
 
 export type GraphQLGETEndpoint =
   | 'articleNudgeDomains'
   | 'AudioSpaceById'
   | 'AuthenticatedUserTFLists'
-  | 'Bookmarks'
   | 'CommunitiesTabBarItemQuery'
-  | 'ConnectTabTimeline'
   | 'DataSaverMode'
-  | 'DMPinnedInboxQuery'
   | 'FollowHostButtonQuery'
   | 'getAltTextPromptPreference'
   | 'GetUserClaims'
   | 'HomeLatestTimeline'
   | 'HomeTimeline'
   | 'Likes'
-  | 'ListLatestTweetsTimeline'
   | 'ListPins'
-  | 'ListsManagementPageTimeline'
   | 'ProfileSpotlightsQuery'
   | 'QuickPromoteEligibility'
   | 'SearchTimeline'
@@ -163,9 +137,9 @@ export type GraphQLGETEndpoint =
   | 'UserByScreenName'
   | 'UserMedia'
   | 'UsersByRestIds'
+  | 'UsersVerifiedAvatars'
   | 'UserTweets'
   | 'UserTweetsAndReplies'
-  | 'Viewer'
 
 export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
   T extends 'articleNudgeDomains'
@@ -174,16 +148,10 @@ export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
     ? GraphQLGetAudioSpaceByIdResponse
     : T extends 'AuthenticatedUserTFLists'
     ? GraphQLGetAuthenticatedUserTFListsResponse
-    : T extends 'Bookmarks'
-    ? GraphQLGetBookmarksResponse
     : T extends 'CommunitiesTabBarItemQuery'
     ? GraphQLGetCommunitiesTabBarItemQueryResponse
-    : T extends 'ConnectTabTimeline'
-    ? GraphQLGetConnectTabTimelineResponse
     : T extends 'DataSaverMode'
     ? GraphQLGetDataSaverModeResponse
-    : T extends 'DMPinnedInboxQuery'
-    ? GraphQLGetDMPinnedInboxQueryResponse
     : T extends 'FollowHostButtonQuery'
     ? GraphQLGetFollowHostButtonQueryResponse
     : T extends 'getAltTextPromptPreference'
@@ -196,12 +164,8 @@ export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
     ? GraphQLGetHomeTimelineResponse
     : T extends 'Likes'
     ? GraphQLGetLikesResponse
-    : T extends 'ListLatestTweetsTimeline'
-    ? GraphQLGetListLatestTweetsTimelineResponse
     : T extends 'ListPins'
     ? GraphQLGetListPinsResponse
-    : T extends 'ListsManagementPageTimeline'
-    ? GraphQLGetListsManagementPageTimelineResponse
     : T extends 'ProfileSpotlightsQuery'
     ? GraphQLGetProfileSpotlightsQueryResponse
     : T extends 'QuickPromoteEligibility'
@@ -218,12 +182,12 @@ export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
     ? GraphQLGetUserMediaResponse
     : T extends 'UsersByRestIds'
     ? GraphQLGetUsersByRestIdsResponse
+    : T extends 'UsersVerifiedAvatars'
+    ? GraphQLGetUsersVerifiedAvatarsResponse
     : T extends 'UserTweets'
     ? GraphQLGetUserTweetsResponse
     : T extends 'UserTweetsAndReplies'
     ? GraphQLGetUserTweetsAndRepliesResponse
-    : T extends 'Viewer'
-    ? GraphQLGetViewerResponse
     : never
 
 /** GraphQL CreateRetweet POST レスポンスモデル */
@@ -242,9 +206,6 @@ export type GraphQLPostHomeLatestTimelineResponse =
 /** GraphQL HomeTimeline POST レスポンスモデル */
 export type GraphQLPostHomeTimelineResponse =
   GraphQLPostHomeTimelineSuccessResponse
-/** GraphQL PutClientEducationFlag POST レスポンスモデル */
-export type GraphQLPostPutClientEducationFlagResponse =
-  GraphQLPostPutClientEducationFlagSuccessResponse
 /** GraphQL UnfavoriteTweet POST レスポンスモデル */
 export type GraphQLPostUnfavoriteTweetResponse =
   GraphQLPostUnfavoriteTweetSuccessResponse
@@ -255,7 +216,6 @@ export type GraphQLPOSTEndpoint =
   | 'FavoriteTweet'
   | 'HomeLatestTimeline'
   | 'HomeTimeline'
-  | 'PutClientEducationFlag'
   | 'UnfavoriteTweet'
 
 export type GraphQLPOSTEndPointResponseType<T extends GraphQLPOSTEndpoint> =
@@ -269,20 +229,16 @@ export type GraphQLPOSTEndPointResponseType<T extends GraphQLPOSTEndpoint> =
     ? GraphQLPostHomeLatestTimelineResponse
     : T extends 'HomeTimeline'
     ? GraphQLPostHomeTimelineResponse
-    : T extends 'PutClientEducationFlag'
-    ? GraphQLPostPutClientEducationFlagResponse
     : T extends 'UnfavoriteTweet'
     ? GraphQLPostUnfavoriteTweetResponse
     : never
 
 export type GraphQLEndpoint = GraphQLGETEndpoint | GraphQLPOSTEndpoint
 
-export type RESTEndpoint = never
-
 export type EndPointResponseType<
   M extends HttpMethod,
   T extends RequestType,
-  N extends GraphQLEndpoint | RESTEndpoint,
+  N extends GraphQLEndpoint,
 > = T extends 'GRAPHQL'
   ? M extends 'GET'
     ? N extends GraphQLGETEndpoint

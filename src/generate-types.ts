@@ -42,7 +42,22 @@ class GenerateTypes {
     const schemaDirectory = process.env.SCHEMA_DIRECTORY || './data/schema'
     const typesDirectory =
       process.env.TYPES_DIRECTORY || './src/models/responses'
-    const isParallel = process.env.IS_PARALLEL === 'true'
+    const isAllParallel = process.env.IS_ALL_PARALLEL === 'true'
+    const isTypesGenerateParallel =
+      isAllParallel || process.env.IS_TYPES_GENERATE_PARALLEL === 'true'
+    const isCustomTypeGenerateParallel =
+      isAllParallel || process.env.IS_CUSTOM_TYPE_GENERATE_PARALLEL === 'true'
+
+    logger.info('📁 Directories')
+    logger.info(`  📂 Debug output: ${debugOutputDirectory}`)
+    logger.info(`  📂 Schema: ${schemaDirectory}`)
+    logger.info(`  📂 Types: ${typesDirectory}`)
+    logger.info('🔧 Options')
+    logger.info(`  📌 All parallel: ${isAllParallel}`)
+    logger.info(`  📌 Types generate parallel: ${isTypesGenerateParallel}`)
+    logger.info(
+      `  📌 Custom type generate parallel: ${isCustomTypeGenerateParallel}`
+    )
 
     try {
       // msで計測
@@ -56,18 +71,16 @@ class GenerateTypes {
             schema: schemaDirectory,
             types: typesDirectory,
           },
-          parallel: isParallel,
+          parallel: isTypesGenerateParallel,
         })
       )
 
-      await this.awaitCalculateTime(
-        'CustomTypesGenerator',
-        async () =>
-          await new CustomTypesGenerator(
-            results,
-            schemaDirectory,
-            typesDirectory
-          ).generate(isParallel)
+      await this.awaitCalculateTime('CustomTypesGenerator', () =>
+        new CustomTypesGenerator(
+          results,
+          schemaDirectory,
+          typesDirectory
+        ).generate(isCustomTypeGenerateParallel)
       )
 
       this.calculateTime('EndPointTypeGenerator', () =>
