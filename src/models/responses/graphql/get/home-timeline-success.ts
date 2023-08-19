@@ -453,7 +453,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                       url: string
                                     }
                                     description: string
-                                    longDescription: {
+                                    longDescription?: {
                                       text: string
                                       entities: {
                                         fromIndex: number
@@ -471,6 +471,11 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                       }[]
                                     }
                                     userLabelType: string
+                                    url?: {
+                                      url: string
+                                      urlType: string
+                                    }
+                                    userLabelDisplayType?: string
                                   }
                                 }
                                 has_graduated_access: boolean
@@ -2019,7 +2024,12 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                           id: string
                           text: string
                           entity_set: {
-                            user_mentions: unknown[]
+                            user_mentions: {
+                              id_str: string
+                              name: string
+                              screen_name: string
+                              indices: number[]
+                            }[]
                             urls: {
                               display_url: string
                               expanded_url: string
@@ -2224,6 +2234,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                   timelinesDetails: {
                     injectionType?: string
                     controllerData: string
+                    sourceData?: string
                   }
                 }
               }
@@ -2231,7 +2242,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
               cursorType?: string
               feedbackInfo?: {
                 feedbackKeys: string[]
-                feedbackMetadata: string
+                feedbackMetadata?: string
               }
               items?: {
                 entryId: string
@@ -2239,7 +2250,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                   itemContent: {
                     itemType: string
                     __typename: string
-                    tweet_results: {
+                    tweet_results?: {
                       result: {
                         __typename: string
                         rest_id: string
@@ -2742,18 +2753,85 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                         }
                       }
                     }
-                    tweetDisplayType: string
+                    tweetDisplayType?: string
                     socialContext?: {
                       type: string
                       contextType: string
                       text: string
-                      landingUrl: {
+                      landingUrl?: {
                         url: string
                         urlType: string
                       }
                     }
+                    user_results?: {
+                      result: {
+                        __typename: string
+                        id: string
+                        rest_id: string
+                        affiliates_highlighted_label: {}
+                        has_graduated_access: boolean
+                        is_blue_verified: boolean
+                        profile_image_shape: string
+                        legacy: {
+                          followed_by?: boolean
+                          can_dm: boolean
+                          can_media_tag: boolean
+                          created_at: string
+                          default_profile: boolean
+                          default_profile_image: boolean
+                          description: string
+                          entities: {
+                            description: {
+                              urls: unknown[]
+                            }
+                            url?: {
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
+                            }
+                          }
+                          fast_followers_count: number
+                          favourites_count: number
+                          followers_count: number
+                          friends_count: number
+                          has_custom_timelines: boolean
+                          is_translator: boolean
+                          listed_count: number
+                          location: string
+                          media_count: number
+                          name: string
+                          normal_followers_count: number
+                          pinned_tweet_ids_str: string[]
+                          possibly_sensitive: boolean
+                          profile_banner_url: string
+                          profile_image_url_https: string
+                          profile_interstitial_type: string
+                          screen_name: string
+                          statuses_count: number
+                          translator_type: string
+                          verified: boolean
+                          want_retweets: boolean
+                          withheld_in_countries: unknown[]
+                          url?: string
+                          verified_type?: string
+                        }
+                        professional?: {
+                          rest_id: string
+                          professional_type: string
+                          category: {
+                            id: number
+                            name: string
+                            icon_name: string
+                          }[]
+                        }
+                      }
+                    }
+                    userDisplayType?: string
                   }
-                  feedbackInfo: {
+                  feedbackInfo?: {
                     feedbackKeys: string[]
                     feedbackMetadata: string
                   }
@@ -2764,6 +2842,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                       timelinesDetails: {
                         injectionType: string
                         controllerData: string
+                        sourceData?: string
                       }
                     }
                   }
@@ -2776,6 +2855,19 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                 }
               }
               displayType?: string
+              header?: {
+                displayType: string
+                text: string
+                sticky: boolean
+              }
+              footer?: {
+                displayType: string
+                text: string
+                landingUrl: {
+                  url: string
+                  urlType: string
+                }
+              }
             }
           }[]
           alertType?: string
@@ -2894,6 +2986,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                   not_interested: boolean
                 }
               }
+              encodedFeedbackRequest?: string
             }
           }[]
         }

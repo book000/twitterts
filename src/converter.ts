@@ -324,8 +324,7 @@ export const ObjectConverter = {
       name: user.legacy.name,
       profile_banner_url: user.legacy.profile_banner_url,
       profile_image_url_https: user.legacy.profile_image_url_https,
-      // @ts-ignore
-      protected: user.legacy.protected,
+      protected: user.legacy.protected ?? false,
       screen_name: user.legacy.screen_name,
       // @ts-ignore
       status: user.legacy.status,

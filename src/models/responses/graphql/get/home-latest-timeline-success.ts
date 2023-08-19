@@ -383,7 +383,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     normal_followers_count: number
                                     pinned_tweet_ids_str: string[]
                                     possibly_sensitive: boolean
-                                    profile_banner_url: string
+                                    profile_banner_url?: string
                                     profile_image_url_https: string
                                     profile_interstitial_type: string
                                     screen_name: string
@@ -789,7 +789,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                             description: {
                                               urls: unknown[]
                                             }
-                                            url: {
+                                            url?: {
                                               urls: {
                                                 display_url: string
                                                 expanded_url: string
@@ -811,13 +811,13 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                           normal_followers_count: number
                                           pinned_tweet_ids_str: string[]
                                           possibly_sensitive: boolean
-                                          profile_banner_url: string
+                                          profile_banner_url?: string
                                           profile_image_url_https: string
                                           profile_interstitial_type: string
                                           screen_name: string
                                           statuses_count: number
                                           translator_type: string
-                                          url: string
+                                          url?: string
                                           verified: boolean
                                           want_retweets: boolean
                                           withheld_in_countries: unknown[]
@@ -2466,7 +2466,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             type: string
                             url: string
                             features: {
-                              large: {
+                              large?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -2474,7 +2474,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              medium: {
+                              medium?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -2482,7 +2482,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              small: {
+                              small?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -2490,7 +2490,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              orig: {
+                              orig?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -2524,7 +2524,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             original_info: {
                               height: number
                               width: number
-                              focus_rects: {
+                              focus_rects?: {
                                 x: number
                                 y: number
                                 w: number
@@ -2894,7 +2894,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               status: string
                             }
                             features: {
-                              large: {
+                              large?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -2902,7 +2902,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              medium: {
+                              medium?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -2910,7 +2910,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              small: {
+                              small?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -2918,7 +2918,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   w: number
                                 }[]
                               }
-                              orig: {
+                              orig?: {
                                 faces: {
                                   x: number
                                   y: number
@@ -2952,11 +2952,26 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             original_info: {
                               height: number
                               width: number
-                              focus_rects: {
+                              focus_rects?: {
                                 x: number
                                 y: number
                                 w: number
                                 h: number
+                              }[]
+                            }
+                            additional_media_info?: {
+                              monetizable: boolean
+                            }
+                            mediaStats?: {
+                              viewCount: number
+                            }
+                            video_info?: {
+                              aspect_ratio: number[]
+                              duration_millis: number
+                              variants: {
+                                bitrate?: number
+                                content_type: string
+                                url: string
                               }[]
                             }
                           }[]

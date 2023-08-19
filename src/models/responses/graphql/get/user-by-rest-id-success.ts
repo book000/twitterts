@@ -64,6 +64,7 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           followed_by?: boolean
           following?: boolean
           muting?: boolean
+          blocking?: boolean
         }
         smart_blocked_by: boolean
         smart_blocking: boolean
@@ -74,6 +75,15 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
         }
         creator_subscriptions_count: number
         has_hidden_subscriptions_on_profile?: boolean
+        professional?: {
+          rest_id: string
+          professional_type: string
+          category: {
+            id: number
+            name: string
+            icon_name: string
+          }[]
+        }
       }
     }
   }

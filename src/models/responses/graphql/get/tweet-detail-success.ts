@@ -4,7 +4,7 @@
 
 export interface GraphQLGetTweetDetailSuccessResponse {
   data: {
-    threaded_conversation_with_injections_v2?: {
+    threaded_conversation_with_injections_v2: {
       instructions: {
         type: string
         entries?: {
@@ -947,28 +947,4 @@ export interface GraphQLGetTweetDetailSuccessResponse {
       }
     }
   }
-  errors?: {
-    message: string
-    locations: {
-      line: number
-      column: number
-    }[]
-    path: string[]
-    extensions: {
-      name: string
-      source: string
-      code: number
-      kind: string
-      tracing: {
-        trace_id: string
-      }
-    }
-    code: number
-    kind: string
-    name: string
-    source: string
-    tracing: {
-      trace_id: string
-    }
-  }[]
 }
