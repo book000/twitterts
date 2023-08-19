@@ -36,14 +36,14 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
         )
         .flatMap(
           (instruction) =>
-            instruction.entries
-              ?.filter((entry) => entry.entryId.startsWith('tweet-'))
-              .filter((entry) =>
-                isIncludingPromotedTweets
-                  ? true
-                  : entry.entryId.startsWith('promoted-tweet') ||
+            instruction.entries?.filter(
+              (entry) =>
+                entry.entryId.startsWith('tweet-') ||
+                (isIncludingPromotedTweets
+                  ? entry.entryId.startsWith('promoted-tweet') ||
                     entry.entryId.startsWith('promotedTweet')
-              )
+                  : false)
+            )
         ) as CustomUserLikeTweetEntry[]
 
     const rawTweets = entries
