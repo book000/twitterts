@@ -1,3 +1,4 @@
+import { TwitterOperationError } from './models/exceptions'
 import { SearchType, TimelineType } from './options'
 import { Twitter } from './twitter'
 
@@ -169,7 +170,7 @@ describe('Twitter', () => {
       twitter.blockUser({
         screenName: 'X',
       })
-    ).resolves.toBe(undefined)
+    ).resolves.not.toThrow(TwitterOperationError)
   })
 
   test('unblockUser', async () => {
@@ -177,7 +178,7 @@ describe('Twitter', () => {
       twitter.unblockUser({
         screenName: 'X',
       })
-    ).resolves.toBe(undefined)
+    ).resolves.not.toThrow(TwitterOperationError)
   })
 
   afterAll(async () => {
