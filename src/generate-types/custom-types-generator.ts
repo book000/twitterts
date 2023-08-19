@@ -323,6 +323,12 @@ export class CustomTypesGenerator {
             .tweet_results.result
         })
         .filter((entry) => !!entry)
+        .map((entry) => {
+          return {
+            ...entry,
+            __entryId: 'string',
+          }
+        })
         .map((entry) => createSchema(entry)),
       // HomeLatestTimeline
       this.results
@@ -359,6 +365,12 @@ export class CustomTypesGenerator {
             .tweet_results.result
         })
         .filter((entry) => !!entry)
+        .map((entry) => {
+          return {
+            ...entry,
+            __entryId: 'string',
+          }
+        })
         .map((entry) => createSchema(entry)),
       // SearchTimeline
       this.results
@@ -395,6 +407,12 @@ export class CustomTypesGenerator {
             .tweet_results.result
         })
         .filter((entry) => !!entry)
+        .map((entry) => {
+          return {
+            ...entry,
+            __entryId: 'string',
+          }
+        })
         .map((entry) => createSchema(entry)),
       // UserTweets
       this.results
@@ -431,6 +449,12 @@ export class CustomTypesGenerator {
             .tweet_results.result
         })
         .filter((entry) => !!entry)
+        .map((entry) => {
+          return {
+            ...entry,
+            __entryId: 'string',
+          }
+        })
         .map((entry) => createSchema(entry)),
       // Likes
       this.results
@@ -466,6 +490,12 @@ export class CustomTypesGenerator {
             .tweet_results.result
         })
         .filter((entry) => !!entry)
+        .map((entry) => {
+          return {
+            ...entry,
+            __entryId: 'string',
+          }
+        })
         .map((entry) => createSchema(entry)),
     ].flat()
 
