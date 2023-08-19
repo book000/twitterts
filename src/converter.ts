@@ -2,12 +2,16 @@ import {
   Coordinates,
   Entities,
   ExtendedEntities,
+  FullUser,
   Place,
   Status,
+  UserEntities,
 } from 'twitter-d'
 import { CustomTweetLegacyObject } from './models/responses/custom/custom-tweet-legacy-object'
 import { CustomTweetObject } from './models/responses/custom/custom-tweet-object'
 import { ResponseParseError } from './models/exceptions'
+import { CustomUserLegacyObject } from './models/responses/custom/custom-user-legacy-object'
+import { GraphQLGetUserByScreenNameSuccessResponse } from './models/responses/graphql/get/user-by-screen-name-success'
 
 /**
  * オブジェクトを変換するクラス
@@ -159,6 +163,43 @@ export const ObjectConverter = {
   },
 
   /**
+   * ユーザーのレガシーオブジェクトからユーザーエンティティを変換する
+   *
+   * @param legacy ユーザーのレガシーオブジェクト
+   * @returns ユーザーエンティティ
+   */
+  convertUserEntities(legacy: CustomUserLegacyObject): UserEntities {
+    const entities: UserEntities = {
+      description: {},
+    }
+
+    for (const url of legacy.entities.description.urls) {
+      entities.description.urls = entities.description.urls ?? []
+      entities.description.urls.push({
+        display_url: url.display_url,
+        expanded_url: url.expanded_url,
+        indices: [url.indices[0], url.indices[1]],
+        url: url.url,
+      })
+    }
+
+    if (legacy.entities?.url?.urls) {
+      for (const url of legacy.entities.url.urls) {
+        entities.url = entities.url ?? {}
+        entities.url.urls = entities.url.urls ?? []
+        entities.url.urls.push({
+          display_url: url.display_url,
+          expanded_url: url.expanded_url,
+          indices: [url.indices[0], url.indices[1]],
+          url: url.url,
+        })
+      }
+    }
+
+    return entities
+  },
+
+  /**
    * ツイートのレガシーオブジェクトから座標を変換する
    *
    * @param legacy ツイートのレガシーオブジェクト
@@ -253,6 +294,48 @@ export const ObjectConverter = {
         legacy as CustomTweetLegacyObject
       ),
       place: ObjectConverter.convertPlace(legacy as CustomTweetLegacyObject),
+    }
+  },
+
+  /**
+   * GraphQLのレスポンスにあるユーザーオブジェクトをFullUserに変換する。
+   *
+   * @param response GraphQLのレスポンス
+   * @returns FullUser
+   */
+  convertToFullUser(
+    response: GraphQLGetUserByScreenNameSuccessResponse
+  ): FullUser {
+    const user = response.data.user.result
+
+    return {
+      created_at: user.legacy.created_at,
+      default_profile_image: user.legacy.default_profile_image,
+      default_profile: user.legacy.default_profile,
+      description: user.legacy.description,
+      entities: this.convertUserEntities(user.legacy),
+      favourites_count: user.legacy.favourites_count,
+      followers_count: user.legacy.followers_count,
+      friends_count: user.legacy.friends_count,
+      id_str: user.rest_id,
+      id: Number(user.rest_id),
+      listed_count: user.legacy.listed_count,
+      location: user.legacy.location,
+      name: user.legacy.name,
+      profile_banner_url: user.legacy.profile_banner_url,
+      profile_image_url_https: user.legacy.profile_image_url_https,
+      // @ts-ignore
+      protected: user.legacy.protected,
+      screen_name: user.legacy.screen_name,
+      // @ts-ignore
+      status: user.legacy.status,
+      statuses_count: user.legacy.statuses_count,
+      url: user.legacy.url,
+      verified: user.legacy.verified,
+      // @ts-ignore
+      withheld_in_countries: user.legacy.withheld_in_countries,
+      // @ts-ignore
+      withheld_scope: user.legacy.withheld_scope,
     }
   },
 }

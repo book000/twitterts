@@ -1,7 +1,7 @@
 import { SearchType, TimelineType } from './options'
 import { Twitter } from './twitter'
 
-jest.setTimeout(60_000)
+jest.setTimeout(0)
 
 describe('Twitter', () => {
   let twitter: Twitter
@@ -49,6 +49,14 @@ describe('Twitter', () => {
 
   test('getUserByUserId', async () => {
     const response = await twitter.getUserByUserId({
+      userId: '286048624',
+    })
+    expect(response).toBeTruthy()
+    expect(response.screen_name).toBe('book000')
+  })
+
+  test('getRawUserByUserId', async () => {
+    const response = await twitter.getRawUserByUserId({
       userId: '286048624',
     })
     expect(response).toBeTruthy()

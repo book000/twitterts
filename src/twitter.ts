@@ -28,7 +28,7 @@ import { TwitterScraper, TwitterScraperOptions } from './scraper'
 import { ObjectConverter } from './converter'
 import { HomeTimelineParser } from './parser/home-timeline-parser'
 import { GraphQLGetUserByScreenNameSuccessResponse } from './models/responses/graphql/get/user-by-screen-name-success'
-import { Status } from 'twitter-d'
+import { FullUser, Status } from 'twitter-d'
 import { CustomTweetObject } from './models/responses/custom/custom-tweet-object'
 
 /**
@@ -111,7 +111,7 @@ export class Twitter {
       throw new IllegalArgumentError('userId is required')
     }
 
-    const user = await this.getUserByUserId(options)
+    const user = await this.getRawUserByUserId(options)
     return user.data.user.result.legacy.screen_name
   }
 
@@ -122,6 +122,23 @@ export class Twitter {
    * @returns スクリーンネーム
    */
   public async getUserByUserId(
+    options: GetUserByUserIdOptions
+  ): Promise<FullUser> {
+    if (!options.userId) {
+      throw new IllegalArgumentError('userId is required')
+    }
+
+    const user = await this.getRawUserByUserId(options)
+    return ObjectConverter.convertToFullUser(user)
+  }
+
+  /**
+   * ユーザー ID からユーザー情報を取得する。ユーザー情報は生レスポンスで返す
+   *
+   * @param userId ユーザー ID
+   * @returns ユーザー情報（生レスポンス）
+   */
+  public async getRawUserByUserId(
     options: GetUserByUserIdOptions
   ): Promise<GraphQLGetUserByScreenNameSuccessResponse> {
     // TODO: ユーザー情報をv1.1あたりのモデルに変換する処理を入れた方がいい
