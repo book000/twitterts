@@ -368,6 +368,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                                       icon_name: string
                                     }[]
                                   }
+                                  super_follow_eligible?: boolean
                                 }
                               }
                             }
@@ -597,7 +598,7 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                               edits_remaining: string
                             }
                           }
-                          edit_perspective: {
+                          edit_perspective?: {
                             favorited: boolean
                             retweeted: boolean
                           }
@@ -791,11 +792,19 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                                         professional?: {
                                           rest_id: string
                                           professional_type: string
-                                          category: unknown[]
+                                          category: {
+                                            id: number
+                                            name: string
+                                            icon_name: string
+                                          }[]
                                         }
+                                        super_follow_eligible?: boolean
                                       }
                                     }
                                   }
+                                  title?: string
+                                  description?: string
+                                  embeddable?: boolean
                                 }
                                 mediaStats?: {
                                   viewCount: number

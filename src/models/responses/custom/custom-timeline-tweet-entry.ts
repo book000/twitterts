@@ -104,10 +104,17 @@ export interface CustomTimelineTweetEntry {
             }
           }
           edit_control?: {
-            edit_tweet_ids: string[]
-            editable_until_msecs: string
-            is_edit_eligible: boolean
-            edits_remaining: string
+            edit_tweet_ids?: string[]
+            editable_until_msecs?: string
+            is_edit_eligible?: boolean
+            edits_remaining?: string
+            initial_tweet_id?: string
+            edit_control_initial?: {
+              edit_tweet_ids: string[]
+              editable_until_msecs: string
+              is_edit_eligible: boolean
+              edits_remaining: string
+            }
           }
           edit_perspective?: {
             favorited: boolean
@@ -268,10 +275,11 @@ export interface CustomTimelineTweetEntry {
                                 mention_results: {
                                   result: {
                                     __typename: string
-                                    legacy: {
+                                    reason?: string
+                                    legacy?: {
                                       screen_name: string
                                     }
-                                    rest_id: string
+                                    rest_id?: string
                                   }
                                 }
                               }
@@ -342,6 +350,7 @@ export interface CustomTimelineTweetEntry {
                         }[]
                       }
                       has_nft_avatar?: boolean
+                      super_follow_eligible?: boolean
                     }
                   }
                 }
@@ -559,7 +568,13 @@ export interface CustomTimelineTweetEntry {
                                   icon_name: string
                                 }[]
                               }
+                              super_follow_eligible?: boolean
                             }
+                          }
+                        }
+                        call_to_actions?: {
+                          watch_now: {
+                            url: string
                           }
                         }
                       }
@@ -1777,6 +1792,14 @@ export interface CustomTimelineTweetEntry {
                       }
                     }
                   }
+                  title?: string
+                  description?: string
+                  call_to_actions?: {
+                    watch_now: {
+                      url: string
+                    }
+                  }
+                  embeddable?: boolean
                 }
                 mediaStats?: {
                   viewCount: number
@@ -1925,7 +1948,7 @@ export interface CustomTimelineTweetEntry {
                       normal_followers_count: number
                       pinned_tweet_ids_str: string[]
                       possibly_sensitive: boolean
-                      profile_banner_url: string
+                      profile_banner_url?: string
                       profile_image_url_https: string
                       profile_interstitial_type: string
                       screen_name: string
@@ -1934,8 +1957,8 @@ export interface CustomTimelineTweetEntry {
                       verified: boolean
                       want_retweets: boolean
                       withheld_in_countries: unknown[]
-                      verified_type?: string
                       url?: string
+                      verified_type?: string
                     }
                     professional?: {
                       rest_id: string
@@ -2063,6 +2086,8 @@ export interface CustomTimelineTweetEntry {
                         h: number
                       }[]
                     }
+                    source_status_id_str?: string
+                    source_user_id_str?: string
                   }[]
                 }
                 favorite_count: number
@@ -2155,6 +2180,8 @@ export interface CustomTimelineTweetEntry {
                         h: number
                       }[]
                     }
+                    source_status_id_str?: string
+                    source_user_id_str?: string
                     video_info?: {
                       aspect_ratio: number[]
                       variants: {
@@ -3031,6 +3058,13 @@ export interface CustomTimelineTweetEntry {
           }
           unified_card?: {
             card_fetch_state: string
+          }
+          previous_counts?: {
+            bookmark_count: number
+            favorite_count: number
+            quote_count: number
+            reply_count: number
+            retweet_count: number
           }
         }
       }

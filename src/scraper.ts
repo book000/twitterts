@@ -1,5 +1,10 @@
 import fs from 'node:fs'
-import puppeteer, { Browser, HTTPResponse, Page } from 'puppeteer-core'
+import puppeteer, {
+  Browser,
+  ElementHandle,
+  HTTPResponse,
+  Page,
+} from 'puppeteer-core'
 import { authenticator } from 'otplib'
 import { dirname, join } from 'node:path'
 import {
@@ -329,7 +334,7 @@ function getResponseKey(input: {
   method: HttpMethod
   type: RequestType
   name: string
-}) {
+}): string {
   return `${input.type}_${input.method}_${input.name}`.toLocaleUpperCase()
 }
 
@@ -452,7 +457,7 @@ export class TwitterScraperPage {
    *
    * @param url 遷移先 URL
    */
-  public async goto(url: string) {
+  public async goto(url: string): Promise<void> {
     await this.page.goto(url, {
       waitUntil: ['load', 'networkidle2'],
     })
@@ -468,7 +473,7 @@ export class TwitterScraperPage {
     selector: string,
     isEvaluate = false,
     timeout?: number
-  ) {
+  ): Promise<void> {
     const element = await this.page
       .waitForSelector(selector, {
         timeout: timeout || 30_000,
@@ -495,7 +500,10 @@ export class TwitterScraperPage {
    * @param sourceUrl リダイレクト前の URL
    * @returns リダイレクト先の URL
    */
-  public async getRedirectTo(sourceUrl: string, timeout = 30_000) {
+  public async getRedirectTo(
+    sourceUrl: string,
+    timeout = 30_000
+  ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         clearInterval(intervalId)
@@ -516,7 +524,7 @@ export class TwitterScraperPage {
   /**
    * ページの最下部までスクロールします。
    */
-  public async scrollToBottom() {
+  public async scrollToBottom(): Promise<void> {
     await this.page.evaluate(() => {
       const scrollHeight = document.documentElement.scrollHeight
       window.scrollTo({
@@ -530,7 +538,7 @@ export class TwitterScraperPage {
   /**
    * ページを閉じます。
    */
-  public async close() {
+  public async close(): Promise<void> {
     await this.page.close()
   }
 
@@ -539,7 +547,7 @@ export class TwitterScraperPage {
    *
    * @param page Puppeteer ページインスタンス
    */
-  private setRetentionResponse(page: Page) {
+  private setRetentionResponse(page: Page): void {
     page.on('response', async (response) => {
       const details = await getResponseDetails(response)
       if (!details) {
@@ -577,7 +585,7 @@ export class TwitterScraper {
   /**
    * Twitter にログインします。
    */
-  public async login() {
+  public async login(): Promise<void> {
     // ブラウザ作成
     this.browser = await this.getBrowser()
 
@@ -678,7 +686,7 @@ export class TwitterScraper {
    *
    * @returns TwitterScraperPage インスタンス
    */
-  public async getScraperPage() {
+  public async getScraperPage(): Promise<TwitterScraperPage> {
     const page = await this.newPage()
     return new TwitterScraperPage(page)
   }
@@ -686,7 +694,7 @@ export class TwitterScraper {
   /**
    * ブラウザを閉じます。
    */
-  public async close() {
+  public async close(): Promise<void> {
     if (!this.browser) {
       return
     }
@@ -698,7 +706,7 @@ export class TwitterScraper {
    *
    * @returns Puppeteer ブラウザインスタンス
    */
-  private async getBrowser() {
+  private async getBrowser(): Promise<Browser> {
     const puppeteerArguments = [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -748,7 +756,7 @@ export class TwitterScraper {
   /**
    * 新しいページを作成します。
    */
-  private async newPage() {
+  private async newPage(): Promise<Page> {
     if (!this.browser) {
       throw new TwitterOperationError(
         'Failed to create page. Browser is not initialized.'
@@ -788,7 +796,7 @@ export class TwitterScraper {
    *
    * @param page Puppeteer ページインスタンス
    */
-  private setAutoSaveResponse(page: Page) {
+  private setAutoSaveResponse(page: Page): void {
     if (!this.options.debugOptions?.outputResponse?.enable) {
       return
     }
@@ -834,7 +842,11 @@ export class TwitterScraper {
    * @param timeout タイムアウトミリ秒
    * @returns 要素。見つからなかった場合は null
    */
-  private async getElement(page: Page, selector: string, timeout = 3000) {
+  private async getElement(
+    page: Page,
+    selector: string,
+    timeout = 3000
+  ): Promise<ElementHandle<Element> | null> {
     try {
       return await page.waitForSelector(selector, { timeout })
     } catch {
@@ -848,7 +860,7 @@ export class TwitterScraper {
    * @param secret シークレット
    * @returns OTP コード
    */
-  private getOneTimePassword(secret: string) {
+  private getOneTimePassword(secret: string): string {
     return authenticator.generate(secret)
   }
 }

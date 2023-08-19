@@ -257,7 +257,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                 rest_id: string
                                 affiliates_highlighted_label: {
                                   label?: {
-                                    url: {
+                                    url?: {
                                       url: string
                                       urlType: string
                                     }
@@ -266,7 +266,24 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     }
                                     description: string
                                     userLabelType: string
-                                    userLabelDisplayType: string
+                                    userLabelDisplayType?: string
+                                    longDescription?: {
+                                      text: string
+                                      entities: {
+                                        fromIndex: number
+                                        toIndex: number
+                                        ref: {
+                                          type: string
+                                          screen_name: string
+                                          mention_results: {
+                                            result: {
+                                              __typename: string
+                                              reason: string
+                                            }
+                                          }
+                                        }
+                                      }[]
+                                    }
                                   }
                                 }
                                 has_graduated_access: boolean
@@ -542,6 +559,11 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                       }
                                     }
                                   }
+                                  call_to_actions?: {
+                                    watch_now: {
+                                      url: string
+                                    }
+                                  }
                                 }
                                 mediaStats?: {
                                   viewCount: number
@@ -685,7 +707,11 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                   symbols: unknown[]
                                 }
                                 richtext?: {
-                                  richtext_tags: unknown[]
+                                  richtext_tags: {
+                                    from_index: number
+                                    to_index: number
+                                    richtext_types: string[]
+                                  }[]
                                 }
                                 media?: {
                                   inline_media: unknown[]
@@ -754,7 +780,12 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     description: string
                                     entities: {
                                       description: {
-                                        urls: unknown[]
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
                                       }
                                       url: {
                                         urls: {
@@ -776,7 +807,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                     media_count: number
                                     name: string
                                     normal_followers_count: number
-                                    pinned_tweet_ids_str: unknown[]
+                                    pinned_tweet_ids_str: string[]
                                     possibly_sensitive: boolean
                                     profile_banner_url: string
                                     profile_image_url_https: string
@@ -1125,7 +1156,10 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                             title?: string
                             description?: string
                             call_to_actions?: {
-                              visit_site: {
+                              visit_site?: {
+                                url: string
+                              }
+                              watch_now?: {
                                 url: string
                               }
                             }
@@ -1286,6 +1320,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                           }
                           source_status_id_str?: string
                           source_user_id_str?: string
+                          ext_alt_text?: string
                         }[]
                       }
                       possibly_sensitive?: boolean
@@ -1323,7 +1358,20 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                 description: string
                                 entities: {
                                   description: {
-                                    urls: unknown[]
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                  url?: {
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
                                   }
                                 }
                                 fast_followers_count: number
@@ -1339,7 +1387,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                 normal_followers_count: number
                                 pinned_tweet_ids_str: string[]
                                 possibly_sensitive: boolean
-                                profile_banner_url: string
+                                profile_banner_url?: string
                                 profile_image_url_https: string
                                 profile_interstitial_type: string
                                 screen_name: string
@@ -1348,6 +1396,17 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                 verified: boolean
                                 want_retweets: boolean
                                 withheld_in_countries: unknown[]
+                                url?: string
+                                verified_type?: string
+                              }
+                              professional?: {
+                                rest_id: string
+                                professional_type: string
+                                category: {
+                                  id: number
+                                  name: string
+                                  icon_name: string
+                                }[]
                               }
                             }
                           }
@@ -1381,7 +1440,12 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               screen_name: string
                               indices: number[]
                             }[]
-                            urls: unknown[]
+                            urls: {
+                              display_url: string
+                              expanded_url: string
+                              url: string
+                              indices: number[]
+                            }[]
                             hashtags: {
                               indices: number[]
                               text: string
@@ -1441,6 +1505,8 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                   h: number
                                 }[]
                               }
+                              source_status_id_str?: string
+                              source_user_id_str?: string
                             }[]
                           }
                           favorite_count: number
@@ -1513,10 +1579,24 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                   h: number
                                 }[]
                               }
+                              source_status_id_str?: string
+                              source_user_id_str?: string
                             }[]
                           }
                           possibly_sensitive?: boolean
                           possibly_sensitive_editable?: boolean
+                          quoted_status_id_str?: string
+                          quoted_status_permalink?: {
+                            url: string
+                            expanded: string
+                            display: string
+                          }
+                        }
+                        quotedRefResult?: {
+                          result: {
+                            __typename: string
+                            rest_id: string
+                          }
                         }
                       }
                     }
@@ -1528,7 +1608,20 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                             __typename: string
                             id: string
                             rest_id: string
-                            affiliates_highlighted_label: {}
+                            affiliates_highlighted_label: {
+                              label?: {
+                                url: {
+                                  url: string
+                                  urlType: string
+                                }
+                                badge: {
+                                  url: string
+                                }
+                                description: string
+                                userLabelType: string
+                                userLabelDisplayType: string
+                              }
+                            }
                             has_graduated_access: boolean
                             is_blue_verified: boolean
                             profile_image_shape: string
@@ -1636,12 +1729,53 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                             screen_name: string
                             indices: number[]
                           }[]
-                          urls: unknown[]
+                          urls: {
+                            display_url: string
+                            expanded_url: string
+                            url: string
+                            indices: number[]
+                          }[]
                           hashtags: {
                             indices: number[]
                             text: string
                           }[]
                           symbols: unknown[]
+                          media?: {
+                            display_url: string
+                            expanded_url: string
+                            id_str: string
+                            indices: number[]
+                            media_url_https: string
+                            type: string
+                            url: string
+                            features: {}
+                            sizes: {
+                              large: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              medium: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              small: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              thumb: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                            }
+                            original_info: {
+                              height: number
+                              width: number
+                            }
+                          }[]
                         }
                         favorite_count: number
                         favorited: boolean
@@ -1963,6 +2097,63 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                         possibly_sensitive_editable?: boolean
                         scopes?: {
                           followers: boolean
+                        }
+                        extended_entities?: {
+                          media: {
+                            display_url: string
+                            expanded_url: string
+                            id_str: string
+                            indices: number[]
+                            media_key: string
+                            media_url_https: string
+                            type: string
+                            url: string
+                            additional_media_info: {
+                              monetizable: boolean
+                            }
+                            mediaStats: {
+                              viewCount: number
+                            }
+                            ext_media_availability: {
+                              status: string
+                            }
+                            features: {}
+                            sizes: {
+                              large: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              medium: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              small: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              thumb: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                            }
+                            original_info: {
+                              height: number
+                              width: number
+                            }
+                            video_info: {
+                              aspect_ratio: number[]
+                              duration_millis: number
+                              variants: {
+                                content_type: string
+                                url: string
+                                bitrate?: number
+                              }[]
+                            }
+                          }[]
                         }
                       }
                       card?: {
@@ -2413,8 +2604,8 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                   }
                                   url?: {
                                     urls: {
-                                      display_url: string
-                                      expanded_url: string
+                                      display_url?: string
+                                      expanded_url?: string
                                       url: string
                                       indices: number[]
                                     }[]
@@ -2552,6 +2743,8 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                   h: number
                                 }[]
                               }
+                              source_status_id_str?: string
+                              source_user_id_str?: string
                             }[]
                             user_mentions: {
                               id_str: string
@@ -2652,6 +2845,66 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               }
                               additional_media_info?: {
                                 monetizable: boolean
+                                title?: string
+                                description?: string
+                                embeddable?: boolean
+                                source_user?: {
+                                  user_results: {
+                                    result: {
+                                      __typename: string
+                                      id: string
+                                      rest_id: string
+                                      affiliates_highlighted_label: {}
+                                      has_graduated_access: boolean
+                                      is_blue_verified: boolean
+                                      profile_image_shape: string
+                                      legacy: {
+                                        can_dm: boolean
+                                        can_media_tag: boolean
+                                        created_at: string
+                                        default_profile: boolean
+                                        default_profile_image: boolean
+                                        description: string
+                                        entities: {
+                                          description: {
+                                            urls: unknown[]
+                                          }
+                                          url: {
+                                            urls: {
+                                              display_url: string
+                                              expanded_url: string
+                                              url: string
+                                              indices: number[]
+                                            }[]
+                                          }
+                                        }
+                                        fast_followers_count: number
+                                        favourites_count: number
+                                        followers_count: number
+                                        friends_count: number
+                                        has_custom_timelines: boolean
+                                        is_translator: boolean
+                                        listed_count: number
+                                        location: string
+                                        media_count: number
+                                        name: string
+                                        normal_followers_count: number
+                                        pinned_tweet_ids_str: unknown[]
+                                        possibly_sensitive: boolean
+                                        profile_banner_url: string
+                                        profile_image_url_https: string
+                                        profile_interstitial_type: string
+                                        screen_name: string
+                                        statuses_count: number
+                                        translator_type: string
+                                        url: string
+                                        verified: boolean
+                                        want_retweets: boolean
+                                        withheld_in_countries: unknown[]
+                                      }
+                                    }
+                                  }
+                                }
                               }
                               mediaStats?: {
                                 viewCount: number
@@ -2665,6 +2918,8 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                   url: string
                                 }[]
                               }
+                              source_status_id_str?: string
+                              source_user_id_str?: string
                             }[]
                           }
                           favorite_count: number
@@ -2683,6 +2938,21 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                           in_reply_to_screen_name?: string
                           in_reply_to_status_id_str?: string
                           in_reply_to_user_id_str?: string
+                          place?: {
+                            attributes: {}
+                            bounding_box: {
+                              coordinates: number[][][]
+                              type: string
+                            }
+                            contained_within: unknown[]
+                            country: string
+                            country_code: string
+                            full_name: string
+                            name: string
+                            id: string
+                            place_type: string
+                            url: string
+                          }
                         }
                         card?: {
                           rest_id: string

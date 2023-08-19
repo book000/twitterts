@@ -51,7 +51,7 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
    *
    * @returns ツイートの配列
    */
-  public getTweets() {
+  public getTweets(): Status[] {
     return this.tweets
   }
 

@@ -294,10 +294,11 @@ export interface CustomTweetObject {
                         mention_results: {
                           result: {
                             __typename: string
-                            legacy: {
+                            reason?: string
+                            legacy?: {
                               screen_name: string
                             }
-                            rest_id: string
+                            rest_id?: string
                           }
                         }
                       }
@@ -586,7 +587,13 @@ export interface CustomTweetObject {
                           icon_name: string
                         }[]
                       }
+                      super_follow_eligible?: boolean
                     }
+                  }
+                }
+                call_to_actions?: {
+                  watch_now: {
+                    url: string
                   }
                 }
               }
@@ -1681,6 +1688,7 @@ export interface CustomTweetObject {
                         percentage: number
                       }[]
                     }
+                    boolean_value?: boolean
                   }
                 }[]
                 card_platform: {
@@ -1904,12 +1912,15 @@ export interface CustomTweetObject {
           }
           title?: string
           description?: string
-          embeddable?: boolean
           call_to_actions?: {
-            visit_site: {
+            watch_now?: {
+              url: string
+            }
+            visit_site?: {
               url: string
             }
           }
+          embeddable?: boolean
         }
         mediaStats?: {
           viewCount: number
@@ -2118,8 +2129,8 @@ export interface CustomTweetObject {
               verified: boolean
               want_retweets: boolean
               withheld_in_countries: unknown[]
-              verified_type?: string
               url?: string
+              verified_type?: string
               following?: boolean
             }
             professional?: {
@@ -2265,6 +2276,8 @@ export interface CustomTweetObject {
                 h: number
               }[]
             }
+            source_status_id_str?: string
+            source_user_id_str?: string
           }[]
         }
         favorite_count: number
@@ -2365,6 +2378,8 @@ export interface CustomTweetObject {
                 h: number
               }[]
             }
+            source_status_id_str?: string
+            source_user_id_str?: string
             video_info?: {
               aspect_ratio: number[]
               variants: {
@@ -2474,6 +2489,7 @@ export interface CustomTweetObject {
                   percentage: number
                 }[]
               }
+              boolean_value?: boolean
             }
           }[]
           card_platform: {
@@ -2494,7 +2510,20 @@ export interface CustomTweetObject {
               __typename: string
               id: string
               rest_id: string
-              affiliates_highlighted_label: {}
+              affiliates_highlighted_label: {
+                label?: {
+                  url: {
+                    url: string
+                    urlType: string
+                  }
+                  badge: {
+                    url: string
+                  }
+                  description: string
+                  userLabelType: string
+                  userLabelDisplayType: string
+                }
+              }
               has_graduated_access: boolean
               is_blue_verified: boolean
               profile_image_shape: string
@@ -2507,7 +2536,12 @@ export interface CustomTweetObject {
                 description: string
                 entities: {
                   description: {
-                    urls: unknown[]
+                    urls: {
+                      display_url: string
+                      expanded_url: string
+                      url: string
+                      indices: number[]
+                    }[]
                   }
                   url: {
                     urls: {
@@ -2539,9 +2573,18 @@ export interface CustomTweetObject {
                 translator_type: string
                 url: string
                 verified: boolean
-                verified_type: string
+                verified_type?: string
                 want_retweets: boolean
                 withheld_in_countries: unknown[]
+              }
+              professional?: {
+                rest_id: string
+                professional_type: string
+                category: {
+                  id: number
+                  name: string
+                  icon_name: string
+                }[]
               }
             }
           }[]
@@ -3758,8 +3801,8 @@ export interface CustomTweetObject {
               }
               url?: {
                 urls: {
-                  display_url: string
-                  expanded_url: string
+                  display_url?: string
+                  expanded_url?: string
                   url: string
                   indices: number[]
                 }[]
@@ -3824,6 +3867,13 @@ export interface CustomTweetObject {
   unified_card?: {
     card_fetch_state: string
   }
+  previous_counts?: {
+    bookmark_count: number
+    favorite_count: number
+    quote_count: number
+    reply_count: number
+    retweet_count: number
+  }
   note_tweet?: {
     is_expandable: boolean
     note_tweet_results: {
@@ -3859,12 +3909,5 @@ export interface CustomTweetObject {
   }
   quick_promote_eligibility?: {
     eligibility: string
-  }
-  previous_counts?: {
-    bookmark_count: number
-    favorite_count: number
-    quote_count: number
-    reply_count: number
-    retweet_count: number
   }
 }

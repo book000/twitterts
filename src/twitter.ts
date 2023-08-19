@@ -27,6 +27,9 @@ import { UserTweetsParser } from './parser/user-tweets'
 import { TwitterScraper, TwitterScraperOptions } from './scraper'
 import { ObjectConverter } from './converter'
 import { HomeTimelineParser } from './parser/home-timeline-parser'
+import { GraphQLGetUserByScreenNameSuccessResponse } from './models/responses/graphql/get/user-by-screen-name-success'
+import { Status } from 'twitter-d'
+import { CustomTweetObject } from './models/responses/custom/custom-tweet-object'
 
 /**
  * {@link TwitterOptions} オプション
@@ -52,7 +55,7 @@ export class Twitter {
    * @param options ログインオプション
    * @returns Twitter インスタンス
    */
-  public static async login(options: TwitterOptions) {
+  public static async login(options: TwitterOptions): Promise<Twitter> {
     const scraper = new TwitterScraper(options)
     await scraper.login()
     return new Twitter(scraper)
@@ -64,7 +67,9 @@ export class Twitter {
    * @param options ユーザー情報取得オプション
    * @returns ユーザー情報
    */
-  public async getUserByScreenName(options: GetUserByScreenNameOptions) {
+  public async getUserByScreenName(
+    options: GetUserByScreenNameOptions
+  ): Promise<GraphQLGetUserByScreenNameSuccessResponse> {
     // TODO: ユーザー情報をv1.1あたりのモデルに変換する処理を入れた方がいい
     if (!options.screenName) {
       throw new IllegalArgumentError('screenName is required')
@@ -99,7 +104,9 @@ export class Twitter {
    * @param userId ユーザー ID
    * @returns スクリーンネーム
    */
-  public async getScreenNameByUserId(options: GetScreenNameByUserIdOptions) {
+  public async getScreenNameByUserId(
+    options: GetScreenNameByUserIdOptions
+  ): Promise<string> {
     if (!options.userId) {
       throw new IllegalArgumentError('userId is required')
     }
@@ -114,7 +121,9 @@ export class Twitter {
    * @param userId ユーザー ID
    * @returns スクリーンネーム
    */
-  public async getUserByUserId(options: GetUserByUserIdOptions) {
+  public async getUserByUserId(
+    options: GetUserByUserIdOptions
+  ): Promise<GraphQLGetUserByScreenNameSuccessResponse> {
     // TODO: ユーザー情報をv1.1あたりのモデルに変換する処理を入れた方がいい
     if (!options.userId) {
       throw new IllegalArgumentError('userId is required')
@@ -155,7 +164,9 @@ export class Twitter {
    * @param options ホームタイムライン取得オプション
    * @returns ホームタイムラインのツイート
    */
-  public async getHomeTimelineTweets(options: GetHomeTimelineTweetsOptions) {
+  public async getHomeTimelineTweets(
+    options: GetHomeTimelineTweetsOptions
+  ): Promise<Status[]> {
     const rawTweets = await this.getHomeTimelineRawTweets(options)
 
     return rawTweets.map((rawTweet) =>
@@ -169,7 +180,9 @@ export class Twitter {
    * @param options ホームタイムライン取得オプション
    * @returns ホームタイムラインのツイート（非正規化ツイート）
    */
-  public async getHomeTimelineRawTweets(options: GetHomeTimelineTweetsOptions) {
+  public async getHomeTimelineRawTweets(
+    options: GetHomeTimelineTweetsOptions
+  ): Promise<CustomTweetObject[]> {
     // おすすめタブ: HomeTimeline
     // フォロー中タブ: HomeLatestTimeline
     if (!options.timelineType) {
@@ -245,7 +258,7 @@ export class Twitter {
    * @param options 検索オプション
    * @returns 検索結果
    */
-  public async searchTweets(options: SearchTweetsOptions) {
+  public async searchTweets(options: SearchTweetsOptions): Promise<Status[]> {
     const rawTweets = await this.searchRawTweets(options)
 
     return rawTweets.map((rawTweet) =>
@@ -259,7 +272,9 @@ export class Twitter {
    * @param options 検索オプション
    * @returns 検索結果（非正規化ツイート）
    */
-  public async searchRawTweets(options: SearchTweetsOptions) {
+  public async searchRawTweets(
+    options: SearchTweetsOptions
+  ): Promise<CustomTweetObject[]> {
     if (!options.query) {
       throw new IllegalArgumentError('query is required')
     }
@@ -318,7 +333,7 @@ export class Twitter {
    * @param options ユーザーツイート取得オプション
    * @returns ユーザーのツイート
    */
-  public async getUserTweets(options: GetUserTweetsOptions) {
+  public async getUserTweets(options: GetUserTweetsOptions): Promise<Status[]> {
     if (!options.screenName) {
       throw new IllegalArgumentError('screenName is required')
     }
@@ -375,7 +390,9 @@ export class Twitter {
    * @param options ユーザーいいねツイート取得オプション
    * @returns ユーザーのツイート
    */
-  public async getUserLikeTweets(options: GetUserLikeTweetsOptions) {
+  public async getUserLikeTweets(
+    options: GetUserLikeTweetsOptions
+  ): Promise<Status[]> {
     if (!options.screenName) {
       throw new IllegalArgumentError('screenName is required')
     }
@@ -431,9 +448,11 @@ export class Twitter {
    * ツイートをいいねする
    *
    * @param options いいねオプション
-   * @returns いいねしたツイート
+   * @returns いいねできたかどうかの文字列（Done）
    */
-  public async likeTweet(options: LikeTweetOptions) {
+  public async likeTweet(
+    options: LikeTweetOptions
+  ): Promise<string | undefined> {
     if (!options.tweetId) {
       throw new IllegalArgumentError('tweetId is required')
     }
@@ -524,8 +543,11 @@ export class Twitter {
    * ツイートのいいねを解除する
    *
    * @param options いいね解除オプション
+   * @returns いいね解除できたかどうかの文字列（Done）
    */
-  public async unlikeTweet(options: UnlikeTweetOptions) {
+  public async unlikeTweet(
+    options: UnlikeTweetOptions
+  ): Promise<string | undefined> {
     if (!options.tweetId) {
       throw new IllegalArgumentError('tweetId is required')
     }
@@ -615,7 +637,7 @@ export class Twitter {
   /**
    * ブラウザを閉じる
    */
-  public async close() {
+  public async close(): Promise<void> {
     await this.scraper.close()
   }
 

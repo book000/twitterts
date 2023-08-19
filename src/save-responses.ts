@@ -4,7 +4,7 @@ import { Twitter } from './twitter'
 /**
  * メイン処理
  */
-async function main() {
+async function main(): Promise<void> {
   const username = process.env.TWITTER_USERNAME
   const password = process.env.TWITTER_PASSWORD
   const otpSecret = process.env.TWITTER_OTP_SECRET

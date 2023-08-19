@@ -1325,6 +1325,7 @@ export interface CustomTweetLegacyObject {
                       percentage: number
                     }[]
                   }
+                  boolean_value?: boolean
                 }
               }[]
               card_platform: {

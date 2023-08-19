@@ -57,7 +57,7 @@ export class HomeTimelineParser extends BaseParser<
    *
    * @returns 非正規化ツイートの配列
    */
-  public getRawTweets() {
+  public getRawTweets(): CustomTweetObject[] {
     return this.rawTweets
   }
 }

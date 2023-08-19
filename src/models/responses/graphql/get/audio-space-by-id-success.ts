@@ -44,7 +44,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                 description: {
                   urls: unknown[]
                 }
-                url: {
+                url?: {
                   urls: {
                     display_url: string
                     expanded_url: string
@@ -64,7 +64,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
               media_count: number
               name: string
               normal_followers_count: number
-              pinned_tweet_ids_str: unknown[]
+              pinned_tweet_ids_str: string[]
               possibly_sensitive: boolean
               profile_banner_url: string
               profile_image_url_https: string
@@ -72,9 +72,9 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
               screen_name: string
               statuses_count: number
               translator_type: string
-              url: string
+              url?: string
               verified: boolean
-              verified_type: string
+              verified_type?: string
               want_retweets: boolean
               withheld_in_countries: unknown[]
             }
