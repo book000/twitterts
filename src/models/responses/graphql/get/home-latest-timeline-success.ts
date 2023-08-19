@@ -29,7 +29,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                           rest_id: string
                           affiliates_highlighted_label: {
                             label?: {
-                              url: {
+                              url?: {
                                 url: string
                                 urlType: string
                               }
@@ -38,7 +38,24 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               }
                               description: string
                               userLabelType: string
-                              userLabelDisplayType: string
+                              userLabelDisplayType?: string
+                              longDescription?: {
+                                text: string
+                                entities: {
+                                  fromIndex: number
+                                  toIndex: number
+                                  ref: {
+                                    type: string
+                                    screen_name: string
+                                    mention_results: {
+                                      result: {
+                                        __typename: string
+                                        reason: string
+                                      }
+                                    }
+                                  }
+                                }[]
+                              }
                             }
                           }
                           has_graduated_access: boolean
@@ -1836,6 +1853,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                         place_type: string
                         url: string
                       }
+                      in_reply_to_screen_name?: string
+                      in_reply_to_status_id_str?: string
+                      in_reply_to_user_id_str?: string
                     }
                     card?: {
                       rest_id: string
@@ -3119,7 +3139,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                       rest_id: string
                       affiliates_highlighted_label: {
                         label?: {
-                          url: {
+                          url?: {
                             url: string
                             urlType: string
                           }
@@ -3128,7 +3148,24 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                           }
                           description: string
                           userLabelType: string
-                          userLabelDisplayType: string
+                          userLabelDisplayType?: string
+                          longDescription?: {
+                            text: string
+                            entities: {
+                              fromIndex: number
+                              toIndex: number
+                              ref: {
+                                type: string
+                                screen_name: string
+                                mention_results: {
+                                  result: {
+                                    __typename: string
+                                    reason: string
+                                  }
+                                }
+                              }
+                            }[]
+                          }
                         }
                       }
                       has_graduated_access: boolean

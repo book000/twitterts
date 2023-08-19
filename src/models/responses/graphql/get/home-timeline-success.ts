@@ -41,7 +41,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                           rest_id: string
                           affiliates_highlighted_label: {
                             label?: {
-                              url: {
+                              url?: {
                                 url: string
                                 urlType: string
                               }
@@ -50,7 +50,24 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               }
                               description: string
                               userLabelType: string
-                              userLabelDisplayType: string
+                              userLabelDisplayType?: string
+                              longDescription?: {
+                                text: string
+                                entities: {
+                                  fromIndex: number
+                                  toIndex: number
+                                  ref: {
+                                    type: string
+                                    screen_name: string
+                                    mention_results: {
+                                      result: {
+                                        __typename: string
+                                        reason: string
+                                      }
+                                    }
+                                  }
+                                }[]
+                              }
                             }
                           }
                           has_graduated_access: boolean
@@ -552,7 +569,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                           }
                           is_translatable: boolean
                           views: {
-                            count: string
+                            count?: string
                             state: string
                           }
                           source: string
@@ -802,6 +819,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                                             icon_name: string
                                           }[]
                                         }
+                                        super_follow_eligible?: boolean
                                       }
                                     }
                                   }
@@ -1225,6 +1243,21 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                         expanded: string
                         display: string
                       }
+                      place?: {
+                        attributes: {}
+                        bounding_box: {
+                          coordinates: number[][][]
+                          type: string
+                        }
+                        contained_within: unknown[]
+                        country: string
+                        country_code: string
+                        full_name: string
+                        name: string
+                        id: string
+                        place_type: string
+                        url: string
+                      }
                     }
                     card?: {
                       rest_id: string
@@ -1239,6 +1272,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               height: number
                               width: number
                               url: string
+                              alt?: string
                             }
                             user_value?: {
                               id_str: string
@@ -2089,7 +2123,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                       rest_id: string
                       affiliates_highlighted_label: {
                         label?: {
-                          url: {
+                          url?: {
                             url: string
                             urlType: string
                           }
@@ -2098,7 +2132,24 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                           }
                           description: string
                           userLabelType: string
-                          userLabelDisplayType: string
+                          userLabelDisplayType?: string
+                          longDescription?: {
+                            text: string
+                            entities: {
+                              fromIndex: number
+                              toIndex: number
+                              ref: {
+                                type: string
+                                screen_name: string
+                                mention_results: {
+                                  result: {
+                                    __typename: string
+                                    reason: string
+                                  }
+                                }
+                              }
+                            }[]
+                          }
                         }
                       }
                       has_graduated_access: boolean
@@ -2768,7 +2819,20 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                         __typename: string
                         id: string
                         rest_id: string
-                        affiliates_highlighted_label: {}
+                        affiliates_highlighted_label: {
+                          label?: {
+                            url: {
+                              url: string
+                              urlType: string
+                            }
+                            badge: {
+                              url: string
+                            }
+                            description: string
+                            userLabelType: string
+                            userLabelDisplayType: string
+                          }
+                        }
                         has_graduated_access: boolean
                         is_blue_verified: boolean
                         profile_image_shape: string
@@ -2782,7 +2846,12 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                           description: string
                           entities: {
                             description: {
-                              urls: unknown[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
                             }
                             url?: {
                               urls: {
@@ -2827,6 +2896,7 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                             icon_name: string
                           }[]
                         }
+                        super_follow_eligible?: boolean
                       }
                     }
                     userDisplayType?: string
@@ -2859,6 +2929,11 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                 displayType: string
                 text: string
                 sticky: boolean
+                socialContext?: {
+                  type: string
+                  contextType: string
+                  text: string
+                }
               }
               footer?: {
                 displayType: string

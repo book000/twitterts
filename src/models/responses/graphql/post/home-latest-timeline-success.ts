@@ -1569,6 +1569,21 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                       in_reply_to_screen_name?: string
                       in_reply_to_status_id_str?: string
                       in_reply_to_user_id_str?: string
+                      place?: {
+                        attributes: {}
+                        bounding_box: {
+                          coordinates: number[][][]
+                          type: string
+                        }
+                        contained_within: unknown[]
+                        country: string
+                        country_code: string
+                        full_name: string
+                        name: string
+                        id: string
+                        place_type: string
+                        url: string
+                      }
                     }
                     tweet?: {
                       rest_id: string
@@ -2427,8 +2442,8 @@ export interface GraphQLPostHomeLatestTimelineSuccessResponse {
                                 }
                                 url?: {
                                   urls: {
-                                    display_url: string
-                                    expanded_url: string
+                                    display_url?: string
+                                    expanded_url?: string
                                     url: string
                                     indices: number[]
                                   }[]

@@ -13,7 +13,7 @@ export interface CustomTweetObject {
         rest_id: string
         affiliates_highlighted_label: {
           label?: {
-            url: {
+            url?: {
               url: string
               urlType: string
             }
@@ -22,7 +22,24 @@ export interface CustomTweetObject {
             }
             description: string
             userLabelType: string
-            userLabelDisplayType: string
+            userLabelDisplayType?: string
+            longDescription?: {
+              text: string
+              entities: {
+                fromIndex: number
+                toIndex: number
+                ref: {
+                  type: string
+                  screen_name: string
+                  mention_results: {
+                    result: {
+                      __typename: string
+                      reason: string
+                    }
+                  }
+                }
+              }[]
+            }
           }
         }
         has_graduated_access: boolean
@@ -46,8 +63,8 @@ export interface CustomTweetObject {
             }
             url?: {
               urls: {
-                display_url: string
-                expanded_url: string
+                display_url?: string
+                expanded_url?: string
                 url: string
                 indices: number[]
               }[]
@@ -77,8 +94,8 @@ export interface CustomTweetObject {
           want_retweets: boolean
           withheld_in_countries: string[]
           following?: boolean
-          followed_by?: boolean
           verified_type?: string
+          followed_by?: boolean
           needs_phone_verification?: boolean
           blocking?: boolean
         }
@@ -330,7 +347,10 @@ export interface CustomTweetObject {
           title?: string
           description?: string
           call_to_actions?: {
-            watch_now: {
+            visit_site?: {
+              url: string
+            }
+            watch_now?: {
               url: string
             }
           }
@@ -572,7 +592,7 @@ export interface CustomTweetObject {
         }
         is_translatable: boolean
         views: {
-          count: string
+          count?: string
           state: string
         }
         source: string
@@ -831,6 +851,7 @@ export interface CustomTweetObject {
                         verified: boolean
                         want_retweets: boolean
                         withheld_in_countries: unknown[]
+                        verified_type?: string
                       }
                       professional?: {
                         rest_id: string
@@ -889,6 +910,9 @@ export interface CustomTweetObject {
             url: string
             expanded: string
             display: string
+          }
+          scopes?: {
+            followers: boolean
           }
           in_reply_to_screen_name?: string
           in_reply_to_status_id_str?: string
@@ -1915,15 +1939,15 @@ export interface CustomTweetObject {
         }
       }
     }
+    scopes?: {
+      followers: boolean
+    }
     quoted_status_id_str?: string
     quoted_status_permalink?: {
       url: string
       expanded: string
       display: string
     }
-    in_reply_to_screen_name?: string
-    in_reply_to_status_id_str?: string
-    in_reply_to_user_id_str?: string
     place?: {
       attributes: {}
       bounding_box: {
@@ -1939,6 +1963,9 @@ export interface CustomTweetObject {
       place_type: string
       url: string
     }
+    in_reply_to_screen_name?: string
+    in_reply_to_status_id_str?: string
+    in_reply_to_user_id_str?: string
     coordinates?: {
       type: string
       coordinates: number[]
@@ -1948,21 +1975,22 @@ export interface CustomTweetObject {
       coordinates: number[]
     }
   }
+  __entryId: string
   card?: {
     rest_id: string
     legacy: {
       binding_values: {
         key: string
         value: {
+          string_value?: string
+          type: string
+          scribe_key?: string
           image_value?: {
             height: number
             width: number
             url: string
             alt?: string
           }
-          type: string
-          string_value?: string
-          scribe_key?: string
           user_value?: {
             id_str: string
             path: unknown[]
@@ -2858,17 +2886,6 @@ export interface CustomTweetObject {
       }
     }
   }
-  previous_counts?: {
-    bookmark_count: number
-    favorite_count: number
-    quote_count: number
-    reply_count: number
-    retweet_count: number
-  }
-  edit_perspective?: {
-    favorited: boolean
-    retweeted: boolean
-  }
   tweet?: {
     rest_id: string
     core: {
@@ -2895,8 +2912,6 @@ export interface CustomTweetObject {
           is_blue_verified: boolean
           profile_image_shape: string
           legacy: {
-            followed_by?: boolean
-            following?: boolean
             can_dm: boolean
             can_media_tag: boolean
             created_at: string
@@ -2940,10 +2955,13 @@ export interface CustomTweetObject {
             screen_name: string
             statuses_count: number
             translator_type: string
+            url?: string
             verified: boolean
+            verified_type?: string
             want_retweets: boolean
             withheld_in_countries: unknown[]
-            url?: string
+            followed_by?: boolean
+            following?: boolean
           }
           professional?: {
             rest_id: string
@@ -2958,20 +2976,46 @@ export interface CustomTweetObject {
         }
       }
     }
+    card?: {
+      rest_id: string
+      legacy: {
+        binding_values: {
+          key: string
+          value: {
+            string_value: string
+            type: string
+            scribe_key?: string
+          }
+        }[]
+        card_platform: {
+          platform: {
+            audience: {
+              name: string
+            }
+            device: {
+              name: string
+              version: string
+            }
+          }
+        }
+        name: string
+        url: string
+        user_refs_results: unknown[]
+      }
+    }
+    unified_card?: {
+      card_fetch_state: string
+    }
     edit_control: {
       edit_tweet_ids: string[]
       editable_until_msecs: string
       is_edit_eligible: boolean
       edits_remaining: string
     }
-    edit_perspective?: {
-      favorited: boolean
-      retweeted: boolean
-    }
     is_translatable: boolean
     views: {
-      state: string
       count?: string
+      state: string
     }
     source: string
     legacy: {
@@ -3018,7 +3062,7 @@ export interface CustomTweetObject {
           type: string
           url: string
           features: {
-            large: {
+            large?: {
               faces: {
                 x: number
                 y: number
@@ -3026,7 +3070,7 @@ export interface CustomTweetObject {
                 w: number
               }[]
             }
-            medium: {
+            medium?: {
               faces: {
                 x: number
                 y: number
@@ -3034,7 +3078,7 @@ export interface CustomTweetObject {
                 w: number
               }[]
             }
-            small: {
+            small?: {
               faces: {
                 x: number
                 y: number
@@ -3042,7 +3086,7 @@ export interface CustomTweetObject {
                 w: number
               }[]
             }
-            orig: {
+            orig?: {
               faces: {
                 x: number
                 y: number
@@ -3084,7 +3128,7 @@ export interface CustomTweetObject {
           original_info: {
             height: number
             width: number
-            focus_rects: {
+            focus_rects?: {
               x: number
               y: number
               w: number
@@ -3105,8 +3149,115 @@ export interface CustomTweetObject {
       reply_count: number
       retweet_count: number
       retweeted: boolean
+      scopes?: {
+        followers: boolean
+      }
       user_id_str: string
       id_str: string
+      extended_entities?: {
+        media: {
+          display_url: string
+          expanded_url: string
+          id_str: string
+          indices: number[]
+          media_key: string
+          media_url_https: string
+          type: string
+          url: string
+          additional_media_info?: {
+            monetizable: boolean
+          }
+          mediaStats?: {
+            viewCount: number
+          }
+          ext_media_availability: {
+            status: string
+          }
+          features: {
+            large?: {
+              faces: {
+                x: number
+                y: number
+                h: number
+                w: number
+              }[]
+            }
+            medium?: {
+              faces: {
+                x: number
+                y: number
+                h: number
+                w: number
+              }[]
+            }
+            small?: {
+              faces: {
+                x: number
+                y: number
+                h: number
+                w: number
+              }[]
+            }
+            orig?: {
+              faces: {
+                x: number
+                y: number
+                h: number
+                w: number
+              }[]
+            }
+            all?: {
+              tags: {
+                user_id: string
+                name: string
+                screen_name: string
+                type: string
+              }[]
+            }
+          }
+          sizes: {
+            large: {
+              h: number
+              w: number
+              resize: string
+            }
+            medium: {
+              h: number
+              w: number
+              resize: string
+            }
+            small: {
+              h: number
+              w: number
+              resize: string
+            }
+            thumb: {
+              h: number
+              w: number
+              resize: string
+            }
+          }
+          original_info: {
+            height: number
+            width: number
+            focus_rects?: {
+              x: number
+              y: number
+              w: number
+              h: number
+            }[]
+          }
+          video_info?: {
+            aspect_ratio: number[]
+            duration_millis: number
+            variants: {
+              content_type: string
+              url: string
+              bitrate?: number
+            }[]
+          }
+        }[]
+      }
       retweeted_status_result?: {
         result: {
           __typename: string
@@ -3471,95 +3622,10 @@ export interface CustomTweetObject {
           }
         }
       }
-      extended_entities?: {
-        media: {
-          display_url: string
-          expanded_url: string
-          id_str: string
-          indices: number[]
-          media_key: string
-          media_url_https: string
-          type: string
-          url: string
-          ext_media_availability: {
-            status: string
-          }
-          features: {
-            large: {
-              faces: {
-                x: number
-                y: number
-                h: number
-                w: number
-              }[]
-            }
-            medium: {
-              faces: {
-                x: number
-                y: number
-                h: number
-                w: number
-              }[]
-            }
-            small: {
-              faces: {
-                x: number
-                y: number
-                h: number
-                w: number
-              }[]
-            }
-            orig: {
-              faces: {
-                x: number
-                y: number
-                h: number
-                w: number
-              }[]
-            }
-            all?: {
-              tags: {
-                user_id: string
-                name: string
-                screen_name: string
-                type: string
-              }[]
-            }
-          }
-          sizes: {
-            large: {
-              h: number
-              w: number
-              resize: string
-            }
-            medium: {
-              h: number
-              w: number
-              resize: string
-            }
-            small: {
-              h: number
-              w: number
-              resize: string
-            }
-            thumb: {
-              h: number
-              w: number
-              resize: string
-            }
-          }
-          original_info: {
-            height: number
-            width: number
-            focus_rects: {
-              x: number
-              y: number
-              w: number
-              h: number
-            }[]
-          }
-        }[]
-      }
+    }
+    edit_perspective?: {
+      favorited: boolean
+      retweeted: boolean
     }
     quick_promote_eligibility?: {
       eligibility: string
@@ -3582,8 +3648,12 @@ export interface CustomTweetObject {
       }
     }[]
   }
-  quick_promote_eligibility?: {
-    eligibility: string
+  previous_counts?: {
+    bookmark_count: number
+    favorite_count: number
+    quote_count: number
+    reply_count: number
+    retweet_count: number
   }
   note_tweet?: {
     is_expandable?: boolean
@@ -3592,7 +3662,12 @@ export interface CustomTweetObject {
         id: string
         text: string
         entity_set: {
-          user_mentions: unknown[]
+          user_mentions: {
+            id_str: string
+            name: string
+            screen_name: string
+            indices: number[]
+          }[]
           urls: {
             display_url: string
             expanded_url: string
@@ -3617,6 +3692,51 @@ export interface CustomTweetObject {
         }
       }
     }
+  }
+  edit_perspective?: {
+    favorited: boolean
+    retweeted: boolean
+  }
+  birdwatch_pivot?: {
+    callToAction: {
+      prompt: string
+      title: string
+      destinationUrl: string
+    }
+    destinationUrl: string
+    footer: {
+      text: string
+      entities: {
+        fromIndex: number
+        toIndex: number
+        ref: {
+          type: string
+          url: string
+          urlType: string
+        }
+      }[]
+    }
+    note: {
+      rest_id: string
+    }
+    subtitle: {
+      text: string
+      entities: {
+        fromIndex: number
+        toIndex: number
+        ref: {
+          type: string
+          url: string
+          urlType: string
+        }
+      }[]
+    }
+    title: string
+    shorttitle: string
+    iconType: string
+  }
+  quick_promote_eligibility?: {
+    eligibility: string
   }
   voiceInfo?: {}
 }
