@@ -62,9 +62,10 @@ export class CustomTypesGenerator {
 
     let schema
     for (const path of paths) {
-      const response: GraphQLGetSearchTimelineSuccessResponse = JSON.parse(
-        fs.readFileSync(path, 'utf8')
-      )
+      const response =
+        Utils.parseJsonc<GraphQLGetSearchTimelineSuccessResponse>(
+          fs.readFileSync(path, 'utf8')
+        )
       const entries =
         response.data.search_by_raw_query.search_timeline.timeline.instructions
           .filter(
@@ -109,7 +110,7 @@ export class CustomTypesGenerator {
 
     let schema
     for (const path of paths) {
-      const response: GraphQLGetUserTweetsSuccessResponse = JSON.parse(
+      const response = Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
         fs.readFileSync(path, 'utf8')
       )
       const entries =
@@ -156,7 +157,7 @@ export class CustomTypesGenerator {
 
     let schema
     for (const path of paths) {
-      const response: GraphQLGetLikesSuccessResponse = JSON.parse(
+      const response = Utils.parseJsonc<GraphQLGetLikesSuccessResponse>(
         fs.readFileSync(path, 'utf8')
       )
       const entries =
@@ -190,14 +191,14 @@ export class CustomTypesGenerator {
       (result) =>
         result.type === 'graphql' &&
         result.name === 'HomeTimeline' &&
-        result.method === 'GET' &&
+        (result.method === 'GET' || result.method === 'POST') &&
         result.statusCode === '200'
     )
     const homeLatestTimelineResults = this.results.filter(
       (result) =>
         result.type === 'graphql' &&
         result.name === 'HomeLatestTimeline' &&
-        result.method === 'GET' &&
+        (result.method === 'GET' || result.method === 'POST') &&
         result.statusCode === '200'
     )
     if (
@@ -215,7 +216,7 @@ export class CustomTypesGenerator {
 
     let schema
     for (const path of hometimelinePaths) {
-      const response: GraphQLGetHomeTimelineSuccessResponse = JSON.parse(
+      const response = Utils.parseJsonc<GraphQLGetHomeTimelineSuccessResponse>(
         fs.readFileSync(path, 'utf8')
       )
       const entries = response.data.home.home_timeline_urt.instructions
@@ -234,9 +235,10 @@ export class CustomTypesGenerator {
     }
 
     for (const path of homeLatestTimelinePaths) {
-      const response: GraphQLGetHomeLatestTimelineSuccessResponse = JSON.parse(
-        fs.readFileSync(path, 'utf8')
-      )
+      const response =
+        Utils.parseJsonc<GraphQLGetHomeLatestTimelineSuccessResponse>(
+          fs.readFileSync(path, 'utf8')
+        )
       const instructions = response.data.home.home_timeline_urt.instructions
         .filter(
           (instruction) =>
@@ -282,9 +284,10 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetHomeTimelineSuccessResponse = JSON.parse(
-            fs.readFileSync(path, 'utf8')
-          )
+          const response =
+            Utils.parseJsonc<GraphQLGetHomeTimelineSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
           return response.data.home.home_timeline_urt.instructions
             .filter(
               (instruction) =>
@@ -314,8 +317,10 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetHomeLatestTimelineSuccessResponse =
-            JSON.parse(fs.readFileSync(path, 'utf8'))
+          const response =
+            Utils.parseJsonc<GraphQLGetHomeLatestTimelineSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
           return response.data.home.home_timeline_urt.instructions
             .filter(
               (instruction) =>
@@ -345,9 +350,10 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetSearchTimelineSuccessResponse = JSON.parse(
-            fs.readFileSync(path, 'utf8')
-          )
+          const response =
+            Utils.parseJsonc<GraphQLGetSearchTimelineSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
           return response.data.search_by_raw_query.search_timeline.timeline.instructions
             .filter(
               (instruction) =>
@@ -377,9 +383,10 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetUserTweetsSuccessResponse = JSON.parse(
-            fs.readFileSync(path, 'utf8')
-          )
+          const response =
+            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
           return response.data.user.result.timeline_v2.timeline.instructions
             .filter(
               (instruction) =>
@@ -409,7 +416,7 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetLikesSuccessResponse = JSON.parse(
+          const response = Utils.parseJsonc<GraphQLGetLikesSuccessResponse>(
             fs.readFileSync(path, 'utf8')
           )
           return response.data.user.result.timeline_v2.timeline.instructions
@@ -456,9 +463,10 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetSearchTimelineSuccessResponse = JSON.parse(
-            fs.readFileSync(path, 'utf8')
-          )
+          const response =
+            Utils.parseJsonc<GraphQLGetSearchTimelineSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
           return response.data.search_by_raw_query.search_timeline.timeline.instructions
             .filter(
               (instruction) =>
@@ -487,9 +495,10 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetUserTweetsSuccessResponse = JSON.parse(
-            fs.readFileSync(path, 'utf8')
-          )
+          const response =
+            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
           return response.data.user.result.timeline_v2.timeline.instructions
             .filter(
               (instruction) =>
@@ -523,9 +532,10 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetUserTweetsSuccessResponse = JSON.parse(
-            fs.readFileSync(path, 'utf8')
-          )
+          const response =
+            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
           return response.data.user.result.timeline_v2.timeline.instructions
             .filter(
               (instruction) =>
@@ -574,9 +584,10 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetUserByRestIdSuccessResponse = JSON.parse(
-            fs.readFileSync(path, 'utf8')
-          )
+          const response =
+            Utils.parseJsonc<GraphQLGetUserByRestIdSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
           return response.data.user.result.legacy
         })
         .map((entry) => createSchema(entry)),
@@ -591,8 +602,10 @@ export class CustomTypesGenerator {
         )
         .flatMap((result) => result.paths)
         .flatMap((path) => {
-          const response: GraphQLGetUserByScreenNameSuccessResponse =
-            JSON.parse(fs.readFileSync(path, 'utf8'))
+          const response =
+            Utils.parseJsonc<GraphQLGetUserByScreenNameSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
           return response.data.user.result.legacy
         })
         .map((entry) => createSchema(entry)),
@@ -646,22 +659,22 @@ export class CustomTypesGenerator {
    */
   async generate(parallel: boolean): Promise<void> {
     const generators = [
-      this.runGraphQLSearchTimeline(),
-      this.runGraphQLUserTweets(),
-      this.runGraphQLUserLikeTweets(),
-      this.runGraphQLTimelineInstruction(),
-      this.runTweetObject(),
+      this.runGraphQLSearchTimeline.bind(this),
+      this.runGraphQLUserTweets.bind(this),
+      this.runGraphQLUserLikeTweets.bind(this),
+      this.runGraphQLTimelineInstruction.bind(this),
+      this.runTweetObject.bind(this),
 
       // twitter-d 変換用オブジェクト
-      this.runTweetLegacyObject(),
-      this.runUserLegacyObject(),
+      this.runTweetLegacyObject.bind(this),
+      this.runUserLegacyObject.bind(this),
     ]
 
     if (parallel) {
-      await Promise.all(generators)
+      await Promise.all(generators.map((generator) => generator()))
     } else {
       for (const generator of generators) {
-        await generator
+        await generator()
       }
     }
   }

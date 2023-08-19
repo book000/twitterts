@@ -1005,7 +1005,7 @@ export interface GraphQLGetLikesSuccessResponse {
                                     is_blue_verified: boolean
                                     profile_image_shape: string
                                     legacy: {
-                                      blocking: boolean
+                                      blocking?: boolean
                                       can_dm: boolean
                                       can_media_tag: boolean
                                       created_at: string
@@ -1021,7 +1021,7 @@ export interface GraphQLGetLikesSuccessResponse {
                                             indices: number[]
                                           }[]
                                         }
-                                        url: {
+                                        url?: {
                                           urls: {
                                             display_url: string
                                             expanded_url: string
@@ -1041,7 +1041,7 @@ export interface GraphQLGetLikesSuccessResponse {
                                       media_count: number
                                       name: string
                                       normal_followers_count: number
-                                      pinned_tweet_ids_str: unknown[]
+                                      pinned_tweet_ids_str: string[]
                                       possibly_sensitive: boolean
                                       profile_banner_url: string
                                       profile_image_url_https: string
@@ -1049,16 +1049,16 @@ export interface GraphQLGetLikesSuccessResponse {
                                       screen_name: string
                                       statuses_count: number
                                       translator_type: string
-                                      url: string
+                                      url?: string
                                       verified: boolean
-                                      verified_type: string
+                                      verified_type?: string
                                       want_retweets: boolean
                                       withheld_in_countries: unknown[]
                                     }
                                   }
                                 }
                               }
-                              card: {
+                              card?: {
                                 rest_id: string
                                 legacy: {
                                   binding_values: {
@@ -1100,7 +1100,7 @@ export interface GraphQLGetLikesSuccessResponse {
                                   user_refs_results: unknown[]
                                 }
                               }
-                              unified_card: {
+                              unified_card?: {
                                 card_fetch_state: string
                               }
                               edit_control: {
@@ -1109,7 +1109,7 @@ export interface GraphQLGetLikesSuccessResponse {
                                 is_edit_eligible: boolean
                                 edits_remaining: string
                               }
-                              edit_perspective: {
+                              edit_perspective?: {
                                 favorited: boolean
                                 retweeted: boolean
                               }
@@ -1141,14 +1141,26 @@ export interface GraphQLGetLikesSuccessResponse {
                                 full_text: string
                                 is_quote_status: boolean
                                 lang: string
-                                possibly_sensitive: boolean
-                                possibly_sensitive_editable: boolean
+                                possibly_sensitive?: boolean
+                                possibly_sensitive_editable?: boolean
                                 quote_count: number
                                 reply_count: number
                                 retweet_count: number
                                 retweeted: boolean
                                 user_id_str: string
                                 id_str: string
+                                conversation_control?: {
+                                  policy: string
+                                  conversation_owner_results: {
+                                    result: {
+                                      __typename: string
+                                      legacy: {
+                                        screen_name: string
+                                      }
+                                    }
+                                  }
+                                }
+                                limited_actions?: string
                               }
                             }
                             tweetInterstitial?: {
@@ -1164,6 +1176,23 @@ export interface GraphQLGetLikesSuccessResponse {
                                 text: string
                                 entities: unknown[]
                               }
+                            }
+                            limitedActionResults?: {
+                              limited_actions: {
+                                action: string
+                                prompt: {
+                                  __typename: string
+                                  cta_type: string
+                                  headline: {
+                                    text: string
+                                    entities: unknown[]
+                                  }
+                                  subtext: {
+                                    text: string
+                                    entities: unknown[]
+                                  }
+                                }
+                              }[]
                             }
                           }
                         }

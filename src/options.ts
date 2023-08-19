@@ -109,3 +109,23 @@ export interface UnlikeTweetOptions {
   /** ツイート ID */
   tweetId: string
 }
+
+/**
+ * {@link Twitter["blockUser"]} のオプション
+ */
+export interface BlockUserOptions {
+  /** スクリーンネーム */
+  screenName?: string
+  /** ユーザー ID */
+  userId?: string
+}
+
+/**
+ * {@link Twitter["unblockUser"]} のオプション
+ */
+export interface UnblockUserOptions {
+  /** スクリーンネーム */
+  screenName?: string
+  /** ユーザー ID */
+  userId?: string
+}

@@ -27,6 +27,24 @@ export class NotLikedError extends TwitterTsError {
 }
 
 /**
+ * ユーザーがすでにブロックしているユーザーをブロックしようとした場合
+ */
+export class AlreadyBlockedError extends TwitterTsError {
+  constructor() {
+    super('Already blocked')
+  }
+}
+
+/**
+ * ユーザーがブロックしていないユーザーをブロック解除しようとした場合
+ */
+export class NotBlockedError extends TwitterTsError {
+  constructor() {
+    super('Not blocked')
+  }
+}
+
+/**
  * ユーザーが存在しない場合
  */
 export class UserNotFoundError extends TwitterTsError {

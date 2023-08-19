@@ -54,4 +54,7 @@ export interface CustomUserLegacyObject {
   following?: boolean
   muting?: boolean
   needs_phone_verification?: boolean
+  protected?: boolean
+  verified_type?: string
+  blocking?: boolean
 }

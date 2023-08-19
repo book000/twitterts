@@ -164,6 +164,22 @@ describe('Twitter', () => {
     ).resolves.toBe('Done')
   })
 
+  test('blockUser', async () => {
+    await expect(
+      twitter.blockUser({
+        screenName: 'X',
+      })
+    ).resolves.toBe(undefined)
+  })
+
+  test('unblockUser', async () => {
+    await expect(
+      twitter.unblockUser({
+        screenName: 'X',
+      })
+    ).resolves.toBe(undefined)
+  })
+
   afterAll(async () => {
     await twitter.close()
   })

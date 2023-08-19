@@ -78,6 +78,9 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           followed_by?: boolean
           following?: boolean
           muting?: boolean
+          protected?: boolean
+          verified_type?: string
+          blocking?: boolean
         }
         smart_blocked_by: boolean
         smart_blocking: boolean
@@ -105,14 +108,16 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
               }[]
             }
             verified_since_msec: string
-            override_verified_year: number
+            override_verified_year?: number
           }
         }
         highlights_info: {
           can_highlight_tweets: boolean
           highlighted_tweets: string
         }
-        business_account: {}
+        business_account: {
+          affiliates_count?: number
+        }
         creator_subscriptions_count: number
         professional?: {
           rest_id: string
