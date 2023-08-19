@@ -77,7 +77,7 @@ export interface SearchTweetsOptions {
 /**
  * {@link Twitter["getUserTweets"]} のオプション
  */
-export interface UserTweetsOptions {
+export interface GetUserTweetsOptions {
   /** スクリーンネーム */
   screenName: string
   /** 取得するツイートの最大数。デフォルトは 20 */
@@ -87,7 +87,7 @@ export interface UserTweetsOptions {
 /**
  * {@link Twitter["getUserLikeTweets"]} のオプション
  */
-export interface UserLikeTweetsOptions {
+export interface GetUserLikeTweetsOptions {
   /** スクリーンネーム */
   screenName: string
   /** 取得するツイートの最大数。デフォルトは 20 */
