@@ -444,9 +444,17 @@ export class TwitterScraperPage {
     const abortController = new AbortController()
     setTimeout(timeout || 30_000, null, {
       signal: abortController.signal,
-    }).then(() => {
-      throw new TwitterTimeoutError('Response timeout.')
     })
+      .then(() => {
+        throw new TwitterTimeoutError('Response timeout.')
+      })
+      .catch((error) => {
+        // ignore abort error
+        if (abortController.signal.aborted) {
+          return
+        }
+        throw error
+      })
 
     const key = getResponseKey({
       method,
@@ -571,10 +579,18 @@ export class TwitterScraperPage {
       const abortController = new AbortController()
       setTimeout(timeout || 30_000, null, {
         signal: abortController.signal,
-      }).then(() => {
-        clearInterval(intervalId)
-        reject(new TwitterTimeoutError('Redirect timeout.'))
       })
+        .then(() => {
+          clearInterval(intervalId)
+          reject(new TwitterTimeoutError('Redirect timeout.'))
+        })
+        .catch((error) => {
+          // ignore abort error
+          if (abortController.signal.aborted) {
+            return
+          }
+          throw error
+        })
 
       const intervalId = setInterval(async () => {
         const url = await this.page.evaluate(() => document.location.href)
@@ -736,9 +752,17 @@ export class TwitterScraper {
           const abortController = new AbortController()
           setTimeout(10_000, null, {
             signal: abortController.signal,
-          }).then(() => {
-            reject(new TwitterTimeoutError('Login timeout.'))
           })
+            .then(() => {
+              reject(new TwitterTimeoutError('Login timeout.'))
+            })
+            .catch((error) => {
+              // ignore abort error
+              if (abortController.signal.aborted) {
+                return
+              }
+              throw error
+            })
           const interval = setInterval(() => {
             if (loginPage.url() === 'https://twitter.com/home') {
               clearInterval(interval)
