@@ -12,6 +12,7 @@ import {
   GraphQLEndpoint,
 } from './models/responses/endpoints'
 import { TwitterOperationError, TwitterTimeoutError } from './models/exceptions'
+import { setTimeout } from 'node:timers/promises'
 
 /**
  * HTTP メソッド
@@ -440,9 +441,20 @@ export class TwitterScraperPage {
     name: N,
     timeout?: number
   ): Promise<EndPointResponseType<M, T, N>> {
-    const timeoutId = setTimeout(() => {
-      throw new TwitterTimeoutError('Response timeout.')
-    }, timeout || 30_000)
+    const abortController = new AbortController()
+    setTimeout(timeout || 30_000, null, {
+      signal: abortController.signal,
+    })
+      .then(() => {
+        throw new TwitterTimeoutError('Response timeout.')
+      })
+      .catch((error) => {
+        // ignore abort error
+        if (abortController.signal.aborted) {
+          return
+        }
+        throw error
+      })
 
     const key = getResponseKey({
       method,
@@ -457,7 +469,7 @@ export class TwitterScraperPage {
         if (responses && responses.length > 0) {
           const response = responses.shift()
           if (response) {
-            clearTimeout(timeoutId)
+            abortController.abort()
             if (
               !response.trimStart().startsWith('[') &&
               !response.trimStart().startsWith('{')
@@ -572,17 +584,29 @@ export class TwitterScraperPage {
     timeout = 30_000
   ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const timeoutId = setTimeout(() => {
-        clearInterval(intervalId)
-        reject(new TwitterTimeoutError('Redirect timeout.'))
-      }, timeout)
+      const abortController = new AbortController()
+      setTimeout(timeout || 30_000, null, {
+        signal: abortController.signal,
+      })
+        .then(() => {
+          clearInterval(intervalId)
+          reject(new TwitterTimeoutError('Redirect timeout.'))
+        })
+        .catch((error) => {
+          // ignore abort error
+          if (abortController.signal.aborted) {
+            return
+          }
+          throw error
+        })
+
       const intervalId = setInterval(async () => {
         const url = await this.page.evaluate(() => document.location.href)
         if (url === sourceUrl) {
           return
         }
         clearInterval(intervalId)
-        clearTimeout(timeoutId)
+        abortController.abort()
         resolve(url)
       }, 500)
     })
@@ -599,7 +623,7 @@ export class TwitterScraperPage {
         behavior: 'smooth',
       })
     })
-    await new Promise<void>((resolve) => setTimeout(resolve, 1000))
+    await setTimeout(1000)
   }
 
   /**
@@ -662,7 +686,7 @@ export class TwitterScraper {
     await loginPage.goto('https://twitter.com', {
       waitUntil: ['load', 'networkidle2'],
     })
-    await new Promise<void>((resolve) => setTimeout(resolve, 3000))
+    await setTimeout(3000)
 
     const href = await loginPage.evaluate(() => {
       return document.location.href
@@ -733,12 +757,24 @@ export class TwitterScraper {
           )
 
         await new Promise<void>((resolve, reject) => {
-          setTimeout(() => {
-            reject(new TwitterTimeoutError('Login timeout.'))
-          }, 10_000)
+          const abortController = new AbortController()
+          setTimeout(10_000, null, {
+            signal: abortController.signal,
+          })
+            .then(() => {
+              reject(new TwitterTimeoutError('Login timeout.'))
+            })
+            .catch((error) => {
+              // ignore abort error
+              if (abortController.signal.aborted) {
+                return
+              }
+              throw error
+            })
           const interval = setInterval(() => {
             if (loginPage.url() === 'https://twitter.com/home') {
               clearInterval(interval)
+              abortController.abort()
               resolve()
             }
           }, 500)
