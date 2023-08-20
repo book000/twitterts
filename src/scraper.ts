@@ -463,26 +463,31 @@ export class TwitterScraperPage {
     })
 
     // レスポンスを待つ
-    const promise = new Promise<EndPointResponseType<M, T, N>>((resolve) => {
-      setInterval(() => {
-        const responses = this.responses[key]
-        if (responses && responses.length > 0) {
-          const response = responses.shift()
-          if (response) {
-            abortController.abort()
-            if (
-              !response.trimStart().startsWith('[') &&
-              !response.trimStart().startsWith('{')
-            ) {
-              throw new TwitterOperationError(
-                `Invalid response: ${response.slice(0, 100)}`
-              )
+    const promise = new Promise<EndPointResponseType<M, T, N>>(
+      (resolve, reject) => {
+        setInterval(() => {
+          const responses = this.responses[key]
+          if (responses && responses.length > 0) {
+            const response = responses.shift()
+            if (response) {
+              abortController.abort()
+              if (
+                !response.trimStart().startsWith('[') &&
+                !response.trimStart().startsWith('{')
+              ) {
+                reject(
+                  new TwitterOperationError(
+                    `Invalid response: ${response.slice(0, 100)}`
+                  )
+                )
+                return
+              }
+              resolve(JSON.parse(response))
             }
-            resolve(JSON.parse(response))
           }
-        }
-      }, 500)
-    })
+        }, 500)
+      }
+    )
 
     // ページ遷移
     if (url) {
