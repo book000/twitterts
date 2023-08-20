@@ -458,6 +458,14 @@ export class TwitterScraperPage {
           const response = responses.shift()
           if (response) {
             clearTimeout(timeoutId)
+            if (
+              !response.trimStart().startsWith('[') &&
+              !response.trimStart().startsWith('{')
+            ) {
+              throw new TwitterOperationError(
+                `Invalid response: ${response.slice(0, 100)}`
+              )
+            }
             resolve(JSON.parse(response))
           }
         }
