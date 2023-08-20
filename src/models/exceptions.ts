@@ -67,3 +67,8 @@ export class TwitterOperationError extends TwitterTsError {}
  * Twitterでの操作でタイムアウトした場合
  */
 export class TwitterTimeoutError extends TwitterOperationError {}
+
+/**
+ * Twitterのレートリミット制限に引っかかった場合
+ */
+export class TwitterRateLimitError extends TwitterOperationError {}
