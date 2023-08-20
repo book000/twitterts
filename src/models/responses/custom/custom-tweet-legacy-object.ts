@@ -9,23 +9,6 @@ export interface CustomTweetLegacyObject {
   conversation_id_str: string
   display_text_range: number[]
   entities: {
-    user_mentions: {
-      id_str: string
-      name: string
-      screen_name: string
-      indices: number[]
-    }[]
-    urls: {
-      display_url: string
-      expanded_url: string
-      url: string
-      indices: number[]
-    }[]
-    hashtags: {
-      indices: number[]
-      text: string
-    }[]
-    symbols: unknown[]
     media?: {
       display_url: string
       expanded_url: string
@@ -111,23 +94,24 @@ export interface CustomTweetLegacyObject {
       source_status_id_str?: string
       source_user_id_str?: string
     }[]
+    user_mentions: {
+      id_str: string
+      name: string
+      screen_name: string
+      indices: number[]
+    }[]
+    urls: {
+      display_url: string
+      expanded_url: string
+      url: string
+      indices: number[]
+    }[]
+    hashtags: {
+      indices: number[]
+      text: string
+    }[]
+    symbols: unknown[]
   }
-  favorite_count: number
-  favorited: boolean
-  full_text: string
-  is_quote_status: boolean
-  lang: string
-  quote_count: number
-  reply_count: number
-  retweet_count: number
-  retweeted: boolean
-  user_id_str: string
-  id_str: string
-  possibly_sensitive?: boolean
-  possibly_sensitive_editable?: boolean
-  in_reply_to_screen_name?: string
-  in_reply_to_status_id_str?: string
-  in_reply_to_user_id_str?: string
   extended_entities?: {
     media: {
       display_url: string
@@ -328,12 +312,28 @@ export interface CustomTweetLegacyObject {
       ext_alt_text?: string
     }[]
   }
+  favorite_count: number
+  favorited: boolean
+  full_text: string
+  is_quote_status: boolean
+  lang: string
+  possibly_sensitive?: boolean
+  possibly_sensitive_editable?: boolean
+  quote_count: number
   quoted_status_id_str?: string
   quoted_status_permalink?: {
     url: string
     expanded: string
     display: string
   }
+  reply_count: number
+  retweet_count: number
+  retweeted: boolean
+  user_id_str: string
+  id_str: string
+  in_reply_to_screen_name?: string
+  in_reply_to_status_id_str?: string
+  in_reply_to_user_id_str?: string
   place?: {
     attributes: {}
     bounding_box: {

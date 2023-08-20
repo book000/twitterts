@@ -34,6 +34,7 @@ import { HomeTimelineParser } from './parser/home-timeline-parser'
 import { GraphQLGetUserByScreenNameSuccessResponse } from './models/responses/graphql/get/user-by-screen-name-success'
 import { FullUser, Status } from 'twitter-d'
 import { CustomTweetObject } from './models/responses/custom/custom-tweet-object'
+import { CustomGraphQLTimelineSuccessResponse } from './models/responses/custom/custom-graph-qltimeline-success-response'
 
 /**
  * {@link TwitterOptions} オプション
@@ -245,7 +246,10 @@ export class Twitter {
           // 30秒以上レスポンスがない場合はタイムアウトとして終了
           break
         }
-        const response = page.shiftResponse('GET', 'GRAPHQL', endpointName)
+        const getResponse = page.shiftResponse('GET', 'GRAPHQL', endpointName)
+        const postResponse = page.shiftResponse('POST', 'GRAPHQL', endpointName)
+        const response = (getResponse ||
+          postResponse) as CustomGraphQLTimelineSuccessResponse
         if (!response) {
           await page.scrollToBottom()
           continue

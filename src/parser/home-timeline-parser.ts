@@ -8,6 +8,7 @@ import {
 } from '../models/responses/endpoints'
 import { CustomTweetObject } from '../models/responses/custom/custom-tweet-object'
 import { CustomTimelineTweetEntry } from '../models/responses/custom/custom-timeline-tweet-entry'
+import { CustomGraphQLTimelineSuccessResponse } from '../models/responses/custom/custom-graph-qltimeline-success-response'
 
 interface Instruction {
   type: string
@@ -26,12 +27,14 @@ export class HomeTimelineParser extends BaseParser<
    * @param response {@link Twitter['getHomeTimelineTweets']} のレスポンス
    */
   constructor(
-    response:
-      | GraphQLGetHomeTimelineResponse
-      | GraphQLGetHomeLatestTimelineResponse,
+    response: CustomGraphQLTimelineSuccessResponse,
     isIncludingPromotedTweets: boolean
   ) {
-    super(response)
+    super(
+      response as
+        | GraphQLGetHomeTimelineResponse
+        | GraphQLGetHomeLatestTimelineResponse
+    )
 
     const instructions = this.response.data.home.home_timeline_urt
       .instructions as Instruction[]
