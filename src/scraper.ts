@@ -11,7 +11,11 @@ import {
   EndPointResponseType,
   GraphQLEndpoint,
 } from './models/responses/endpoints'
-import { TwitterOperationError, TwitterTimeoutError } from './models/exceptions'
+import {
+  TwitterOperationError,
+  TwitterRateLimitError,
+  TwitterTimeoutError,
+} from './models/exceptions'
 import { setTimeout } from 'node:timers/promises'
 
 /**
@@ -471,6 +475,12 @@ export class TwitterScraperPage {
             const response = responses.shift()
             if (response) {
               abortController.abort()
+
+              if (response === 'Rate limit exceeded') {
+                reject(new TwitterRateLimitError())
+                return
+              }
+
               if (
                 !response.trimStart().startsWith('[') &&
                 !response.trimStart().startsWith('{')
@@ -522,6 +532,10 @@ export class TwitterScraperPage {
 
     if (!response) {
       return null
+    }
+
+    if (response === 'Rate limit exceeded') {
+      throw new TwitterRateLimitError()
     }
 
     if (
