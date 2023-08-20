@@ -727,6 +727,7 @@ export class Twitter {
         true
       )
       await new Promise((resolve) => setTimeout(resolve, 3000))
+      await page.close()
     } catch (error) {
       await page.close()
       // if timeout
@@ -783,6 +784,7 @@ export class Twitter {
         true
       )
       await new Promise((resolve) => setTimeout(resolve, 3000))
+      await page.close()
     } catch (error) {
       await page.close()
       // if timeout
