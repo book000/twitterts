@@ -34,7 +34,6 @@ import { HomeTimelineParser } from './parser/home-timeline-parser'
 import { GraphQLGetUserByScreenNameSuccessResponse } from './models/responses/graphql/get/user-by-screen-name-success'
 import { FullUser, Status } from 'twitter-d'
 import { CustomTweetObject } from './models/responses/custom/custom-tweet-object'
-import { setTimeout } from 'node:timers/promises'
 
 /**
  * {@link TwitterOptions} オプション
@@ -703,7 +702,7 @@ export class Twitter {
       )
       if (viewProfileButton) {
         await viewProfileButton.click()
-        await setTimeout(1000)
+        await new Promise((resolve) => setTimeout(resolve, 1000))
       }
 
       const userStatus = await this.getUserStatus(page.page)
@@ -717,14 +716,14 @@ export class Twitter {
       }
 
       await page.waitAndClick('div[data-testid="userActions"]', true)
-      await setTimeout(500)
+      await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick('div[role="menuitem"][data-testid="block"]', true)
-      await setTimeout(500)
+      await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick(
         'div[data-testid="confirmationSheetConfirm"]',
         true
       )
-      await setTimeout(3000)
+      await new Promise((resolve) => setTimeout(resolve, 3000))
     } catch (error) {
       await page.close()
       // if timeout
@@ -759,7 +758,7 @@ export class Twitter {
       )
       if (viewProfileButton) {
         await viewProfileButton.click()
-        await setTimeout(1000)
+        await new Promise((resolve) => setTimeout(resolve, 1000))
       }
 
       const userStatus = await this.getUserStatus(page.page)
@@ -773,14 +772,14 @@ export class Twitter {
       }
 
       await page.waitAndClick('div[data-testid="userActions"]', true)
-      await setTimeout(500)
+      await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick('div[role="menuitem"][data-testid="block"]', true)
-      await setTimeout(500)
+      await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick(
         'div[data-testid="confirmationSheetConfirm"]',
         true
       )
-      await setTimeout(3000)
+      await new Promise((resolve) => setTimeout(resolve, 3000))
     } catch (error) {
       await page.close()
       // if timeout
@@ -822,10 +821,13 @@ export class Twitter {
             resolve(element.dataset.testid?.split('-')[1])
           }
         }, 100)
-        setTimeout(1000 * 60 * 2).then(() => {
-          clearInterval(interval)
-          resolve()
-        }) // 2分
+        setTimeout(
+          () => {
+            clearInterval(interval)
+            resolve()
+          },
+          1000 * 60 * 2
+        ) // 2分
       })
     })
     return testId
