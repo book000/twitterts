@@ -697,7 +697,7 @@ export class TwitterScraper {
    */
   public async login(): Promise<void> {
     // ブラウザ作成
-    this.browser = await this.getBrowser()
+    this.browser = await this.createBrowser()
 
     // ログイン処理
     const loginPage = await this.newPage()
@@ -823,12 +823,16 @@ export class TwitterScraper {
     await this.browser.close()
   }
 
+  public getBrowser(): Browser | undefined {
+    return this.browser
+  }
+
   /**
    * Puppeteer ブラウザインスタンスを作成します。
    *
    * @returns Puppeteer ブラウザインスタンス
    */
-  private async getBrowser(): Promise<Browser> {
+  private async createBrowser(): Promise<Browser> {
     const width = this.options.puppeteerOptions?.defaultViewport?.width || 600
     const height =
       this.options.puppeteerOptions?.defaultViewport?.height || 1000

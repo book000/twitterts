@@ -74,7 +74,6 @@ export class Twitter {
   public async getUserByScreenName(
     options: GetUserByScreenNameOptions
   ): Promise<GraphQLGetUserByScreenNameSuccessResponse> {
-    // TODO: ユーザー情報をv1.1あたりのモデルに変換する処理を入れた方がいい
     if (!options.screenName) {
       throw new IllegalArgumentError('screenName is required')
     }
