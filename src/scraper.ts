@@ -441,9 +441,8 @@ export class TwitterScraperPage {
     name: N,
     timeout?: number
   ): Promise<EndPointResponseType<M, T, N>> {
-    const abortController = new AbortController()
     setTimeout(timeout || 30_000, null, {
-      signal: abortController.signal,
+      ref: false,
     }).then(() => {
       throw new TwitterTimeoutError('Response timeout.')
     })
@@ -461,7 +460,6 @@ export class TwitterScraperPage {
         if (responses && responses.length > 0) {
           const response = responses.shift()
           if (response) {
-            abortController.abort()
             resolve(JSON.parse(response))
           }
         }
@@ -568,9 +566,8 @@ export class TwitterScraperPage {
     timeout = 30_000
   ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const abortController = new AbortController()
       setTimeout(timeout || 30_000, null, {
-        signal: abortController.signal,
+        ref: false,
       }).then(() => {
         clearInterval(intervalId)
         reject(new TwitterTimeoutError('Redirect timeout.'))
@@ -582,7 +579,6 @@ export class TwitterScraperPage {
           return
         }
         clearInterval(intervalId)
-        abortController.abort()
         resolve(url)
       }, 500)
     })
@@ -733,16 +729,14 @@ export class TwitterScraper {
           )
 
         await new Promise<void>((resolve, reject) => {
-          const abortController = new AbortController()
           setTimeout(10_000, null, {
-            signal: abortController.signal,
+            ref: false,
           }).then(() => {
             reject(new TwitterTimeoutError('Login timeout.'))
           })
           const interval = setInterval(() => {
             if (loginPage.url() === 'https://twitter.com/home') {
               clearInterval(interval)
-              abortController.abort()
               resolve()
             }
           }, 500)
