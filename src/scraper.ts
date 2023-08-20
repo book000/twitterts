@@ -445,30 +445,29 @@ export class TwitterScraperPage {
     name: N,
     timeout?: number
   ): Promise<EndPointResponseType<M, T, N>> {
-    const abortController = new AbortController()
-    setTimeout(timeout || 30_000, null, {
-      signal: abortController.signal,
-    })
-      .then(() => {
-        throw new TwitterTimeoutError('Response timeout.')
-      })
-      .catch((error) => {
-        // ignore abort error
-        if (abortController.signal.aborted) {
-          return
-        }
-        throw error
-      })
-
-    const key = getResponseKey({
-      method,
-      type,
-      name,
-    })
-
     // レスポンスを待つ
     const promise = new Promise<EndPointResponseType<M, T, N>>(
       (resolve, reject) => {
+        const abortController = new AbortController()
+        setTimeout(timeout || 30_000, null, {
+          signal: abortController.signal,
+        })
+          .then(() => {
+            reject(new TwitterTimeoutError('Response timeout.'))
+          })
+          .catch((error) => {
+            // ignore abort error
+            if (abortController.signal.aborted) {
+              return
+            }
+            reject(error)
+          })
+
+        const key = getResponseKey({
+          method,
+          type,
+          name,
+        })
         setInterval(() => {
           const responses = this.responses[key]
           if (responses && responses.length > 0) {
