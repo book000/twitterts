@@ -61,6 +61,7 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           location: string
           media_count: number
           name: string
+          needs_phone_verification?: boolean
           normal_followers_count: number
           pinned_tweet_ids_str: string[]
           possibly_sensitive: boolean
@@ -70,11 +71,10 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           screen_name: string
           statuses_count: number
           translator_type: string
-          url?: string
           verified: boolean
           want_retweets: boolean
           withheld_in_countries: unknown[]
-          needs_phone_verification?: boolean
+          url?: string
           followed_by?: boolean
           following?: boolean
           muting?: boolean

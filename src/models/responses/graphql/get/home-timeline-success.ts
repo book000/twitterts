@@ -1496,16 +1496,36 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               url: string
                               features: {
                                 large: {
-                                  faces: unknown[]
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
                                 }
                                 medium: {
-                                  faces: unknown[]
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
                                 }
                                 small: {
-                                  faces: unknown[]
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
                                 }
                                 orig: {
-                                  faces: unknown[]
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
                                 }
                               }
                               sizes: {
@@ -1576,16 +1596,36 @@ export interface GraphQLGetHomeTimelineSuccessResponse {
                               }
                               features: {
                                 large: {
-                                  faces: unknown[]
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
                                 }
                                 medium: {
-                                  faces: unknown[]
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
                                 }
                                 small: {
-                                  faces: unknown[]
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
                                 }
                                 orig: {
-                                  faces: unknown[]
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
                                 }
                               }
                               sizes: {

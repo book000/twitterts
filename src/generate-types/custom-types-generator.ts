@@ -195,31 +195,59 @@ export class CustomTypesGenerator {
     )
   }
 
-  private async runGraphQLTimelineInstruction(): Promise<void> {
+  /**
+   * GET・POSTメソッド共通のホームタイムラインモデルのカスタム型定義を生成する
+   */
+  private async runGraphQLTimeline(): Promise<void> {
     const homeTimelineResults = this.results.filter(
       (result) =>
         result.type === 'graphql' &&
-        result.name === 'HomeTimeline' &&
+        (result.name === 'HomeTimeline' ||
+          result.name === 'HomeLatestTimeline') &&
         (result.method === 'GET' || result.method === 'POST') &&
         result.statusCode === '200'
     )
-    const homeLatestTimelineResults = this.results.filter(
-      (result) =>
-        result.type === 'graphql' &&
-        result.name === 'HomeLatestTimeline' &&
-        (result.method === 'GET' || result.method === 'POST') &&
-        result.statusCode === '200'
-    )
-    if (
-      homeTimelineResults.length === 0 &&
-      homeLatestTimelineResults.length === 0
-    ) {
+    if (homeTimelineResults.length === 0) {
       return
     }
     const hometimelinePaths = homeTimelineResults.flatMap(
       (result) => result.paths
     )
-    const homeLatestTimelinePaths = homeLatestTimelineResults.flatMap(
+
+    let schema
+    for (const path of hometimelinePaths) {
+      const response = Utils.parseJsonc(fs.readFileSync(path, 'utf8'))
+      const fileSchema = createSchema(response)
+      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
+    }
+
+    if (!schema) {
+      return
+    }
+
+    await this.generateTypeFromSchema(
+      schema,
+      'CustomGraphQLTimelineSuccessResponse',
+      'ホームタイムラインモデル'
+    )
+  }
+
+  /**
+   * タイムラインツイートモデル（CustomTimelineTweetEntry）のカスタム型定義を生成する
+   */
+  private async runGraphQLTimelineTweetEntry(): Promise<void> {
+    const homeTimelineResults = this.results.filter(
+      (result) =>
+        result.type === 'graphql' &&
+        (result.name === 'HomeTimeline' ||
+          result.name === 'HomeLatestTimeline') &&
+        (result.method === 'GET' || result.method === 'POST') &&
+        result.statusCode === '200'
+    )
+    if (homeTimelineResults.length === 0) {
+      return
+    }
+    const hometimelinePaths = homeTimelineResults.flatMap(
       (result) => result.paths
     )
 
@@ -243,29 +271,6 @@ export class CustomTypesGenerator {
             )
         )
       const fileSchema = createCompoundSchema(entries)
-      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
-    }
-
-    for (const path of homeLatestTimelinePaths) {
-      const response =
-        Utils.parseJsonc<GraphQLGetHomeLatestTimelineSuccessResponse>(
-          fs.readFileSync(path, 'utf8')
-        )
-      const instructions = response.data.home.home_timeline_urt.instructions
-        .filter(
-          (instruction) =>
-            instruction.type === 'TimelineAddEntries' && instruction.entries
-        )
-        .flatMap(
-          (instruction) =>
-            instruction.entries?.filter(
-              (entry) =>
-                entry.entryId.startsWith('tweet-') ||
-                entry.entryId.startsWith('promoted-tweet') ||
-                entry.entryId.startsWith('promotedTweet')
-            )
-        )
-      const fileSchema = createCompoundSchema(instructions)
       schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
     }
 
@@ -731,7 +736,8 @@ export class CustomTypesGenerator {
       this.runGraphQLSearchTimeline.bind(this),
       this.runGraphQLUserTweets.bind(this),
       this.runGraphQLUserLikeTweets.bind(this),
-      this.runGraphQLTimelineInstruction.bind(this),
+      this.runGraphQLTimeline.bind(this),
+      this.runGraphQLTimelineTweetEntry.bind(this),
       this.runTweetObject.bind(this),
 
       // twitter-d 変換用オブジェクト
