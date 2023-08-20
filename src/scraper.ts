@@ -766,6 +766,9 @@ export class TwitterScraper {
    * @returns Puppeteer ブラウザインスタンス
    */
   private async getBrowser(): Promise<Browser> {
+    const width = this.options.puppeteerOptions?.defaultViewport?.width || 600
+    const height =
+      this.options.puppeteerOptions?.defaultViewport?.height || 1000
     const puppeteerArguments = [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -775,7 +778,8 @@ export class TwitterScraper {
       '--no-zygote',
       '--disable-gpu',
       '--lang=ja',
-      '--window-size=600,1000',
+      `--window-size=${width},${height}`,
+      '--disable-session-crashed-bubble',
     ]
 
     if (this.options.puppeteerOptions?.enableDevtools) {
@@ -798,8 +802,8 @@ export class TwitterScraper {
       channel: 'chrome',
       args: puppeteerArguments,
       defaultViewport: {
-        width: this.options.puppeteerOptions?.defaultViewport?.width || 600,
-        height: this.options.puppeteerOptions?.defaultViewport?.height || 1000,
+        width,
+        height,
       },
       userDataDir: userDataDirectory,
     })
