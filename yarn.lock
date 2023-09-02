@@ -314,10 +314,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@book000/node-utils@1.5.14":
-  version "1.5.14"
-  resolved "https://registry.yarnpkg.com/@book000/node-utils/-/node-utils-1.5.14.tgz#1fc1c4ed203de4ca31a384a0eed7269f215a5e9a"
-  integrity sha512-avEW0fhVSMIGFN7/cCsZCaMRn4K7vkzTcqVm6RfPmGhXMo59UBH1PH2KR79lO0NA0PJgNE68gxWrkrWLm/yMRQ==
+"@book000/node-utils@1.5.15":
+  version "1.5.15"
+  resolved "https://registry.yarnpkg.com/@book000/node-utils/-/node-utils-1.5.15.tgz#067330db8b8398432e8ee53e0be71e7eb6fde41c"
+  integrity sha512-x/0iRSpAkakS82ejcNW7CXx9mjaP5BT4T4qVQ+U/4CQn7zn3qjZ5671CaDBRUsjMmUYoZY4ArJBu7nWC2wbtcw==
   dependencies:
     axios "1.5.0"
     cycle "1.0.3"
