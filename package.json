@@ -64,7 +64,7 @@
     "ts-jest": "29.1.1",
     "ts-node": "10.9.1",
     "ts-node-dev": "2.0.0",
-    "typedoc": "0.25.0",
+    "typedoc": "0.25.1",
     "typescript": "5.1.6",
     "yarn-run-all": "3.1.1"
   },
