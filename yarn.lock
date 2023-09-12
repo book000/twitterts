@@ -1580,10 +1580,10 @@ chokidar@^3.5.1:
   optionalDependencies:
     fsevents "~2.3.2"
 
-chromium-bidi@0.4.22:
-  version "0.4.22"
-  resolved "https://registry.yarnpkg.com/chromium-bidi/-/chromium-bidi-0.4.22.tgz#625dab72946e177f538da2d2b8a681652ef916da"
-  integrity sha512-wR7Y9Ioez+cNXT4ZP7VNM1HRTljpNnMSLw4/RnwhhZUP4yCU7kIQND00YiktuHekch68jklGPK1q9Jkb29+fQg==
+chromium-bidi@0.4.26:
+  version "0.4.26"
+  resolved "https://registry.yarnpkg.com/chromium-bidi/-/chromium-bidi-0.4.26.tgz#4271d2c2507ad86ad08cbccf4c7e3b8a1b1e8112"
+  integrity sha512-lukBGfogAI4T0y3acc86RaacqgKQve47/8pV2c+Hr1PjcICj2K4OkL3qfX3qrqxxnd4ddurFC0WBA3VCQqYeUQ==
   dependencies:
     mitt "3.0.1"
 
@@ -4655,17 +4655,17 @@ punycode@^2.1.0:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.0.tgz#f67fa67c94da8f4d0cfff981aee4118064199b8f"
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
 
-puppeteer-core@21.1.1:
-  version "21.1.1"
-  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-21.1.1.tgz#59be20b6f69acc2139ba2d9e02a33793b59254ff"
-  integrity sha512-Tlcajcf44zwfa9Sbwv3T8BtaNMJ69wtpHIxwl2NOBTyTK3D1wppQovXTjfw0TDOm3a16eCfQ+5BMi3vRQ4kuAQ==
+puppeteer-core@21.2.0:
+  version "21.2.0"
+  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-21.2.0.tgz#59a36cb099dd9603c83517a1d8705957f72c2870"
+  integrity sha512-XTr2JQSvKlSV9VBs/61rOnfQ8RiETY6xK0D+ioppsdE1vo6MCi4UGFhQzzAZADlBtvM8DTuarJ8RFHyHoAqHZg==
   dependencies:
     "@puppeteer/browsers" "1.7.0"
-    chromium-bidi "0.4.22"
+    chromium-bidi "0.4.26"
     cross-fetch "4.0.0"
     debug "4.3.4"
     devtools-protocol "0.0.1159816"
-    ws "8.13.0"
+    ws "8.14.0"
 
 pure-rand@^6.0.0:
   version "6.0.2"
@@ -5795,10 +5795,10 @@ write-file-atomic@^4.0.2:
     imurmurhash "^0.1.4"
     signal-exit "^3.0.7"
 
-ws@8.13.0:
-  version "8.13.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.13.0.tgz#9a9fb92f93cf41512a0735c8f4dd09b8a1211cd0"
-  integrity sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==
+ws@8.14.0:
+  version "8.14.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.14.0.tgz#6c5792c5316dc9266ba8e780433fc45e6680aecd"
+  integrity sha512-WR0RJE9Ehsio6U4TuM+LmunEsjQ5ncHlw4sn9ihD6RoJKZrVyH9FWV3dmnwu8B2aNib1OvG2X6adUCyFpQyWcg==
 
 xtend@^4.0.0:
   version "4.0.2"
