@@ -1580,10 +1580,10 @@ chokidar@^3.5.1:
   optionalDependencies:
     fsevents "~2.3.2"
 
-chromium-bidi@0.4.27:
-  version "0.4.27"
-  resolved "https://registry.yarnpkg.com/chromium-bidi/-/chromium-bidi-0.4.27.tgz#6b12b9cb4d43f66803258cb3b2c4a857e5911cc7"
-  integrity sha512-8Irq0FbKYN8Xmj8M62kta6wk5MyDKeYIFtNavxQ2M3xf2v5MCC4ntf+FxitQu1iHaQvGU6t5O+Nrep0RNNS0EQ==
+chromium-bidi@0.4.28:
+  version "0.4.28"
+  resolved "https://registry.yarnpkg.com/chromium-bidi/-/chromium-bidi-0.4.28.tgz#05befef4f3f19003198237245780d1c60e6f4dbc"
+  integrity sha512-2HZ74QlAApJrEwcGlU/sUu0s4VS+FI3CJ09Toc9aE9VemMyhHZXeaROQgJKNRaYMUTUx6qIv1cLBs3F+vfgjSw==
   dependencies:
     mitt "3.0.1"
     urlpattern-polyfill "9.0.0"
@@ -4656,17 +4656,17 @@ punycode@^2.1.0:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.0.tgz#f67fa67c94da8f4d0cfff981aee4118064199b8f"
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
 
-puppeteer-core@21.3.1:
-  version "21.3.1"
-  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-21.3.1.tgz#806c317c36f543b2f2c7362a5c1c3c64e5c57fc5"
-  integrity sha512-3VrCDEAHk0hPvE8qtfKgsT8CzRuaQrDQGXdCOuMFJM7Ap+ghpQzhPa9H3DE3gZgwDvC5Jt7SxUkAWLCeNbD0xw==
+puppeteer-core@21.3.3:
+  version "21.3.3"
+  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-21.3.3.tgz#a0a776b3500eaaf91841ca9495814a6e1405b2c2"
+  integrity sha512-3Y8uwUnkUD5rKQ/WL6rtD4k70E10ke/j1k65sQArFHrv4TLra8+QQy7J3DvElBU8iJLMYz6UtsHBm2O0esVbGA==
   dependencies:
     "@puppeteer/browsers" "1.7.1"
-    chromium-bidi "0.4.27"
+    chromium-bidi "0.4.28"
     cross-fetch "4.0.0"
     debug "4.3.4"
     devtools-protocol "0.0.1179426"
-    ws "8.14.1"
+    ws "8.14.2"
 
 pure-rand@^6.0.0:
   version "6.0.2"
@@ -5801,10 +5801,10 @@ write-file-atomic@^4.0.2:
     imurmurhash "^0.1.4"
     signal-exit "^3.0.7"
 
-ws@8.14.1:
-  version "8.14.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.14.1.tgz#4b9586b4f70f9e6534c7bb1d3dc0baa8b8cf01e0"
-  integrity sha512-4OOseMUq8AzRBI/7SLMUwO+FEDnguetSk7KMb1sHwvF2w2Wv5Hoj0nlifx8vtGsftE/jWHojPy8sMMzYLJ2G/A==
+ws@8.14.2:
+  version "8.14.2"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.14.2.tgz#6c249a806eb2db7a20d26d51e7709eab7b2e6c7f"
+  integrity sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==
 
 xtend@^4.0.0:
   version "4.0.2"
