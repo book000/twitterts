@@ -4656,10 +4656,10 @@ punycode@^2.1.0:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.0.tgz#f67fa67c94da8f4d0cfff981aee4118064199b8f"
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
 
-puppeteer-core@21.3.3:
-  version "21.3.3"
-  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-21.3.3.tgz#a0a776b3500eaaf91841ca9495814a6e1405b2c2"
-  integrity sha512-3Y8uwUnkUD5rKQ/WL6rtD4k70E10ke/j1k65sQArFHrv4TLra8+QQy7J3DvElBU8iJLMYz6UtsHBm2O0esVbGA==
+puppeteer-core@21.3.4:
+  version "21.3.4"
+  resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-21.3.4.tgz#ca644b9d50b1d58f4d757939e223d890836dfbf9"
+  integrity sha512-iaG7ScTXOm9hlsBTBGGtr5dAAsA8IiWTx8E0Ghr0b5Ntl42bdcPS8EXjcERKocDhua2YqdlnFGs/cBxHY+VNyA==
   dependencies:
     "@puppeteer/browsers" "1.7.1"
     chromium-bidi "0.4.28"
