@@ -48,7 +48,7 @@
     "@types/node": "20.8.7",
     "@typescript-eslint/eslint-plugin": "6.8.0",
     "@typescript-eslint/parser": "6.8.0",
-    "ctix": "1.8.2",
+    "ctix": "1.8.3",
     "eslint": "8.52.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-config-standard": "17.1.0",
