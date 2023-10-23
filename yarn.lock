@@ -1802,10 +1802,10 @@ cross-spawn@^7.0.2, cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-ctix@1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/ctix/-/ctix-1.8.2.tgz#9ca8297aa15be9fc0eca6fd482ee3684ff0e1265"
-  integrity sha512-CMyYakQzE66eB4Gl3Jhad1Vb0L+uqQf3D50Iq3yNBWG+/joG0uzY0zThEhzRcPUXOadfsqwf6MCxWV3IpaGfEQ==
+ctix@1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/ctix/-/ctix-1.8.3.tgz#b840c61015e13e86dbee01e319a637119d1156a4"
+  integrity sha512-bf1SuwAJyGYP3ZAeyFaH4vi7kUpY0AZ7rocsQ5DCBAaY60xJ+W6Uy6sd7RgkeJ8d3Q/cWqo1da2VHC/kInsPLQ==
   dependencies:
     chalk "^4.1.2"
     change-case "^4.1.2"
