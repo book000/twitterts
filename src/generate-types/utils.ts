@@ -169,8 +169,8 @@ export const Utils = {
       rawType.toLocaleLowerCase() === 'graphql'
         ? 'GraphQL'
         : rawType.toLocaleLowerCase() === 'rest'
-        ? 'REST'
-        : null
+          ? 'REST'
+          : null
     if (!type) {
       throw new Error(`Invalid type: ${rawType}`)
     }
