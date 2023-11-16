@@ -145,50 +145,50 @@ export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
   T extends 'articleNudgeDomains'
     ? GraphQLGetArticleNudgeDomainsResponse
     : T extends 'AudioSpaceById'
-    ? GraphQLGetAudioSpaceByIdResponse
-    : T extends 'AuthenticatedUserTFLists'
-    ? GraphQLGetAuthenticatedUserTFListsResponse
-    : T extends 'CommunitiesTabBarItemQuery'
-    ? GraphQLGetCommunitiesTabBarItemQueryResponse
-    : T extends 'DataSaverMode'
-    ? GraphQLGetDataSaverModeResponse
-    : T extends 'FollowHostButtonQuery'
-    ? GraphQLGetFollowHostButtonQueryResponse
-    : T extends 'getAltTextPromptPreference'
-    ? GraphQLGetGetAltTextPromptPreferenceResponse
-    : T extends 'GetUserClaims'
-    ? GraphQLGetGetUserClaimsResponse
-    : T extends 'HomeLatestTimeline'
-    ? GraphQLGetHomeLatestTimelineResponse
-    : T extends 'HomeTimeline'
-    ? GraphQLGetHomeTimelineResponse
-    : T extends 'Likes'
-    ? GraphQLGetLikesResponse
-    : T extends 'ListPins'
-    ? GraphQLGetListPinsResponse
-    : T extends 'ProfileSpotlightsQuery'
-    ? GraphQLGetProfileSpotlightsQueryResponse
-    : T extends 'QuickPromoteEligibility'
-    ? GraphQLGetQuickPromoteEligibilityResponse
-    : T extends 'SearchTimeline'
-    ? GraphQLGetSearchTimelineResponse
-    : T extends 'TweetDetail'
-    ? GraphQLGetTweetDetailResponse
-    : T extends 'UserByRestId'
-    ? GraphQLGetUserByRestIdResponse
-    : T extends 'UserByScreenName'
-    ? GraphQLGetUserByScreenNameResponse
-    : T extends 'UserMedia'
-    ? GraphQLGetUserMediaResponse
-    : T extends 'UsersByRestIds'
-    ? GraphQLGetUsersByRestIdsResponse
-    : T extends 'UsersVerifiedAvatars'
-    ? GraphQLGetUsersVerifiedAvatarsResponse
-    : T extends 'UserTweets'
-    ? GraphQLGetUserTweetsResponse
-    : T extends 'UserTweetsAndReplies'
-    ? GraphQLGetUserTweetsAndRepliesResponse
-    : never
+      ? GraphQLGetAudioSpaceByIdResponse
+      : T extends 'AuthenticatedUserTFLists'
+        ? GraphQLGetAuthenticatedUserTFListsResponse
+        : T extends 'CommunitiesTabBarItemQuery'
+          ? GraphQLGetCommunitiesTabBarItemQueryResponse
+          : T extends 'DataSaverMode'
+            ? GraphQLGetDataSaverModeResponse
+            : T extends 'FollowHostButtonQuery'
+              ? GraphQLGetFollowHostButtonQueryResponse
+              : T extends 'getAltTextPromptPreference'
+                ? GraphQLGetGetAltTextPromptPreferenceResponse
+                : T extends 'GetUserClaims'
+                  ? GraphQLGetGetUserClaimsResponse
+                  : T extends 'HomeLatestTimeline'
+                    ? GraphQLGetHomeLatestTimelineResponse
+                    : T extends 'HomeTimeline'
+                      ? GraphQLGetHomeTimelineResponse
+                      : T extends 'Likes'
+                        ? GraphQLGetLikesResponse
+                        : T extends 'ListPins'
+                          ? GraphQLGetListPinsResponse
+                          : T extends 'ProfileSpotlightsQuery'
+                            ? GraphQLGetProfileSpotlightsQueryResponse
+                            : T extends 'QuickPromoteEligibility'
+                              ? GraphQLGetQuickPromoteEligibilityResponse
+                              : T extends 'SearchTimeline'
+                                ? GraphQLGetSearchTimelineResponse
+                                : T extends 'TweetDetail'
+                                  ? GraphQLGetTweetDetailResponse
+                                  : T extends 'UserByRestId'
+                                    ? GraphQLGetUserByRestIdResponse
+                                    : T extends 'UserByScreenName'
+                                      ? GraphQLGetUserByScreenNameResponse
+                                      : T extends 'UserMedia'
+                                        ? GraphQLGetUserMediaResponse
+                                        : T extends 'UsersByRestIds'
+                                          ? GraphQLGetUsersByRestIdsResponse
+                                          : T extends 'UsersVerifiedAvatars'
+                                            ? GraphQLGetUsersVerifiedAvatarsResponse
+                                            : T extends 'UserTweets'
+                                              ? GraphQLGetUserTweetsResponse
+                                              : T extends 'UserTweetsAndReplies'
+                                                ? GraphQLGetUserTweetsAndRepliesResponse
+                                                : never
 
 /** GraphQL CreateRetweet POST レスポンスモデル */
 export type GraphQLPostCreateRetweetResponse =
@@ -222,16 +222,16 @@ export type GraphQLPOSTEndPointResponseType<T extends GraphQLPOSTEndpoint> =
   T extends 'CreateRetweet'
     ? GraphQLPostCreateRetweetResponse
     : T extends 'DeleteRetweet'
-    ? GraphQLPostDeleteRetweetResponse
-    : T extends 'FavoriteTweet'
-    ? GraphQLPostFavoriteTweetResponse
-    : T extends 'HomeLatestTimeline'
-    ? GraphQLPostHomeLatestTimelineResponse
-    : T extends 'HomeTimeline'
-    ? GraphQLPostHomeTimelineResponse
-    : T extends 'UnfavoriteTweet'
-    ? GraphQLPostUnfavoriteTweetResponse
-    : never
+      ? GraphQLPostDeleteRetweetResponse
+      : T extends 'FavoriteTweet'
+        ? GraphQLPostFavoriteTweetResponse
+        : T extends 'HomeLatestTimeline'
+          ? GraphQLPostHomeLatestTimelineResponse
+          : T extends 'HomeTimeline'
+            ? GraphQLPostHomeTimelineResponse
+            : T extends 'UnfavoriteTweet'
+              ? GraphQLPostUnfavoriteTweetResponse
+              : never
 
 export type GraphQLEndpoint = GraphQLGETEndpoint | GraphQLPOSTEndpoint
 
@@ -245,8 +245,8 @@ export type EndPointResponseType<
       ? GraphQLGETEndPointResponseType<N>
       : never
     : M extends 'POST'
-    ? N extends GraphQLPOSTEndpoint
-      ? GraphQLPOSTEndPointResponseType<N>
+      ? N extends GraphQLPOSTEndpoint
+        ? GraphQLPOSTEndPointResponseType<N>
+        : never
       : never
-    : never
   : never
