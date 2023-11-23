@@ -24,6 +24,7 @@ import {
   TimelineType,
   BlockUserOptions,
   UnblockUserOptions,
+  GetTweetOptions,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
 import { UserLikeTweetsParser } from './parser/user-like-tweets'
@@ -480,6 +481,77 @@ export class Twitter {
     }
 
     return results
+  }
+
+  /**
+   * ツイートの情報を取得する
+   *
+   * @param options ツイート取得オプション
+   * @returns ツイート
+   */
+  public async getTweet(options: GetTweetOptions): Promise<Status> {
+    const rawTweet = await this.getRawTweet(options)
+    return ObjectConverter.convertToStatus(rawTweet)
+  }
+
+  /**
+   * ツイートの生情報を取得する
+   *
+   * @param options ツイート取得オプション
+   * @returns ツイートの生情報
+   */
+  public async getRawTweet(
+    options: GetTweetOptions
+  ): Promise<CustomTweetObject> {
+    if (!options.tweetId) {
+      throw new IllegalArgumentError('tweetId is required')
+    }
+
+    const page = await this.scraper.getScraperPage()
+
+    try {
+      const url = `https://twitter.com/i/status/${options.tweetId}`
+      const responseDetail = await page.waitSingleResponse(
+        url,
+        'GET',
+        'GRAPHQL',
+        'TweetDetail',
+        30_000
+      )
+      if (!responseDetail) {
+        throw new TwitterOperationError('Failed to get tweet detail')
+      }
+
+      if (this.isErrorResponse(responseDetail)) {
+        throw new TwitterOperationError(responseDetail.errors[0].message)
+      }
+
+      await page.close()
+
+      const tweetEntries =
+        responseDetail.data.threaded_conversation_with_injections_v2
+          .instructions[0].entries
+      if (!tweetEntries) {
+        throw new TwitterOperationError('Failed to get tweet entries')
+      }
+
+      const tweetResult = tweetEntries[0].content.itemContent?.tweet_results
+      if (!tweetResult) {
+        throw new TwitterOperationError('Failed to get tweet result')
+      }
+
+      return {
+        __entryId: tweetEntries[0].entryId,
+        ...tweetResult.result,
+      } as CustomTweetObject
+    } catch (error) {
+      await page.close()
+      // if timeout
+      if (error instanceof TimeoutError) {
+        throw new TwitterTimeoutError('Failed to operate twitter')
+      }
+      throw error
+    }
   }
 
   /**

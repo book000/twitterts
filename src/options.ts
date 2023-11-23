@@ -102,6 +102,14 @@ export interface GetUserTweetsOptions {
 }
 
 /**
+ * {@link Twitter["getTweet"]} と {@link Twitter["getRawTweet"]} のオプション
+ */
+export interface GetTweetOptions {
+  /** ツイート ID */
+  tweetId: string
+}
+
+/**
  * {@link Twitter["getUserLikeTweets"]} のオプション
  */
 export interface GetUserLikeTweetsOptions {
