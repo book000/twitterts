@@ -98,23 +98,17 @@ export const Utils = {
     const now = Date.now()
 
     logger.info('🔍 Loading debug output files')
-    let directoryCount = 0
-    const typeDirectories = this.getDirectories(debugOutputDirectory)
-    for (const type of typeDirectories) {
-      const nameDirectories = this.getDirectories(debugOutputDirectory, [type])
-      for (const name of nameDirectories) {
-        const methodDirectories = this.getDirectories(debugOutputDirectory, [
+    for (const type of this.getDirectories(debugOutputDirectory)) {
+      for (const name of this.getDirectories(debugOutputDirectory, [type])) {
+        const endpointDirectories = this.getDirectories(debugOutputDirectory, [
           type,
           name,
         ])
-        for (const method of methodDirectories) {
-          directoryCount++
-          const allDirectoriesCount =
-            typeDirectories.length *
-            nameDirectories.length *
-            methodDirectories.length
+        let endpointDirectoryCount = 0
+        for (const method of endpointDirectories) {
+          endpointDirectoryCount++
           logger.info(
-            `📁 ${type}/${name}/${method} [${directoryCount}/${allDirectoriesCount}]`
+            `📁 ${type}/${name}/${method} (${endpointDirectoryCount}/${endpointDirectories.length})`
           )
           for (const statusCode of this.getDirectories(debugOutputDirectory, [
             type,
@@ -152,6 +146,7 @@ export const Utils = {
               `  📄 ${type}/${name}/${method}/${statusCode} (${filteredPaths.length} files)`
             )
           }
+          logger.info(`  📄 ${results.length} files loaded`)
         }
       }
     }
