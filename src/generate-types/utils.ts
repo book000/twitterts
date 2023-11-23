@@ -49,11 +49,11 @@ export const Utils = {
   },
 
   /**
-   * ディレクトリ内にあるディレクトリ群を取得する
+   * ディレクトリ内にあるディレクトリ群のディレクトリ名を取得する
    *
    * @param parentDirectory ディレクトリを取得する親ディレクトリパス
    * @param baseDirectories ディレクトリを取得する子ディレクトリパス群
-   * @returns ディレクトリ群
+   * @returns ディレクトリ群のディレクトリ名
    */
   getDirectories(
     parentDirectory: string,
@@ -61,9 +61,11 @@ export const Utils = {
   ): string[] {
     const baseDirectory = join(parentDirectory, ...baseDirectories)
     return fs
-      .readdirSync(baseDirectory, { withFileTypes: true })
+      .readdirSync(baseDirectory, {
+        withFileTypes: true
+      })
       .filter((dirent) => dirent.isDirectory())
-      .map((dirent) => join(baseDirectory, dirent.name))
+      .map((dirent) => dirent.name)
   },
 
   /**
@@ -81,7 +83,7 @@ export const Utils = {
     return fs
       .readdirSync(baseDirectory, { withFileTypes: true })
       .filter((dirent) => dirent.isFile() && dirent.name.endsWith('.json'))
-      .map((dirent) => join(baseDirectory, dirent.name))
+      .map((dirent) => dirent.name)
   },
 
   /**
