@@ -149,6 +149,16 @@ describe('Twitter', () => {
     expect(response.length).toBeGreaterThan(0)
   })
 
+  test('getTweet', async () => {
+    const response = await twitter.getTweet({
+      tweetId: '1685608131618086912',
+    })
+    expect(response).toBeTruthy()
+    expect(response.id_str).toBe('1685608131618086912')
+    expect(response.user.id).toBe(286_048_624)
+    expect(response.full_text).toBe('test')
+  })
+
   test('likeTweet', async () => {
     await expect(
       twitter.likeTweet({

@@ -502,6 +502,40 @@ export class CustomTypesGenerator {
           }
         })
         .map((entry) => createSchema(entry)),
+      // TweetDetail
+      this.results
+        .filter(
+          (result) =>
+            result.type === 'graphql' &&
+            result.name === 'TweetDetail' &&
+            result.method === 'GET' &&
+            result.statusCode === '200'
+        )
+        .flatMap((result) => result.paths)
+        .map((path) => {
+          const response = Utils.parseJsonc(fs.readFileSync(path, 'utf8'))
+
+          const tweetEntries =
+            response.data.threaded_conversation_with_injections_v2
+              .instructions[0].entries
+          if (!tweetEntries) {
+            return null
+          }
+
+          const tweetResult = tweetEntries[0].content.itemContent?.tweet_results
+          if (!tweetResult) {
+            return null
+          }
+          return tweetResult.result
+        })
+        .filter((entry) => !!entry)
+        .map((entry) => {
+          return {
+            ...entry,
+            __entryId: 'string',
+          }
+        })
+        .map((entry) => createSchema(entry)),
     ].flat()
 
     await this.generateTypeFromSchema(
