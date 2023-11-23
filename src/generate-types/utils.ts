@@ -97,12 +97,19 @@ export const Utils = {
     const deleteFiles: string[] = []
     const now = Date.now()
 
+    logger.info('🔍 Loading debug output files')
     for (const type of this.getDirectories(debugOutputDirectory)) {
       for (const name of this.getDirectories(debugOutputDirectory, [type])) {
-        for (const method of this.getDirectories(debugOutputDirectory, [
+        const endpointDirectories = this.getDirectories(debugOutputDirectory, [
           type,
           name,
-        ])) {
+        ])
+        let endpointDirectoryCount = 0
+        for (const method of endpointDirectories) {
+          endpointDirectoryCount++
+          logger.info(
+            `📁 ${type}/${name}/${method} (${endpointDirectoryCount}/${endpointDirectories.length})`
+          )
           for (const statusCode of this.getDirectories(debugOutputDirectory, [
             type,
             name,
@@ -136,13 +143,15 @@ export const Utils = {
               paths: filteredPaths,
             })
           }
+          logger.info(`  📄 ${results.length} files loaded`)
         }
       }
     }
 
+    logger.info(`🔍 ${results.length} files loaded`)
+    logger.info('🚮 Deleting old files')
     const startTime = Date.now()
     let deleteFilesCount = 0
-
     for (const deleteFile of deleteFiles) {
       deleteFilesCount++
       fs.unlinkSync(deleteFile)
