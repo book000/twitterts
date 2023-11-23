@@ -727,6 +727,154 @@ export class CustomTypesGenerator {
   }
 
   /**
+   * エンティティ動画情報オブジェクト（CustomEntityVideoInfoObject）のカスタム型定義を生成する
+   */
+  private async runEntityVideoInfoObject(): Promise<void> {
+    // 各レスポンスからエンティティ動画情報オブジェクトを抽出
+    const schemas = [
+      // SearchTimeline
+      this.results
+        .filter(
+          (result) =>
+            result.type === 'graphql' &&
+            result.name === 'SearchTimeline' &&
+            result.method === 'GET' &&
+            result.statusCode === '200'
+        )
+        .flatMap((result) => result.paths)
+        .flatMap((path) => {
+          const response =
+            Utils.parseJsonc<GraphQLGetSearchTimelineSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
+          return response.data.search_by_raw_query.search_timeline.timeline.instructions
+            .filter(
+              (instruction) =>
+                instruction.type === 'TimelineAddEntries' && instruction.entries
+            )
+            .flatMap(
+              (instruction) =>
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
+                )
+            )
+        })
+        .map((entry) => {
+          return (entry as CustomSearchTimelineEntry).content.itemContent
+            .tweet_results.result.legacy
+        })
+        .flatMap(
+          (legacy) =>
+            (legacy as any)?.extended_entities?.media.flatMap(
+              (media: { video_info: { variants: any } }) => media?.video_info
+            ) ?? []
+        )
+        .map((entry) => createSchema(entry)),
+      // UserTweets: tweet_results.result.legacy
+      this.results
+        .filter(
+          (result) =>
+            result.type === 'graphql' &&
+            result.name === 'UserTweets' &&
+            result.method === 'GET' &&
+            result.statusCode === '200'
+        )
+        .flatMap((result) => result.paths)
+        .flatMap((path) => {
+          const response =
+            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
+          return response.data.user.result.timeline_v2.timeline.instructions
+            .filter(
+              (instruction) =>
+                instruction.type === 'TimelineAddEntries' && instruction.entries
+            )
+            .flatMap(
+              (instruction) =>
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
+                )
+            )
+        })
+        .filter(
+          (entry) =>
+            (entry as CustomUserTweetEntry).content.itemContent.tweet_results
+              .result.legacy !== undefined
+        )
+        .map((entry) => {
+          return (entry as CustomUserTweetEntry).content.itemContent
+            .tweet_results.result.legacy
+        })
+        .flatMap(
+          (legacy) =>
+            (legacy as any)?.extended_entities?.media.flatMap(
+              (media: { video_info: { variants: any } }) => media?.video_info
+            ) ?? []
+        )
+        .map((entry) => createSchema(entry)),
+      // UserTweets: tweet_results.result.tweet?.legacy
+      this.results
+        .filter(
+          (result) =>
+            result.type === 'graphql' &&
+            result.name === 'UserTweets' &&
+            result.method === 'GET' &&
+            result.statusCode === '200'
+        )
+        .flatMap((result) => result.paths)
+        .flatMap((path) => {
+          const response =
+            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
+              fs.readFileSync(path, 'utf8')
+            )
+          return response.data.user.result.timeline_v2.timeline.instructions
+            .filter(
+              (instruction) =>
+                instruction.type === 'TimelineAddEntries' && instruction.entries
+            )
+            .flatMap(
+              (instruction) =>
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
+                )
+            )
+        })
+        .filter(
+          (entry) =>
+            (entry as CustomUserTweetEntry).content.itemContent.tweet_results
+              .result.tweet?.legacy !== undefined
+        )
+        .map((entry) => {
+          return (entry as CustomUserTweetEntry).content.itemContent
+            .tweet_results.result.tweet?.legacy
+        })
+        .flatMap(
+          (legacy) =>
+            (legacy as any)?.extended_entities?.media.flatMap(
+              (media: { video_info: { variants: any } }) => media?.video_info
+            ) ?? []
+        )
+        .map((entry) => createSchema(entry)),
+    ].flat()
+
+    await this.generateTypeFromSchema(
+      mergeSchemas(schemas),
+      'CustomEntityVideoInfoObject',
+      'エンティティ動画情報オブジェクト'
+    )
+  }
+
+  /**
    * カスタム型定義を、スキーマを元に生成する
    *
    * @param schema スキーマ
@@ -776,6 +924,7 @@ export class CustomTypesGenerator {
 
       // twitter-d 変換用オブジェクト
       this.runTweetLegacyObject.bind(this),
+      this.runEntityVideoInfoObject.bind(this),
       this.runUserLegacyObject.bind(this),
     ]
 

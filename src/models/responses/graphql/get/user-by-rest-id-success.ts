@@ -22,14 +22,9 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           description: string
           entities: {
             description: {
-              urls: {
-                display_url: string
-                expanded_url: string
-                url: string
-                indices: number[]
-              }[]
+              urls: unknown[]
             }
-            url?: {
+            url: {
               urls: {
                 display_url: string
                 expanded_url: string
@@ -51,20 +46,16 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           normal_followers_count: number
           pinned_tweet_ids_str: string[]
           possibly_sensitive: boolean
-          profile_banner_url?: string
+          profile_banner_url: string
           profile_image_url_https: string
           profile_interstitial_type: string
           screen_name: string
           statuses_count: number
           translator_type: string
-          url?: string
+          url: string
           verified: boolean
           want_retweets: boolean
           withheld_in_countries: unknown[]
-          followed_by?: boolean
-          following?: boolean
-          muting?: boolean
-          blocking?: boolean
         }
         smart_blocked_by: boolean
         smart_blocking: boolean
@@ -74,16 +65,8 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           highlighted_tweets: string
         }
         creator_subscriptions_count: number
-        has_hidden_subscriptions_on_profile?: boolean
-        professional?: {
-          rest_id: string
-          professional_type: string
-          category: {
-            id: number
-            name: string
-            icon_name: string
-          }[]
-        }
+        has_hidden_likes_on_profile: boolean
+        has_hidden_subscriptions_on_profile: boolean
       }
     }
   }
