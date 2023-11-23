@@ -62,7 +62,7 @@ export const Utils = {
     const baseDirectory = join(parentDirectory, ...baseDirectories)
     return fs
       .readdirSync(baseDirectory, {
-        withFileTypes: true
+        withFileTypes: true,
       })
       .filter((dirent) => dirent.isDirectory())
       .map((dirent) => dirent.name)
