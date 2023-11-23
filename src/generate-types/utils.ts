@@ -101,6 +101,8 @@ export const Utils = {
     const logger = Logger.configure('Utils:getEndPointResponses')
     const results = []
     const deleteFiles: string[] = []
+    const now = Date.now()
+
     for (const type of this.getDirectories(debugOutputDirectory)) {
       for (const name of this.getDirectories(debugOutputDirectory, [type])) {
         for (const method of this.getDirectories(debugOutputDirectory, [
@@ -119,25 +121,23 @@ export const Utils = {
               statusCode,
             ])
 
-            // 1687602187259.json (unixtime[ms].json)
-            // 30日以上前のファイルは削除する
-            const now = Date.now()
-            const deleteFiles = paths.filter((path) => {
+            const filteredPaths = paths.filter((path) => {
               const file = basename(path)
               if (!file) {
                 return false
               }
               const unixtime = Number.parseInt(file.split('.')[0])
-              return now - unixtime > 1000 * 60 * 60 * 24 * 30
+              return now - unixtime <= 1000 * 60 * 60 * 24 * 30
             })
-            deleteFiles.push(...deleteFiles)
+
+            deleteFiles.push(...paths.filter((path) => !filteredPaths.includes(path)))
 
             results.push({
               type,
               name,
               method,
               statusCode,
-              paths: paths.filter((path) => !deleteFiles.includes(path)),
+              paths: filteredPaths,
             })
           }
         }
@@ -146,22 +146,23 @@ export const Utils = {
 
     const startTime = Date.now()
     let deleteFilesCount = 0
+
     for (const deleteFile of deleteFiles) {
       deleteFilesCount++
-
       fs.unlinkSync(deleteFile)
+
       if (deleteFilesCount % 100 === 0) {
         const deletedPath = deleteFile.replace(debugOutputDirectory, '')
         const elapsedTime = Date.now() - startTime
         const estimatedTime =
-          (elapsedTime / deleteFilesCount) *
-          (deleteFiles.length - deleteFilesCount)
+          (elapsedTime / deleteFilesCount) * (deleteFiles.length - deleteFilesCount)
         const formattedEstimatedTime = this.formatSeconds(estimatedTime)
         logger.info(
           `🚮 ${deleteFilesCount} files deleted (Just deleted: ${deletedPath}) ETA: ${formattedEstimatedTime}`
         )
       }
     }
+
     logger.info(`🚮 ${deleteFilesCount} files deleted`)
 
     return results
