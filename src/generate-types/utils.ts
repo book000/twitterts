@@ -61,12 +61,9 @@ export const Utils = {
   ): string[] {
     const baseDirectory = join(parentDirectory, ...baseDirectories)
     return fs
-      .readdirSync(baseDirectory)
-      .filter(
-        (directory) =>
-          !['.', '..'].includes(directory) &&
-          fs.statSync(`${baseDirectory}/${directory}`).isDirectory()
-      )
+      .readdirSync(baseDirectory, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => join(baseDirectory, dirent.name))
   },
 
   /**
@@ -82,14 +79,9 @@ export const Utils = {
   ): string[] {
     const baseDirectory = join(parentDirectory, ...baseDirectories)
     return fs
-      .readdirSync(baseDirectory)
-      .filter(
-        (file) =>
-          !['.', '..'].includes(file) &&
-          fs.statSync(join(baseDirectory, file)).isFile() &&
-          file.endsWith('.json')
-      )
-      .map((file) => join(baseDirectory, file))
+      .readdirSync(baseDirectory, { withFileTypes: true })
+      .filter((dirent) => dirent.isFile() && dirent.name.endsWith('.json'))
+      .map((dirent) => join(baseDirectory, dirent.name))
   },
 
   /**
