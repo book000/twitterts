@@ -130,7 +130,9 @@ export const Utils = {
               return now - unixtime <= 1000 * 60 * 60 * 24 * 30
             })
 
-            deleteFiles.push(...paths.filter((path) => !filteredPaths.includes(path)))
+            deleteFiles.push(
+              ...paths.filter((path) => !filteredPaths.includes(path))
+            )
 
             results.push({
               type,
@@ -155,7 +157,8 @@ export const Utils = {
         const deletedPath = deleteFile.replace(debugOutputDirectory, '')
         const elapsedTime = Date.now() - startTime
         const estimatedTime =
-          (elapsedTime / deleteFilesCount) * (deleteFiles.length - deleteFilesCount)
+          (elapsedTime / deleteFilesCount) *
+          (deleteFiles.length - deleteFilesCount)
         const formattedEstimatedTime = this.formatSeconds(estimatedTime)
         logger.info(
           `🚮 ${deleteFilesCount} files deleted (Just deleted: ${deletedPath}) ETA: ${formattedEstimatedTime}`
