@@ -201,7 +201,15 @@ class MigrateSavedResponse {
           dbResponse.responseHeaders = null
           dbResponse.responseBody = JSON.stringify(response)
           dbResponse.createdAt = createdAt
-          await transaction.save(dbResponse)
+          await transaction.save(dbResponse).catch((error) => {
+            if (
+              error.message.includes('UNIQUE constraint failed') ||
+              error.message.includes('Duplicate entry')
+            ) {
+              return
+            }
+            logger.error(`Failed to save response: ${path} (${error.message})`)
+          })
 
           // 10% ごとにログを出力する
           const percentage = Math.floor((fileCount / jsonFiles.length) * 100)
