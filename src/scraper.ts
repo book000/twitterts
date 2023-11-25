@@ -13,7 +13,6 @@ import {
   TwitterOperationError,
   TwitterRateLimitError,
   TwitterTimeoutError,
-  TwitterTsError,
 } from './models/exceptions'
 import { setTimeout } from 'node:timers/promises'
 import { ResponsesDatabase } from './saving-responses'
