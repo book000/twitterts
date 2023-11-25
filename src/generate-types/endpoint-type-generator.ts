@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import {
   ResponseDatabase,
   ResponseEndPointWithCount,
-} from 'src/saving-responses'
+} from '../saving-responses'
 
 /**
  * レスポンス種別
