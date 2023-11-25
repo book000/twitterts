@@ -73,7 +73,7 @@ jobs:
 
       - name: 📦 Publish
         run: |
-          pnpm publish --access public --non-interactive
+          pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
