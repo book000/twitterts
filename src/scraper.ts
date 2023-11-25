@@ -1,4 +1,3 @@
-import fs from 'node:fs'
 import puppeteer, {
   Browser,
   ElementHandle,
@@ -6,7 +5,6 @@ import puppeteer, {
   Page,
 } from 'puppeteer-core'
 import { authenticator } from 'otplib'
-import { dirname, join } from 'node:path'
 import {
   EndPointResponseType,
   GraphQLEndpoint,
@@ -15,8 +13,10 @@ import {
   TwitterOperationError,
   TwitterRateLimitError,
   TwitterTimeoutError,
+  TwitterTsError,
 } from './models/exceptions'
 import { setTimeout } from 'node:timers/promises'
+import { ResponsesDatabase } from './saving-responses'
 
 /**
  * HTTP メソッド
@@ -368,6 +368,10 @@ async function getResponseDetails(
 
   const overrideName = endpoint.overrideName
   if (overrideName) {
+    // overrideName で <NAME> より前に文字列がある場合は、name の先頭文字列を大文字にする
+    if (overrideName.indexOf('<NAME>') > 0) {
+      name = name.replace(/^(.)/, (_, p1) => p1.toLocaleUpperCase())
+    }
     name = overrideName.replace('<NAME>', name)
   }
 
@@ -685,16 +689,33 @@ export class TwitterScraper {
   private browser: Browser | undefined
 
   /**
+   * レスポンスデータベース
+   */
+  private readonly responsesDatabase: ResponsesDatabase | null
+
+  /**
    * @param options Twitter スクレイピングオプション
    */
   constructor(options: TwitterScraperOptions) {
     this.options = options
+    try {
+      this.responsesDatabase = new ResponsesDatabase()
+    } catch (error) {
+      ResponsesDatabase.printDebug(
+        'Failed to create responses database',
+        error as Error
+      )
+      this.responsesDatabase = null
+    }
   }
 
   /**
    * Twitter にログインします。
    */
   public async login(): Promise<void> {
+    // データベース初期化
+    await this.initDatabase()
+
     // ブラウザ作成
     this.browser = await this.createBrowser()
 
@@ -929,7 +950,16 @@ export class TwitterScraper {
     if (!this.options.debugOptions?.outputResponse?.enable) {
       return
     }
+    if (!this.responsesDatabase) {
+      return
+    }
+    if (!this.responsesDatabase.isInitialized()) {
+      return
+    }
     page.on('response', async (response) => {
+      if (!this.responsesDatabase) {
+        return
+      }
       const details = await getResponseDetails(response)
       if (!details) {
         return
@@ -942,27 +972,58 @@ export class TwitterScraper {
         onResponse(details)
       }
 
-      const pathNotIncludedExtension = join(
-        this.options.debugOptions?.outputResponse?.outputDirectory ||
-          '/data/debug',
-        type.toLowerCase(),
-        name,
-        method,
-        response.status().toString(),
-        `${Date.now()}.`
-      )
-      fs.mkdirSync(dirname(pathNotIncludedExtension), { recursive: true })
+      const request = response.request()
 
-      try {
-        const data = JSON.parse(text)
-        const path = `${pathNotIncludedExtension}json`
-        const body = `// ${method} ${url}\n\n${JSON.stringify(data, null, 2)}`
-        fs.writeFileSync(path, body)
-      } catch {
-        const path = `${pathNotIncludedExtension}txt`
-        fs.writeFileSync(path, text)
-      }
+      const responseType = this.isJSON(text) ? 'JSON' : 'TEXT'
+
+      await this.responsesDatabase.addResponse({
+        endpointType: type,
+        method,
+        endpoint: name,
+        url,
+        requestHeaders: JSON.stringify(request.headers()),
+        requestBody: request.postData() || '',
+        responseType,
+        statusCode: response.status(),
+        responseHeaders: JSON.stringify(response.headers()),
+        responseBody: text,
+      })
     })
+  }
+
+  /**
+   * 引数の値がJSONとしてパースできるかどうかを返します。
+   *
+   * @param value パースしたい値
+   * @returns パースできるかどうか
+   */
+  private isJSON(value: string): boolean {
+    try {
+      JSON.parse(value)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  /**
+   * データベースを初期化します。
+   */
+  private async initDatabase(): Promise<void> {
+    if (!this.responsesDatabase) {
+      return
+    }
+    ResponsesDatabase.printDebug('Initialize responses database')
+    const result = await this.responsesDatabase.init()
+    if (!result) {
+      return
+    }
+
+    ResponsesDatabase.printDebug('Migrate responses database')
+    await this.responsesDatabase.migrate()
+
+    ResponsesDatabase.printDebug('Sync responses database')
+    await this.responsesDatabase.sync()
   }
 
   /**
