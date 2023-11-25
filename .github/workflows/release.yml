@@ -29,6 +29,12 @@ jobs:
           node-version-file: .node-version
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        id: pnpm-install
+        with:
+          run_install: false
+
       - name: 📂 Get pnpm store directory
         id: pnpm-cache
         shell: bash
