@@ -203,9 +203,8 @@ export class TwitterTypesGenerator {
           : null
       if (!type) continue
 
-      // Create generator: ${endpointCount}/${endpoints.length
       logger.info(
-        `🔧 Creating generator: ${name} [${endpointCount}/${endpoints.length}]`
+        `🔧 Creating generator: ${name} (StatusCode: ${endpoint.statusCode}) [${endpointCount}/${endpoints.length}]`
       )
       const generator = this.generateType(
         {
