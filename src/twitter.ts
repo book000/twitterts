@@ -250,7 +250,7 @@ export class Twitter {
         const getResponse = page.shiftResponse('GET', 'GRAPHQL', endpointName)
         const postResponse = page.shiftResponse('POST', 'GRAPHQL', endpointName)
         const response = (getResponse ||
-          postResponse) as CustomGraphQLTimelineSuccessResponse
+          postResponse) as CustomGraphQLTimelineSuccessResponse | null
         if (!response) {
           await page.scrollToBottom()
           continue

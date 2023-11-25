@@ -1,45 +1,34 @@
 import { Logger } from '@book000/node-utils'
-import {
-  createCompoundSchema,
-  mergeSchemas,
-  createSchema,
-  Schema,
-} from 'genson-js/dist'
+import { createCompoundSchema, mergeSchemas, Schema } from 'genson-js/dist'
 import { compile } from 'json-schema-to-typescript'
 import { join, dirname } from 'node:path'
-import { CustomSearchTimelineEntry } from '../models/responses/custom/custom-search-timeline-entry'
-import { CustomTimelineTweetEntry } from '../models/responses/custom/custom-timeline-tweet-entry'
-import { CustomUserLikeTweetEntry } from '../models/responses/custom/custom-user-like-tweet-entry'
-import { CustomUserTweetEntry } from '../models/responses/custom/custom-user-tweet-entry'
-import { GraphQLGetHomeLatestTimelineSuccessResponse } from '../models/responses/graphql/get/home-latest-timeline-success'
-import { GraphQLGetHomeTimelineSuccessResponse } from '../models/responses/graphql/get/home-timeline-success'
-import { GraphQLGetLikesSuccessResponse } from '../models/responses/graphql/get/likes-success'
-import { GraphQLGetSearchTimelineSuccessResponse } from '../models/responses/graphql/get/search-timeline-success'
-import { GraphQLGetUserByRestIdSuccessResponse } from '../models/responses/graphql/get/user-by-rest-id-success'
-import { GraphQLGetUserByScreenNameSuccessResponse } from '../models/responses/graphql/get/user-by-screen-name-success'
-import { GraphQLGetUserTweetsSuccessResponse } from '../models/responses/graphql/get/user-tweets-success'
 import fs from 'node:fs'
-import { Result, Utils } from './utils'
+import { Utils } from './utils'
+import { ResponseDatabase, ResponseEndPoint } from '../saving-responses'
+import { EndPointResponseType } from '../models/responses/endpoints'
 
 /**
  * カスタム型定義を生成するクラス
  */
 export class CustomTypesGenerator {
-  private readonly results: Result[]
+  /**
+   * レスポンスを保存するデータベース
+   */
+  private readonly responseDatabase: ResponseDatabase
   private readonly schemaDirectory: string
   private readonly typesDirectory: string
 
   /**
-   * @param results エンドポイントごとのレスポンス情報
+   * @param responseDatabase レスポンスを保存するデータベース
    * @param schemaDirectory スキーマ保存ディレクトリ
    * @param typesDirectory 型定義保存ディレクトリ
    */
   constructor(
-    results: Result[],
+    responseDatabase: ResponseDatabase,
     schemaDirectory: string,
     typesDirectory: string
   ) {
-    this.results = results
+    this.responseDatabase = responseDatabase
     this.schemaDirectory = schemaDirectory
     this.typesDirectory = typesDirectory
   }
@@ -48,26 +37,19 @@ export class CustomTypesGenerator {
    * 検索タイムラインツイートモデル（CustomSearchTimelineEntry）のカスタム型定義を生成する
    */
   private async runGraphQLSearchTimeline(): Promise<void> {
-    const results = this.results.filter(
-      (result) =>
-        result.type === 'graphql' &&
-        result.name === 'SearchTimeline' &&
-        result.method === 'GET' &&
-        result.statusCode === '200'
+    const logger = Logger.configure(
+      'CustomTypesGenerator:runGraphQLSearchTimeline'
     )
-    if (results.length === 0) {
-      return
-    }
-    const paths = results.flatMap((result) => result.paths)
 
-    let schema
-    for (const path of paths) {
-      const response =
-        Utils.parseJsonc<GraphQLGetSearchTimelineSuccessResponse>(
-          fs.readFileSync(path, 'utf8')
-        )
-      const entries =
-        response.data.search_by_raw_query.search_timeline.timeline.instructions
+    const schema = await this.createSchemaFromResponse(
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'SearchTimeline',
+        method: 'GET',
+        statusCode: 200,
+      },
+      (response) => {
+        return response.data.search_by_raw_query.search_timeline.timeline.instructions
           .filter(
             (instruction) =>
               instruction.type === 'TimelineAddEntries' && instruction.entries
@@ -81,10 +63,10 @@ export class CustomTypesGenerator {
                   entry.entryId.startsWith('promotedTweet')
               )
           )
-      const fileSchema = createCompoundSchema(entries)
-      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
-    }
+      }
+    )
     if (!schema) {
+      logger.warn('⏭️ Schema not found. Skip')
       return
     }
 
@@ -99,25 +81,20 @@ export class CustomTypesGenerator {
    * ユーザーツイートモデル（CustomUserTweetEntry）のカスタム型定義を生成する
    */
   private async runGraphQLUserTweets(): Promise<void> {
-    const results = this.results.filter(
-      (result) =>
-        result.type === 'graphql' &&
-        result.name === 'UserTweets' &&
-        result.method === 'GET' &&
-        result.statusCode === '200'
-    )
-    if (results.length === 0) {
-      return
-    }
-    const paths = results.flatMap((result) => result.paths)
+    const logger = Logger.configure('CustomTypesGenerator:runGraphQLUserTweets')
 
-    let schema
-    for (const path of paths) {
-      const response = Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
-        fs.readFileSync(path, 'utf8')
-      )
-      const entries =
-        response.data.user.result.timeline_v2.timeline.instructions
+    const schema = await this.createSchemaFromResponse(
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'UserTweets',
+        method: 'GET',
+        statusCode: 200,
+      },
+      (response) => {
+        if (!('data' in response)) {
+          return []
+        }
+        return response.data.user.result.timeline_v2.timeline.instructions
           .filter(
             (instruction) =>
               instruction.type === 'TimelineAddEntries' && instruction.entries
@@ -131,10 +108,10 @@ export class CustomTypesGenerator {
                   entry.entryId.startsWith('promotedTweet')
               )
           )
-      const fileSchema = createCompoundSchema(entries)
-      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
-    }
+      }
+    )
     if (!schema) {
+      logger.warn('⏭️ Schema not found. Skip')
       return
     }
 
@@ -149,25 +126,22 @@ export class CustomTypesGenerator {
    * ユーザーいいねツイートモデル（CustomUserLikeTweetEntry）のカスタム型定義を生成する
    */
   private async runGraphQLUserLikeTweets(): Promise<void> {
-    const results = this.results.filter(
-      (result) =>
-        result.type === 'graphql' &&
-        result.name === 'Likes' &&
-        result.method === 'GET' &&
-        result.statusCode === '200'
+    const logger = Logger.configure(
+      'CustomTypesGenerator:runGraphQLUserLikeTweets'
     )
-    if (results.length === 0) {
-      return
-    }
-    const paths = results.flatMap((result) => result.paths)
 
-    let schema
-    for (const path of paths) {
-      const response = Utils.parseJsonc<GraphQLGetLikesSuccessResponse>(
-        fs.readFileSync(path, 'utf8')
-      )
-      const entries =
-        response.data.user.result.timeline_v2.timeline.instructions
+    const schema = await this.createSchemaFromResponse(
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'Likes',
+        method: 'GET',
+        statusCode: 200,
+      },
+      (response) => {
+        if (!('data' in response)) {
+          return []
+        }
+        return response.data.user.result.timeline_v2.timeline.instructions
           .filter(
             (instruction) =>
               instruction.type === 'TimelineAddEntries' && instruction.entries
@@ -181,10 +155,10 @@ export class CustomTypesGenerator {
                   entry.entryId.startsWith('promotedTweet')
               )
           )
-      const fileSchema = createCompoundSchema(entries)
-      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
-    }
+      }
+    )
     if (!schema) {
+      logger.warn('⏭️ Schema not found. Skip')
       return
     }
 
@@ -199,34 +173,53 @@ export class CustomTypesGenerator {
    * GET・POSTメソッド共通のホームタイムラインモデルのカスタム型定義を生成する
    */
   private async runGraphQLTimeline(): Promise<void> {
-    const homeTimelineResults = this.results.filter(
-      (result) =>
-        result.type === 'graphql' &&
-        (result.name === 'HomeTimeline' ||
-          result.name === 'HomeLatestTimeline') &&
-        (result.method === 'GET' || result.method === 'POST') &&
-        result.statusCode === '200'
-    )
-    if (homeTimelineResults.length === 0) {
-      return
-    }
-    const hometimelinePaths = homeTimelineResults.flatMap(
-      (result) => result.paths
-    )
+    const logger = Logger.configure('CustomTypesGenerator:runGraphQLTimeline')
+    const endpoints: ResponseEndPoint[] = [
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'HomeTimeline',
+        method: 'GET',
+        statusCode: 200,
+      },
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'HomeTimeline',
+        method: 'POST',
+        statusCode: 200,
+      },
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'HomeLatestTimeline',
+        method: 'GET',
+        statusCode: 200,
+      },
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'HomeLatestTimeline',
+        method: 'POST',
+        statusCode: 200,
+      },
+    ]
 
-    let schema
-    for (const path of hometimelinePaths) {
-      const response = Utils.parseJsonc(fs.readFileSync(path, 'utf8'))
-      const fileSchema = createSchema(response)
-      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
-    }
+    const schemas = []
+    for (const endpoint of endpoints) {
+      const endpointSchema = await this.createSchemaFromResponse(endpoint)
+      if (!endpointSchema) {
+        logger.warn(
+          `⏭️ ${endpoint.method} ${endpoint.endpoint} Schema not found. Skip`
+        )
+        continue
+      }
 
-    if (!schema) {
+      schemas.push(endpointSchema)
+    }
+    if (schemas.length === 0) {
+      logger.warn('⏭️ Schema not found. Skip')
       return
     }
 
     await this.generateTypeFromSchema(
-      schema,
+      mergeSchemas(schemas),
       'CustomGraphQLTimelineSuccessResponse',
       'ホームタイムラインモデル'
     )
@@ -236,50 +229,81 @@ export class CustomTypesGenerator {
    * タイムラインツイートモデル（CustomTimelineTweetEntry）のカスタム型定義を生成する
    */
   private async runGraphQLTimelineTweetEntry(): Promise<void> {
-    const homeTimelineResults = this.results.filter(
-      (result) =>
-        result.type === 'graphql' &&
-        (result.name === 'HomeTimeline' ||
-          result.name === 'HomeLatestTimeline') &&
-        (result.method === 'GET' || result.method === 'POST') &&
-        result.statusCode === '200'
+    const logger = Logger.configure(
+      'CustomTypesGenerator:runGraphQLTimelineTweetEntry'
     )
-    if (homeTimelineResults.length === 0) {
-      return
-    }
-    const hometimelinePaths = homeTimelineResults.flatMap(
-      (result) => result.paths
-    )
+    const endpoints: {
+      endpointType: 'GRAPHQL'
+      endpoint: 'HomeTimeline' | 'HomeLatestTimeline'
+      method: 'GET' | 'POST'
+      statusCode: 200
+    }[] = [
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'HomeTimeline',
+        method: 'GET',
+        statusCode: 200,
+      },
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'HomeTimeline',
+        method: 'POST',
+        statusCode: 200,
+      },
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'HomeLatestTimeline',
+        method: 'GET',
+        statusCode: 200,
+      },
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'HomeLatestTimeline',
+        method: 'POST',
+        statusCode: 200,
+      },
+    ]
 
-    let schema
-    for (const path of hometimelinePaths) {
-      const response = Utils.parseJsonc<GraphQLGetHomeTimelineSuccessResponse>(
-        fs.readFileSync(path, 'utf8')
-      )
-      const entries = response.data.home.home_timeline_urt.instructions
-        .filter(
-          (instruction) =>
-            instruction.type === 'TimelineAddEntries' && instruction.entries
-        )
-        .flatMap(
-          (instruction) =>
-            instruction.entries?.filter(
-              (entry) =>
-                entry.entryId.startsWith('tweet-') ||
-                entry.entryId.startsWith('promoted-tweet') ||
-                entry.entryId.startsWith('promotedTweet')
+    const schemas = []
+    for (const endpoint of endpoints) {
+      const endpointSchema = await this.createSchemaFromResponse(
+        endpoint,
+        (response) => {
+          if (!('data' in response)) {
+            return []
+          }
+          return response.data.home.home_timeline_urt.instructions
+            .filter(
+              (instruction) =>
+                instruction.type === 'TimelineAddEntries' && instruction.entries
             )
+            .flatMap(
+              (instruction) =>
+                instruction.entries?.filter(
+                  (entry) =>
+                    entry.entryId.startsWith('tweet-') ||
+                    entry.entryId.startsWith('promoted-tweet') ||
+                    entry.entryId.startsWith('promotedTweet')
+                )
+            )
+        }
+      )
+      if (!endpointSchema) {
+        logger.warn(
+          `⏭️ ${endpoint.method} ${endpoint.endpoint} Schema not found. Skip`
         )
-      const fileSchema = createCompoundSchema(entries)
-      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
-    }
+        continue
+      }
 
-    if (!schema) {
+      schemas.push(endpointSchema)
+    }
+    if (schemas.length === 0) {
+      logger.warn('⏭️ Schema not found. Skip')
       return
     }
 
     await this.generateTypeFromSchema(
-      schema,
+      mergeSchemas(schemas),
       'CustomTimelineTweetEntry',
       'ホームタイムラインツイートエントリモデル'
     )
@@ -291,252 +315,110 @@ export class CustomTypesGenerator {
    * レスポンスツイートオブジェクト（CustomTweetObject）のカスタム型定義を生成する
    */
   private async runTweetObject(): Promise<void> {
+    const logger = Logger.configure('CustomTypesGenerator:runTweetObject')
+
     // 各レスポンスからツイートオブジェクトを抽出
-    const schemas = [
+    const promises = await Promise.all([
       // HomeTimeline
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'HomeTimeline' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetHomeTimelineSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.home.home_timeline_urt.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .map((entry) => {
-          return (entry as CustomTimelineTweetEntry).content.itemContent
-            .tweet_results.result
-        })
-        .filter((entry) => !!entry)
-        .map((entry) => {
-          return {
-            ...entry,
-            __entryId: 'string',
-          }
-        })
-        .map((entry) => createSchema(entry)),
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'HomeTimeline',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) =>
+          this.getTweetObjectsFromInstructions(
+            response.data.home.home_timeline_urt.instructions
+          ).flat()
+      ),
       // HomeLatestTimeline
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'HomeLatestTimeline' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetHomeLatestTimelineSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.home.home_timeline_urt.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .map((entry) => {
-          return (entry as CustomTimelineTweetEntry).content.itemContent
-            .tweet_results.result
-        })
-        .filter((entry) => !!entry)
-        .map((entry) => {
-          return {
-            ...entry,
-            __entryId: 'string',
-          }
-        })
-        .map((entry) => createSchema(entry)),
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'HomeLatestTimeline',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) =>
+          this.getTweetObjectsFromInstructions(
+            response.data.home.home_timeline_urt.instructions
+          ).flat()
+      ),
       // SearchTimeline
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'SearchTimeline' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetSearchTimelineSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.search_by_raw_query.search_timeline.timeline.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .map((entry) => {
-          return (entry as CustomSearchTimelineEntry).content.itemContent
-            .tweet_results.result
-        })
-        .filter((entry) => !!entry)
-        .map((entry) => {
-          return {
-            ...entry,
-            __entryId: 'string',
-          }
-        })
-        .map((entry) => createSchema(entry)),
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'SearchTimeline',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) =>
+          this.getTweetObjectsFromInstructions(
+            response.data.search_by_raw_query.search_timeline.timeline
+              .instructions
+          ).flat()
+      ),
       // UserTweets
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'UserTweets' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.user.result.timeline_v2.timeline.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .map((entry) => {
-          return (entry as CustomUserTweetEntry).content.itemContent
-            .tweet_results.result
-        })
-        .filter((entry) => !!entry)
-        .map((entry) => {
-          return {
-            ...entry,
-            __entryId: 'string',
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'UserTweets',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) => {
+          if (!('data' in response)) {
+            return []
           }
-        })
-        .map((entry) => createSchema(entry)),
+
+          return this.getTweetObjectsFromInstructions(
+            response.data.user.result.timeline_v2.timeline.instructions
+          ).flat()
+        }
+      ),
       // Likes
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'Likes' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response = Utils.parseJsonc<GraphQLGetLikesSuccessResponse>(
-            fs.readFileSync(path, 'utf8')
-          )
-          return response.data.user.result.timeline_v2.timeline.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .map((entry) => {
-          return (entry as CustomUserLikeTweetEntry).content.itemContent
-            .tweet_results.result
-        })
-        .filter((entry) => !!entry)
-        .map((entry) => {
-          return {
-            ...entry,
-            __entryId: 'string',
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'Likes',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) => {
+          if (!('data' in response)) {
+            return []
           }
-        })
-        .map((entry) => createSchema(entry)),
+
+          return this.getTweetObjectsFromInstructions(
+            response.data.user.result.timeline_v2.timeline.instructions
+          ).flat()
+        }
+      ),
       // TweetDetail
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'TweetDetail' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .map((path) => {
-          const response = Utils.parseJsonc(fs.readFileSync(path, 'utf8'))
-
-          const tweetEntries =
-            response.data.threaded_conversation_with_injections_v2
-              .instructions[0].entries
-          if (!tweetEntries) {
-            return null
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'TweetDetail',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) => {
+          if (!('data' in response)) {
+            return []
           }
 
-          const tweetResult = tweetEntries[0].content.itemContent?.tweet_results
-          if (!tweetResult) {
-            return null
-          }
-          return tweetResult.result
-        })
-        .filter((entry) => !!entry)
-        .map((entry) => {
-          return {
-            ...entry,
-            __entryId: 'string',
-          }
-        })
-        .map((entry) => createSchema(entry)),
-    ].flat()
+          return this.getTweetObjectsFromInstructions(
+            response.data.threaded_conversation_with_injections_v2.instructions
+          ).flat()
+        }
+      ),
+    ])
+    const schemas = promises.filter((schema): schema is Schema => !!schema)
+    if (schemas.length === 0) {
+      logger.warn('⏭️ Schema not found. Skip')
+      return
+    }
 
     await this.generateTypeFromSchema(
       mergeSchemas(schemas),
@@ -545,128 +427,94 @@ export class CustomTypesGenerator {
     )
   }
 
+  private getTweetObjectsFromInstructions(
+    instructions: {
+      type: string
+      entries?: Array<{
+        entryId: string
+        sortIndex: string
+        content: {
+          itemContent?: {
+            tweet_results?: {
+              result?: unknown
+            }
+          }
+        }
+      }>
+    }[]
+  ): unknown[] {
+    return instructions
+      .filter(
+        (instruction) =>
+          instruction.type === 'TimelineAddEntries' && instruction.entries
+      )
+      .flatMap(
+        (instruction) =>
+          instruction.entries?.filter(
+            (entry) =>
+              entry.entryId.startsWith('tweet-') ||
+              entry.entryId.startsWith('promoted-tweet') ||
+              entry.entryId.startsWith('promotedTweet')
+          )
+      )
+      .map((entry) => {
+        return entry?.content.itemContent?.tweet_results?.result
+      })
+      .filter((entry): entry is NonNullable<typeof entry> => !!entry)
+      .map((entry) => {
+        return {
+          ...entry,
+          __entryId: 'string',
+        }
+      })
+  }
+
   /**
    * レスポンスツイートレガシーオブジェクト（CustomTweetLegacyObject）のカスタム型定義を生成する
    */
   private async runTweetLegacyObject(): Promise<void> {
+    const logger = Logger.configure('CustomTypesGenerator:runTweetLegacyObject')
+
     // 各レスポンスからレガシーツイートオブジェクトを抽出
-    const schemas = [
+    const promises = await Promise.all([
       // SearchTimeline
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'SearchTimeline' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetSearchTimelineSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.search_by_raw_query.search_timeline.timeline.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .map((entry) => {
-          return (entry as CustomSearchTimelineEntry).content.itemContent
-            .tweet_results.result.legacy
-        })
-        .map((entry) => createSchema(entry)),
-      // UserTweets: tweet_results.result.legacy
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'UserTweets' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.user.result.timeline_v2.timeline.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .filter(
-          (entry) =>
-            (entry as CustomUserTweetEntry).content.itemContent.tweet_results
-              .result.legacy !== undefined
-        )
-        .map((entry) => {
-          return (entry as CustomUserTweetEntry).content.itemContent
-            .tweet_results.result.legacy
-        })
-        .map((entry) => createSchema(entry)),
-      // UserTweets: tweet_results.result.tweet?.legacy
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'UserTweets' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.user.result.timeline_v2.timeline.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .filter(
-          (entry) =>
-            (entry as CustomUserTweetEntry).content.itemContent.tweet_results
-              .result.tweet?.legacy !== undefined
-        )
-        .map((entry) => {
-          return (entry as CustomUserTweetEntry).content.itemContent
-            .tweet_results.result.tweet?.legacy
-        })
-        .map((entry) => createSchema(entry)),
-    ].flat()
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'SearchTimeline',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) =>
+          this.getTweetLegacyObjectsFromInstructions(
+            response.data.search_by_raw_query.search_timeline.timeline
+              .instructions
+          ).flat()
+      ),
+      // UserTweets
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'UserTweets',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) => {
+          if (!('data' in response)) {
+            return []
+          }
+
+          return this.getTweetLegacyObjectsFromInstructions(
+            response.data.user.result.timeline_v2.timeline.instructions
+          ).flat()
+        }
+      ),
+    ])
+    const schemas = promises.filter((schema): schema is Schema => !!schema)
+    if (schemas.length === 0) {
+      logger.warn('⏭️ Schema not found. Skip')
+      return
+    }
 
     await this.generateTypeFromSchema(
       mergeSchemas(schemas),
@@ -675,49 +523,96 @@ export class CustomTypesGenerator {
     )
   }
 
+  private getTweetLegacyObjectsFromInstructions(
+    instructions: {
+      type: string
+      entries?: Array<{
+        entryId: string
+        sortIndex: string
+        content: {
+          itemContent?: {
+            tweet_results?: {
+              result?: {
+                legacy?: unknown
+                tweet?: {
+                  legacy?: unknown
+                }
+              }
+            }
+          }
+        }
+      }>
+    }[]
+  ): unknown[] {
+    return instructions
+      .filter(
+        (instruction) =>
+          instruction.type === 'TimelineAddEntries' && instruction.entries
+      )
+      .flatMap(
+        (instruction) =>
+          instruction.entries?.filter(
+            (entry) =>
+              entry.entryId.startsWith('tweet-') ||
+              entry.entryId.startsWith('promoted-tweet') ||
+              entry.entryId.startsWith('promotedTweet')
+          )
+      )
+      .flatMap((entry) => {
+        return [
+          entry?.content.itemContent?.tweet_results?.result?.legacy,
+          entry?.content.itemContent?.tweet_results?.result?.tweet?.legacy,
+        ]
+      })
+      .filter((legacy): legacy is NonNullable<typeof legacy> => !!legacy)
+  }
+
   /**
    * レスポンスユーザーレガシーオブジェクト（CustomUserLegacyObject）のカスタム型定義を生成する
    */
   private async runUserLegacyObject(): Promise<void> {
-    // 各レスポンスからレガシーユーザーオブジェクトを抽出
-    const schemas = [
-      // UserByRestId
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'UserByRestId' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetUserByRestIdSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
+    const logger = Logger.configure('CustomTypesGenerator:runUserLegacyObject')
+    const endpoints: {
+      endpointType: 'GRAPHQL'
+      endpoint: 'UserByRestId' | 'UserByScreenName'
+      method: 'GET'
+      statusCode: 200
+    }[] = [
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'UserByRestId',
+        method: 'GET',
+        statusCode: 200,
+      },
+      {
+        endpointType: 'GRAPHQL',
+        endpoint: 'UserByScreenName',
+        method: 'GET',
+        statusCode: 200,
+      },
+    ]
+
+    const schemas = []
+    for (const endpoint of endpoints) {
+      const endpointSchema = await this.createSchemaFromResponse(
+        endpoint,
+        (response) => {
           return response.data.user.result.legacy
-        })
-        .map((entry) => createSchema(entry)),
-      // UserByScreenName
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'UserByScreenName' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
+        }
+      )
+      if (!endpointSchema) {
+        logger.warn(
+          `⏭️ ${endpoint.method} ${endpoint.endpoint} Schema not found. Skip`
         )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetUserByScreenNameSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.user.result.legacy
-        })
-        .map((entry) => createSchema(entry)),
-    ].flat()
+        continue
+      }
+
+      schemas.push(endpointSchema)
+    }
+    if (schemas.length === 0) {
+      logger.warn('⏭️ Schema not found. Skip')
+      return
+    }
 
     await this.generateTypeFromSchema(
       mergeSchemas(schemas),
@@ -730,148 +625,185 @@ export class CustomTypesGenerator {
    * エンティティ動画情報オブジェクト（CustomEntityVideoInfoObject）のカスタム型定義を生成する
    */
   private async runEntityVideoInfoObject(): Promise<void> {
-    // 各レスポンスからエンティティ動画情報オブジェクトを抽出
-    const schemas = [
+    const logger = Logger.configure(
+      'CustomTypesGenerator:runEntityVideoInfoObject'
+    )
+
+    // 各レスポンスからレガシーツイートオブジェクトを抽出
+    const promises = await Promise.all([
       // SearchTimeline
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'SearchTimeline' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetSearchTimelineSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.search_by_raw_query.search_timeline.timeline.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .map((entry) => {
-          return (entry as CustomSearchTimelineEntry).content.itemContent
-            .tweet_results.result.legacy
-        })
-        .flatMap(
-          (legacy) =>
-            (legacy as any)?.extended_entities?.media.flatMap(
-              (media: { video_info: { variants: any } }) => media?.video_info
-            ) ?? []
-        )
-        .map((entry) => createSchema(entry)),
-      // UserTweets: tweet_results.result.legacy
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'UserTweets' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.user.result.timeline_v2.timeline.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .filter(
-          (entry) =>
-            (entry as CustomUserTweetEntry).content.itemContent.tweet_results
-              .result.legacy !== undefined
-        )
-        .map((entry) => {
-          return (entry as CustomUserTweetEntry).content.itemContent
-            .tweet_results.result.legacy
-        })
-        .flatMap(
-          (legacy) =>
-            (legacy as any)?.extended_entities?.media.flatMap(
-              (media: { video_info: { variants: any } }) => media?.video_info
-            ) ?? []
-        )
-        .map((entry) => createSchema(entry)),
-      // UserTweets: tweet_results.result.tweet?.legacy
-      this.results
-        .filter(
-          (result) =>
-            result.type === 'graphql' &&
-            result.name === 'UserTweets' &&
-            result.method === 'GET' &&
-            result.statusCode === '200'
-        )
-        .flatMap((result) => result.paths)
-        .flatMap((path) => {
-          const response =
-            Utils.parseJsonc<GraphQLGetUserTweetsSuccessResponse>(
-              fs.readFileSync(path, 'utf8')
-            )
-          return response.data.user.result.timeline_v2.timeline.instructions
-            .filter(
-              (instruction) =>
-                instruction.type === 'TimelineAddEntries' && instruction.entries
-            )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
-            )
-        })
-        .filter(
-          (entry) =>
-            (entry as CustomUserTweetEntry).content.itemContent.tweet_results
-              .result.tweet?.legacy !== undefined
-        )
-        .map((entry) => {
-          return (entry as CustomUserTweetEntry).content.itemContent
-            .tweet_results.result.tweet?.legacy
-        })
-        .flatMap(
-          (legacy) =>
-            (legacy as any)?.extended_entities?.media.flatMap(
-              (media: { video_info: { variants: any } }) => media?.video_info
-            ) ?? []
-        )
-        .map((entry) => createSchema(entry)),
-    ].flat()
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'SearchTimeline',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) =>
+          this.getVideoInfoFromInstructions(
+            response.data.search_by_raw_query.search_timeline.timeline
+              .instructions
+          ).flat()
+      ),
+      // UserTweets
+      this.createSchemaFromResponse(
+        {
+          endpointType: 'GRAPHQL',
+          endpoint: 'UserTweets',
+          method: 'GET',
+          statusCode: 200,
+        },
+        (response) => {
+          if (!('data' in response)) {
+            return []
+          }
+
+          return this.getVideoInfoFromInstructions(
+            // @ts-ignore 暫定的に型を無視
+            response.data.user.result.timeline_v2.timeline.instructions
+          ).flat()
+        }
+      ),
+    ])
+    const schemas = promises.filter((schema): schema is Schema => !!schema)
+    if (schemas.length === 0) {
+      logger.warn('⏭️ Schema not found. Skip')
+      return
+    }
 
     await this.generateTypeFromSchema(
       mergeSchemas(schemas),
       'CustomEntityVideoInfoObject',
       'エンティティ動画情報オブジェクト'
     )
+  }
+
+  private getVideoInfoFromInstructions(
+    instructions: {
+      type: string
+      entries?: Array<{
+        entryId: string
+        sortIndex: string
+        content: {
+          itemContent?: {
+            tweet_results?: {
+              result?: {
+                legacy?: {
+                  extended_entities?: {
+                    media?: {
+                      video_info?: {
+                        variants?: unknown[]
+                      }
+                    }[]
+                  }
+                }
+                tweet?: {
+                  legacy?: {
+                    extended_entities?: {
+                      media?: {
+                        video_info?: {
+                          variants?: unknown[]
+                        }
+                      }[]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }>
+    }[]
+  ): unknown[] {
+    return instructions
+      .filter(
+        (instruction) =>
+          instruction.type === 'TimelineAddEntries' && instruction.entries
+      )
+      .flatMap(
+        (instruction) =>
+          instruction.entries?.filter(
+            (entry) =>
+              entry.entryId.startsWith('tweet-') ||
+              entry.entryId.startsWith('promoted-tweet') ||
+              entry.entryId.startsWith('promotedTweet')
+          )
+      )
+      .flatMap((entry) => {
+        return [
+          entry?.content.itemContent?.tweet_results?.result?.legacy,
+          entry?.content.itemContent?.tweet_results?.result?.tweet?.legacy,
+        ]
+      })
+      .filter((legacy): legacy is NonNullable<typeof legacy> => !!legacy)
+      .flatMap((legacy) => {
+        return [
+          legacy.extended_entities?.media?.flatMap((media) => {
+            return media.video_info
+          }),
+        ]
+      })
+      .filter(
+        (videoInfo): videoInfo is NonNullable<typeof videoInfo> => !!videoInfo
+      )
+  }
+
+  /**
+   * レスポンス情報からスキーマを生成する。
+   * customizer が指定されている場合、レスポンスをカスタマイズした上でスキーマを生成する。
+   *
+   * @param endpoint レスポンス情報
+   * @param customizer レスポンスをカスタマイズする関数
+   * @returns スキーマ
+   */
+  private async createSchemaFromResponse<E extends ResponseEndPoint>(
+    endpoint: E,
+    customizer?: (
+      response: EndPointResponseType<
+        E['method'],
+        E['endpointType'],
+        E['endpoint']
+      >
+    ) => object
+  ): Promise<Schema | null> {
+    const logger = Logger.configure(
+      'CustomTypesGenerator.createSchemaFromResponse'
+    )
+    const count = await this.responseDatabase.getResponseCount(endpoint)
+    if (count === 0) {
+      logger.info(`⏭️ Skip ${endpoint.method} ${endpoint.endpoint}`)
+      return null
+    }
+
+    const limit = 100
+    const maxPage = Math.ceil(count / limit) + 1
+    let schema
+    for (let page = 1; page <= maxPage; page++) {
+      logger.info(
+        `📖 Reading: ${endpoint.method} ${endpoint.endpoint} (page: ${page}/${maxPage})`
+      )
+      const responses = await this.responseDatabase.getResponses(endpoint, {
+        page,
+        limit,
+      })
+      let responseBodys: any[] = responses
+        .filter((response) => response.responseType === 'JSON')
+        .map((response) => response.responseBody)
+        .filter((body) => body.length > 0)
+        .map((body) => JSON.parse(body))
+      if (customizer) {
+        responseBodys = responseBodys.flatMap((body) => customizer(body))
+      }
+
+      const pageSchema = createCompoundSchema(responseBodys)
+      schema = schema ? mergeSchemas([schema, pageSchema]) : pageSchema
+    }
+
+    if (!schema) {
+      throw new Error('No schema found')
+    }
+
+    return schema
   }
 
   /**

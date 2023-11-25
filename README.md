@@ -18,6 +18,12 @@ or if you are using yarn:
 yarn add @book000/twitterts
 ```
 
+or if you are using pnpm:
+
+```shell
+pnpm add @book000/twitterts
+```
+
 ## ✨ Features
 
 - It uses Puppeteer to capture traffic that occurs on `twitter.com`.

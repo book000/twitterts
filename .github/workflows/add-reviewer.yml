@@ -1,0 +1,15 @@
+name: Auto add reviewer
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+    branches:
+      - main
+      - master
+
+jobs:
+  add-reviewer:
+    name: Add reviewer
+    uses: book000/templates/.github/workflows/reusable-add-reviewer.yml@master

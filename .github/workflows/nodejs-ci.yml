@@ -35,6 +35,22 @@ jobs:
       (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.fork == true && contains(github.event.label.name, '🚀request-ci'))
       }}
 
+    services:
+      mysql:
+        image: mysql:8.2
+        env:
+          MYSQL_ROOT_PASSWORD: rootPassword
+          MYSQL_USER: twitter-ts
+          MYSQL_PASSWORD: twitter-ts-test
+          MYSQL_DATABASE: twitter-ts
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: 🛎 Checkout
         uses: actions/checkout@v4
@@ -45,8 +61,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-          cache: yarn
-          cache-dependency-path: yarn.lock
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        id: pnpm-install
+        with:
+          run_install: false
 
       - name: 📃 Check package.json definition
         id: package-json
@@ -72,40 +92,51 @@ jobs:
           echo "lint=$lint" >> $GITHUB_OUTPUT
           echo "test=$test" >> $GITHUB_OUTPUT
 
+      - name: 📂 Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: 📂 Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: 👨🏻‍💻 Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile --prefer-frozen-lockfile
 
       - name: 👀 Run linter
         if: steps.package-json.outputs.lint == 'true'
-        run: yarn lint
+        run: pnpm run lint
 
       - name: 🎁 Run package
         if: steps.package-json.outputs.package == 'true'
-        run: yarn package
+        run: pnpm run package
 
       - name: 🏃 Run compile
         if: steps.package-json.outputs.compile == 'true'
-        run: yarn compile
-
-      - name: 🏗️ Run build & generate (Nuxt.js)
-        if: >-
-          steps.package-json.outputs.build == 'true' &&
-          steps.package-json.outputs.disabled-build == 'false' &&
-          steps.package-json.outputs.generate == 'true' &&
-          steps.package-json.outputs.disabled-generate == 'false'
-        run: |
-          yarn build
-          yarn generate
+        run: pnpm run compile
 
       - name: 🧪 Run tests
         uses: coactions/setup-xvfb@v1
         if: steps.package-json.outputs.test == 'true'
         with:
-          run: yarn test
+          run: pnpm run test
         env:
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
           TWITTER_OTP_SECRET: ${{ secrets.TWITTER_OTP_SECRET }}
+          NODE_ENV: test
+          RESPONSE_DB_HOSTNAME: localhost
+          RESPONSE_DB_USERNAME: twitter-ts
+          RESPONSE_DB_PASSWORD: twitter-ts-test
+          RESPONSE_DB_DATABASE: twitter-ts
+          RESPONSE_DB_PORT: 3306
 
       - name: ☑️ Check Dependencies
         if: steps.package-json.outputs.disabled-depcheck == 'false'
