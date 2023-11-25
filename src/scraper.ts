@@ -1,4 +1,3 @@
-import fs from 'node:fs'
 import puppeteer, {
   Browser,
   ElementHandle,
@@ -6,7 +5,6 @@ import puppeteer, {
   Page,
 } from 'puppeteer-core'
 import { authenticator } from 'otplib'
-import { dirname, join } from 'node:path'
 import {
   EndPointResponseType,
   GraphQLEndpoint,
@@ -17,6 +15,7 @@ import {
   TwitterTimeoutError,
 } from './models/exceptions'
 import { setTimeout } from 'node:timers/promises'
+import { ResponseDatabase, ResponseDatabaseOptions } from './saving-responses'
 
 /**
  * HTTP メソッド
@@ -61,18 +60,25 @@ interface ResponseDetails {
 /**
  * レスポンスデバッグ出力オプション
  *
- * ${outputDirectory}/${type}/${name}/${method}/${timestamp}.json に出力されます。
+ * レスポンスデバッグ出力オプションを指定すると、デバッグ用にレスポンスをデータベースに保存します。
  */
 export interface TwitterScraperDebugOutputResponseOptions {
   /**
-   * レスポンスをファイルに出力するか
+   * レスポンスをデータベースに保存するか
    */
   enable: boolean
 
   /**
-   * レスポンスを出力するディレクトリ
+   * レスポンスを保存するデータベースのオプション
+   *
+   * データベース接続情報を指定しない場合は、以下の環境変数を使用します。
+   * - RESPONSE_DB_HOSTNAME: データベースホスト名 (MySQL のみ)
+   * - RESPONSE_DB_PORT: データベースポート (MySQL のみ)
+   * - RESPONSE_DB_USERNAME: データベースユーザー名 (MySQL のみ)
+   * - RESPONSE_DB_PASSWORD: データベースパスワード (MySQL のみ)
+   * - RESPONSE_DB_DATABASE: データベース名 (MySQL のみ)
    */
-  outputDirectory: string
+  db?: ResponseDatabaseOptions
 
   /**
    * レスポンス時に実行されるコールバック関数
@@ -368,6 +374,10 @@ async function getResponseDetails(
 
   const overrideName = endpoint.overrideName
   if (overrideName) {
+    // overrideName で <NAME> より前に文字列がある場合は、name の先頭文字列を大文字にする
+    if (overrideName.indexOf('<NAME>') > 0) {
+      name = name.replace(/^(.)/, (_, p1) => p1.toLocaleUpperCase())
+    }
     name = overrideName.replace('<NAME>', name)
   }
 
@@ -685,16 +695,36 @@ export class TwitterScraper {
   private browser: Browser | undefined
 
   /**
+   * レスポンスデータベース
+   */
+  private readonly responseDatabase: ResponseDatabase | null
+
+  /**
    * @param options Twitter スクレイピングオプション
    */
   constructor(options: TwitterScraperOptions) {
     this.options = options
+
+    try {
+      this.responseDatabase = new ResponseDatabase(
+        options.debugOptions?.outputResponse?.db
+      )
+    } catch (error) {
+      ResponseDatabase.printDebug(
+        'Failed to create responses database',
+        error as Error
+      )
+      this.responseDatabase = null
+    }
   }
 
   /**
    * Twitter にログインします。
    */
   public async login(): Promise<void> {
+    // データベース初期化
+    await this.initDatabase()
+
     // ブラウザ作成
     this.browser = await this.createBrowser()
 
@@ -816,10 +846,12 @@ export class TwitterScraper {
    * ブラウザを閉じます。
    */
   public async close(): Promise<void> {
-    if (!this.browser) {
-      return
+    if (this.browser) {
+      await this.browser.close()
     }
-    await this.browser.close()
+    if (this.responseDatabase) {
+      await this.responseDatabase.close()
+    }
   }
 
   public getBrowser(): Browser | undefined {
@@ -929,7 +961,16 @@ export class TwitterScraper {
     if (!this.options.debugOptions?.outputResponse?.enable) {
       return
     }
+    if (!this.responseDatabase) {
+      return
+    }
+    if (!this.responseDatabase.isInitialized()) {
+      return
+    }
     page.on('response', async (response) => {
+      if (!this.responseDatabase) {
+        return
+      }
       const details = await getResponseDetails(response)
       if (!details) {
         return
@@ -942,27 +983,62 @@ export class TwitterScraper {
         onResponse(details)
       }
 
-      const pathNotIncludedExtension = join(
-        this.options.debugOptions?.outputResponse?.outputDirectory ||
-          '/data/debug',
-        type.toLowerCase(),
-        name,
-        method,
-        response.status().toString(),
-        `${Date.now()}.`
-      )
-      fs.mkdirSync(dirname(pathNotIncludedExtension), { recursive: true })
+      const request = response.request()
 
-      try {
-        const data = JSON.parse(text)
-        const path = `${pathNotIncludedExtension}json`
-        const body = `// ${method} ${url}\n\n${JSON.stringify(data, null, 2)}`
-        fs.writeFileSync(path, body)
-      } catch {
-        const path = `${pathNotIncludedExtension}txt`
-        fs.writeFileSync(path, text)
-      }
+      const responseType = this.isJSON(text) ? 'JSON' : 'TEXT'
+
+      await this.responseDatabase
+        .addResponse({
+          endpointType: type,
+          method,
+          endpoint: name,
+          url,
+          requestHeaders: JSON.stringify(request.headers()),
+          requestBody: request.postData() || '',
+          responseType,
+          statusCode: response.status(),
+          responseHeaders: JSON.stringify(response.headers()),
+          responseBody: text,
+        })
+        .catch((error) => {
+          ResponseDatabase.printDebug('Failed to save response', error as Error)
+        })
     })
+  }
+
+  /**
+   * 引数の値がJSONとしてパースできるかどうかを返します。
+   *
+   * @param value パースしたい値
+   * @returns パースできるかどうか
+   */
+  private isJSON(value: string): boolean {
+    try {
+      JSON.parse(value)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  /**
+   * データベースを初期化します。
+   */
+  private async initDatabase(): Promise<void> {
+    if (!this.responseDatabase) {
+      return
+    }
+    ResponseDatabase.printDebug('Initialize responses database')
+    const result = await this.responseDatabase.init()
+    if (!result) {
+      return
+    }
+
+    ResponseDatabase.printDebug('Migrate responses database')
+    await this.responseDatabase.migrate()
+
+    ResponseDatabase.printDebug('Sync responses database')
+    await this.responseDatabase.sync()
   }
 
   /**

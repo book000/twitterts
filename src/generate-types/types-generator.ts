@@ -1,9 +1,13 @@
 import { Logger } from '@book000/node-utils'
-import { createSchema, mergeSchemas } from 'genson-js/dist'
+import { createCompoundSchema, mergeSchemas } from 'genson-js/dist'
 import { compile } from 'json-schema-to-typescript'
 import { dirname } from 'node:path'
 import fs from 'node:fs'
-import { Result, Utils } from './utils'
+import { Utils } from './utils'
+import {
+  ResponseDatabase,
+  ResponseEndPointWithCount,
+} from '../saving-responses'
 
 /**
  * 単一の型定義生成オプション（TwitterGenerateTypes.generateType）
@@ -67,47 +71,73 @@ interface GenerateTypesOptions {
  */
 export class TwitterTypesGenerator {
   /**
-   * エンドポイントごとのレスポンス群
+   * レスポンスを保存するデータベース
    */
-  private readonly results: Result[]
+  private readonly responseDatabase: ResponseDatabase
 
   /**
-   * @param options 型定義生成クラスのオプション
+   * @param responseDatabase レスポンスを保存するデータベース
    */
-  constructor(results: Result[]) {
-    this.results = results
+  constructor(responseDatabase: ResponseDatabase) {
+    this.responseDatabase = responseDatabase
   }
 
   /**
    * エンドポイントの型定義を生成する
    *
    * @param options 単一の型定義生成オプション
-   * @param result エンドポイントごとのレスポンス情報
+   * @param endpoint エンドポイントの情報
    */
   private async generateType(
     options: GenerateTypeOptions,
-    result: Result
+    endpoint: ResponseEndPointWithCount
   ): Promise<void> {
     const logger = Logger.configure('TwitterGenerateTypes.generateType')
 
-    if (result.paths.length === 0) {
-      return
-    }
-
     logger.info(`🔍 Generating: ${options.name}`)
 
-    let schema
-    for (const path of result.paths) {
-      const data = Utils.parseJsonc(fs.readFileSync(path, 'utf8'))
-      if (!data) continue
+    const limit = 100
+    const count = endpoint.count
+    const maxPage = Math.ceil(count / limit) + 1
 
-      if (options.ignoreError && 'errors' in data && data.errors.length > 0) {
-        logger.warn(`⚠️ ${path}: ${data.errors[0].message}`)
-        continue
+    let schema
+    for (let page = 1; page <= maxPage; page++) {
+      logger.info(
+        `📖  Reading: ${endpoint.method} ${endpoint.endpoint} (page: ${page}/${maxPage})`
+      )
+      const responses = await this.responseDatabase.getResponses(endpoint, {
+        page,
+        limit,
+      })
+
+      let responseBodys = responses
+        .filter((response) => response.responseType === 'JSON')
+        .map((response) => response.responseBody)
+        .filter((body) => body.length > 0)
+        .map((body) => JSON.parse(body))
+
+      const responseBodyErrors = responseBodys
+        .filter(
+          (responseBody) =>
+            'errors' in responseBody && responseBody.errors.length > 0
+        )
+        .map((responseBody) => responseBody.errors[0].message)
+      if (!options.ignoreError && responseBodyErrors.length > 0) {
+        const uniqueErrors = responseBodyErrors.filter(
+          (error, index, self) => self.indexOf(error) === index
+        )
+        for (const error of uniqueErrors) {
+          logger.error(`⚠️ ${options.path}: ${error}`)
+        }
+
+        responseBodys = responseBodys.filter(
+          (responseBody) =>
+            !('errors' in responseBody && responseBody.errors.length > 0)
+        )
       }
 
-      const fileSchema = createSchema(data)
-      schema = schema ? mergeSchemas([schema, fileSchema]) : fileSchema
+      const pageSchema = createCompoundSchema(responseBodys)
+      schema = schema ? mergeSchemas([schema, pageSchema]) : pageSchema
     }
     if (!schema) {
       throw new Error('No schema found')
@@ -123,9 +153,7 @@ export class TwitterTypesGenerator {
       Utils.getCompileOptions(options.tsDocument)
     )
     fs.writeFileSync(options.path.types, types)
-    logger.info(
-      `📝 Successful: ${options.name} (from ${result.paths.length} files)`
-    )
+    logger.info(`📝 Successful: ${options.name} (from ${count} responses)`)
   }
 
   /**
@@ -134,23 +162,30 @@ export class TwitterTypesGenerator {
    * @param options 型定義生成オプション
    */
   public async generateTypes(options: GenerateTypesOptions): Promise<void> {
+    const responseDatabase = this.responseDatabase
+
+    const endpoints = await responseDatabase.getEndpoints()
+
     const generators = []
-    for (const result of this.results) {
+    for (const endpoint of endpoints) {
       const name = Utils.getName(
-        result.type,
-        result.name,
-        result.method,
-        result.statusCode
+        endpoint.endpointType,
+        endpoint.endpoint,
+        endpoint.method,
+        endpoint.statusCode.toString()
       )
       const filename = Utils.getFilename(
-        result.type,
-        result.name,
-        result.method,
-        result.statusCode
+        endpoint.endpointType,
+        endpoint.endpoint,
+        endpoint.method,
+        endpoint.statusCode.toString()
       )
       const schemaPath = `${options.directory.schema}/${filename}.json`
       const typesPath = `${options.directory.types}/${filename}.ts`
-      const type = result.type === 'graphql' ? 'GraphQL' : null
+      const type =
+        endpoint.endpointType.toLocaleLowerCase() === 'graphql'
+          ? 'GraphQL'
+          : null
       if (!type) continue
 
       const generator = this.generateType(
@@ -160,12 +195,12 @@ export class TwitterTypesGenerator {
             types: typesPath,
           },
           name,
-          tsDocument: `${type} ${result.method} ${result.name} ${
-            result.statusCode.startsWith('2') ? '成功' : '失敗'
+          tsDocument: `${type} ${endpoint.method} ${endpoint.endpoint} ${
+            endpoint.statusCode.toString().startsWith('2') ? '成功' : '失敗'
           }レスポンスモデル`,
-          ignoreError: result.statusCode.startsWith('2'),
+          ignoreError: endpoint.statusCode.toString().startsWith('2'),
         },
-        result
+        endpoint
       )
       if (options.parallel) {
         generators.push(generator)

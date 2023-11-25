@@ -35,6 +35,22 @@ jobs:
       (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.fork == true && contains(github.event.label.name, '🚀request-ci'))
       }}
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootPassword
+          MYSQL_USER: twitter-ts
+          MYSQL_PASSWORD: twitter-ts-test
+          MYSQL_DATABASE: twitter-ts
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: 🛎 Checkout
         uses: actions/checkout@v4
@@ -115,6 +131,12 @@ jobs:
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
           TWITTER_OTP_SECRET: ${{ secrets.TWITTER_OTP_SECRET }}
+          NODE_ENV: test
+          RESPONSE_DB_HOSTNAME: localhost
+          RESPONSE_DB_USERNAME: twitter-ts
+          RESPONSE_DB_PASSWORD: twitter-ts-test
+          RESPONSE_DB_DATABASE: twitter-ts
+          RESPONSE_DB_PORT: 3306
 
       - name: ☑️ Check Dependencies
         if: steps.package-json.outputs.disabled-depcheck == 'false'

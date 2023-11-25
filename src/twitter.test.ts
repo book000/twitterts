@@ -25,7 +25,6 @@ describe('Twitter', () => {
       debugOptions: {
         outputResponse: {
           enable: true,
-          outputDirectory: './data/responses',
         },
       },
     })
