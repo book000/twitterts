@@ -73,7 +73,7 @@ export const Utils = {
    *
    * @param parentDirectory ファイルを取得する親ディレクトリパス
    * @param baseDirectories ファイルを取得するディレクトリパス
-   * @returns JSON ファイル群
+   * @returns JSON ファイルのフルパス群
    */
   getJSONFiles(
     parentDirectory: string,
@@ -83,7 +83,7 @@ export const Utils = {
     return fs
       .readdirSync(baseDirectory, { withFileTypes: true })
       .filter((dirent) => dirent.isFile() && dirent.name.endsWith('.json'))
-      .map((dirent) => dirent.name)
+      .map((dirent) => join(baseDirectory, dirent.name))
   },
 
   /**
