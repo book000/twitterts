@@ -988,18 +988,22 @@ export class TwitterScraper {
 
       const responseType = this.isJSON(text) ? 'JSON' : 'TEXT'
 
-      await this.responseDatabase.addResponse({
-        endpointType: type,
-        method,
-        endpoint: name,
-        url,
-        requestHeaders: JSON.stringify(request.headers()),
-        requestBody: request.postData() || '',
-        responseType,
-        statusCode: response.status(),
-        responseHeaders: JSON.stringify(response.headers()),
-        responseBody: text,
-      })
+      await this.responseDatabase
+        .addResponse({
+          endpointType: type,
+          method,
+          endpoint: name,
+          url,
+          requestHeaders: JSON.stringify(request.headers()),
+          requestBody: request.postData() || '',
+          responseType,
+          statusCode: response.status(),
+          responseHeaders: JSON.stringify(response.headers()),
+          responseBody: text,
+        })
+        .catch((error) => {
+          ResponseDatabase.printDebug('Failed to save response', error as Error)
+        })
     })
   }
 

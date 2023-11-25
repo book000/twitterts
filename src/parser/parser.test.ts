@@ -10,7 +10,9 @@ describe('Parser', () => {
   let responseDatabase: ResponseDatabase
 
   beforeAll(async () => {
-    responseDatabase = new ResponseDatabase()
+    responseDatabase = new ResponseDatabase({
+      filePath: ':memory:',
+    })
     await responseDatabase.init()
     await responseDatabase.sync()
   })
