@@ -49,8 +49,10 @@ export class EndPointTypeGenerator {
           endpoint.method,
           endpoint.statusCode.toString()
         )
+        if (!fs.existsSync(`${this.typesDirectory}/${filename}.ts`)) return null
         return `import { ${name} } from './${filename}'`
       })
+      .filter((value) => value !== null)
       .filter((value, index, self) => self.indexOf(value) === index)
       .join('\n')
   }
@@ -69,6 +71,16 @@ export class EndPointTypeGenerator {
     return endpoints
       .filter(
         (endpoint) => endpoint.endpointType.toLowerCase() === type.toLowerCase()
+      )
+      .filter((endpoint) =>
+        fs.existsSync(
+          `${this.typesDirectory}/${Utils.getFilename(
+            endpoint.endpointType,
+            endpoint.endpoint,
+            endpoint.method,
+            endpoint.statusCode.toString()
+          )}.ts`
+        )
       )
       .map((endpoint) => endpoint.method)
       .filter((value, index, self) => self.indexOf(value) === index)

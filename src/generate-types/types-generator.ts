@@ -216,7 +216,7 @@ export class TwitterTypesGenerator {
           tsDocument: `${type} ${endpoint.method} ${endpoint.endpoint} ${
             endpoint.statusCode.toString().startsWith('2') ? '成功' : '失敗'
           }レスポンスモデル`,
-          ignoreError: endpoint.statusCode.toString().startsWith('2'),
+          ignoreError: !endpoint.statusCode.toString().startsWith('2'),
           limit: options.limit,
         },
         endpoint

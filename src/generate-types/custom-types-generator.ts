@@ -803,7 +803,8 @@ export class CustomTypesGenerator {
     }
 
     if (!schema) {
-      throw new Error('No schema found')
+      logger.warn(`⏭️ Schema not found: ${endpoint.method} ${endpoint.endpoint}`)
+      return null
     }
 
     return schema
