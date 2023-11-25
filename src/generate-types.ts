@@ -47,6 +47,9 @@ class GenerateTypes {
       isAllParallel || process.env.IS_TYPES_GENERATE_PARALLEL === 'true'
     const isCustomTypeGenerateParallel =
       isAllParallel || process.env.IS_CUSTOM_TYPE_GENERATE_PARALLEL === 'true'
+    const pageLimit = process.env.PAGE_LIMIT
+      ? Number(process.env.PAGE_LIMIT)
+      : 100
 
     logger.info('📁 Directories')
     logger.info(`  📂 Debug output: ${debugOutputDirectory}`)
@@ -58,6 +61,7 @@ class GenerateTypes {
     logger.info(
       `  📌 Custom type generate parallel: ${isCustomTypeGenerateParallel}`
     )
+    logger.info(`  📌 Page limit: ${pageLimit}`)
 
     try {
       const responseDatabase = new ResponseDatabase()
@@ -81,6 +85,7 @@ class GenerateTypes {
             types: typesDirectory,
           },
           parallel: isTypesGenerateParallel,
+          limit: pageLimit,
         })
       )
 
@@ -88,7 +93,8 @@ class GenerateTypes {
         new CustomTypesGenerator(
           responseDatabase,
           schemaDirectory,
-          typesDirectory
+          typesDirectory,
+          pageLimit
         ).generate(isCustomTypeGenerateParallel)
       )
 

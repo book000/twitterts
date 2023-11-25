@@ -17,6 +17,7 @@ export class CustomTypesGenerator {
   private readonly responseDatabase: ResponseDatabase
   private readonly schemaDirectory: string
   private readonly typesDirectory: string
+  private readonly limit: number
 
   /**
    * @param responseDatabase レスポンスを保存するデータベース
@@ -26,11 +27,13 @@ export class CustomTypesGenerator {
   constructor(
     responseDatabase: ResponseDatabase,
     schemaDirectory: string,
-    typesDirectory: string
+    typesDirectory: string,
+    limit: number
   ) {
     this.responseDatabase = responseDatabase
     this.schemaDirectory = schemaDirectory
     this.typesDirectory = typesDirectory
+    this.limit = limit
   }
 
   /**
@@ -775,7 +778,7 @@ export class CustomTypesGenerator {
       return null
     }
 
-    const limit = 100
+    const limit = this.limit
     const maxPage = Math.ceil(count / limit) + 1
     let schema
     for (let page = 1; page <= maxPage; page++) {

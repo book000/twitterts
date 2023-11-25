@@ -42,6 +42,11 @@ interface GenerateTypeOptions {
    * エラーを無視するかどうか
    */
   ignoreError: boolean
+
+  /**
+   * 1ページあたりのレスポンス数
+   */
+  limit: number
 }
 
 /**
@@ -64,6 +69,11 @@ interface GenerateTypesOptions {
   }
   /** 並列処理をするかどうか */
   parallel: boolean
+
+  /**
+   * 1ページあたりのレスポンス数
+   */
+  limit: number
 }
 
 /**
@@ -96,7 +106,7 @@ export class TwitterTypesGenerator {
 
     logger.info(`🔍 Generating: ${options.name}`)
 
-    const limit = 100
+    const limit = options.limit
     const count = endpoint.count
     const maxPage = Math.ceil(count / limit) + 1
 
@@ -127,7 +137,7 @@ export class TwitterTypesGenerator {
           (error, index, self) => self.indexOf(error) === index
         )
         for (const error of uniqueErrors) {
-          logger.error(`⚠️ ${options.path}: ${error}`)
+          logger.error(`⚠️ ${options.name}: ${error}`)
         }
 
         responseBodys = responseBodys.filter(
@@ -140,7 +150,8 @@ export class TwitterTypesGenerator {
       schema = schema ? mergeSchemas([schema, pageSchema]) : pageSchema
     }
     if (!schema) {
-      throw new Error('No schema found')
+      logger.warn(`⚠️ ${options.name}: No responses`)
+      return
     }
 
     fs.mkdirSync(dirname(options.path.schema), { recursive: true })
@@ -207,6 +218,7 @@ export class TwitterTypesGenerator {
             endpoint.statusCode.toString().startsWith('2') ? '成功' : '失敗'
           }レスポンスモデル`,
           ignoreError: endpoint.statusCode.toString().startsWith('2'),
+          limit: options.limit,
         },
         endpoint
       )
