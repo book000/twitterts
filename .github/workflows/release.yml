@@ -27,18 +27,31 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-          cache: yarn
-          cache-dependency-path: yarn.lock
           registry-url: 'https://registry.npmjs.org'
 
+      - name: 📂 Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: 📂 Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: 👨🏻‍💻 Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile --prefer-frozen-lockfile
 
       - name: 🗑️ Remove examples directory
         run: rm -rfv src/examples
 
       - name: 🏃 Build
-        run: yarn build
+        run: pnpm run build
 
       - name: 🏷 Bump version and push tag
         id: tag-version
@@ -48,9 +61,13 @@ jobs:
           default_bump: 'minor'
           custom_release_rules: 'feat:minor:✨ Features,fix:patch:🐛 Fixes,docs:patch:📰 Docs,chore:patch:🎨 Chore,pref:patch:🎈 Performance improvements,refactor:patch:🧹 Refactoring,build:patch:🔍 Build,ci:patch:🔍 CI,revert:patch:⏪ Revert,style:patch:🧹 Style,test:patch:👀 Test,release:major:📦 Release'
 
+      - name: 📝 Update package.json version
+        run: |
+          pnpm version --no-git-tag-version ${{ steps.tag-version.outputs.new_version }}
+
       - name: 📦 Publish
         run: |
-          yarn publish --access public --non-interactive --no-git-tag-version --no-git-reset --no-commit-hooks --new-version ${{ steps.tag-version.outputs.new_version }}
+          pnpm publish --access public --non-interactive --no-git-tag-version --no-git-reset
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
