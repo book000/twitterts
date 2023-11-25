@@ -135,7 +135,7 @@ jobs:
           RESPONSE_DB_HOSTNAME: localhost
           RESPONSE_DB_USERNAME: twitter-ts
           RESPONSE_DB_PASSWORD: twitter-ts-test
-          RESPONSE_DB_DATABASE: twitter-ts-test
+          RESPONSE_DB_DATABASE: twitter-ts
           RESPONSE_DB_PORT: 3306
 
       - name: ☑️ Check Dependencies
