@@ -1,146 +1,137 @@
-import fs from 'node:fs'
-import { join } from 'node:path'
 import { SearchTimelineParser } from './search-timeline'
 import { UserTweetsParser } from './user-tweets'
-import { Utils } from '../generate-types/utils'
 import { HomeTimelineParser } from './home-timeline-parser'
 import { UserLikeTweetsParser } from './user-like-tweets'
+import { ResponseDatabase } from '../saving-responses'
 
 jest.setTimeout(60_000)
 
 describe('Parser', () => {
-  const debugOutputDirectory =
-    process.env.DEBUG_OUTPUT_DIRECTORY || './data/responses'
+  let responseDatabase: ResponseDatabase
 
-  test('HomeTimelineParser:HomeTimeline', () => {
-    const baseDirectory = `${debugOutputDirectory}/graphql/HomeTimeline/GET/200/`
-    if (!fs.existsSync(baseDirectory)) {
-      return
-    }
-    const files = fs
-      .readdirSync(baseDirectory)
-      .filter(
-        (file) =>
-          !['.', '..'].includes(file) &&
-          fs.statSync(join(baseDirectory, file)).isFile() &&
-          file.endsWith('.json')
-      )
-      .map((file) => join(baseDirectory, file))
+  beforeAll(async () => {
+    responseDatabase = new ResponseDatabase()
+    await responseDatabase.init()
+    await responseDatabase.sync()
+  })
 
-    for (const file of files) {
-      const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
+  afterAll(async () => {
+    await responseDatabase.close()
+  })
 
+  test('HomeTimelineParser:HomeTimeline', async () => {
+    const responses = await responseDatabase.getResponses({
+      endpointType: 'GRAPHQL',
+      method: 'GET',
+      endpoint: 'HomeTimeline',
+      statusCode: 200,
+    })
+
+    for (const response of responses) {
+      const id = response.id
+      const createdAt = response.createdAt
+      const data = JSON.parse(response.responseBody)
       expect(
-        () => new HomeTimelineParser(response, true),
-        `Failed parse ${file}`
+        () => new HomeTimelineParser(data, true),
+        `Failed parse #${id} (${createdAt})`
       ).not.toThrow()
     }
   })
 
-  test('HomeTimelineParser:HomeLatestTimeline', () => {
-    const baseDirectory = `${debugOutputDirectory}/graphql/HomeLatestTimeline/GET/200/`
-    if (!fs.existsSync(baseDirectory)) {
-      return
-    }
-    const files = fs
-      .readdirSync(baseDirectory)
-      .filter(
-        (file) =>
-          !['.', '..'].includes(file) &&
-          fs.statSync(join(baseDirectory, file)).isFile() &&
-          file.endsWith('.json')
-      )
-      .map((file) => join(baseDirectory, file))
+  test('HomeTimelineParser:HomeLatestTimeline', async () => {
+    const responses = await responseDatabase.getResponses({
+      endpointType: 'GRAPHQL',
+      method: 'GET',
+      endpoint: 'HomeLatestTimeline',
+      statusCode: 200,
+    })
 
-    for (const file of files) {
-      const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
+    for (const response of responses) {
+      const id = response.id
+      const createdAt = response.createdAt
+      const data = JSON.parse(response.responseBody)
 
       expect(
-        () => new HomeTimelineParser(response, true),
-        `Failed parse ${file}`
+        () => new HomeTimelineParser(data, true),
+        `Failed parse #${id} (${createdAt})`
       ).not.toThrow()
     }
   })
 
-  test('SearchTimelineParser', () => {
-    const baseDirectory = `${debugOutputDirectory}/graphql/SearchTimeline/GET/200/`
-    if (!fs.existsSync(baseDirectory)) {
-      return
-    }
-    const files = fs
-      .readdirSync(baseDirectory)
-      .filter(
-        (file) =>
-          !['.', '..'].includes(file) &&
-          fs.statSync(join(baseDirectory, file)).isFile() &&
-          file.endsWith('.json')
-      )
-      .map((file) => join(baseDirectory, file))
+  test('SearchTimelineParser', async () => {
+    const responses = await responseDatabase.getResponses({
+      endpointType: 'GRAPHQL',
+      method: 'GET',
+      endpoint: 'SearchTimeline',
+      statusCode: 200,
+    })
 
-    for (const file of files) {
-      const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
+    for (const response of responses) {
+      const id = response.id
+      const createdAt = response.createdAt
+      const data = JSON.parse(response.responseBody)
 
       expect(
-        () => new SearchTimelineParser(response, true),
-        `Failed parse ${file}`
+        () => new SearchTimelineParser(data, true),
+        `Failed parse #${id} (${createdAt})`
       ).not.toThrow()
     }
   })
 
-  test('UserLikeTweetsParser', () => {
-    const baseDirectory = `${debugOutputDirectory}/graphql/Likes/GET/200/`
-    if (!fs.existsSync(baseDirectory)) {
-      return
-    }
-    const files = fs
-      .readdirSync(baseDirectory)
-      .filter(
-        (file) =>
-          !['.', '..'].includes(file) &&
-          fs.statSync(join(baseDirectory, file)).isFile() &&
-          file.endsWith('.json')
-      )
-      .map((file) => join(baseDirectory, file))
+  test('UserLikeTweetsParser', async () => {
+    const responses = await responseDatabase.getResponses({
+      endpointType: 'GRAPHQL',
+      method: 'GET',
+      endpoint: 'Likes',
+      statusCode: 200,
+    })
 
-    for (const file of files) {
-      const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
+    for (const response of responses) {
+      const id = response.id
+      const createdAt = response.createdAt
+      const data = JSON.parse(response.responseBody)
 
       if (
         'errors' in response &&
         !!response.errors &&
+        Array.isArray(response.errors) &&
         response.errors.length > 0
       ) {
         continue
       }
 
       expect(
-        () => new UserLikeTweetsParser(response, true),
-        `Failed parse ${file}`
+        () => new UserLikeTweetsParser(data, true),
+        `Failed parse #${id} (${createdAt})`
       ).not.toThrow()
     }
   })
 
-  test('UserTweetsParser', () => {
-    const baseDirectory = `${debugOutputDirectory}/graphql/UserTweets/GET/200/`
-    if (!fs.existsSync(baseDirectory)) {
-      return
-    }
-    const files = fs
-      .readdirSync(baseDirectory)
-      .filter(
-        (file) =>
-          !['.', '..'].includes(file) &&
-          fs.statSync(join(baseDirectory, file)).isFile() &&
-          file.endsWith('.json')
-      )
-      .map((file) => join(baseDirectory, file))
+  test('UserTweetsParser', async () => {
+    const responses = await responseDatabase.getResponses({
+      endpointType: 'GRAPHQL',
+      method: 'GET',
+      endpoint: 'UserTweets',
+      statusCode: 200,
+    })
 
-    for (const file of files) {
-      const response = Utils.parseJsonc(fs.readFileSync(file, 'utf8'))
+    for (const response of responses) {
+      const id = response.id
+      const createdAt = response.createdAt
+      const data = JSON.parse(response.responseBody)
+
+      if (
+        'errors' in response &&
+        !!response.errors &&
+        Array.isArray(response.errors) &&
+        response.errors.length > 0
+      ) {
+        continue
+      }
 
       expect(
-        () => new UserTweetsParser(response, true),
-        `Failed parse ${file}`
+        () => new UserTweetsParser(data, true),
+        `Failed parse #${id} (${createdAt})`
       ).not.toThrow()
     }
   })

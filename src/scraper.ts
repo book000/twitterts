@@ -847,10 +847,12 @@ export class TwitterScraper {
    * ブラウザを閉じます。
    */
   public async close(): Promise<void> {
-    if (!this.browser) {
-      return
+    if (this.browser) {
+      await this.browser.close()
     }
-    await this.browser.close()
+    if (this.responseDatabase) {
+      await this.responseDatabase.close()
+    }
   }
 
   public getBrowser(): Browser | undefined {

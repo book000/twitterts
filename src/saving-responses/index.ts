@@ -296,7 +296,7 @@ export class ResponseDatabase {
 
   public async close(): Promise<void> {
     if (!this.dataSource.isInitialized) {
-      throw new TwitterTsError('Responses database is not initialized')
+      return
     }
     await this.dataSource.destroy()
   }

@@ -223,6 +223,12 @@ class MigrateSavedResponse {
         }] transaction finished (${this.formatSeconds(transactionTime / 1000)})`
       )
     }
+
+    logger.info('📝 Saving responses to database finished')
+
+    logger.info('🔚 Closing responses database')
+    await responseDatabase.close()
+    logger.info('✅ Closed responses database')
   }
 
   parse(path: string, data: string): unknown {

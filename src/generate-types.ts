@@ -95,6 +95,9 @@ class GenerateTypes {
       await this.calculateTime('EndPointTypeGenerator', () =>
         new EndPointTypeGenerator(responseDatabase, typesDirectory).generate()
       )
+
+      await responseDatabase.close()
+      logger.info('🎉 All done!')
     } catch (error) {
       logger.error('An error occurred while generating types', error as Error)
     }
