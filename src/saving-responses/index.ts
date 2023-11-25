@@ -2,24 +2,26 @@ import { DataSource } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
 import { DBResponse } from './response-entity'
 import { TwitterTsError } from '../models/exceptions'
+import { HttpMethod, RequestType } from '../scraper'
+import { GraphQLEndpoint } from '../models/responses/endpoints'
 
-interface AddResponseOptions {
-  endpointType: string
-  method: string
+export interface AddResponseOptions {
+  endpointType: RequestType
+  method: HttpMethod
   endpoint: string
-  url: string
-  requestHeaders: string
-  requestBody: string
+  url: string | null
+  requestHeaders: string | null
+  requestBody: string | null
   responseType: string
   statusCode: number
-  responseHeaders: string
+  responseHeaders: string | null
   responseBody: string
 }
 
 /**
  * レスポンスを保存するデータベースのオプション
  */
-export interface ResponsesDatabaseOptions {
+export interface ResponseDatabaseOptions {
   /**
    * ファイルのパス (SQLite のみ)
    */
@@ -51,28 +53,43 @@ export interface ResponsesDatabaseOptions {
   database?: string
 }
 
+export interface ResponseEndPoint {
+  endpointType: RequestType
+  method: HttpMethod
+  endpoint: GraphQLEndpoint
+  statusCode: number
+}
+export type ResponseEndPointWithCount = ResponseEndPoint & { count: number }
+
+interface GetResponseRangeOptions {
+  page?: number
+  limit?: number
+}
+
 /**
  * レスポンスを保存するデータベース
  */
-export class ResponsesDatabase {
+export class ResponseDatabase {
   private dataSource: DataSource
 
-  constructor(options: ResponsesDatabaseOptions = {}) {
+  constructor(options: ResponseDatabaseOptions = {}) {
     const configuration = {
-      DB_FILEPATH: options.filePath || process.env.RESPONSES_DB_FILEPATH,
-      DB_HOSTNAME: options.hostname || process.env.RESPONSES_DB_HOSTNAME,
-      DB_PORT: options.port || process.env.RESPONSES_DB_PORT,
-      DB_USERNAME: options.username || process.env.RESPONSES_DB_USERNAME,
-      DB_PASSWORD: options.password || process.env.RESPONSES_DB_PASSWORD,
-      DB_DATABASE: options.database || process.env.RESPONSES_DB_DATABASE,
+      DB_FILEPATH: options.filePath || process.env.RESPONSE_DB_FILEPATH,
+      DB_HOSTNAME: options.hostname || process.env.RESPONSE_DB_HOSTNAME,
+      DB_PORT: options.port || process.env.RESPONSE_DB_PORT,
+      DB_USERNAME: options.username || process.env.RESPONSE_DB_USERNAME,
+      DB_PASSWORD: options.password || process.env.RESPONSE_DB_PASSWORD,
+      DB_DATABASE: options.database || process.env.RESPONSE_DB_DATABASE,
     }
 
-    // DB_FILEPATHがある場合はSQLiteを使用する
-    if (configuration.DB_FILEPATH !== undefined) {
-      ResponsesDatabase.printDebug('Using SQLite for responses database')
+    const type = configuration.DB_HOSTNAME ? 'mysql' : 'sqlite'
+
+    if (type === 'sqlite') {
+      const filePath = configuration.DB_FILEPATH || 'data/responses.sqlite3'
+      ResponseDatabase.printDebug('Using SQLite for responses database')
       this.dataSource = new DataSource({
         type: 'sqlite',
-        database: configuration.DB_FILEPATH,
+        database: filePath,
         synchronize: true,
         logging: process.env.PRINT_DB_LOGS === 'true',
         namingStrategy: new SnakeNamingStrategy(),
@@ -84,10 +101,7 @@ export class ResponsesDatabase {
     }
 
     // DB_HOSTNAMEがある場合はMySQLを使用する
-    if (configuration.DB_HOSTNAME === undefined) {
-      throw new TwitterTsError('Responses database hostname is not specified')
-    }
-    ResponsesDatabase.printDebug('Using MySQL for responses database')
+    ResponseDatabase.printDebug('Using MySQL for responses database')
 
     // DB_PORTがintパースできない場合はエラー
     // DB_PORTがundefinedの場合はデフォルトポートを使用する
@@ -123,10 +137,10 @@ export class ResponsesDatabase {
     }
     try {
       await this.dataSource.initialize()
-      ResponsesDatabase.printDebug('Responses database initialized')
+      ResponseDatabase.printDebug('Responses database initialized')
       return true
     } catch (error) {
-      ResponsesDatabase.printDebug(
+      ResponseDatabase.printDebug(
         'Responses database initialization failed',
         error as Error
       )
@@ -180,7 +194,104 @@ export class ResponsesDatabase {
     response.statusCode = options.statusCode
     response.responseHeaders = options.responseHeaders
     response.responseBody = options.responseBody
+    response.createdAt = new Date()
     return response.save()
+  }
+
+  /**
+   * レスポンスを取得する
+   *
+   * @param endpoint エンドポイントの情報。指定しない場合はすべてのレスポンスを取得する
+   * @param rangeOptions 取得するレスポンスの範囲
+   *
+   * @returns レスポンスの配列
+   */
+  public async getResponses(
+    endpoint?: ResponseEndPoint | ResponseEndPoint[],
+    rangeOptions?: GetResponseRangeOptions
+  ): Promise<DBResponse[]> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    const options = rangeOptions || {}
+    const page = options.page
+    const limit = options.limit
+
+    // ResponseEndPointWithCountで来る場合があるので、ResponseEndPointに変換する
+    // 配列でない場合は配列に変換する
+    const endpoints = endpoint
+      ? Array.isArray(endpoint)
+        ? endpoint.map((v) => ({
+            endpointType: v.endpointType,
+            method: v.method,
+            endpoint: v.endpoint,
+            statusCode: v.statusCode,
+          }))
+        : [
+            {
+              endpointType: endpoint.endpointType,
+              method: endpoint.method,
+              endpoint: endpoint.endpoint,
+              statusCode: endpoint.statusCode,
+            },
+          ]
+      : undefined
+    if (page === undefined || limit === undefined) {
+      return DBResponse.find({ where: endpoints, order: { id: 'DESC' } })
+    }
+
+    if (page <= 0 || limit <= 0) {
+      throw new TwitterTsError(
+        `Responses database range is invalid (page: ${page}, limit: ${limit})`
+      )
+    }
+
+    return DBResponse.find({
+      where: endpoints,
+      order: { id: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    })
+  }
+
+  /**
+   * レスポンスの数を取得する
+   *
+   * @param endpoint エンドポイントの情報。指定しない場合はすべてのレスポンスを取得する
+   * @returns レスポンスの数
+   */
+  public async getResponseCount(
+    endpoint?: ResponseEndPoint | ResponseEndPoint[]
+  ): Promise<number> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    const endpoints = endpoint
+      ? Array.isArray(endpoint)
+        ? endpoint
+        : [endpoint]
+      : undefined
+    return DBResponse.count({ where: endpoints })
+  }
+
+  /**
+   * エンドポイントを取得する
+   */
+  public async getEndpoints(): Promise<ResponseEndPointWithCount[]> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    // endpointType, endpointの組み合わせを取得する
+    return DBResponse.createQueryBuilder()
+      .groupBy('endpoint_type, method, endpoint, status_code')
+      .select([
+        'endpoint_type AS endpointType',
+        'method',
+        'endpoint',
+        'status_code AS statusCode',
+        'COUNT(*) AS count',
+      ])
+      .getRawMany<ResponseEndPointWithCount>()
   }
 
   public async close(): Promise<void> {
@@ -230,10 +341,10 @@ export class ResponsesDatabase {
     }
     if (error !== undefined) {
       // eslint-disable-next-line no-console
-      console.error(`[TwitterTs@ResponsesDatabase] ${text}`, error)
+      console.error(`[TwitterTs@ResponseDatabase] ${text}`, error)
       return
     }
     // eslint-disable-next-line no-console
-    console.debug(`[TwitterTs@ResponsesDatabase] ${text}`)
+    console.debug(`[TwitterTs@ResponseDatabase] ${text}`)
   }
 }

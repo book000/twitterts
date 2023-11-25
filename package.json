@@ -18,6 +18,7 @@
     "build": "run-z clean ctix compile generate-docs",
     "generate-types": "tsx ./src/generate-types.ts",
     "save-responses": "tsx ./src/save-responses.ts",
+    "migrate-saved-response": "tsx ./src/migrate-saved-response.ts",
     "clean": "rimraf dist output docs",
     "compile": "tsc -p tsconfig.build.json",
     "ctix": "ctix single -w --noBackup -o src -s false",

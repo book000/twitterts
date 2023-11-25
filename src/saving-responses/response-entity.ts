@@ -1,12 +1,15 @@
 import {
   BaseEntity,
   Column,
-  CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
 @Entity('responses')
+@Index(['endpointType', 'method', 'endpoint', 'statusCode', 'createdAt'], {
+  unique: true,
+})
 export class DBResponse extends BaseEntity {
   @PrimaryGeneratedColumn('increment', {
     type: 'int',
@@ -38,20 +41,23 @@ export class DBResponse extends BaseEntity {
   @Column({
     type: 'text',
     comment: 'リクエストURL',
+    nullable: true,
   })
-  url!: string
+  url!: string | null
 
   @Column({
-    type: 'text',
+    type: 'longtext',
     comment: 'リクエストヘッダー',
+    nullable: true,
   })
-  requestHeaders!: string
+  requestHeaders!: string | null
 
   @Column({
-    type: 'text',
+    type: 'longtext',
     comment: 'リクエストボディ',
+    nullable: true,
   })
-  requestBody!: string
+  requestBody!: string | null
 
   @Column({
     type: 'varchar',
@@ -67,18 +73,20 @@ export class DBResponse extends BaseEntity {
   statusCode!: number
 
   @Column({
-    type: 'text',
+    type: 'longtext',
     comment: 'レスポンスヘッダー',
+    nullable: true,
   })
-  responseHeaders!: string
+  responseHeaders!: string | null
 
   @Column({
-    type: 'text',
+    type: 'longtext',
     comment: 'レスポンスボディ',
   })
   responseBody!: string
 
-  @CreateDateColumn({
+  @Column({
+    type: 'datetime',
     comment: 'データ登録日時',
     precision: 3,
   })

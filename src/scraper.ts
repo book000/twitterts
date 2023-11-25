@@ -15,7 +15,7 @@ import {
   TwitterTimeoutError,
 } from './models/exceptions'
 import { setTimeout } from 'node:timers/promises'
-import { ResponsesDatabase, ResponsesDatabaseOptions } from './saving-responses'
+import { ResponseDatabase, ResponseDatabaseOptions } from './saving-responses'
 
 /**
  * HTTP メソッド
@@ -72,14 +72,14 @@ export interface TwitterScraperDebugOutputResponseOptions {
    * レスポンスを保存するデータベースのオプション
    *
    * データベース接続情報を指定しない場合は、以下の環境変数を使用します。
-   * - RESPONSES_DB_FILEPATH: データベースファイルのパス (SQLite のみ)
-   * - RESPONSES_DB_HOSTNAME: データベースホスト名 (MySQL のみ)
-   * - RESPONSES_DB_PORT: データベースポート (MySQL のみ)
-   * - RESPONSES_DB_USERNAME: データベースユーザー名 (MySQL のみ)
-   * - RESPONSES_DB_PASSWORD: データベースパスワード (MySQL のみ)
-   * - RESPONSES_DB_DATABASE: データベース名 (MySQL のみ)
+   * - RESPONSE_DB_FILEPATH: データベースファイルのパス (SQLite のみ)
+   * - RESPONSE_DB_HOSTNAME: データベースホスト名 (MySQL のみ)
+   * - RESPONSE_DB_PORT: データベースポート (MySQL のみ)
+   * - RESPONSE_DB_USERNAME: データベースユーザー名 (MySQL のみ)
+   * - RESPONSE_DB_PASSWORD: データベースパスワード (MySQL のみ)
+   * - RESPONSE_DB_DATABASE: データベース名 (MySQL のみ)
    */
-  db?: ResponsesDatabaseOptions
+  db?: ResponseDatabaseOptions
 
   /**
    * レスポンス時に実行されるコールバック関数
@@ -698,7 +698,7 @@ export class TwitterScraper {
   /**
    * レスポンスデータベース
    */
-  private readonly responsesDatabase: ResponsesDatabase | null
+  private readonly responseDatabase: ResponseDatabase | null
 
   /**
    * @param options Twitter スクレイピングオプション
@@ -707,15 +707,15 @@ export class TwitterScraper {
     this.options = options
 
     try {
-      this.responsesDatabase = new ResponsesDatabase(
+      this.responseDatabase = new ResponseDatabase(
         options.debugOptions?.outputResponse?.db
       )
     } catch (error) {
-      ResponsesDatabase.printDebug(
+      ResponseDatabase.printDebug(
         'Failed to create responses database',
         error as Error
       )
-      this.responsesDatabase = null
+      this.responseDatabase = null
     }
   }
 
@@ -960,14 +960,14 @@ export class TwitterScraper {
     if (!this.options.debugOptions?.outputResponse?.enable) {
       return
     }
-    if (!this.responsesDatabase) {
+    if (!this.responseDatabase) {
       return
     }
-    if (!this.responsesDatabase.isInitialized()) {
+    if (!this.responseDatabase.isInitialized()) {
       return
     }
     page.on('response', async (response) => {
-      if (!this.responsesDatabase) {
+      if (!this.responseDatabase) {
         return
       }
       const details = await getResponseDetails(response)
@@ -986,7 +986,7 @@ export class TwitterScraper {
 
       const responseType = this.isJSON(text) ? 'JSON' : 'TEXT'
 
-      await this.responsesDatabase.addResponse({
+      await this.responseDatabase.addResponse({
         endpointType: type,
         method,
         endpoint: name,
@@ -1020,20 +1020,20 @@ export class TwitterScraper {
    * データベースを初期化します。
    */
   private async initDatabase(): Promise<void> {
-    if (!this.responsesDatabase) {
+    if (!this.responseDatabase) {
       return
     }
-    ResponsesDatabase.printDebug('Initialize responses database')
-    const result = await this.responsesDatabase.init()
+    ResponseDatabase.printDebug('Initialize responses database')
+    const result = await this.responseDatabase.init()
     if (!result) {
       return
     }
 
-    ResponsesDatabase.printDebug('Migrate responses database')
-    await this.responsesDatabase.migrate()
+    ResponseDatabase.printDebug('Migrate responses database')
+    await this.responseDatabase.migrate()
 
-    ResponsesDatabase.printDebug('Sync responses database')
-    await this.responsesDatabase.sync()
+    ResponseDatabase.printDebug('Sync responses database')
+    await this.responseDatabase.sync()
   }
 
   /**

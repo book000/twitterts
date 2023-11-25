@@ -1,6 +1,10 @@
 import { Logger } from '@book000/node-utils'
-import { Result, Utils } from './utils'
+import { Utils } from './utils'
 import fs from 'node:fs'
+import {
+  ResponseDatabase,
+  ResponseEndPointWithCount,
+} from 'src/saving-responses'
 
 /**
  * レスポンス種別
@@ -11,42 +15,39 @@ type RequestType = 'GraphQL'
  * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成するクラス
  */
 export class EndPointTypeGenerator {
-  private readonly results: Result[]
+  private readonly responseDatabase: ResponseDatabase
   private readonly typesDirectory: string
 
   /**
-   * @param results エンドポイントごとのレスポンス情報
+   * @param responseDatabase レスポンスを保存するデータベース
    * @param typesDirectory 型定義の出力先ディレクトリ
    */
-  constructor(results: Result[], typesDirectory: string) {
-    this.results = results.filter(
-      (result) =>
-        result.paths.some((path) => path.endsWith('.json')) &&
-        result.type === 'graphql'
-    )
+  constructor(responseDatabase: ResponseDatabase, typesDirectory: string) {
+    this.responseDatabase = responseDatabase
     this.typesDirectory = typesDirectory
   }
 
   /**
    * TypeScript インポート文群を生成する
    *
+   * @param endpoints エンドポイントの配列
    * @returns インポート文群
    */
-  generateImport(): string {
+  generateImport(endpoints: ResponseEndPointWithCount[]): string {
     // import { GraphQLGetUserTweetsResponse } from './graphql/get/user-tweets'
-    return this.results
-      .map((result) => {
+    return endpoints
+      .map((endpoint) => {
         const name = Utils.getName(
-          result.type,
-          result.name,
-          result.method,
-          result.statusCode
+          endpoint.endpointType,
+          endpoint.endpoint,
+          endpoint.method,
+          endpoint.statusCode.toString()
         )
         const filename = Utils.getFilename(
-          result.type,
-          result.name,
-          result.method,
-          result.statusCode
+          endpoint.endpointType,
+          endpoint.endpoint,
+          endpoint.method,
+          endpoint.statusCode.toString()
         )
         return `import { ${name} } from './${filename}'`
       })
@@ -57,36 +58,49 @@ export class EndPointTypeGenerator {
   /**
    * メソッド名の配列を取得する
    *
+   * @param endpoints エンドポイントの配列
    * @param type エンドポイントの種類
    * @returns メソッド名の配列
    */
-  getMethods(type: RequestType): string[] {
-    return this.results
-      .filter((result) => result.type === type.toLowerCase())
-      .map((result) => result.method)
+  getMethods(
+    endpoints: ResponseEndPointWithCount[],
+    type: RequestType
+  ): string[] {
+    return endpoints
+      .filter(
+        (endpoint) => endpoint.endpointType.toLowerCase() === type.toLowerCase()
+      )
+      .map((endpoint) => endpoint.method)
       .filter((value, index, self) => self.indexOf(value) === index)
   }
 
   /**
    * エンドポイント名群（<TYPE><METHOD>Endpoint）の定義を生成する
    *
+   * @param endpoints エンドポイントの配列
    * @param type エンドポイントの種類
    * @param method メソッド名
    * @returns エンドポイント名群の定義
    */
-  generateEndPointType(type: RequestType, method: string): string | null {
+  generateEndPointType(
+    endpoints: ResponseEndPointWithCount[],
+    type: RequestType,
+    method: string
+  ): string | null {
     const head = `export type ${type}${method}Endpoint =`
-    const types = this.results
+    const types = endpoints
       .filter(
-        (result) =>
-          result.type === type.toLowerCase() && result.method === method
+        (endpoint) =>
+          endpoint.endpointType.toLowerCase() === type.toLowerCase() &&
+          endpoint.method === method
       )
       .filter(
         (value, index, self) =>
-          self.findIndex((v) => v.name === value.name) === index
+          self.findIndex((endpoint) => endpoint.endpoint === value.endpoint) ===
+          index
       )
       .map((result) => {
-        return `  | '${result.name}'`
+        return `  | '${result.endpoint}'`
       })
     if (types.length === 0) {
       return null
@@ -97,13 +111,20 @@ export class EndPointTypeGenerator {
   /**
    * エンドポイント名を元に、成功・失敗のレスポンス型定義をまとめる型定義（<TYPE><METHOD>Response）を生成する。
    *
+   * @param endpoints エンドポイントの配列
    * @param type エンドポイントの種類
    * @param method メソッド名
    */
-  generateResponseMergeType(type: RequestType, method: string): string {
-    const names = this.results
-      .filter((result) => result.type === type.toLowerCase())
-      .map((result) => result.name)
+  generateResponseMergeType(
+    endpoints: ResponseEndPointWithCount[],
+    type: RequestType,
+    method: string
+  ): string {
+    const names = endpoints
+      .filter(
+        (endpoint) => endpoint.endpointType.toLowerCase() === type.toLowerCase()
+      )
+      .map((endpoint) => endpoint.endpoint)
       .filter((value, index, self) => self.indexOf(value) === index)
 
     const types = names.map((name) => {
@@ -111,19 +132,19 @@ export class EndPointTypeGenerator {
       const errorType = Utils.getName(type, name, method, '400')
       const responseType = Utils.getName(type, name, method, null)
 
-      const isExistsSuccess = this.results.some(
-        (result) =>
-          result.type === type.toLowerCase() &&
-          result.name === name &&
-          result.method === method &&
-          result.statusCode.startsWith('2')
+      const isExistsSuccess = endpoints.some(
+        (endpoint) =>
+          endpoint.endpointType.toLowerCase() === type.toLowerCase() &&
+          endpoint.endpoint === name &&
+          endpoint.method === method &&
+          endpoint.statusCode.toString().startsWith('2')
       )
-      const isExistsError = this.results.some(
-        (result) =>
-          result.type === type.toLowerCase() &&
-          result.name === name &&
-          result.method === method &&
-          !result.statusCode.startsWith('2')
+      const isExistsError = endpoints.some(
+        (endpoint) =>
+          endpoint.endpointType.toLowerCase() === type.toLowerCase() &&
+          endpoint.endpoint === name &&
+          endpoint.method === method &&
+          !endpoint.statusCode.toString().startsWith('2')
       )
 
       const tsDocument = `/** ${type} ${name} ${method} レスポンスモデル */`
@@ -144,29 +165,36 @@ export class EndPointTypeGenerator {
   /**
    * エンドポイント名を元に、レスポンス型定義を紐づけるような型定義（<TYPE><METHOD>EndPointResponseType）を生成する。
    *
+   * @param endpoints エンドポイントの配列
    * @param type エンドポイントの種類
    * @param method メソッド名
    * @returns レスポンス型定義を紐づけるような型定義
    */
-  generateResponseType(type: RequestType, method: string): string {
+  generateResponseType(
+    endpoints: ResponseEndPointWithCount[],
+    type: RequestType,
+    method: string
+  ): string {
     const head = `export type ${type}${method}EndPointResponseType<T extends ${type}${method}Endpoint> =`
-    const types = this.results
+    const types = endpoints
       .filter(
-        (result) =>
-          result.type === type.toLowerCase() && result.method === method
+        (endpoint) =>
+          endpoint.endpointType.toLowerCase() === type.toLowerCase() &&
+          endpoint.method === method
       )
       .filter(
         (value, index, self) =>
-          self.findIndex((v) => v.name === value.name) === index
+          self.findIndex((endpoint) => endpoint.endpoint === value.endpoint) ===
+          index
       )
-      .map((result) => {
+      .map((endpoint) => {
         const name = Utils.getName(
-          result.type,
-          result.name,
-          result.method,
+          endpoint.endpointType,
+          endpoint.endpoint,
+          endpoint.method,
           null
         )
-        return `  T extends '${result.name}' ? ${name} :`
+        return `  T extends '${endpoint.endpoint}' ? ${name} :`
       })
     return `${head}\n${types.join('\n')}\n  never`
   }
@@ -174,16 +202,20 @@ export class EndPointTypeGenerator {
   /**
    * エンドポイントの種類と HTTP メソッドを元に、「レスポンス型定義を紐づけるような型定義」を生成する。
    *
+   * @param endpoints エンドポイントの配列
    * @param types エンドポイントの種類の配列
    * @returns レスポンス型定義を紐づけるような型定義
    */
-  generateEndpointResponseType(types: readonly RequestType[]): string {
+  generateEndpointResponseType(
+    endpoints: ResponseEndPointWithCount[],
+    types: readonly RequestType[]
+  ): string {
     const head =
       'export type EndPointResponseType<M extends HttpMethod, T extends RequestType, N extends GraphQLEndpoint> = '
 
     const results = []
     for (const type of types) {
-      const methods = this.getMethods(type)
+      const methods = this.getMethods(endpoints, type)
       if (methods.length === 0) {
         continue
       }
@@ -214,17 +246,28 @@ export class EndPointTypeGenerator {
     return `${head}\n${results.join('\n')}\n: never`
   }
 
+  private async getEndpoints(
+    types: readonly string[]
+  ): Promise<ResponseEndPointWithCount[]> {
+    const endpoints = await this.responseDatabase.getEndpoints()
+    const lowerTypes = new Set(types.map((type) => type.toLowerCase()))
+    return endpoints.filter((endpoint) =>
+      lowerTypes.has(endpoint.endpointType.toLowerCase())
+    )
+  }
+
   /**
    * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成する
    */
-  generate(): void {
+  async generate(): Promise<void> {
     const logger = Logger.configure('EndPointTypeGenerator.generate')
 
     const types = ['GraphQL'] as const
+    const endpoints = await this.getEndpoints(types)
 
     const data = []
 
-    const imports = this.generateImport()
+    const imports = this.generateImport(endpoints)
     data.push(
       imports,
       "import { HttpMethod, RequestType } from '../../scraper'"
@@ -233,11 +276,15 @@ export class EndPointTypeGenerator {
     for (const type of types) {
       const unionTypes: string[] = []
 
-      const methods = this.getMethods(type)
+      const methods = this.getMethods(endpoints, type)
       for (const method of methods) {
-        const mergeTypes = this.generateResponseMergeType(type, method)
-        const endpointType = this.generateEndPointType(type, method)
-        const responseType = this.generateResponseType(type, method)
+        const mergeTypes = this.generateResponseMergeType(
+          endpoints,
+          type,
+          method
+        )
+        const endpointType = this.generateEndPointType(endpoints, type, method)
+        const responseType = this.generateResponseType(endpoints, type, method)
 
         if (!endpointType || !responseType) {
           continue
@@ -254,7 +301,7 @@ export class EndPointTypeGenerator {
       data.push(`export type ${type}Endpoint =\n${unionTypes.join('\n')}\n`)
     }
 
-    data.push(this.generateEndpointResponseType(types))
+    data.push(this.generateEndpointResponseType(endpoints, types))
 
     fs.writeFileSync(
       `${this.typesDirectory}/endpoints.ts`,

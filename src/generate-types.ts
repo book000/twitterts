@@ -2,7 +2,7 @@ import { Logger } from '@book000/node-utils'
 import { TwitterTypesGenerator } from './generate-types/types-generator'
 import { CustomTypesGenerator } from './generate-types/custom-types-generator'
 import { EndPointTypeGenerator } from './generate-types/endpoint-type-generator'
-import { Utils } from './generate-types/utils'
+import { ResponseDatabase } from './saving-responses'
 
 class GenerateTypes {
   calculateTime<T>(name: string, runner: () => T): T {
@@ -60,13 +60,22 @@ class GenerateTypes {
     )
 
     try {
-      // msで計測
-      const results = this.calculateTime('GetEndPointResponses', () =>
-        Utils.getEndPointResponses(debugOutputDirectory)
-      )
+      const responseDatabase = new ResponseDatabase()
+      logger.info('Initialize responses database')
+      const result = await responseDatabase.init()
+      if (!result) {
+        return
+      }
 
+      logger.info('Migrate responses database')
+      await responseDatabase.migrate()
+
+      logger.info('Sync responses database')
+      await responseDatabase.sync()
+
+      // msで計測
       await this.awaitCalculateTime('TwitterTypesGenerator', () =>
-        new TwitterTypesGenerator(results).generateTypes({
+        new TwitterTypesGenerator(responseDatabase).generateTypes({
           directory: {
             schema: schemaDirectory,
             types: typesDirectory,
@@ -77,14 +86,14 @@ class GenerateTypes {
 
       await this.awaitCalculateTime('CustomTypesGenerator', () =>
         new CustomTypesGenerator(
-          results,
+          responseDatabase,
           schemaDirectory,
           typesDirectory
         ).generate(isCustomTypeGenerateParallel)
       )
 
-      this.calculateTime('EndPointTypeGenerator', () =>
-        new EndPointTypeGenerator(results, typesDirectory).generate()
+      await this.calculateTime('EndPointTypeGenerator', () =>
+        new EndPointTypeGenerator(responseDatabase, typesDirectory).generate()
       )
     } catch (error) {
       logger.error('An error occurred while generating types', error as Error)
