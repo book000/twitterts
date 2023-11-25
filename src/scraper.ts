@@ -72,7 +72,6 @@ export interface TwitterScraperDebugOutputResponseOptions {
    * レスポンスを保存するデータベースのオプション
    *
    * データベース接続情報を指定しない場合は、以下の環境変数を使用します。
-   * - RESPONSE_DB_FILEPATH: データベースファイルのパス (SQLite のみ)
    * - RESPONSE_DB_HOSTNAME: データベースホスト名 (MySQL のみ)
    * - RESPONSE_DB_PORT: データベースポート (MySQL のみ)
    * - RESPONSE_DB_USERNAME: データベースユーザー名 (MySQL のみ)

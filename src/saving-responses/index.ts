@@ -23,11 +23,6 @@ export interface AddResponseOptions {
  */
 export interface ResponseDatabaseOptions {
   /**
-   * ファイルのパス (SQLite のみ)
-   */
-  filePath?: string
-
-  /**
    * ホスト名 (MySQL のみ)
    */
   hostname?: string
@@ -74,7 +69,6 @@ export class ResponseDatabase {
 
   constructor(options: ResponseDatabaseOptions = {}) {
     const configuration = {
-      DB_FILEPATH: options.filePath || process.env.RESPONSE_DB_FILEPATH,
       DB_HOSTNAME: options.hostname || process.env.RESPONSE_DB_HOSTNAME,
       DB_PORT: options.port || process.env.RESPONSE_DB_PORT,
       DB_USERNAME: options.username || process.env.RESPONSE_DB_USERNAME,
@@ -82,38 +76,17 @@ export class ResponseDatabase {
       DB_DATABASE: options.database || process.env.RESPONSE_DB_DATABASE,
     }
 
-    const type = configuration.DB_HOSTNAME ? 'mysql' : 'sqlite'
-
-    if (type === 'sqlite') {
-      const filePath = configuration.DB_FILEPATH || 'data/responses.sqlite3'
-      ResponseDatabase.printDebug('Using SQLite for responses database')
-      this.dataSource = new DataSource({
-        type: 'sqlite',
-        database: filePath,
-        synchronize: true,
-        logging: process.env.PRINT_DB_LOGS === 'true',
-        namingStrategy: new SnakeNamingStrategy(),
-        entities: [DBResponse],
-        subscribers: [],
-        migrations: [],
-      })
-      return
-    }
-
-    // DB_HOSTNAMEがある場合はMySQLを使用する
-    ResponseDatabase.printDebug('Using MySQL for responses database')
-
     // DB_PORTがintパースできない場合はエラー
     // DB_PORTがundefinedの場合はデフォルトポートを使用する
     const port = this.parsePort(configuration.DB_PORT)
 
     this.dataSource = new DataSource({
       type: 'mysql',
-      host: configuration.DB_HOSTNAME || 'localhost',
+      host: configuration.DB_HOSTNAME,
       port,
-      username: configuration.DB_USERNAME || 'root',
+      username: configuration.DB_USERNAME,
       password: configuration.DB_PASSWORD,
-      database: configuration.DB_DATABASE || 'twitter-ts',
+      database: configuration.DB_DATABASE,
       synchronize: true,
       logging: process.env.PRINT_DB_LOGS === 'true',
       namingStrategy: new SnakeNamingStrategy(),
@@ -336,7 +309,10 @@ export class ResponseDatabase {
   }
 
   public static printDebug(text: string, error?: Error): void {
-    if (process.env.NODE_ENV !== 'development') {
+    if (
+      process.env.NODE_ENV !== 'development' &&
+      process.env.NODE_ENV !== 'test'
+    ) {
       return
     }
     if (error !== undefined) {
