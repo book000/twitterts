@@ -115,14 +115,14 @@ class MigrateSavedResponse {
     logger.info(`  📂 Debug output: ${debugOutputDirectory}`)
 
     const responseDatabase = new ResponseDatabase()
-    logger.info('Initialize responses database')
+    logger.info('🚀 Initialize responses database')
     const result = await responseDatabase.init()
     if (!result) {
       return
     }
-    logger.info('Migrate responses database')
+    logger.info('🚀 Migrate responses database')
     await responseDatabase.migrate()
-    logger.info('Sync responses database')
+    logger.info('🚀 Sync responses database')
     await responseDatabase.sync()
 
     const dataSource = responseDatabase.getDataSource()

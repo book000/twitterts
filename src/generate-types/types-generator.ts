@@ -162,12 +162,16 @@ export class TwitterTypesGenerator {
    * @param options 型定義生成オプション
    */
   public async generateTypes(options: GenerateTypesOptions): Promise<void> {
+    const logger = Logger.configure('TwitterGenerateTypes.generateTypes')
     const responseDatabase = this.responseDatabase
 
     const endpoints = await responseDatabase.getEndpoints()
+    logger.info(`🔍 Found ${endpoints.length} endpoints`)
 
     const generators = []
+    let endpointCount = 0
     for (const endpoint of endpoints) {
+      endpointCount++
       const name = Utils.getName(
         endpoint.endpointType,
         endpoint.endpoint,
@@ -188,6 +192,10 @@ export class TwitterTypesGenerator {
           : null
       if (!type) continue
 
+      // Create generator: ${endpointCount}/${endpoints.length
+      logger.info(
+        `🔧 Creating generator: ${name} [${endpointCount}/${endpoints.length}]`
+      )
       const generator = this.generateType(
         {
           path: {
