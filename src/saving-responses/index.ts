@@ -17,19 +17,54 @@ interface AddResponseOptions {
 }
 
 /**
+ * レスポンスを保存するデータベースのオプション
+ */
+export interface ResponsesDatabaseOptions {
+  /**
+   * ファイルのパス (SQLite のみ)
+   */
+  filePath?: string
+
+  /**
+   * ホスト名 (MySQL のみ)
+   */
+  hostname?: string
+
+  /**
+   * ポート (MySQL のみ)
+   */
+  port?: string
+
+  /**
+   * ユーザー名 (MySQL のみ)
+   */
+  username?: string
+
+  /**
+   * パスワード (MySQL のみ)
+   */
+  password?: string
+
+  /**
+   * データベース名 (MySQL のみ)
+   */
+  database?: string
+}
+
+/**
  * レスポンスを保存するデータベース
  */
 export class ResponsesDatabase {
   private dataSource: DataSource
 
-  constructor() {
+  constructor(options: ResponsesDatabaseOptions = {}) {
     const configuration = {
-      DB_FILEPATH: process.env.RESPONSES_DB_FILEPATH,
-      DB_HOSTNAME: process.env.RESPONSES_DB_HOSTNAME,
-      DB_PORT: process.env.RESPONSES_DB_PORT,
-      DB_USERNAME: process.env.RESPONSES_DB_USERNAME,
-      DB_PASSWORD: process.env.RESPONSES_DB_PASSWORD,
-      DB_DATABASE: process.env.RESPONSES_DB_DATABASE,
+      DB_FILEPATH: options.filePath || process.env.RESPONSES_DB_FILEPATH,
+      DB_HOSTNAME: options.hostname || process.env.RESPONSES_DB_HOSTNAME,
+      DB_PORT: options.port || process.env.RESPONSES_DB_PORT,
+      DB_USERNAME: options.username || process.env.RESPONSES_DB_USERNAME,
+      DB_PASSWORD: options.password || process.env.RESPONSES_DB_PASSWORD,
+      DB_DATABASE: options.database || process.env.RESPONSES_DB_DATABASE,
     }
 
     // DB_FILEPATHがある場合はSQLiteを使用する

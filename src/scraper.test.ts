@@ -20,14 +20,8 @@ describe('Scraper', () => {
       puppeteerOptions: {
         userDataDirectory: './data/userdata',
       },
-      debugOptions: {
-        outputResponse: {
-          enable: true,
-          outputDirectory: './data/responses',
-        },
-      },
     })
-    await expect(scraper.login()).resolves.not.toThrowError()
+    await expect(scraper.login()).resolves.not.toThrow()
   })
 
   afterAll(async () => {

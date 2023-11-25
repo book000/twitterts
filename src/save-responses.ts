@@ -22,7 +22,6 @@ async function main(): Promise<void> {
     debugOptions: {
       outputResponse: {
         enable: true,
-        outputDirectory: './data/responses',
         onResponse: (details) => {
           const logger = Logger.configure('save-responses')
           logger.info(`[${details.type}] ${details.method} ${details.name}`)

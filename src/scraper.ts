@@ -15,7 +15,7 @@ import {
   TwitterTimeoutError,
 } from './models/exceptions'
 import { setTimeout } from 'node:timers/promises'
-import { ResponsesDatabase } from './saving-responses'
+import { ResponsesDatabase, ResponsesDatabaseOptions } from './saving-responses'
 
 /**
  * HTTP メソッド
@@ -60,18 +60,26 @@ interface ResponseDetails {
 /**
  * レスポンスデバッグ出力オプション
  *
- * ${outputDirectory}/${type}/${name}/${method}/${timestamp}.json に出力されます。
+ * レスポンスデバッグ出力オプションを指定すると、デバッグ用にレスポンスをデータベースに保存します。
  */
 export interface TwitterScraperDebugOutputResponseOptions {
   /**
-   * レスポンスをファイルに出力するか
+   * レスポンスをデータベースに保存するか
    */
   enable: boolean
 
   /**
-   * レスポンスを出力するディレクトリ
+   * レスポンスを保存するデータベースのオプション
+   *
+   * データベース接続情報を指定しない場合は、以下の環境変数を使用します。
+   * - RESPONSES_DB_FILEPATH: データベースファイルのパス (SQLite のみ)
+   * - RESPONSES_DB_HOSTNAME: データベースホスト名 (MySQL のみ)
+   * - RESPONSES_DB_PORT: データベースポート (MySQL のみ)
+   * - RESPONSES_DB_USERNAME: データベースユーザー名 (MySQL のみ)
+   * - RESPONSES_DB_PASSWORD: データベースパスワード (MySQL のみ)
+   * - RESPONSES_DB_DATABASE: データベース名 (MySQL のみ)
    */
-  outputDirectory: string
+  db?: ResponsesDatabaseOptions
 
   /**
    * レスポンス時に実行されるコールバック関数
@@ -697,8 +705,11 @@ export class TwitterScraper {
    */
   constructor(options: TwitterScraperOptions) {
     this.options = options
+
     try {
-      this.responsesDatabase = new ResponsesDatabase()
+      this.responsesDatabase = new ResponsesDatabase(
+        options.debugOptions?.outputResponse?.db
+      )
     } catch (error) {
       ResponsesDatabase.printDebug(
         'Failed to create responses database',
