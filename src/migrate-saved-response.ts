@@ -194,6 +194,7 @@ class MigrateSavedResponse {
           dbResponse.method = endpointMethod
           dbResponse.endpoint = endpointName
           dbResponse.url = null
+          dbResponse.urlHash = ''
           dbResponse.requestHeaders = null
           dbResponse.requestBody = null
           dbResponse.responseType = 'JSON'

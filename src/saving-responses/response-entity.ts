@@ -7,9 +7,12 @@ import {
 } from 'typeorm'
 
 @Entity('responses')
-@Index(['endpointType', 'method', 'endpoint', 'statusCode', 'createdAt'], {
-  unique: true,
-})
+@Index(
+  ['endpointType', 'method', 'endpoint', 'urlHash', 'statusCode', 'createdAt'],
+  {
+    unique: true,
+  }
+)
 export class DBResponse extends BaseEntity {
   @PrimaryGeneratedColumn('increment', {
     type: 'int',
@@ -44,6 +47,13 @@ export class DBResponse extends BaseEntity {
     nullable: true,
   })
   url!: string | null
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    comment: 'リクエストURLのハッシュ値',
+  })
+  urlHash!: string
 
   @Column({
     type: 'longtext',

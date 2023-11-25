@@ -4,6 +4,7 @@ import { DBResponse } from './response-entity'
 import { TwitterTsError } from '../models/exceptions'
 import { HttpMethod, RequestType } from '../scraper'
 import { GraphQLEndpoint } from '../models/responses/endpoints'
+import crypto from 'node:crypto'
 
 export interface AddResponseOptions {
   endpointType: RequestType
@@ -161,6 +162,10 @@ export class ResponseDatabase {
     response.method = options.method
     response.endpoint = options.endpoint
     response.url = options.url
+    response.urlHash = crypto
+      .createHash('sha256')
+      .update(options.url || '')
+      .digest('hex')
     response.requestHeaders = options.requestHeaders
     response.requestBody = options.requestBody
     response.responseType = options.responseType
