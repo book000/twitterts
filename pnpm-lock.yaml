@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@book000/node-utils':
-    specifier: 1.10.9
-    version: 1.10.9
+    specifier: 1.11.0
+    version: 1.11.0
   genson-js:
     specifier: 0.0.8
     version: 0.0.8
@@ -98,8 +98,8 @@ devDependencies:
     specifier: 4.5.0
     version: 4.5.0
   typedoc:
-    specifier: 0.25.3
-    version: 0.25.3(typescript@5.2.2)
+    specifier: 0.25.4
+    version: 0.25.4(typescript@5.2.2)
   typescript:
     specifier: 5.2.2
     version: 5.2.2
@@ -464,11 +464,13 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@book000/node-utils@1.10.9:
-    resolution: {integrity: sha512-SlC74aezrzaD0OGsDvpYIJUtiHs5gS6PeItLxPbCGAeickk0DAMkHC7WqbpAFO/+frlCDTKrS2g6xdLQT8IHJQ==}
+  /@book000/node-utils@1.11.0:
+    resolution: {integrity: sha512-nAZEXRFtz3DBMz7++BrakLIBZDjvmPkKqBYMFbu/5ZqJbEAToD6QoofVXHQhLW0mzxPb6D2upMYh4GW/uf6bEg==}
     dependencies:
       axios: 1.6.2
       cycle: 1.0.3
+      date-fns: 2.30.0
+      date-fns-tz: 2.0.0(date-fns@2.30.0)
       form-data: 4.0.0
       jsonc-parser: 3.2.0
       logform: 2.6.0
@@ -2135,6 +2137,14 @@ packages:
   /data-uri-to-buffer@6.0.1:
     resolution: {integrity: sha512-MZd3VlchQkp8rdend6vrx7MmVDJzSNTBvghvKjirLkD+WTChA3KUf0jkE68Q4UyctNqI11zZO9/x2Yx+ub5Cvg==}
     engines: {node: '>= 14'}
+    dev: false
+
+  /date-fns-tz@2.0.0(date-fns@2.30.0):
+    resolution: {integrity: sha512-OAtcLdB9vxSXTWHdT8b398ARImVwQMyjfYGkKD2zaGpHseG2UPHbHjXELReErZFxWdSLph3c2zOaaTyHfOhERQ==}
+    peerDependencies:
+      date-fns: '>=2.0.0'
+    dependencies:
+      date-fns: 2.30.0
     dev: false
 
   /date-fns@2.30.0:
@@ -5801,12 +5811,12 @@ packages:
     engines: {node: '>= 14'}
     dev: true
 
-  /typedoc@0.25.3(typescript@5.2.2):
-    resolution: {integrity: sha512-Ow8Bo7uY1Lwy7GTmphRIMEo6IOZ+yYUyrc8n5KXIZg1svpqhZSWgni2ZrDhe+wLosFS8yswowUzljTAV/3jmWw==}
+  /typedoc@0.25.4(typescript@5.2.2):
+    resolution: {integrity: sha512-Du9ImmpBCw54bX275yJrxPVnjdIyJO/84co0/L9mwe0R3G4FSR6rQ09AlXVRvZEGMUg09+z/usc8mgygQ1aidA==}
     engines: {node: '>= 16'}
     hasBin: true
     peerDependencies:
-      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x
+      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x
     dependencies:
       lunr: 2.3.9
       marked: 4.3.0
