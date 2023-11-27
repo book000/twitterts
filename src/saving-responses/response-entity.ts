@@ -8,7 +8,7 @@ import {
 
 @Entity('responses')
 @Index(
-  ['endpointType', 'method', 'endpoint', 'statusCode', 'urlHash', 'createdAt'],
+  ['endpointType', 'method', 'endpoint', 'statusCode', 'createdAt', 'urlHash'],
   {
     unique: true,
   }
