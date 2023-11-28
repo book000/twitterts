@@ -218,8 +218,8 @@ class MigrateSavedResponse {
 
         await responseDatabase.addPartition(createdAt)
 
-        // 10000件ごとに保存する
-        if (bulkInsertData.length === 10_000) {
+        // 100件ごとに保存する
+        if (bulkInsertData.length === 100) {
           logger.info(
             `📝 [${fileCount}/${jsonFiles.length}] Bulk inserting responses to database`
           )
