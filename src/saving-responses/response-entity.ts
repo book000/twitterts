@@ -13,6 +13,12 @@ import {
     unique: true,
   }
 )
+@Index('idx_endpoint_method_status', [
+  'endpointType',
+  'method',
+  'endpoint',
+  'statusCode',
+])
 export class DBResponse extends BaseEntity {
   @PrimaryGeneratedColumn('increment', {
     type: 'int',
