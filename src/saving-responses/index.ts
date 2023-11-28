@@ -292,7 +292,7 @@ export class ResponseDatabase {
       return this.partitions
     }
     const partitions = await this.dataSource.query(
-      'SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = `responses`'
+      'SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = "responses"'
     )
     this.partitions = partitions.map((v: { PARTITION_NAME: string }) => {
       return v.PARTITION_NAME
