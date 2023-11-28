@@ -67,6 +67,7 @@ interface GetResponseRangeOptions {
  */
 export class ResponseDatabase {
   private dataSource: DataSource
+  private partitions: string[] = []
 
   constructor(options: ResponseDatabaseOptions = {}) {
     const configuration = {
@@ -143,6 +144,9 @@ export class ResponseDatabase {
       throw new TwitterTsError('Responses database is not initialized')
     }
     await this.dataSource.synchronize()
+
+    // 現在のパーティションを取得する
+    this.partitions = await this.getPartitions()
   }
 
   /**
@@ -157,6 +161,9 @@ export class ResponseDatabase {
     if (!this.dataSource.isInitialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
+    const now = new Date()
+    await this.addPartition(now)
+
     const response = new DBResponse()
     response.endpointType = options.endpointType
     response.method = options.method
@@ -172,7 +179,7 @@ export class ResponseDatabase {
     response.statusCode = options.statusCode
     response.responseHeaders = options.responseHeaders
     response.responseBody = options.responseBody
-    response.createdAt = new Date()
+    response.createdAt = now
     return response.save()
   }
 
@@ -270,6 +277,49 @@ export class ResponseDatabase {
         'COUNT(*) AS count',
       ])
       .getRawMany<ResponseEndPointWithCount>()
+  }
+
+  /**
+   * パーティションを取得する
+   *
+   * @returns パーティションの配列
+   */
+  private async getPartitions(): Promise<string[]> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    if (this.partitions.length > 0) {
+      return this.partitions
+    }
+    const partitions = await this.dataSource.query(
+      'SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = `responses`'
+    )
+    this.partitions = partitions.map((v: { PARTITION_NAME: string }) => {
+      return v.PARTITION_NAME
+    })
+    return this.partitions
+  }
+
+  /**
+   * 日付パーティションを追加する
+   *
+   * @param date 日付
+   */
+  public async addPartition(date: Date): Promise<void> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    // pYYYYMMの形式でパーティションを作成する
+    const partitionName = `p${date.toISOString().slice(0, 7).replace('-', '')}`
+    if (this.partitions.includes(partitionName)) {
+      return
+    }
+    await this.dataSource.query(
+      `ALTER TABLE responses ADD PARTITION (PARTITION ${partitionName} VALUES LESS THAN ('${date
+        .toISOString()
+        .slice(0, 10)}'))`
+    )
+    this.partitions.push(partitionName)
   }
 
   public async close(): Promise<void> {
