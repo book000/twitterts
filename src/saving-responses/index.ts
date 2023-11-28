@@ -147,6 +147,11 @@ export class ResponseDatabase {
 
     // 現在のパーティションを取得する
     this.partitions = await this.getPartitions()
+
+    // パーティションの初期作成 (パーティションがひとつも設定されていない場合)
+    if (this.partitions.length === 0) {
+      await this.initPartition()
+    }
   }
 
   /**
@@ -323,6 +328,23 @@ export class ResponseDatabase {
       `ALTER TABLE responses ADD PARTITION (PARTITION ${partitionName} VALUES LESS THAN ('${date
         .toISOString()
         .slice(0, 10)}'))`
+    )
+    this.partitions.push(partitionName)
+  }
+
+  /**
+   * 日付パーティションを初期化する
+   */
+  public async initPartition(): Promise<void> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    const partitionName = 'pmax'
+    if (this.partitions.includes(partitionName)) {
+      return
+    }
+    await this.dataSource.query(
+      `ALTER TABLE responses PARTITION BY RANGE (TO_DAYS(createdAt)) (PARTITION ${partitionName} VALUES LESS THAN MAXVALUE)`
     )
     this.partitions.push(partitionName)
   }
