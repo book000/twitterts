@@ -232,7 +232,7 @@ export class ResponseDatabase {
           ]
       : undefined
     if (page === undefined || limit === undefined) {
-      return DBResponse.find({ where: endpoints, order: { id: 'DESC' } })
+      return DBResponse.find({ where: endpoints, order: { createdAt: 'DESC' } })
     }
 
     if (page <= 0 || limit <= 0) {
@@ -243,7 +243,7 @@ export class ResponseDatabase {
 
     return DBResponse.find({
       where: endpoints,
-      order: { id: 'DESC' },
+      order: { createdAt: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
     })
@@ -298,16 +298,15 @@ export class ResponseDatabase {
     if (!this.dataSource.isInitialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
-    if (this.partitions.length > 0) {
-      return this.partitions
-    }
-    const partitions = await this.dataSource.query(
+    const results = await this.dataSource.query(
       'SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = "responses"'
     )
-    this.partitions = partitions.map((v: { PARTITION_NAME: string }) => {
-      return v.PARTITION_NAME
-    })
-    return this.partitions
+    const partitions = results
+      .map((v: { PARTITION_NAME: string }) => {
+        return v.PARTITION_NAME
+      })
+      .filter((v: string | null): v is string => v !== null)
+    return partitions
   }
 
   /**
@@ -324,11 +323,20 @@ export class ResponseDatabase {
     if (this.partitions.includes(partitionName)) {
       return
     }
-    await this.dataSource.query(
-      `ALTER TABLE responses ADD PARTITION (PARTITION ${partitionName} VALUES LESS THAN ('${date
-        .toISOString()
-        .slice(0, 10)}'))`
-    )
+    // 翌月の1日の日付を取得する
+    const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1)
+    await this.dataSource
+      .query(
+        `ALTER TABLE responses REORGANIZE PARTITION pmax INTO (PARTITION ${partitionName} VALUES LESS THAN (` +
+          `TO_DAYS('${nextMonth.toISOString().slice(0, 10)}')` +
+          `), PARTITION pmax VALUES LESS THAN MAXVALUE)`
+      )
+      .catch((error) => {
+        if (error.code === 'ER_SAME_NAME_PARTITION') {
+          return
+        }
+        throw error
+      })
     this.partitions.push(partitionName)
   }
 
@@ -344,7 +352,7 @@ export class ResponseDatabase {
       return
     }
     await this.dataSource.query(
-      `ALTER TABLE responses PARTITION BY RANGE (TO_DAYS(createdAt)) (PARTITION ${partitionName} VALUES LESS THAN MAXVALUE)`
+      `ALTER TABLE responses PARTITION BY RANGE (TO_DAYS(created_at)) (PARTITION ${partitionName} VALUES LESS THAN MAXVALUE)`
     )
     this.partitions.push(partitionName)
   }
