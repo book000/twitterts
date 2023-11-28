@@ -28,12 +28,10 @@ describe('Parser', () => {
     })
 
     for (const response of responses) {
-      const id = response.id
-      const createdAt = response.createdAt
       const data = JSON.parse(response.responseBody)
       expect(
         () => new HomeTimelineParser(data, true),
-        `Failed parse #${id} (${createdAt})`
+        `Failed parse [endpoint_type=${response.endpointType}, method=${response.method}, endpoint=${response.endpoint}, status_code=${response.statusCode}, created_at=${response.createdAt}]`
       ).not.toThrow()
     }
   })
@@ -47,13 +45,11 @@ describe('Parser', () => {
     })
 
     for (const response of responses) {
-      const id = response.id
-      const createdAt = response.createdAt
       const data = JSON.parse(response.responseBody)
 
       expect(
         () => new HomeTimelineParser(data, true),
-        `Failed parse #${id} (${createdAt})`
+        `Failed parse [endpoint_type=${response.endpointType}, method=${response.method}, endpoint=${response.endpoint}, status_code=${response.statusCode}, created_at=${response.createdAt}]`
       ).not.toThrow()
     }
   })
@@ -67,13 +63,11 @@ describe('Parser', () => {
     })
 
     for (const response of responses) {
-      const id = response.id
-      const createdAt = response.createdAt
       const data = JSON.parse(response.responseBody)
 
       expect(
         () => new SearchTimelineParser(data, true),
-        `Failed parse #${id} (${createdAt})`
+        `Failed parse [endpoint_type=${response.endpointType}, method=${response.method}, endpoint=${response.endpoint}, status_code=${response.statusCode}, created_at=${response.createdAt}]`
       ).not.toThrow()
     }
   })
@@ -87,8 +81,6 @@ describe('Parser', () => {
     })
 
     for (const response of responses) {
-      const id = response.id
-      const createdAt = response.createdAt
       const data = JSON.parse(response.responseBody)
 
       if (
@@ -102,7 +94,7 @@ describe('Parser', () => {
 
       expect(
         () => new UserLikeTweetsParser(data, true),
-        `Failed parse #${id} (${createdAt})`
+        `Failed parse [endpoint_type=${response.endpointType}, method=${response.method}, endpoint=${response.endpoint}, status_code=${response.statusCode}, created_at=${response.createdAt}]`
       ).not.toThrow()
     }
   })
@@ -116,8 +108,6 @@ describe('Parser', () => {
     })
 
     for (const response of responses) {
-      const id = response.id
-      const createdAt = response.createdAt
       const data = JSON.parse(response.responseBody)
 
       if (
@@ -131,7 +121,7 @@ describe('Parser', () => {
 
       expect(
         () => new UserTweetsParser(data, true),
-        `Failed parse #${id} (${createdAt})`
+        `Failed parse [endpoint_type=${response.endpointType}, method=${response.method}, endpoint=${response.endpoint}, status_code=${response.statusCode}, created_at=${response.createdAt}]`
       ).not.toThrow()
     }
   })
