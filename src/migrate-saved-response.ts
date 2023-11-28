@@ -216,6 +216,8 @@ class MigrateSavedResponse {
           createdAt,
         })
 
+        await responseDatabase.addPartition(createdAt)
+
         // 10000件ごとに保存する
         if (bulkInsertData.length === 10_000) {
           logger.info(
