@@ -180,7 +180,12 @@ export class ResponseDatabase {
     response.responseHeaders = options.responseHeaders
     response.responseBody = options.responseBody
     response.createdAt = now
-    return response.save()
+    return response.save().catch((error) => {
+      if (error.code === 'ER_DUP_ENTRY') {
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        return undefined
+      }
+    })
   }
 
   /**
