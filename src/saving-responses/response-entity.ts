@@ -1,40 +1,29 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  Index,
-  PrimaryGeneratedColumn,
-} from 'typeorm'
+import { BaseEntity, Column, Entity, Index, PrimaryColumn } from 'typeorm'
 
 @Entity('responses')
-@Index(
-  ['endpointType', 'method', 'endpoint', 'statusCode', 'createdAt', 'urlHash'],
-  {
-    unique: true,
-  }
-)
+@Index('idx_endpoint_method_status', [
+  'endpointType',
+  'method',
+  'endpoint',
+  'statusCode',
+])
+@Index('idx_created_at', ['createdAt'])
 export class DBResponse extends BaseEntity {
-  @PrimaryGeneratedColumn('increment', {
-    type: 'int',
-    comment: 'レスポンスID',
-  })
-  id!: number
-
-  @Column({
+  @PrimaryColumn({
     type: 'varchar',
     length: 10,
     comment: 'エンドポイントの種別',
   })
   endpointType!: string
 
-  @Column({
+  @PrimaryColumn({
     type: 'varchar',
     length: 10,
     comment: 'エンドポイントのメソッド',
   })
   method!: string
 
-  @Column({
+  @PrimaryColumn({
     type: 'varchar',
     length: 255,
     comment: 'エンドポイントの名前',
@@ -48,7 +37,7 @@ export class DBResponse extends BaseEntity {
   })
   url!: string | null
 
-  @Column({
+  @PrimaryColumn({
     type: 'varchar',
     length: 255,
     comment: 'リクエストURLのハッシュ値',
@@ -95,7 +84,7 @@ export class DBResponse extends BaseEntity {
   })
   responseBody!: string
 
-  @Column({
+  @PrimaryColumn({
     type: 'datetime',
     comment: 'データ登録日時',
     precision: 3,

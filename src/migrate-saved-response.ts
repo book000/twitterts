@@ -28,6 +28,21 @@ interface EndPointFolder {
   statusCode: string
 }
 
+interface ResponseType {
+  endpointType: RequestType
+  method: HttpMethod
+  endpoint: string
+  url: string | null
+  urlHash: string
+  requestHeaders: string | null
+  requestBody: string | null
+  responseType: 'JSON' | 'TEXT'
+  statusCode: number
+  responseHeaders: string | null
+  responseBody: string
+  createdAt: Date
+}
+
 /**
  * ファイルで保存していたレスポンスをDBに移行する
  */
@@ -125,8 +140,6 @@ class MigrateSavedResponse {
     logger.info('🚀 Sync responses database')
     await responseDatabase.sync()
 
-    const dataSource = responseDatabase.getDataSource()
-
     logger.info('🔍 Loading debug output folders')
     const startTime = Date.now()
     const endPointFolders = this.getEndPointFolders(debugOutputDirectory)
@@ -167,63 +180,62 @@ class MigrateSavedResponse {
       logger.info(
         `📁 [${folderCount}/${endPointFolders.length}] ${endpointType} ${endpointMethod} ${endpointName} ${endpointStatus} (${jsonFiles.length} files)`
       )
-      let fileCount = 0
-      let lastPercentage = 0
+      const bulkInsertData: ResponseType[] = []
       const transactionStartTime = Date.now()
-      await dataSource.transaction(async (transaction) => {
-        for (const path of jsonFiles) {
-          fileCount++
-          // JSONC ファイルを読み込む
-          const data = fs
-            .readFileSync(path, 'utf8')
-            .split('\n')
-            .filter((line) => !line.startsWith('//'))
-            .join('\n')
-            .trim()
-          const response = this.parse(path, data)
-          if (!response) {
-            continue
-          }
-
-          const { name: fileName } = parse(path)
-          const unixTime = Number.parseInt(fileName)
-          const createdAt = new Date(unixTime)
-
-          const dbResponse = new DBResponse()
-          dbResponse.endpointType = endpointType
-          dbResponse.method = endpointMethod
-          dbResponse.endpoint = endpointName
-          dbResponse.url = null
-          dbResponse.urlHash = ''
-          dbResponse.requestHeaders = null
-          dbResponse.requestBody = null
-          dbResponse.responseType = 'JSON'
-          dbResponse.statusCode = endpointStatus
-          dbResponse.responseHeaders = null
-          dbResponse.responseBody = JSON.stringify(response)
-          dbResponse.createdAt = createdAt
-          await transaction.save(dbResponse).catch((error) => {
-            if (
-              error.message.includes('UNIQUE constraint failed') ||
-              error.message.includes('Duplicate entry')
-            ) {
-              return
-            }
-            logger.error(`Failed to save response: ${path} (${error.message})`)
-          })
-
-          // 10% ごとにログを出力する
-          const percentage = Math.floor((fileCount / jsonFiles.length) * 100)
-          if (percentage % 10 === 0 && percentage !== lastPercentage) {
-            logger.info(
-              `⌛ [${fileCount}/${jsonFiles.length}] files saved (${percentage}%)`
-            )
-            lastPercentage = percentage
-          }
+      let fileCount = 0
+      for (const path of jsonFiles) {
+        fileCount++
+        // JSONC ファイルを読み込む
+        const data = fs
+          .readFileSync(path, 'utf8')
+          .split('\n')
+          .filter((line) => !line.startsWith('//'))
+          .join('\n')
+          .trim()
+        const response = this.parse(path, data)
+        if (!response) {
+          continue
         }
 
-        logger.info(`📝 transaction finishing...`)
-      })
+        const { name: fileName } = parse(path)
+        const unixTime = Number.parseInt(fileName)
+        const createdAt = new Date(unixTime)
+
+        bulkInsertData.push({
+          endpointType,
+          method: endpointMethod,
+          endpoint: endpointName,
+          url: null,
+          urlHash: '',
+          requestHeaders: null,
+          requestBody: null,
+          responseType: 'JSON',
+          statusCode: endpointStatus,
+          responseHeaders: null,
+          responseBody: JSON.stringify(response),
+          createdAt,
+        })
+
+        await responseDatabase.addPartition(createdAt)
+
+        // 100件ごとに保存する
+        if (bulkInsertData.length === 100) {
+          logger.info(
+            `📝 [${fileCount}/${jsonFiles.length}] Bulk inserting responses to database`
+          )
+          await this.bulkInsert(responseDatabase, bulkInsertData)
+          bulkInsertData.length = 0
+        }
+      }
+
+      if (bulkInsertData.length > 0) {
+        logger.info(
+          `📝 [${fileCount}/${jsonFiles.length}] Bulk inserting responses to database`
+        )
+        await this.bulkInsert(responseDatabase, bulkInsertData)
+        bulkInsertData.length = 0
+      }
+
       const transactionEndTime = Date.now()
       const transactionTime = transactionEndTime - transactionStartTime
       logger.info(
@@ -238,6 +250,34 @@ class MigrateSavedResponse {
     logger.info('🔚 Closing responses database')
     await responseDatabase.close()
     logger.info('✅ Closed responses database')
+  }
+
+  async bulkInsert(
+    responseDatabase: ResponseDatabase,
+    bulkInsertData: ResponseType[]
+  ): Promise<void> {
+    const logger = Logger.configure('MigrateSavedResponse:bulkInsert')
+    const dataSource = responseDatabase.getDataSource()
+    const bulkInsertStartTime = Date.now()
+    await dataSource.transaction(async (transaction) => {
+      await transaction
+        .createQueryBuilder()
+        .insert()
+        .into(DBResponse)
+        .values(bulkInsertData)
+        .orIgnore()
+        .execute()
+        .catch((error: Error) => {
+          logger.error('Failed to insert responses', error as Error)
+        })
+    })
+    const bulkInsertEndTime = Date.now()
+    const bulkInsertTime = bulkInsertEndTime - bulkInsertStartTime
+    logger.info(
+      `✅ Bulk inserted responses to database (${this.formatSeconds(
+        bulkInsertTime / 1000
+      )})`
+    )
   }
 
   parse(path: string, data: string): unknown {

@@ -35,7 +35,7 @@
     "prepublishOnly": "run-z lint"
   },
   "dependencies": {
-    "@book000/node-utils": "1.11.0",
+    "@book000/node-utils": "1.11.2",
     "genson-js": "0.0.8",
     "json-schema-to-typescript": "13.1.1",
     "mysql2": "3.6.5",
@@ -48,8 +48,8 @@
   "devDependencies": {
     "@types/jest": "29.5.10",
     "@types/node": "20.10.0",
-    "@typescript-eslint/eslint-plugin": "6.12.0",
-    "@typescript-eslint/parser": "6.12.0",
+    "@typescript-eslint/eslint-plugin": "6.13.1",
+    "@typescript-eslint/parser": "6.13.1",
     "ctix": "2.3.0",
     "eslint": "8.54.0",
     "eslint-config-prettier": "9.0.0",
@@ -66,7 +66,7 @@
     "rimraf": "5.0.5",
     "run-z": "2.0.0",
     "ts-jest": "29.1.1",
-    "tsx": "4.5.0",
+    "tsx": "4.6.0",
     "typedoc": "0.25.4",
     "typescript": "5.2.2"
   },

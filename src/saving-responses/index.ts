@@ -67,6 +67,7 @@ interface GetResponseRangeOptions {
  */
 export class ResponseDatabase {
   private dataSource: DataSource
+  private partitions: string[] = []
 
   constructor(options: ResponseDatabaseOptions = {}) {
     const configuration = {
@@ -143,6 +144,14 @@ export class ResponseDatabase {
       throw new TwitterTsError('Responses database is not initialized')
     }
     await this.dataSource.synchronize()
+
+    // 現在のパーティションを取得する
+    this.partitions = await this.getPartitions()
+
+    // パーティションの初期作成 (パーティションがひとつも設定されていない場合)
+    if (this.partitions.length === 0) {
+      await this.initPartition()
+    }
   }
 
   /**
@@ -157,6 +166,9 @@ export class ResponseDatabase {
     if (!this.dataSource.isInitialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
+    const now = new Date()
+    await this.addPartition(now)
+
     const response = new DBResponse()
     response.endpointType = options.endpointType
     response.method = options.method
@@ -172,8 +184,13 @@ export class ResponseDatabase {
     response.statusCode = options.statusCode
     response.responseHeaders = options.responseHeaders
     response.responseBody = options.responseBody
-    response.createdAt = new Date()
-    return response.save()
+    response.createdAt = now
+    return response.save().catch((error) => {
+      if (error.code === 'ER_DUP_ENTRY') {
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        return undefined
+      }
+    })
   }
 
   /**
@@ -224,7 +241,7 @@ export class ResponseDatabase {
           ),
         }
     if (page === undefined || limit === undefined) {
-      return DBResponse.find({ where: endpoints, order: { id: 'DESC' } })
+      return DBResponse.find({ where: endpoints, order: { createdAt: 'DESC' } })
     }
 
     if (page <= 0 || limit <= 0) {
@@ -235,7 +252,7 @@ export class ResponseDatabase {
 
     return DBResponse.find({
       where: endpoints,
-      order: { id: 'DESC' },
+      order: { createdAt: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
     })
@@ -306,6 +323,74 @@ export class ResponseDatabase {
         'COUNT(*) AS count',
       ])
       .getRawMany<ResponseEndPointWithCount>()
+  }
+
+  /**
+   * パーティションを取得する
+   *
+   * @returns パーティションの配列
+   */
+  private async getPartitions(): Promise<string[]> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    const results = await this.dataSource.query(
+      'SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = "responses"'
+    )
+    const partitions = results
+      .map((v: { PARTITION_NAME: string }) => {
+        return v.PARTITION_NAME
+      })
+      .filter((v: string | null): v is string => v !== null)
+    return partitions
+  }
+
+  /**
+   * 日付パーティションを追加する
+   *
+   * @param date 日付
+   */
+  public async addPartition(date: Date): Promise<void> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    // pYYYYMMの形式でパーティションを作成する
+    const partitionName = `p${date.toISOString().slice(0, 7).replace('-', '')}`
+    if (this.partitions.includes(partitionName)) {
+      return
+    }
+    // 翌月の1日の日付を取得する
+    const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1)
+    await this.dataSource
+      .query(
+        `ALTER TABLE responses REORGANIZE PARTITION pmax INTO (PARTITION ${partitionName} VALUES LESS THAN (` +
+          `TO_DAYS('${nextMonth.toISOString().slice(0, 10)}')` +
+          `), PARTITION pmax VALUES LESS THAN MAXVALUE)`
+      )
+      .catch((error) => {
+        if (error.code === 'ER_SAME_NAME_PARTITION') {
+          return
+        }
+        throw error
+      })
+    this.partitions.push(partitionName)
+  }
+
+  /**
+   * 日付パーティションを初期化する
+   */
+  public async initPartition(): Promise<void> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    const partitionName = 'pmax'
+    if (this.partitions.includes(partitionName)) {
+      return
+    }
+    await this.dataSource.query(
+      `ALTER TABLE responses PARTITION BY RANGE (TO_DAYS(created_at)) (PARTITION ${partitionName} VALUES LESS THAN MAXVALUE)`
+    )
+    this.partitions.push(partitionName)
   }
 
   public async close(): Promise<void> {
