@@ -95,8 +95,8 @@ devDependencies:
     specifier: 29.1.1
     version: 29.1.1(@babel/core@7.23.3)(jest@29.7.0)(typescript@5.2.2)
   tsx:
-    specifier: 4.6.0
-    version: 4.6.0
+    specifier: 4.6.1
+    version: 4.6.1
   typedoc:
     specifier: 0.25.4
     version: 0.25.4(typescript@5.2.2)
@@ -5703,8 +5703,8 @@ packages:
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
-  /tsx@4.6.0:
-    resolution: {integrity: sha512-HLHaDQ78mly4Pd5co6tWQOiNVYoYYAPUcwSSZK4bcs3zSEsg+/67LS/ReHook0E7DKPfe1J5jc0ocIhUrnaR4w==}
+  /tsx@4.6.1:
+    resolution: {integrity: sha512-OQ4TAPHXAPUo/NZAmmIybl0o8LFOTlycQxFepLBAp6EV87U88fOKYGCQI2viGAEOVU9UW/cgQcxcOMnfEKVY3Q==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
