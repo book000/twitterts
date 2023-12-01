@@ -7,6 +7,7 @@ import { BaseEntity, Column, Entity, Index, PrimaryColumn } from 'typeorm'
   'endpoint',
   'statusCode',
 ])
+@Index('idx_response_type', ['responseType'])
 @Index('idx_created_at', ['createdAt'])
 export class DBResponse extends BaseEntity {
   @PrimaryColumn({
