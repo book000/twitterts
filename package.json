@@ -40,7 +40,7 @@
     "json-schema-to-typescript": "13.1.1",
     "mysql2": "3.6.5",
     "otplib": "12.0.1",
-    "puppeteer-core": "21.5.2",
+    "puppeteer-core": "21.6.0",
     "twitter-d": "0.6.0",
     "typeorm": "0.3.17",
     "typeorm-naming-strategies": "4.1.0"
