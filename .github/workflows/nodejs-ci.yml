@@ -151,7 +151,7 @@ jobs:
 
       - name: 📦 Upload dist artifact
         if: steps.check-dist.outputs.exists == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist
@@ -165,7 +165,7 @@ jobs:
 
       - name: 📦 Upload output artifact
         if: steps.check-output.outputs.exists == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: output
           path: output
