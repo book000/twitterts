@@ -4,7 +4,7 @@
 
 export interface GraphQLGetProfileSpotlightsQueryErrorResponse {
   errors: {
-    code: number
     message: string
+    code: number
   }[]
 }

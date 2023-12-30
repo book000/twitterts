@@ -891,9 +891,9 @@ export class Twitter {
     const testId = await page.evaluate(() => {
       return new Promise<string | void>((resolve) => {
         const interval = setInterval(() => {
-          const element = document.querySelector(
+          const element = document.querySelector<HTMLElement>(
             'div[data-testid="placementTracking"] div[role="button"]'
-          ) as HTMLElement
+          )
           if (element) {
             resolve(element.dataset.testid?.split('-')[1])
           }

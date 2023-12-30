@@ -42,6 +42,11 @@ interface GenerateTypeOptions {
    * エラーを無視するかどうか
    */
   ignoreError: boolean
+
+  /**
+   * 1ページあたりのレスポンス数
+   */
+  limit: number
 }
 
 /**
@@ -64,6 +69,16 @@ interface GenerateTypesOptions {
   }
   /** 並列処理をするかどうか */
   parallel: boolean
+
+  /**
+   * 1ページあたりのレスポンス数
+   */
+  limit: number
+
+  /**
+   * エンドポイントの配列
+   */
+  endpoints: ResponseEndPointWithCount[]
 }
 
 /**
@@ -96,7 +111,7 @@ export class TwitterTypesGenerator {
 
     logger.info(`🔍 Generating: ${options.name}`)
 
-    const limit = 100
+    const limit = options.limit
     const count = endpoint.count
     const maxPage = Math.ceil(count / limit) + 1
 
@@ -127,7 +142,7 @@ export class TwitterTypesGenerator {
           (error, index, self) => self.indexOf(error) === index
         )
         for (const error of uniqueErrors) {
-          logger.error(`⚠️ ${options.path}: ${error}`)
+          logger.error(`⚠️ ${options.name}: ${error}`)
         }
 
         responseBodys = responseBodys.filter(
@@ -140,7 +155,8 @@ export class TwitterTypesGenerator {
       schema = schema ? mergeSchemas([schema, pageSchema]) : pageSchema
     }
     if (!schema) {
-      throw new Error('No schema found')
+      logger.warn(`⚠️ ${options.name}: No responses`)
+      return
     }
 
     fs.mkdirSync(dirname(options.path.schema), { recursive: true })
@@ -162,12 +178,13 @@ export class TwitterTypesGenerator {
    * @param options 型定義生成オプション
    */
   public async generateTypes(options: GenerateTypesOptions): Promise<void> {
-    const responseDatabase = this.responseDatabase
+    const logger = Logger.configure('TwitterGenerateTypes.generateTypes')
 
-    const endpoints = await responseDatabase.getEndpoints()
-
+    const endpoints = options.endpoints
     const generators = []
+    let endpointCount = 0
     for (const endpoint of endpoints) {
+      endpointCount++
       const name = Utils.getName(
         endpoint.endpointType,
         endpoint.endpoint,
@@ -188,6 +205,9 @@ export class TwitterTypesGenerator {
           : null
       if (!type) continue
 
+      logger.info(
+        `🔧 Creating generator: ${name} (StatusCode: ${endpoint.statusCode}) [${endpointCount}/${endpoints.length}]`
+      )
       const generator = this.generateType(
         {
           path: {
@@ -198,7 +218,8 @@ export class TwitterTypesGenerator {
           tsDocument: `${type} ${endpoint.method} ${endpoint.endpoint} ${
             endpoint.statusCode.toString().startsWith('2') ? '成功' : '失敗'
           }レスポンスモデル`,
-          ignoreError: endpoint.statusCode.toString().startsWith('2'),
+          ignoreError: !endpoint.statusCode.toString().startsWith('2'),
+          limit: options.limit,
         },
         endpoint
       )

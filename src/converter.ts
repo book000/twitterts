@@ -12,6 +12,8 @@ import { CustomTweetObject } from './models/responses/custom/custom-tweet-object
 import { ResponseParseError } from './models/exceptions'
 import { CustomUserLegacyObject } from './models/responses/custom/custom-user-legacy-object'
 import { GraphQLGetUserByScreenNameSuccessResponse } from './models/responses/graphql/get/user-by-screen-name-success'
+import { CustomEntityVideoInfoObject } from './models/responses/custom/custom-entity-video-info-object'
+import { VideoInfo } from 'twitter-d/types/video_info'
 
 /**
  * オブジェクトを変換するクラス
@@ -71,6 +73,7 @@ export const ObjectConverter = {
               resize: media.sizes.thumb.resize,
             },
           },
+          video_info: this.convertToVideoInfo(media.video_info),
         })
       }
     }
@@ -155,6 +158,7 @@ export const ObjectConverter = {
               resize: media.sizes.thumb.resize,
             },
           },
+          video_info: this.convertToVideoInfo(media.video_info),
         })
       }
     }
@@ -173,7 +177,8 @@ export const ObjectConverter = {
       description: {},
     }
 
-    for (const url of legacy.entities.description.urls) {
+    const urls = legacy.entities.description.urls
+    for (const url of urls) {
       entities.description.urls = entities.description.urls ?? []
       entities.description.urls.push({
         display_url: url.display_url,
@@ -206,13 +211,15 @@ export const ObjectConverter = {
    * @returns 座標
    */
   convertCoordinates(legacy: CustomTweetLegacyObject): Coordinates | undefined {
-    if (!legacy.geo) {
+    if (!('geo' in legacy) || !legacy.geo) {
       return
     }
 
+    const geo = legacy.geo
+
     return {
-      coordinates: [legacy.geo.coordinates[1], legacy.geo.coordinates[0]],
-      type: legacy.geo.type,
+      coordinates: [geo.coordinates[1], geo.coordinates[0]],
+      type: geo.type,
     }
   },
 
@@ -223,31 +230,55 @@ export const ObjectConverter = {
    * @returns 場所
    */
   convertPlace(legacy: CustomTweetLegacyObject): Place | undefined {
-    if (!legacy.place) {
+    if ('place' in legacy) {
+      return
+    }
+
+    const place = legacy.place
+    if (!place) {
       return
     }
 
     return {
-      attributes: legacy.place.attributes,
+      attributes: ('attributes' in place
+        ? place.attributes
+        : {}) as Place['attributes'],
       bounding_box: {
-        coordinates: legacy.place.bounding_box.coordinates.map((coordinate) =>
+        coordinates: place.bounding_box.coordinates.map((coordinate) =>
           coordinate.map(
             (coordinate) => [coordinate[1], coordinate[0]] as [number, number]
           )
         ),
-        type: legacy.place.bounding_box.type,
+        type: place.bounding_box.type,
       },
-      contained_within: legacy.place.contained_within as
-        | string[]
-        | null
-        | undefined,
-      country_code: legacy.place.country_code,
-      country: legacy.place.country,
-      full_name: legacy.place.full_name,
-      id: legacy.place.id,
-      name: legacy.place.name,
-      place_type: legacy.place.place_type,
-      url: legacy.place.url,
+      contained_within: ('contained_within' in place
+        ? place.contained_within
+        : []) as Place['contained_within'],
+      country_code: place.country_code,
+      country: place.country,
+      full_name: place.full_name,
+      id: place.id,
+      name: place.name,
+      place_type: place.place_type,
+      url: place.url,
+    }
+  },
+
+  convertToVideoInfo(
+    videoInfo: CustomEntityVideoInfoObject | undefined
+  ): VideoInfo | undefined {
+    if (!videoInfo) {
+      return
+    }
+
+    return {
+      aspect_ratio: [videoInfo.aspect_ratio[0], videoInfo.aspect_ratio[1]],
+      duration_millis: videoInfo.duration_millis,
+      variants: videoInfo.variants.map((variant) => ({
+        bitrate: variant.bitrate,
+        content_type: variant.content_type,
+        url: variant.url,
+      })),
     }
   },
 
@@ -324,7 +355,8 @@ export const ObjectConverter = {
       name: user.legacy.name,
       profile_banner_url: user.legacy.profile_banner_url,
       profile_image_url_https: user.legacy.profile_image_url_https,
-      protected: user.legacy.protected ?? false,
+      protected:
+        'protected' in user.legacy ? (user.legacy.protected as boolean) : false,
       screen_name: user.legacy.screen_name,
       // @ts-ignore
       status: user.legacy.status,

@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm'
+import { DataSource, MoreThan, MoreThanOrEqual } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
 import { DBResponse } from './response-entity'
 import { TwitterTsError } from '../models/exceptions'
@@ -194,7 +194,7 @@ export class ResponseDatabase {
   }
 
   /**
-   * レスポンスを取得する
+   * レスポンスを取得する。但し直近90日間のレスポンスのみ取得可能
    *
    * @param endpoint エンドポイントの情報。指定しない場合はすべてのレスポンスを取得する
    * @param rangeOptions 取得するレスポンスの範囲
@@ -228,9 +228,18 @@ export class ResponseDatabase {
               method: endpoint.method,
               endpoint: endpoint.endpoint,
               statusCode: endpoint.statusCode,
+              // 90日前以降のレスポンスのみ取得する
+              createdAt: MoreThanOrEqual(
+                new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
+              ),
             },
           ]
-      : undefined
+      : {
+          // 90日前以降のレスポンスのみ取得する
+          createdAt: MoreThanOrEqual(
+            new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
+          ),
+        }
     if (page === undefined || limit === undefined) {
       return DBResponse.find({ where: endpoints, order: { createdAt: 'DESC' } })
     }
@@ -250,7 +259,7 @@ export class ResponseDatabase {
   }
 
   /**
-   * レスポンスの数を取得する
+   * レスポンスの数を取得する。但し直近90日間のレスポンスのみ取得可能
    *
    * @param endpoint エンドポイントの情報。指定しない場合はすべてのレスポンスを取得する
    * @returns レスポンスの数
@@ -263,14 +272,37 @@ export class ResponseDatabase {
     }
     const endpoints = endpoint
       ? Array.isArray(endpoint)
-        ? endpoint
-        : [endpoint]
-      : undefined
+        ? endpoint.map((v) => ({
+            endpointType: v.endpointType,
+            method: v.method,
+            endpoint: v.endpoint,
+            statusCode: v.statusCode,
+            createdAt: MoreThanOrEqual(
+              new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
+            ),
+          }))
+        : [
+            {
+              endpointType: endpoint.endpointType,
+              method: endpoint.method,
+              endpoint: endpoint.endpoint,
+              statusCode: endpoint.statusCode,
+              createdAt: MoreThanOrEqual(
+                new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
+              ),
+            },
+          ]
+      : {
+          // 90日前以降のレスポンスのみ取得する
+          createdAt: MoreThanOrEqual(
+            new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
+          ),
+        }
     return DBResponse.count({ where: endpoints })
   }
 
   /**
-   * エンドポイントを取得する
+   * エンドポイントを取得する。但し直近90日間のレスポンスのみ取得可能
    */
   public async getEndpoints(): Promise<ResponseEndPointWithCount[]> {
     if (!this.dataSource.isInitialized) {
@@ -278,6 +310,10 @@ export class ResponseDatabase {
     }
     // endpointType, endpointの組み合わせを取得する
     return DBResponse.createQueryBuilder()
+      .where({
+        responseType: 'JSON',
+        createdAt: MoreThan(new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)),
+      })
       .groupBy('endpoint_type, method, endpoint, status_code')
       .select([
         'endpoint_type AS endpointType',

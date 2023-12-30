@@ -175,6 +175,33 @@ jobs:
           git status
           git diff --exit-code || (echo "Git status is not clean." && exit 1)
 
+  comment:
+    name: Comment
+    runs-on: ubuntu-latest
+
+    if: ${{
+      github.event_name == 'pull_request_target' &&
+      github.event.action == 'opened' &&
+      github.repository != github.event.pull_request.head.repo.full_name
+      }}
+
+    steps:
+      - name: Create PR comment
+        run: |
+          cat << EOF > comment.md
+          # ⚠️ CIの実行には \`🚀request-ci\` ラベルが必要です
+
+          このリポジトリはフォークされたリポジトリです。
+          セキュリティ上の理由から、フォークされたリポジトリからのCI実行は自動的に行われません。
+
+          CI実行をリクエストするには、このプルリクエストに \`🚀request-ci\` ラベルを追加してください。
+          （ラベルを追加できるのは一部のメンバーのみです）
+          EOF
+
+          gh pr comment ${{ github.event.number }} -R ${{ github.repository }} -F comment.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   finished-node-ci:
     name: Check finished Node CI
     runs-on: ubuntu-latest

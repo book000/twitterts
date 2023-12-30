@@ -1,57 +1,52 @@
 import { GraphQLGetArticleNudgeDomainsSuccessResponse } from './graphql/get/article-nudge-domains-success'
-import { GraphQLGetArticleNudgeDomainsErrorResponse } from './graphql/get/article-nudge-domains-error'
 import { GraphQLGetAudioSpaceByIdSuccessResponse } from './graphql/get/audio-space-by-id-success'
-import { GraphQLGetAuthenticatedUserTFListsSuccessResponse } from './graphql/get/authenticated-user-tflists-success'
-import { GraphQLGetCommunitiesTabBarItemQuerySuccessResponse } from './graphql/get/communities-tab-bar-item-query-success'
-import { GraphQLPostCreateRetweetSuccessResponse } from './graphql/post/create-retweet-success'
 import { GraphQLGetDataSaverModeSuccessResponse } from './graphql/get/data-saver-mode-success'
 import { GraphQLGetDataSaverModeErrorResponse } from './graphql/get/data-saver-mode-error'
-import { GraphQLPostDeleteRetweetSuccessResponse } from './graphql/post/delete-retweet-success'
-import { GraphQLPostFavoriteTweetSuccessResponse } from './graphql/post/favorite-tweet-success'
 import { GraphQLGetFollowHostButtonQuerySuccessResponse } from './graphql/get/follow-host-button-query-success'
 import { GraphQLGetGetAltTextPromptPreferenceSuccessResponse } from './graphql/get/get-alt-text-prompt-preference-success'
 import { GraphQLGetGetAltTextPromptPreferenceErrorResponse } from './graphql/get/get-alt-text-prompt-preference-error'
 import { GraphQLGetGetUserClaimsSuccessResponse } from './graphql/get/get-user-claims-success'
 import { GraphQLGetGetUserClaimsErrorResponse } from './graphql/get/get-user-claims-error'
 import { GraphQLGetHomeLatestTimelineSuccessResponse } from './graphql/get/home-latest-timeline-success'
-import { GraphQLPostHomeLatestTimelineSuccessResponse } from './graphql/post/home-latest-timeline-success'
-import { GraphQLPostHomeLatestTimelineErrorResponse } from './graphql/post/home-latest-timeline-error'
+import { GraphQLGetHomeLatestTimelineErrorResponse } from './graphql/get/home-latest-timeline-error'
 import { GraphQLGetHomeTimelineSuccessResponse } from './graphql/get/home-timeline-success'
-import { GraphQLPostHomeTimelineSuccessResponse } from './graphql/post/home-timeline-success'
 import { GraphQLGetLikesSuccessResponse } from './graphql/get/likes-success'
 import { GraphQLGetLikesErrorResponse } from './graphql/get/likes-error'
+import { GraphQLGetListLatestTweetsTimelineSuccessResponse } from './graphql/get/list-latest-tweets-timeline-success'
 import { GraphQLGetListPinsSuccessResponse } from './graphql/get/list-pins-success'
-import { GraphQLGetListPinsErrorResponse } from './graphql/get/list-pins-error'
+import { GraphQLGetPinnedTimelinesSuccessResponse } from './graphql/get/pinned-timelines-success'
+import { GraphQLGetPinnedTimelinesErrorResponse } from './graphql/get/pinned-timelines-error'
 import { GraphQLGetProfileSpotlightsQuerySuccessResponse } from './graphql/get/profile-spotlights-query-success'
-import { GraphQLGetQuickPromoteEligibilitySuccessResponse } from './graphql/get/quick-promote-eligibility-success'
+import { GraphQLGetProfileSpotlightsQueryErrorResponse } from './graphql/get/profile-spotlights-query-error'
 import { GraphQLGetSearchTimelineSuccessResponse } from './graphql/get/search-timeline-success'
+import { GraphQLGetSearchTimelineErrorResponse } from './graphql/get/search-timeline-error'
 import { GraphQLGetTweetDetailSuccessResponse } from './graphql/get/tweet-detail-success'
 import { GraphQLGetTweetDetailErrorResponse } from './graphql/get/tweet-detail-error'
-import { GraphQLPostUnfavoriteTweetSuccessResponse } from './graphql/post/unfavorite-tweet-success'
+import { GraphQLGetTweetResultByRestIdSuccessResponse } from './graphql/get/tweet-result-by-rest-id-success'
+import { GraphQLGetUseFetchProfileBlocksProfileExistsQuerySuccessResponse } from './graphql/get/use-fetch-profile-blocks-profile-exists-query-success'
+import { GraphQLGetUseFetchProfileBlocksProfileExistsQueryErrorResponse } from './graphql/get/use-fetch-profile-blocks-profile-exists-query-error'
 import { GraphQLGetUserByRestIdSuccessResponse } from './graphql/get/user-by-rest-id-success'
+import { GraphQLGetUserByRestIdErrorResponse } from './graphql/get/user-by-rest-id-error'
 import { GraphQLGetUserByScreenNameSuccessResponse } from './graphql/get/user-by-screen-name-success'
-import { GraphQLGetUserMediaSuccessResponse } from './graphql/get/user-media-success'
-import { GraphQLGetUsersByRestIdsSuccessResponse } from './graphql/get/users-by-rest-ids-success'
+import { GraphQLGetUserByScreenNameErrorResponse } from './graphql/get/user-by-screen-name-error'
 import { GraphQLGetUsersVerifiedAvatarsSuccessResponse } from './graphql/get/users-verified-avatars-success'
 import { GraphQLGetUserTweetsSuccessResponse } from './graphql/get/user-tweets-success'
 import { GraphQLGetUserTweetsErrorResponse } from './graphql/get/user-tweets-error'
-import { GraphQLGetUserTweetsAndRepliesSuccessResponse } from './graphql/get/user-tweets-and-replies-success'
+import { GraphQLGetViewerSuccessResponse } from './graphql/get/viewer-success'
+import { GraphQLGetViewerErrorResponse } from './graphql/get/viewer-error'
+import { GraphQLPostFavoriteTweetSuccessResponse } from './graphql/post/favorite-tweet-success'
+import { GraphQLPostHomeLatestTimelineSuccessResponse } from './graphql/post/home-latest-timeline-success'
+import { GraphQLPostHomeTimelineSuccessResponse } from './graphql/post/home-timeline-success'
 
 import { HttpMethod, RequestType } from '../../scraper'
+import { GraphQLPostUnfavoriteTweetSuccessResponse } from './graphql/post/unfavorite-tweet-success'
 
 /** GraphQL articleNudgeDomains GET レスポンスモデル */
 export type GraphQLGetArticleNudgeDomainsResponse =
-  | GraphQLGetArticleNudgeDomainsSuccessResponse
-  | GraphQLGetArticleNudgeDomainsErrorResponse
+  GraphQLGetArticleNudgeDomainsSuccessResponse
 /** GraphQL AudioSpaceById GET レスポンスモデル */
 export type GraphQLGetAudioSpaceByIdResponse =
   GraphQLGetAudioSpaceByIdSuccessResponse
-/** GraphQL AuthenticatedUserTFLists GET レスポンスモデル */
-export type GraphQLGetAuthenticatedUserTFListsResponse =
-  GraphQLGetAuthenticatedUserTFListsSuccessResponse
-/** GraphQL CommunitiesTabBarItemQuery GET レスポンスモデル */
-export type GraphQLGetCommunitiesTabBarItemQueryResponse =
-  GraphQLGetCommunitiesTabBarItemQuerySuccessResponse
 /** GraphQL DataSaverMode GET レスポンスモデル */
 export type GraphQLGetDataSaverModeResponse =
   | GraphQLGetDataSaverModeSuccessResponse
@@ -69,7 +64,8 @@ export type GraphQLGetGetUserClaimsResponse =
   | GraphQLGetGetUserClaimsErrorResponse
 /** GraphQL HomeLatestTimeline GET レスポンスモデル */
 export type GraphQLGetHomeLatestTimelineResponse =
-  GraphQLGetHomeLatestTimelineSuccessResponse
+  | GraphQLGetHomeLatestTimelineSuccessResponse
+  | GraphQLGetHomeLatestTimelineErrorResponse
 /** GraphQL HomeTimeline GET レスポンスモデル */
 export type GraphQLGetHomeTimelineResponse =
   GraphQLGetHomeTimelineSuccessResponse
@@ -77,34 +73,42 @@ export type GraphQLGetHomeTimelineResponse =
 export type GraphQLGetLikesResponse =
   | GraphQLGetLikesSuccessResponse
   | GraphQLGetLikesErrorResponse
+/** GraphQL ListLatestTweetsTimeline GET レスポンスモデル */
+export type GraphQLGetListLatestTweetsTimelineResponse =
+  GraphQLGetListLatestTweetsTimelineSuccessResponse
 /** GraphQL ListPins GET レスポンスモデル */
-export type GraphQLGetListPinsResponse =
-  | GraphQLGetListPinsSuccessResponse
-  | GraphQLGetListPinsErrorResponse
+export type GraphQLGetListPinsResponse = GraphQLGetListPinsSuccessResponse
+/** GraphQL PinnedTimelines GET レスポンスモデル */
+export type GraphQLGetPinnedTimelinesResponse =
+  | GraphQLGetPinnedTimelinesSuccessResponse
+  | GraphQLGetPinnedTimelinesErrorResponse
 /** GraphQL ProfileSpotlightsQuery GET レスポンスモデル */
 export type GraphQLGetProfileSpotlightsQueryResponse =
-  GraphQLGetProfileSpotlightsQuerySuccessResponse
-/** GraphQL QuickPromoteEligibility GET レスポンスモデル */
-export type GraphQLGetQuickPromoteEligibilityResponse =
-  GraphQLGetQuickPromoteEligibilitySuccessResponse
+  | GraphQLGetProfileSpotlightsQuerySuccessResponse
+  | GraphQLGetProfileSpotlightsQueryErrorResponse
 /** GraphQL SearchTimeline GET レスポンスモデル */
 export type GraphQLGetSearchTimelineResponse =
-  GraphQLGetSearchTimelineSuccessResponse
+  | GraphQLGetSearchTimelineSuccessResponse
+  | GraphQLGetSearchTimelineErrorResponse
 /** GraphQL TweetDetail GET レスポンスモデル */
 export type GraphQLGetTweetDetailResponse =
   | GraphQLGetTweetDetailSuccessResponse
   | GraphQLGetTweetDetailErrorResponse
+/** GraphQL TweetResultByRestId GET レスポンスモデル */
+export type GraphQLGetTweetResultByRestIdResponse =
+  GraphQLGetTweetResultByRestIdSuccessResponse
+/** GraphQL useFetchProfileBlocksProfileExistsQuery GET レスポンスモデル */
+export type GraphQLGetUseFetchProfileBlocksProfileExistsQueryResponse =
+  | GraphQLGetUseFetchProfileBlocksProfileExistsQuerySuccessResponse
+  | GraphQLGetUseFetchProfileBlocksProfileExistsQueryErrorResponse
 /** GraphQL UserByRestId GET レスポンスモデル */
 export type GraphQLGetUserByRestIdResponse =
-  GraphQLGetUserByRestIdSuccessResponse
+  | GraphQLGetUserByRestIdSuccessResponse
+  | GraphQLGetUserByRestIdErrorResponse
 /** GraphQL UserByScreenName GET レスポンスモデル */
 export type GraphQLGetUserByScreenNameResponse =
-  GraphQLGetUserByScreenNameSuccessResponse
-/** GraphQL UserMedia GET レスポンスモデル */
-export type GraphQLGetUserMediaResponse = GraphQLGetUserMediaSuccessResponse
-/** GraphQL UsersByRestIds GET レスポンスモデル */
-export type GraphQLGetUsersByRestIdsResponse =
-  GraphQLGetUsersByRestIdsSuccessResponse
+  | GraphQLGetUserByScreenNameSuccessResponse
+  | GraphQLGetUserByScreenNameErrorResponse
 /** GraphQL UsersVerifiedAvatars GET レスポンスモデル */
 export type GraphQLGetUsersVerifiedAvatarsResponse =
   GraphQLGetUsersVerifiedAvatarsSuccessResponse
@@ -112,15 +116,14 @@ export type GraphQLGetUsersVerifiedAvatarsResponse =
 export type GraphQLGetUserTweetsResponse =
   | GraphQLGetUserTweetsSuccessResponse
   | GraphQLGetUserTweetsErrorResponse
-/** GraphQL UserTweetsAndReplies GET レスポンスモデル */
-export type GraphQLGetUserTweetsAndRepliesResponse =
-  GraphQLGetUserTweetsAndRepliesSuccessResponse
+/** GraphQL Viewer GET レスポンスモデル */
+export type GraphQLGetViewerResponse =
+  | GraphQLGetViewerSuccessResponse
+  | GraphQLGetViewerErrorResponse
 
 export type GraphQLGETEndpoint =
   | 'articleNudgeDomains'
   | 'AudioSpaceById'
-  | 'AuthenticatedUserTFLists'
-  | 'CommunitiesTabBarItemQuery'
   | 'DataSaverMode'
   | 'FollowHostButtonQuery'
   | 'getAltTextPromptPreference'
@@ -128,110 +131,96 @@ export type GraphQLGETEndpoint =
   | 'HomeLatestTimeline'
   | 'HomeTimeline'
   | 'Likes'
+  | 'ListLatestTweetsTimeline'
   | 'ListPins'
+  | 'PinnedTimelines'
   | 'ProfileSpotlightsQuery'
-  | 'QuickPromoteEligibility'
   | 'SearchTimeline'
   | 'TweetDetail'
+  | 'TweetResultByRestId'
+  | 'useFetchProfileBlocksProfileExistsQuery'
   | 'UserByRestId'
   | 'UserByScreenName'
-  | 'UserMedia'
-  | 'UsersByRestIds'
   | 'UsersVerifiedAvatars'
   | 'UserTweets'
-  | 'UserTweetsAndReplies'
+  | 'Viewer'
 
 export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
   T extends 'articleNudgeDomains'
     ? GraphQLGetArticleNudgeDomainsResponse
     : T extends 'AudioSpaceById'
       ? GraphQLGetAudioSpaceByIdResponse
-      : T extends 'AuthenticatedUserTFLists'
-        ? GraphQLGetAuthenticatedUserTFListsResponse
-        : T extends 'CommunitiesTabBarItemQuery'
-          ? GraphQLGetCommunitiesTabBarItemQueryResponse
-          : T extends 'DataSaverMode'
-            ? GraphQLGetDataSaverModeResponse
-            : T extends 'FollowHostButtonQuery'
-              ? GraphQLGetFollowHostButtonQueryResponse
-              : T extends 'getAltTextPromptPreference'
-                ? GraphQLGetGetAltTextPromptPreferenceResponse
-                : T extends 'GetUserClaims'
-                  ? GraphQLGetGetUserClaimsResponse
-                  : T extends 'HomeLatestTimeline'
-                    ? GraphQLGetHomeLatestTimelineResponse
-                    : T extends 'HomeTimeline'
-                      ? GraphQLGetHomeTimelineResponse
-                      : T extends 'Likes'
-                        ? GraphQLGetLikesResponse
-                        : T extends 'ListPins'
-                          ? GraphQLGetListPinsResponse
+      : T extends 'DataSaverMode'
+        ? GraphQLGetDataSaverModeResponse
+        : T extends 'FollowHostButtonQuery'
+          ? GraphQLGetFollowHostButtonQueryResponse
+          : T extends 'getAltTextPromptPreference'
+            ? GraphQLGetGetAltTextPromptPreferenceResponse
+            : T extends 'GetUserClaims'
+              ? GraphQLGetGetUserClaimsResponse
+              : T extends 'HomeLatestTimeline'
+                ? GraphQLGetHomeLatestTimelineResponse
+                : T extends 'HomeTimeline'
+                  ? GraphQLGetHomeTimelineResponse
+                  : T extends 'Likes'
+                    ? GraphQLGetLikesResponse
+                    : T extends 'ListLatestTweetsTimeline'
+                      ? GraphQLGetListLatestTweetsTimelineResponse
+                      : T extends 'ListPins'
+                        ? GraphQLGetListPinsResponse
+                        : T extends 'PinnedTimelines'
+                          ? GraphQLGetPinnedTimelinesResponse
                           : T extends 'ProfileSpotlightsQuery'
                             ? GraphQLGetProfileSpotlightsQueryResponse
-                            : T extends 'QuickPromoteEligibility'
-                              ? GraphQLGetQuickPromoteEligibilityResponse
-                              : T extends 'SearchTimeline'
-                                ? GraphQLGetSearchTimelineResponse
-                                : T extends 'TweetDetail'
-                                  ? GraphQLGetTweetDetailResponse
-                                  : T extends 'UserByRestId'
-                                    ? GraphQLGetUserByRestIdResponse
-                                    : T extends 'UserByScreenName'
-                                      ? GraphQLGetUserByScreenNameResponse
-                                      : T extends 'UserMedia'
-                                        ? GraphQLGetUserMediaResponse
-                                        : T extends 'UsersByRestIds'
-                                          ? GraphQLGetUsersByRestIdsResponse
-                                          : T extends 'UsersVerifiedAvatars'
-                                            ? GraphQLGetUsersVerifiedAvatarsResponse
-                                            : T extends 'UserTweets'
-                                              ? GraphQLGetUserTweetsResponse
-                                              : T extends 'UserTweetsAndReplies'
-                                                ? GraphQLGetUserTweetsAndRepliesResponse
-                                                : never
+                            : T extends 'SearchTimeline'
+                              ? GraphQLGetSearchTimelineResponse
+                              : T extends 'TweetDetail'
+                                ? GraphQLGetTweetDetailResponse
+                                : T extends 'TweetResultByRestId'
+                                  ? GraphQLGetTweetResultByRestIdResponse
+                                  : T extends 'useFetchProfileBlocksProfileExistsQuery'
+                                    ? GraphQLGetUseFetchProfileBlocksProfileExistsQueryResponse
+                                    : T extends 'UserByRestId'
+                                      ? GraphQLGetUserByRestIdResponse
+                                      : T extends 'UserByScreenName'
+                                        ? GraphQLGetUserByScreenNameResponse
+                                        : T extends 'UsersVerifiedAvatars'
+                                          ? GraphQLGetUsersVerifiedAvatarsResponse
+                                          : T extends 'UserTweets'
+                                            ? GraphQLGetUserTweetsResponse
+                                            : T extends 'Viewer'
+                                              ? GraphQLGetViewerResponse
+                                              : never
 
-/** GraphQL CreateRetweet POST レスポンスモデル */
-export type GraphQLPostCreateRetweetResponse =
-  GraphQLPostCreateRetweetSuccessResponse
-/** GraphQL DeleteRetweet POST レスポンスモデル */
-export type GraphQLPostDeleteRetweetResponse =
-  GraphQLPostDeleteRetweetSuccessResponse
-/** GraphQL FavoriteTweet POST レスポンスモデル */
-export type GraphQLPostFavoriteTweetResponse =
-  GraphQLPostFavoriteTweetSuccessResponse
 /** GraphQL HomeLatestTimeline POST レスポンスモデル */
 export type GraphQLPostHomeLatestTimelineResponse =
-  | GraphQLPostHomeLatestTimelineSuccessResponse
-  | GraphQLPostHomeLatestTimelineErrorResponse
+  GraphQLPostHomeLatestTimelineSuccessResponse
 /** GraphQL HomeTimeline POST レスポンスモデル */
 export type GraphQLPostHomeTimelineResponse =
   GraphQLPostHomeTimelineSuccessResponse
+/** GraphQL FavoriteTweet POST レスポンスモデル */
+export type GraphQLPostFavoriteTweetResponse =
+  GraphQLPostFavoriteTweetSuccessResponse
 /** GraphQL UnfavoriteTweet POST レスポンスモデル */
 export type GraphQLPostUnfavoriteTweetResponse =
   GraphQLPostUnfavoriteTweetSuccessResponse
 
 export type GraphQLPOSTEndpoint =
-  | 'CreateRetweet'
-  | 'DeleteRetweet'
   | 'FavoriteTweet'
+  | 'UnfavoriteTweet'
   | 'HomeLatestTimeline'
   | 'HomeTimeline'
-  | 'UnfavoriteTweet'
 
 export type GraphQLPOSTEndPointResponseType<T extends GraphQLPOSTEndpoint> =
-  T extends 'CreateRetweet'
-    ? GraphQLPostCreateRetweetResponse
-    : T extends 'DeleteRetweet'
-      ? GraphQLPostDeleteRetweetResponse
-      : T extends 'FavoriteTweet'
-        ? GraphQLPostFavoriteTweetResponse
-        : T extends 'HomeLatestTimeline'
-          ? GraphQLPostHomeLatestTimelineResponse
-          : T extends 'HomeTimeline'
-            ? GraphQLPostHomeTimelineResponse
-            : T extends 'UnfavoriteTweet'
-              ? GraphQLPostUnfavoriteTweetResponse
-              : never
+  T extends 'FavoriteTweet'
+    ? GraphQLPostFavoriteTweetResponse
+    : T extends 'UnfavoriteTweet'
+      ? GraphQLPostUnfavoriteTweetResponse
+      : T extends 'HomeLatestTimeline'
+        ? GraphQLPostHomeLatestTimelineResponse
+        : T extends 'HomeTimeline'
+          ? GraphQLPostHomeTimelineResponse
+          : never
 
 export type GraphQLEndpoint = GraphQLGETEndpoint | GraphQLPOSTEndpoint
 

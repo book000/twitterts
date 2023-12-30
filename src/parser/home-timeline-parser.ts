@@ -36,6 +36,10 @@ export class HomeTimelineParser extends BaseParser<
         | GraphQLGetHomeLatestTimelineResponse
     )
 
+    if (!('data' in this.response)) {
+      throw new Error('This response is error response.')
+    }
+
     const instructions = this.response.data.home.home_timeline_urt
       .instructions as Instruction[]
     const entries: CustomTimelineTweetEntry[] = instructions

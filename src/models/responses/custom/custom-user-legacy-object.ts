@@ -3,8 +3,8 @@
 /** レスポンスユーザーレガシーオブジェクト */
 
 export interface CustomUserLegacyObject {
-  can_dm: boolean
-  can_media_tag: boolean
+  can_dm?: boolean
+  can_media_tag?: boolean
   created_at: string
   default_profile: boolean
   default_profile_image: boolean
@@ -48,13 +48,13 @@ export interface CustomUserLegacyObject {
   translator_type: string
   url?: string
   verified: boolean
-  want_retweets: boolean
-  withheld_in_countries: unknown[]
-  followed_by?: boolean
+  want_retweets?: boolean
+  withheld_in_countries: string[]
   following?: boolean
-  muting?: boolean
-  blocking?: boolean
-  needs_phone_verification?: boolean
-  protected?: boolean
   verified_type?: string
+  followed_by?: boolean
+  blocking?: boolean
+  protected?: boolean
+  muting?: boolean
+  needs_phone_verification?: boolean
 }

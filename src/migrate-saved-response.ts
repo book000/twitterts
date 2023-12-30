@@ -130,14 +130,14 @@ class MigrateSavedResponse {
     logger.info(`  📂 Debug output: ${debugOutputDirectory}`)
 
     const responseDatabase = new ResponseDatabase()
-    logger.info('Initialize responses database')
+    logger.info('🚀 Initialize responses database')
     const result = await responseDatabase.init()
     if (!result) {
       return
     }
-    logger.info('Migrate responses database')
+    logger.info('🚀 Migrate responses database')
     await responseDatabase.migrate()
-    logger.info('Sync responses database')
+    logger.info('🚀 Sync responses database')
     await responseDatabase.sync()
 
     logger.info('🔍 Loading debug output folders')
@@ -292,5 +292,5 @@ class MigrateSavedResponse {
 }
 
 ;(async () => {
-  new MigrateSavedResponse().run()
+  await new MigrateSavedResponse().run()
 })()
