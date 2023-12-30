@@ -43,6 +43,7 @@ export class CustomTypesGenerator {
     const logger = Logger.configure(
       'CustomTypesGenerator:runGraphQLSearchTimeline'
     )
+    logger.info('📝 Creating CustomSearchTimelineEntry')
 
     const schema = await this.createSchemaFromResponse(
       {
@@ -52,6 +53,10 @@ export class CustomTypesGenerator {
         statusCode: 200,
       },
       (response) => {
+        if (!('data' in response)) {
+          return []
+        }
+
         return response.data.search_by_raw_query.search_timeline.timeline.instructions
           .filter(
             (instruction) =>
@@ -95,6 +100,12 @@ export class CustomTypesGenerator {
       },
       (response) => {
         if (!('data' in response)) {
+          return []
+        }
+        if (
+          response.data.user.result.timeline_v2.timeline?.instructions ===
+          undefined
+        ) {
           return []
         }
         return response.data.user.result.timeline_v2.timeline.instructions
@@ -142,6 +153,12 @@ export class CustomTypesGenerator {
       },
       (response) => {
         if (!('data' in response)) {
+          return []
+        }
+        if (
+          response.data.user.result.timeline_v2.timeline?.instructions ===
+          undefined
+        ) {
           return []
         }
         return response.data.user.result.timeline_v2.timeline.instructions
@@ -321,49 +338,75 @@ export class CustomTypesGenerator {
     const logger = Logger.configure('CustomTypesGenerator:runTweetObject')
 
     // 各レスポンスからツイートオブジェクトを抽出
-    const promises = await Promise.all([
+    const results = [
       // HomeTimeline
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'HomeTimeline',
           method: 'GET',
           statusCode: 200,
         },
-        (response) =>
-          this.getTweetObjectsFromInstructions(
+        (response) => {
+          if (
+            response.data.home.home_timeline_urt?.instructions === undefined
+          ) {
+            return []
+          }
+          return this.getTweetObjectsFromInstructions(
             response.data.home.home_timeline_urt.instructions
           ).flat()
+        }
       ),
       // HomeLatestTimeline
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'HomeLatestTimeline',
           method: 'GET',
           statusCode: 200,
         },
-        (response) =>
-          this.getTweetObjectsFromInstructions(
+        (response) => {
+          if (!('data' in response)) {
+            return []
+          }
+          if (
+            response.data.home.home_timeline_urt?.instructions === undefined
+          ) {
+            return []
+          }
+          return this.getTweetObjectsFromInstructions(
             response.data.home.home_timeline_urt.instructions
           ).flat()
+        }
       ),
       // SearchTimeline
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'SearchTimeline',
           method: 'GET',
           statusCode: 200,
         },
-        (response) =>
-          this.getTweetObjectsFromInstructions(
+        (response) => {
+          if (!('data' in response)) {
+            return []
+          }
+          if (
+            response.data.search_by_raw_query.search_timeline.timeline
+              .instructions === undefined
+          ) {
+            return []
+          }
+
+          return this.getTweetObjectsFromInstructions(
             response.data.search_by_raw_query.search_timeline.timeline
               .instructions
           ).flat()
+        }
       ),
       // UserTweets
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'UserTweets',
@@ -374,6 +417,12 @@ export class CustomTypesGenerator {
           if (!('data' in response)) {
             return []
           }
+          if (
+            response.data.user.result.timeline_v2.timeline?.instructions ===
+            undefined
+          ) {
+            return []
+          }
 
           return this.getTweetObjectsFromInstructions(
             response.data.user.result.timeline_v2.timeline.instructions
@@ -381,7 +430,7 @@ export class CustomTypesGenerator {
         }
       ),
       // Likes
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'Likes',
@@ -399,7 +448,7 @@ export class CustomTypesGenerator {
         }
       ),
       // TweetDetail
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'TweetDetail',
@@ -411,13 +460,17 @@ export class CustomTypesGenerator {
             return []
           }
 
+          if (!response.data.threaded_conversation_with_injections_v2) {
+            return []
+          }
+
           return this.getTweetObjectsFromInstructions(
             response.data.threaded_conversation_with_injections_v2.instructions
           ).flat()
         }
       ),
-    ])
-    const schemas = promises.filter((schema): schema is Schema => !!schema)
+    ].flat()
+    const schemas = results.filter((schema): schema is Schema => !!schema)
     if (schemas.length === 0) {
       logger.warn('⏭️ Schema not found. Skip')
       return
@@ -479,23 +532,28 @@ export class CustomTypesGenerator {
     const logger = Logger.configure('CustomTypesGenerator:runTweetLegacyObject')
 
     // 各レスポンスからレガシーツイートオブジェクトを抽出
-    const promises = await Promise.all([
+    const results = [
       // SearchTimeline
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'SearchTimeline',
           method: 'GET',
           statusCode: 200,
         },
-        (response) =>
-          this.getTweetLegacyObjectsFromInstructions(
+        (response) => {
+          if (!('data' in response)) {
+            return []
+          }
+
+          return this.getTweetLegacyObjectsFromInstructions(
             response.data.search_by_raw_query.search_timeline.timeline
               .instructions
           ).flat()
+        }
       ),
       // UserTweets
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'UserTweets',
@@ -512,8 +570,8 @@ export class CustomTypesGenerator {
           ).flat()
         }
       ),
-    ])
-    const schemas = promises.filter((schema): schema is Schema => !!schema)
+    ].flat()
+    const schemas = results.filter((schema): schema is Schema => !!schema)
     if (schemas.length === 0) {
       logger.warn('⏭️ Schema not found. Skip')
       return
@@ -600,6 +658,10 @@ export class CustomTypesGenerator {
       const endpointSchema = await this.createSchemaFromResponse(
         endpoint,
         (response) => {
+          if (!('data' in response)) {
+            return null
+          }
+
           return response.data.user.result.legacy
         }
       )
@@ -633,23 +695,28 @@ export class CustomTypesGenerator {
     )
 
     // 各レスポンスからレガシーツイートオブジェクトを抽出
-    const promises = await Promise.all([
+    const promises = [
       // SearchTimeline
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'SearchTimeline',
           method: 'GET',
           statusCode: 200,
         },
-        (response) =>
-          this.getVideoInfoFromInstructions(
+        (response) => {
+          if (!('data' in response)) {
+            return []
+          }
+
+          return this.getVideoInfoFromInstructions(
             response.data.search_by_raw_query.search_timeline.timeline
               .instructions
           ).flat()
+        }
       ),
       // UserTweets
-      this.createSchemaFromResponse(
+      await this.createSchemaFromResponse(
         {
           endpointType: 'GRAPHQL',
           endpoint: 'UserTweets',
@@ -662,12 +729,11 @@ export class CustomTypesGenerator {
           }
 
           return this.getVideoInfoFromInstructions(
-            // @ts-ignore 暫定的に型を無視
             response.data.user.result.timeline_v2.timeline.instructions
           ).flat()
         }
       ),
-    ])
+    ].flat()
     const schemas = promises.filter((schema): schema is Schema => !!schema)
     if (schemas.length === 0) {
       logger.warn('⏭️ Schema not found. Skip')
@@ -700,17 +766,6 @@ export class CustomTypesGenerator {
                     }[]
                   }
                 }
-                tweet?: {
-                  legacy?: {
-                    extended_entities?: {
-                      media?: {
-                        video_info?: {
-                          variants?: unknown[]
-                        }
-                      }[]
-                    }
-                  }
-                }
               }
             }
           }
@@ -733,10 +788,7 @@ export class CustomTypesGenerator {
           )
       )
       .flatMap((entry) => {
-        return [
-          entry?.content.itemContent?.tweet_results?.result?.legacy,
-          entry?.content.itemContent?.tweet_results?.result?.tweet?.legacy,
-        ]
+        return [entry?.content.itemContent?.tweet_results?.result?.legacy]
       })
       .filter((legacy): legacy is NonNullable<typeof legacy> => !!legacy)
       .flatMap((legacy) => {
@@ -767,7 +819,7 @@ export class CustomTypesGenerator {
         E['endpointType'],
         E['endpoint']
       >
-    ) => object
+    ) => object | null
   ): Promise<Schema | null> {
     const logger = Logger.configure(
       'CustomTypesGenerator.createSchemaFromResponse'
@@ -795,7 +847,20 @@ export class CustomTypesGenerator {
         .filter((body) => body.length > 0)
         .map((body) => JSON.parse(body))
       if (customizer) {
-        responseBodys = responseBodys.flatMap((body) => customizer(body))
+        responseBodys = responseBodys
+          .map((body) => {
+            try {
+              return customizer(body)
+            } catch (error) {
+              logger.error(
+                `🚨 Failed to customize ${endpoint.method} ${endpoint.endpoint}`,
+                error as Error
+              )
+              return null
+            }
+          })
+          .filter((body): body is NonNullable<typeof body> => !!body)
+          .flat()
       }
 
       const pageSchema = createCompoundSchema(responseBodys)
@@ -803,7 +868,9 @@ export class CustomTypesGenerator {
     }
 
     if (!schema) {
-      logger.warn(`⏭️ Schema not found: ${endpoint.method} ${endpoint.endpoint}`)
+      logger.warn(
+        `⏭️ Schema not found: ${endpoint.method} ${endpoint.endpoint}`
+      )
       return null
     }
 
@@ -850,6 +917,7 @@ export class CustomTypesGenerator {
    * カスタム型定義を生成する
    */
   async generate(parallel: boolean): Promise<void> {
+    const logger = Logger.configure('CustomTypesGenerator.generate')
     const generators = [
       this.runGraphQLSearchTimeline.bind(this),
       this.runGraphQLUserTweets.bind(this),
@@ -867,7 +935,14 @@ export class CustomTypesGenerator {
     if (parallel) {
       await Promise.all(generators.map((generator) => generator()))
     } else {
+      let generateCount = 0
       for (const generator of generators) {
+        generateCount++
+        const functionName = generator.name.replace('bound ', '')
+        logger.info(
+          `🔍 Generating ${functionName} (${generateCount}/${generators.length})`
+        )
+
         await generator()
       }
     }

@@ -9,7 +9,42 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
         __typename: string
         id: string
         rest_id: string
-        affiliates_highlighted_label: {}
+        affiliates_highlighted_label: {
+          label?: {
+            url?: {
+              url: string
+              urlType: string
+            }
+            badge: {
+              url: string
+            }
+            description: string
+            userLabelType: string
+            userLabelDisplayType?: string
+            longDescription?: {
+              text: string
+              entities: {
+                fromIndex: number
+                toIndex: number
+                ref: {
+                  type: string
+                  screen_name: string
+                  mention_results: {
+                    result: {
+                      __typename: string
+                      reason?: string
+                      message?: string
+                      legacy?: {
+                        screen_name: string
+                      }
+                      rest_id?: string
+                    }
+                  }
+                }
+              }[]
+            }
+          }
+        }
         has_graduated_access: boolean
         is_blue_verified: boolean
         profile_image_shape: string
@@ -22,9 +57,14 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           description: string
           entities: {
             description: {
-              urls: unknown[]
+              urls: {
+                display_url: string
+                expanded_url: string
+                url: string
+                indices: number[]
+              }[]
             }
-            url: {
+            url?: {
               urls: {
                 display_url: string
                 expanded_url: string
@@ -46,20 +86,28 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           normal_followers_count: number
           pinned_tweet_ids_str: string[]
           possibly_sensitive: boolean
-          profile_banner_url: string
+          profile_banner_url?: string
           profile_image_url_https: string
           profile_interstitial_type: string
           screen_name: string
           statuses_count: number
           translator_type: string
-          url: string
+          url?: string
           verified: boolean
           want_retweets: boolean
-          withheld_in_countries: unknown[]
+          withheld_in_countries: string[]
+          following?: boolean
+          verified_type?: string
+          followed_by?: boolean
+          blocking?: boolean
+          protected?: boolean
+          muting?: boolean
         }
         smart_blocked_by: boolean
         smart_blocking: boolean
-        business_account: {}
+        business_account: {
+          affiliates_count?: number
+        }
         highlights_info: {
           can_highlight_tweets: boolean
           highlighted_tweets: string
@@ -67,6 +115,17 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
         creator_subscriptions_count: number
         has_hidden_likes_on_profile: boolean
         has_hidden_subscriptions_on_profile: boolean
+        professional?: {
+          rest_id: string
+          professional_type: string
+          category: {
+            id: number
+            name: string
+            icon_name: string
+          }[]
+        }
+        super_follow_eligible?: boolean
+        has_nft_avatar?: boolean
       }
     }
   }

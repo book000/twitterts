@@ -74,6 +74,11 @@ interface GenerateTypesOptions {
    * 1ページあたりのレスポンス数
    */
   limit: number
+
+  /**
+   * エンドポイントの配列
+   */
+  endpoints: ResponseEndPointWithCount[]
 }
 
 /**
@@ -174,11 +179,8 @@ export class TwitterTypesGenerator {
    */
   public async generateTypes(options: GenerateTypesOptions): Promise<void> {
     const logger = Logger.configure('TwitterGenerateTypes.generateTypes')
-    const responseDatabase = this.responseDatabase
 
-    const endpoints = await responseDatabase.getEndpoints()
-    logger.info(`🔍 Found ${endpoints.length} endpoints`)
-
+    const endpoints = options.endpoints
     const generators = []
     let endpointCount = 0
     for (const endpoint of endpoints) {

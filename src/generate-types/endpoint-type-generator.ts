@@ -1,10 +1,7 @@
 import { Logger } from '@book000/node-utils'
 import { Utils } from './utils'
 import fs from 'node:fs'
-import {
-  ResponseDatabase,
-  ResponseEndPointWithCount,
-} from '../saving-responses'
+import { ResponseEndPointWithCount } from '../saving-responses'
 
 /**
  * レスポンス種別
@@ -15,15 +12,13 @@ type RequestType = 'GraphQL'
  * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成するクラス
  */
 export class EndPointTypeGenerator {
-  private readonly responseDatabase: ResponseDatabase
   private readonly typesDirectory: string
 
   /**
    * @param responseDatabase レスポンスを保存するデータベース
    * @param typesDirectory 型定義の出力先ディレクトリ
    */
-  constructor(responseDatabase: ResponseDatabase, typesDirectory: string) {
-    this.responseDatabase = responseDatabase
+  constructor(typesDirectory: string) {
     this.typesDirectory = typesDirectory
   }
 
@@ -258,26 +253,22 @@ export class EndPointTypeGenerator {
     return `${head}\n${results.join('\n')}\n: never`
   }
 
-  private async getEndpoints(
-    types: readonly string[]
-  ): Promise<ResponseEndPointWithCount[]> {
-    const endpoints = await this.responseDatabase.getEndpoints()
-    const lowerTypes = new Set(types.map((type) => type.toLowerCase()))
-    return endpoints.filter((endpoint) =>
-      lowerTypes.has(endpoint.endpointType.toLowerCase())
-    )
-  }
-
   /**
    * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成する
    */
-  async generate(): Promise<void> {
+  async generate(inputEndpoints: ResponseEndPointWithCount[]): Promise<void> {
     const logger = Logger.configure('EndPointTypeGenerator.generate')
 
     const types = ['GraphQL'] as const
-    const endpoints = await this.getEndpoints(types)
 
     const data = []
+
+    const endpoints = inputEndpoints.filter((endpoint) =>
+      types.some(
+        (type) => endpoint.endpointType.toLowerCase() === type.toLowerCase()
+      )
+    )
+    logger.info(`🔍 Filtered ${endpoints.length} endpoints`)
 
     const imports = this.generateImport(endpoints)
     data.push(

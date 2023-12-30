@@ -292,5 +292,5 @@ class MigrateSavedResponse {
 }
 
 ;(async () => {
-  new MigrateSavedResponse().run()
+  await new MigrateSavedResponse().run()
 })()

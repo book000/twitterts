@@ -4,7 +4,7 @@
 
 export type CustomEntityVideoInfoObject = null | {
   aspect_ratio: number[]
-  duration_millis: number
+  duration_millis?: number
   variants: {
     bitrate?: number
     content_type: string

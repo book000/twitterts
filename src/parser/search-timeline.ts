@@ -20,6 +20,10 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
   ) {
     super(response)
 
+    if (!('data' in this.response)) {
+      throw new Error('This response is error response.')
+    }
+
     const entries =
       this.response.data.search_by_raw_query.search_timeline.timeline.instructions
         .filter(

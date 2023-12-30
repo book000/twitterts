@@ -5,7 +5,7 @@
 export interface GraphQLGetListPinsSuccessResponse {
   data: {
     viewer: {
-      pinned_lists?: {
+      pinned_lists: {
         created_at: number
         default_banner_media: {
           media_info: {
@@ -41,11 +41,13 @@ export interface GraphQLGetListPinsSuccessResponse {
           }
         }
         description: string
+        facepile_urls: unknown[]
         following: boolean
         id: string
         id_str: string
         is_member: boolean
         member_count: number
+        members_context: string
         mode: string
         muting: boolean
         name: string
@@ -98,8 +100,6 @@ export interface GraphQLGetListPinsSuccessResponse {
             }
           }
         }
-        facepile_urls: unknown[]
-        members_context: string
         custom_banner_media?: {
           media_info: {
             original_img_url: string

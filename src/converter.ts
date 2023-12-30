@@ -177,12 +177,7 @@ export const ObjectConverter = {
       description: {},
     }
 
-    const urls = legacy.entities.description.urls as {
-      display_url: string
-      expanded_url: string
-      indices: number[]
-      url: string
-    }[]
+    const urls = legacy.entities.description.urls
     for (const url of urls) {
       entities.description.urls = entities.description.urls ?? []
       entities.description.urls.push({
@@ -220,10 +215,7 @@ export const ObjectConverter = {
       return
     }
 
-    const geo = legacy.geo as {
-      coordinates: number[]
-      type: string
-    }
+    const geo = legacy.geo
 
     return {
       coordinates: [geo.coordinates[1], geo.coordinates[0]],
@@ -238,25 +230,28 @@ export const ObjectConverter = {
    * @returns 場所
    */
   convertPlace(legacy: CustomTweetLegacyObject): Place | undefined {
-    if (!legacy.place) {
+    if ('place' in legacy && !legacy.place) {
       return
     }
 
-    const place = legacy.place as {
-      attributes: Record<string, never>
-      bounding_box: {
-        coordinates: number[][][]
-        type: string
+    const legacyWithPlace = legacy as unknown as {
+      place: {
+        attributes: Record<string, never>
+        bounding_box: {
+          coordinates: number[][][]
+          type: string
+        }
+        contained_within: string[] | null | undefined
+        country_code: string
+        country: string
+        full_name: string
+        id: string
+        name: string
+        place_type: string
+        url: string
       }
-      contained_within: string[] | null | undefined
-      country_code: string
-      country: string
-      full_name: string
-      id: string
-      name: string
-      place_type: string
-      url: string
     }
+    const place = legacyWithPlace.place
 
     return {
       attributes: place.attributes,
