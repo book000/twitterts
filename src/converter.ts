@@ -230,31 +230,19 @@ export const ObjectConverter = {
    * @returns 場所
    */
   convertPlace(legacy: CustomTweetLegacyObject): Place | undefined {
-    if ('place' in legacy && !legacy.place) {
+    if ('place' in legacy) {
       return
     }
 
-    const legacyWithPlace = legacy as unknown as {
-      place: {
-        attributes: Record<string, never>
-        bounding_box: {
-          coordinates: number[][][]
-          type: string
-        }
-        contained_within: string[] | null | undefined
-        country_code: string
-        country: string
-        full_name: string
-        id: string
-        name: string
-        place_type: string
-        url: string
-      }
+    const place = legacy.place
+    if (!place) {
+      return
     }
-    const place = legacyWithPlace.place
 
     return {
-      attributes: place.attributes,
+      attributes: ('attributes' in place
+        ? place.attributes
+        : {}) as Place['attributes'],
       bounding_box: {
         coordinates: place.bounding_box.coordinates.map((coordinate) =>
           coordinate.map(
@@ -263,7 +251,9 @@ export const ObjectConverter = {
         ),
         type: place.bounding_box.type,
       },
-      contained_within: place.contained_within as string[] | null | undefined,
+      contained_within: ('contained_within' in place
+        ? place.contained_within
+        : []) as Place['contained_within'],
       country_code: place.country_code,
       country: place.country,
       full_name: place.full_name,
