@@ -64,10 +64,10 @@ export interface GraphQLGetViewerSuccessResponse {
             screen_name: string
             statuses_count: number
             translator_type: string
+            url?: string
             verified: boolean
             want_retweets: boolean
             withheld_in_countries: unknown[]
-            url?: string
           }
           legacy_extended_profile: {
             birthdate?: {
