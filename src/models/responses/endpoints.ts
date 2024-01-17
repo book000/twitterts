@@ -13,7 +13,7 @@ import { GraphQLGetHomeTimelineSuccessResponse } from './graphql/get/home-timeli
 import { GraphQLGetLikesSuccessResponse } from './graphql/get/likes-success'
 import { GraphQLGetLikesErrorResponse } from './graphql/get/likes-error'
 import { GraphQLGetListLatestTweetsTimelineSuccessResponse } from './graphql/get/list-latest-tweets-timeline-success'
-import { GraphQLGetListPinsSuccessResponse } from './graphql/get/list-pins-success'
+import { GraphQLGetListLatestTweetsTimelineErrorResponse } from './graphql/get/list-latest-tweets-timeline-error'
 import { GraphQLGetPinnedTimelinesSuccessResponse } from './graphql/get/pinned-timelines-success'
 import { GraphQLGetPinnedTimelinesErrorResponse } from './graphql/get/pinned-timelines-error'
 import { GraphQLGetProfileSpotlightsQuerySuccessResponse } from './graphql/get/profile-spotlights-query-success'
@@ -37,9 +37,9 @@ import { GraphQLGetViewerErrorResponse } from './graphql/get/viewer-error'
 import { GraphQLPostFavoriteTweetSuccessResponse } from './graphql/post/favorite-tweet-success'
 import { GraphQLPostHomeLatestTimelineSuccessResponse } from './graphql/post/home-latest-timeline-success'
 import { GraphQLPostHomeTimelineSuccessResponse } from './graphql/post/home-timeline-success'
+import { GraphQLPostUnfavoriteTweetSuccessResponse } from './graphql/post/unfavorite-tweet-success'
 
 import { HttpMethod, RequestType } from '../../scraper'
-import { GraphQLPostUnfavoriteTweetSuccessResponse } from './graphql/post/unfavorite-tweet-success'
 
 /** GraphQL articleNudgeDomains GET レスポンスモデル */
 export type GraphQLGetArticleNudgeDomainsResponse =
@@ -75,9 +75,8 @@ export type GraphQLGetLikesResponse =
   | GraphQLGetLikesErrorResponse
 /** GraphQL ListLatestTweetsTimeline GET レスポンスモデル */
 export type GraphQLGetListLatestTweetsTimelineResponse =
-  GraphQLGetListLatestTweetsTimelineSuccessResponse
-/** GraphQL ListPins GET レスポンスモデル */
-export type GraphQLGetListPinsResponse = GraphQLGetListPinsSuccessResponse
+  | GraphQLGetListLatestTweetsTimelineSuccessResponse
+  | GraphQLGetListLatestTweetsTimelineErrorResponse
 /** GraphQL PinnedTimelines GET レスポンスモデル */
 export type GraphQLGetPinnedTimelinesResponse =
   | GraphQLGetPinnedTimelinesSuccessResponse
@@ -132,7 +131,6 @@ export type GraphQLGETEndpoint =
   | 'HomeTimeline'
   | 'Likes'
   | 'ListLatestTweetsTimeline'
-  | 'ListPins'
   | 'PinnedTimelines'
   | 'ProfileSpotlightsQuery'
   | 'SearchTimeline'
@@ -166,31 +164,29 @@ export type GraphQLGETEndPointResponseType<T extends GraphQLGETEndpoint> =
                     ? GraphQLGetLikesResponse
                     : T extends 'ListLatestTweetsTimeline'
                       ? GraphQLGetListLatestTweetsTimelineResponse
-                      : T extends 'ListPins'
-                        ? GraphQLGetListPinsResponse
-                        : T extends 'PinnedTimelines'
-                          ? GraphQLGetPinnedTimelinesResponse
-                          : T extends 'ProfileSpotlightsQuery'
-                            ? GraphQLGetProfileSpotlightsQueryResponse
-                            : T extends 'SearchTimeline'
-                              ? GraphQLGetSearchTimelineResponse
-                              : T extends 'TweetDetail'
-                                ? GraphQLGetTweetDetailResponse
-                                : T extends 'TweetResultByRestId'
-                                  ? GraphQLGetTweetResultByRestIdResponse
-                                  : T extends 'useFetchProfileBlocksProfileExistsQuery'
-                                    ? GraphQLGetUseFetchProfileBlocksProfileExistsQueryResponse
-                                    : T extends 'UserByRestId'
-                                      ? GraphQLGetUserByRestIdResponse
-                                      : T extends 'UserByScreenName'
-                                        ? GraphQLGetUserByScreenNameResponse
-                                        : T extends 'UsersVerifiedAvatars'
-                                          ? GraphQLGetUsersVerifiedAvatarsResponse
-                                          : T extends 'UserTweets'
-                                            ? GraphQLGetUserTweetsResponse
-                                            : T extends 'Viewer'
-                                              ? GraphQLGetViewerResponse
-                                              : never
+                      : T extends 'PinnedTimelines'
+                        ? GraphQLGetPinnedTimelinesResponse
+                        : T extends 'ProfileSpotlightsQuery'
+                          ? GraphQLGetProfileSpotlightsQueryResponse
+                          : T extends 'SearchTimeline'
+                            ? GraphQLGetSearchTimelineResponse
+                            : T extends 'TweetDetail'
+                              ? GraphQLGetTweetDetailResponse
+                              : T extends 'TweetResultByRestId'
+                                ? GraphQLGetTweetResultByRestIdResponse
+                                : T extends 'useFetchProfileBlocksProfileExistsQuery'
+                                  ? GraphQLGetUseFetchProfileBlocksProfileExistsQueryResponse
+                                  : T extends 'UserByRestId'
+                                    ? GraphQLGetUserByRestIdResponse
+                                    : T extends 'UserByScreenName'
+                                      ? GraphQLGetUserByScreenNameResponse
+                                      : T extends 'UsersVerifiedAvatars'
+                                        ? GraphQLGetUsersVerifiedAvatarsResponse
+                                        : T extends 'UserTweets'
+                                          ? GraphQLGetUserTweetsResponse
+                                          : T extends 'Viewer'
+                                            ? GraphQLGetViewerResponse
+                                            : never
 
 /** GraphQL HomeLatestTimeline POST レスポンスモデル */
 export type GraphQLPostHomeLatestTimelineResponse =
@@ -207,19 +203,19 @@ export type GraphQLPostUnfavoriteTweetResponse =
 
 export type GraphQLPOSTEndpoint =
   | 'FavoriteTweet'
-  | 'UnfavoriteTweet'
   | 'HomeLatestTimeline'
   | 'HomeTimeline'
+  | 'UnfavoriteTweet'
 
 export type GraphQLPOSTEndPointResponseType<T extends GraphQLPOSTEndpoint> =
   T extends 'FavoriteTweet'
     ? GraphQLPostFavoriteTweetResponse
-    : T extends 'UnfavoriteTweet'
-      ? GraphQLPostUnfavoriteTweetResponse
-      : T extends 'HomeLatestTimeline'
-        ? GraphQLPostHomeLatestTimelineResponse
-        : T extends 'HomeTimeline'
-          ? GraphQLPostHomeTimelineResponse
+    : T extends 'HomeLatestTimeline'
+      ? GraphQLPostHomeLatestTimelineResponse
+      : T extends 'HomeTimeline'
+        ? GraphQLPostHomeTimelineResponse
+        : T extends 'UnfavoriteTweet'
+          ? GraphQLPostUnfavoriteTweetResponse
           : never
 
 export type GraphQLEndpoint = GraphQLGETEndpoint | GraphQLPOSTEndpoint

@@ -109,17 +109,21 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
                     number: string
                   }
                 }
+                website?: {
+                  display: string
+                  url: string
+                }
                 open_times?: {
                   open_times_type?: string
                   is_open?: boolean
-                  closes?: {
+                  opens?: {
                     day: string
                     time: {
                       hour: number
                       minute: number
                     }
                   }
-                  opens?: {
+                  closes?: {
                     day: string
                     time: {
                       hour: number
@@ -148,13 +152,13 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
                         currency_code: string
                         micro_value: string
                       }
-                      title: string
                       product_sale?: {
                         price: {
                           currency_code: string
                           micro_value: string
                         }
                       }
+                      title: string
                       mobile_url?: {
                         url: string
                       }
@@ -171,19 +175,15 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
                   }
                   id: string
                 }[]
-                website?: {
-                  display: string
-                  url: string
-                }
                 jobs?: {
                   id: string
                   redirect_url: string
                   location: string
-                  salary_currency_code: string
-                  salary_interval: number
-                  salary_max: number
-                  salary_min: number
                   title: string
+                  salary_currency_code?: string
+                  salary_interval?: number
+                  salary_max?: number
+                  salary_min?: number
                 }[]
               }
             }

@@ -288,8 +288,8 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                           }
                           url?: {
                             urls: {
-                              display_url: string
-                              expanded_url: string
+                              display_url?: string
+                              expanded_url?: string
                               url: string
                               indices: number[]
                             }[]
@@ -355,6 +355,9 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
           favorite_count: number
           favorited: boolean
           full_text: string
+          in_reply_to_screen_name?: string
+          in_reply_to_status_id_str?: string
+          in_reply_to_user_id_str?: string
           is_quote_status: boolean
           lang: string
           quote_count: number
@@ -363,6 +366,12 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
           retweeted: boolean
           user_id_str: string
           id_str: string
+          quoted_status_id_str?: string
+          quoted_status_permalink?: {
+            url: string
+            expanded: string
+            display: string
+          }
           extended_entities?: {
             media: {
               display_url: string
@@ -513,8 +522,8 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                           }
                           url?: {
                             urls: {
-                              display_url: string
-                              expanded_url: string
+                              display_url?: string
+                              expanded_url?: string
                               url: string
                               indices: number[]
                             }[]
@@ -590,15 +599,22 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
               }
             }
           }
-          quoted_status_id_str?: string
-          quoted_status_permalink?: {
-            url: string
-            expanded: string
-            display: string
+          scopes?: {
+            followers: boolean
           }
-          in_reply_to_screen_name?: string
-          in_reply_to_status_id_str?: string
-          in_reply_to_user_id_str?: string
+          place?: {
+            bounding_box: {
+              coordinates: number[][][]
+              type: string
+            }
+            country: string
+            country_code: string
+            full_name: string
+            name: string
+            id: string
+            place_type: string
+            url: string
+          }
           retweeted_status_result?: {
             result: {
               __typename: string
@@ -903,12 +919,6 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
               }
             }
           }
-          scopes?: {
-            followers: boolean
-          }
-        }
-        unified_card?: {
-          card_fetch_state: string
         }
         quoted_status_result?: {
           result?: {
@@ -972,7 +982,6 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                     normal_followers_count: number
                     pinned_tweet_ids_str: string[]
                     possibly_sensitive: boolean
-                    profile_banner_url?: string
                     profile_image_url_https: string
                     profile_interstitial_type: string
                     screen_name: string
@@ -981,6 +990,7 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                     url?: string
                     verified: boolean
                     withheld_in_countries: unknown[]
+                    profile_banner_url?: string
                     verified_type?: string
                   }
                   professional?: {
@@ -1004,16 +1014,10 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
             }
             is_translatable: boolean
             views: {
-              count?: string
               state: string
+              count?: string
             }
             source: string
-            quotedRefResult?: {
-              result?: {
-                __typename: string
-                rest_id: string
-              }
-            }
             legacy: {
               bookmark_count: number
               bookmarked: boolean
@@ -1125,6 +1129,15 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                       h: number
                     }[]
                   }
+                  video_info?: {
+                    aspect_ratio: number[]
+                    variants: {
+                      bitrate?: number
+                      content_type: string
+                      url: string
+                    }[]
+                    duration_millis?: number
+                  }
                   source_status_id_str?: string
                   source_user_id_str?: string
                   additional_media_info?: {
@@ -1192,15 +1205,6 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                       }
                     }
                   }
-                  video_info?: {
-                    aspect_ratio: number[]
-                    duration_millis: number
-                    variants: {
-                      bitrate?: number
-                      content_type: string
-                      url: string
-                    }[]
-                  }
                 }[]
               }
               favorite_count: number
@@ -1209,12 +1213,6 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
               is_quote_status: boolean
               lang: string
               quote_count: number
-              quoted_status_id_str?: string
-              quoted_status_permalink?: {
-                url: string
-                expanded: string
-                display: string
-              }
               reply_count: number
               retweet_count: number
               retweeted: boolean
@@ -1307,6 +1305,15 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                       h: number
                     }[]
                   }
+                  video_info?: {
+                    aspect_ratio: number[]
+                    variants: {
+                      bitrate?: number
+                      content_type: string
+                      url: string
+                    }[]
+                    duration_millis?: number
+                  }
                   source_status_id_str?: string
                   source_user_id_str?: string
                   additional_media_info?: {
@@ -1374,19 +1381,13 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                       }
                     }
                   }
-                  video_info?: {
-                    aspect_ratio: number[]
-                    duration_millis: number
-                    variants: {
-                      bitrate?: number
-                      content_type: string
-                      url: string
-                    }[]
-                  }
                 }[]
               }
               possibly_sensitive?: boolean
               possibly_sensitive_editable?: boolean
+              in_reply_to_screen_name?: string
+              in_reply_to_status_id_str?: string
+              in_reply_to_user_id_str?: string
               conversation_control?: {
                 policy: string
                 conversation_owner_results: {
@@ -1398,12 +1399,21 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                   }
                 }
               }
-              in_reply_to_screen_name?: string
-              in_reply_to_status_id_str?: string
-              in_reply_to_user_id_str?: string
+              quoted_status_id_str?: string
+              quoted_status_permalink?: {
+                url: string
+                expanded: string
+                display: string
+              }
             }
             unified_card?: {
               card_fetch_state: string
+            }
+            quotedRefResult?: {
+              result?: {
+                __typename: string
+                rest_id: string
+              }
             }
             card?: {
               rest_id: string
@@ -1548,37 +1558,6 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
             }
           }
         }
-        previous_counts?: {
-          bookmark_count: number
-          favorite_count: number
-          quote_count: number
-          reply_count: number
-          retweet_count: number
-        }
-        note_tweet?: {
-          is_expandable: boolean
-          note_tweet_results: {
-            result: {
-              id: string
-              text: string
-              entity_set: {
-                hashtags: unknown[]
-                symbols: unknown[]
-                urls: unknown[]
-                user_mentions: unknown[]
-              }
-              richtext: {
-                richtext_tags: unknown[]
-              }
-              media: {
-                inline_media: {
-                  media_id: string
-                  index: number
-                }[]
-              }
-            }
-          }
-        }
         card?: {
           rest_id: string
           legacy: {
@@ -1587,12 +1566,12 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
               value: {
                 string_value?: string
                 type: string
+                scribe_key?: string
                 image_value?: {
                   height: number
                   width: number
                   url: string
                 }
-                scribe_key?: string
                 user_value?: {
                   id_str: string
                   path: unknown[]
@@ -1688,6 +1667,40 @@ export interface GraphQLGetTweetResultByRestIdSuccessResponse {
                 }
               }
             }[]
+          }
+        }
+        unified_card?: {
+          card_fetch_state: string
+        }
+        previous_counts?: {
+          bookmark_count: number
+          favorite_count: number
+          quote_count: number
+          reply_count: number
+          retweet_count: number
+        }
+        note_tweet?: {
+          is_expandable: boolean
+          note_tweet_results: {
+            result: {
+              id: string
+              text: string
+              entity_set: {
+                hashtags: unknown[]
+                symbols: unknown[]
+                urls: unknown[]
+                user_mentions: unknown[]
+              }
+              richtext: {
+                richtext_tags: unknown[]
+              }
+              media: {
+                inline_media: {
+                  media_id: string
+                  index: number
+                }[]
+              }
+            }
           }
         }
         has_birdwatch_notes?: boolean

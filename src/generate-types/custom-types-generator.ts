@@ -662,6 +662,10 @@ export class CustomTypesGenerator {
             return null
           }
 
+          if (!response.data.user.result.legacy) {
+            return null
+          }
+
           return response.data.user.result.legacy
         }
       )

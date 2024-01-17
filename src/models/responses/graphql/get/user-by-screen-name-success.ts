@@ -32,12 +32,12 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
                   mention_results: {
                     result: {
                       __typename: string
-                      reason?: string
-                      message?: string
                       legacy?: {
                         screen_name: string
                       }
                       rest_id?: string
+                      reason?: string
+                      message?: string
                     }
                   }
                 }
@@ -86,22 +86,22 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           normal_followers_count: number
           pinned_tweet_ids_str: string[]
           possibly_sensitive: boolean
-          profile_banner_url?: string
           profile_image_url_https: string
           profile_interstitial_type: string
           screen_name: string
           statuses_count: number
           translator_type: string
-          url?: string
           verified: boolean
           want_retweets?: boolean
           withheld_in_countries: string[]
+          profile_banner_url?: string
           following?: boolean
+          url?: string
           verified_type?: string
           followed_by?: boolean
           blocking?: boolean
-          protected?: boolean
           needs_phone_verification?: boolean
+          protected?: boolean
           muting?: boolean
         }
         smart_blocked_by?: boolean
@@ -110,9 +110,9 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           birthdate?: {
             day?: number
             month?: number
+            year?: number
             visibility: string
             year_visibility: string
-            year?: number
           }
         }
         is_profile_translatable: boolean

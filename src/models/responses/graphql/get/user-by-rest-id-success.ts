@@ -7,9 +7,9 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
     user: {
       result: {
         __typename: string
-        id: string
-        rest_id: string
-        affiliates_highlighted_label: {
+        id?: string
+        rest_id?: string
+        affiliates_highlighted_label?: {
           label?: {
             url?: {
               url: string
@@ -32,12 +32,12 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
                   mention_results: {
                     result: {
                       __typename: string
-                      reason?: string
-                      message?: string
                       legacy?: {
                         screen_name: string
                       }
                       rest_id?: string
+                      reason?: string
+                      message?: string
                     }
                   }
                 }
@@ -45,10 +45,10 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
             }
           }
         }
-        has_graduated_access: boolean
-        is_blue_verified: boolean
-        profile_image_shape: string
-        legacy: {
+        has_graduated_access?: boolean
+        is_blue_verified?: boolean
+        profile_image_shape?: string
+        legacy?: {
           can_dm: boolean
           can_media_tag: boolean
           created_at: string
@@ -92,29 +92,29 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           screen_name: string
           statuses_count: number
           translator_type: string
-          url?: string
           verified: boolean
           want_retweets: boolean
           withheld_in_countries: string[]
           following?: boolean
+          url?: string
           verified_type?: string
           followed_by?: boolean
           blocking?: boolean
           protected?: boolean
           muting?: boolean
         }
-        smart_blocked_by: boolean
-        smart_blocking: boolean
-        business_account: {
+        smart_blocked_by?: boolean
+        smart_blocking?: boolean
+        business_account?: {
           affiliates_count?: number
         }
-        highlights_info: {
+        highlights_info?: {
           can_highlight_tweets: boolean
           highlighted_tweets: string
         }
-        creator_subscriptions_count: number
-        has_hidden_likes_on_profile: boolean
-        has_hidden_subscriptions_on_profile: boolean
+        creator_subscriptions_count?: number
+        has_hidden_likes_on_profile?: boolean
+        has_hidden_subscriptions_on_profile?: boolean
         professional?: {
           rest_id: string
           professional_type: string
@@ -126,6 +126,8 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
         }
         super_follow_eligible?: boolean
         has_nft_avatar?: boolean
+        message?: string
+        reason?: string
       }
     }
   }
