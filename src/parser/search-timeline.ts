@@ -30,16 +30,15 @@ export class SearchTimelineParser extends BaseParser<'SearchTimeline'> {
           (instruction) =>
             instruction.type === 'TimelineAddEntries' && instruction.entries
         )
-        .flatMap(
-          (instruction) =>
-            instruction.entries?.filter(
-              (entry) =>
-                entry.entryId.startsWith('tweet-') ||
-                (isIncludingPromotedTweets
-                  ? entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                  : false)
-            )
+        .flatMap((instruction) =>
+          instruction.entries?.filter(
+            (entry) =>
+              entry.entryId.startsWith('tweet-') ||
+              (isIncludingPromotedTweets
+                ? entry.entryId.startsWith('promoted-tweet') ||
+                  entry.entryId.startsWith('promotedTweet')
+                : false)
+          )
         ) as CustomSearchTimelineEntry[]
 
     const rawTweets: CustomTweetObject[] = entries

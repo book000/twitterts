@@ -62,14 +62,13 @@ export class CustomTypesGenerator {
             (instruction) =>
               instruction.type === 'TimelineAddEntries' && instruction.entries
           )
-          .flatMap(
-            (instruction) =>
-              instruction.entries?.filter(
-                (entry) =>
-                  entry.entryId.startsWith('tweet-') ||
-                  entry.entryId.startsWith('promoted-tweet') ||
-                  entry.entryId.startsWith('promotedTweet')
-              )
+          .flatMap((instruction) =>
+            instruction.entries?.filter(
+              (entry) =>
+                entry.entryId.startsWith('tweet-') ||
+                entry.entryId.startsWith('promoted-tweet') ||
+                entry.entryId.startsWith('promotedTweet')
+            )
           )
       }
     )
@@ -113,14 +112,13 @@ export class CustomTypesGenerator {
             (instruction) =>
               instruction.type === 'TimelineAddEntries' && instruction.entries
           )
-          .flatMap(
-            (instruction) =>
-              instruction.entries?.filter(
-                (entry) =>
-                  entry.entryId.startsWith('tweet-') ||
-                  entry.entryId.startsWith('promoted-tweet') ||
-                  entry.entryId.startsWith('promotedTweet')
-              )
+          .flatMap((instruction) =>
+            instruction.entries?.filter(
+              (entry) =>
+                entry.entryId.startsWith('tweet-') ||
+                entry.entryId.startsWith('promoted-tweet') ||
+                entry.entryId.startsWith('promotedTweet')
+            )
           )
       }
     )
@@ -166,14 +164,13 @@ export class CustomTypesGenerator {
             (instruction) =>
               instruction.type === 'TimelineAddEntries' && instruction.entries
           )
-          .flatMap(
-            (instruction) =>
-              instruction.entries?.filter(
-                (entry) =>
-                  entry.entryId.startsWith('tweet-') ||
-                  entry.entryId.startsWith('promoted-tweet') ||
-                  entry.entryId.startsWith('promotedTweet')
-              )
+          .flatMap((instruction) =>
+            instruction.entries?.filter(
+              (entry) =>
+                entry.entryId.startsWith('tweet-') ||
+                entry.entryId.startsWith('promoted-tweet') ||
+                entry.entryId.startsWith('promotedTweet')
+            )
           )
       }
     )
@@ -297,14 +294,13 @@ export class CustomTypesGenerator {
               (instruction) =>
                 instruction.type === 'TimelineAddEntries' && instruction.entries
             )
-            .flatMap(
-              (instruction) =>
-                instruction.entries?.filter(
-                  (entry) =>
-                    entry.entryId.startsWith('tweet-') ||
-                    entry.entryId.startsWith('promoted-tweet') ||
-                    entry.entryId.startsWith('promotedTweet')
-                )
+            .flatMap((instruction) =>
+              instruction.entries?.filter(
+                (entry) =>
+                  entry.entryId.startsWith('tweet-') ||
+                  entry.entryId.startsWith('promoted-tweet') ||
+                  entry.entryId.startsWith('promotedTweet')
+              )
             )
         }
       )
@@ -504,14 +500,13 @@ export class CustomTypesGenerator {
         (instruction) =>
           instruction.type === 'TimelineAddEntries' && instruction.entries
       )
-      .flatMap(
-        (instruction) =>
-          instruction.entries?.filter(
-            (entry) =>
-              entry.entryId.startsWith('tweet-') ||
-              entry.entryId.startsWith('promoted-tweet') ||
-              entry.entryId.startsWith('promotedTweet')
-          )
+      .flatMap((instruction) =>
+        instruction.entries?.filter(
+          (entry) =>
+            entry.entryId.startsWith('tweet-') ||
+            entry.entryId.startsWith('promoted-tweet') ||
+            entry.entryId.startsWith('promotedTweet')
+        )
       )
       .map((entry) => {
         return entry?.content.itemContent?.tweet_results?.result
@@ -610,14 +605,13 @@ export class CustomTypesGenerator {
         (instruction) =>
           instruction.type === 'TimelineAddEntries' && instruction.entries
       )
-      .flatMap(
-        (instruction) =>
-          instruction.entries?.filter(
-            (entry) =>
-              entry.entryId.startsWith('tweet-') ||
-              entry.entryId.startsWith('promoted-tweet') ||
-              entry.entryId.startsWith('promotedTweet')
-          )
+      .flatMap((instruction) =>
+        instruction.entries?.filter(
+          (entry) =>
+            entry.entryId.startsWith('tweet-') ||
+            entry.entryId.startsWith('promoted-tweet') ||
+            entry.entryId.startsWith('promotedTweet')
+        )
       )
       .flatMap((entry) => {
         return [
@@ -782,14 +776,13 @@ export class CustomTypesGenerator {
         (instruction) =>
           instruction.type === 'TimelineAddEntries' && instruction.entries
       )
-      .flatMap(
-        (instruction) =>
-          instruction.entries?.filter(
-            (entry) =>
-              entry.entryId.startsWith('tweet-') ||
-              entry.entryId.startsWith('promoted-tweet') ||
-              entry.entryId.startsWith('promotedTweet')
-          )
+      .flatMap((instruction) =>
+        instruction.entries?.filter(
+          (entry) =>
+            entry.entryId.startsWith('tweet-') ||
+            entry.entryId.startsWith('promoted-tweet') ||
+            entry.entryId.startsWith('promotedTweet')
+        )
       )
       .flatMap((entry) => {
         return [entry?.content.itemContent?.tweet_results?.result?.legacy]
