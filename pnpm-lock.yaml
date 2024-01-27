@@ -21,8 +21,8 @@ dependencies:
     specifier: 12.0.1
     version: 12.0.1
   puppeteer-core:
-    specifier: 21.8.0
-    version: 21.8.0
+    specifier: 21.9.0
+    version: 21.9.0
   twitter-d:
     specifier: 0.6.0
     version: 0.6.0
@@ -1865,12 +1865,12 @@ packages:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
     dev: true
 
-  /chromium-bidi@0.5.4(devtools-protocol@0.0.1213968):
+  /chromium-bidi@0.5.4(devtools-protocol@0.0.1232444):
     resolution: {integrity: sha512-p9CdiHl0xNh4P7oVa44zXgJJw+pvnHXFDB+tVdo25xaPLgQDVf2kQO+TDxD2fp2Evqi7vs/vGRINMzl1qJrWiw==}
     peerDependencies:
       devtools-protocol: '*'
     dependencies:
-      devtools-protocol: 0.0.1213968
+      devtools-protocol: 0.0.1232444
       mitt: 3.0.1
       urlpattern-polyfill: 9.0.0
     dev: false
@@ -2250,8 +2250,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /devtools-protocol@0.0.1213968:
-    resolution: {integrity: sha512-o4n/beY+3CcZwFctYapjGelKptR4AuQT5gXS1Kvgbig+ArwkxK7f8wDVuD1wsoswiJWCwV6OK+Qb7vhNzNmABQ==}
+  /devtools-protocol@0.0.1232444:
+    resolution: {integrity: sha512-pM27vqEfxSxRkTMnF+XCmxSEb6duO5R+t8A9DEEJgy4Wz2RVanje2mmj99B6A3zv2r/qGfYlOvYznUhuokizmg==}
     dev: false
 
   /diff-sequences@29.6.3:
@@ -4934,15 +4934,15 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /puppeteer-core@21.8.0:
-    resolution: {integrity: sha512-lRw1zXsrFE/COEAmupE0nSF+RSOJ+3rI12ZmMydkr6yXaAvfnYAoqND+HXXiRuzB+YM3IgsWekAMhNZCJOkbTA==}
+  /puppeteer-core@21.9.0:
+    resolution: {integrity: sha512-QgowcczLAoLWlV38s3y3VuEvjJGfKU5rR6Q23GUbiGOaiQi+QpaWQ+aXdzP9LHVSUPmHdAaWhcvMztYSw3f8gQ==}
     engines: {node: '>=16.13.2'}
     dependencies:
       '@puppeteer/browsers': 1.9.1
-      chromium-bidi: 0.5.4(devtools-protocol@0.0.1213968)
+      chromium-bidi: 0.5.4(devtools-protocol@0.0.1232444)
       cross-fetch: 4.0.0
       debug: 4.3.4
-      devtools-protocol: 0.0.1213968
+      devtools-protocol: 0.0.1232444
       ws: 8.16.0
     transitivePeerDependencies:
       - bufferutil
