@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@book000/node-utils':
-    specifier: 1.12.37
-    version: 1.12.37
+    specifier: 1.12.38
+    version: 1.12.38
   genson-js:
     specifier: 0.0.8
     version: 0.0.8
@@ -465,13 +465,13 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@book000/node-utils@1.12.37:
-    resolution: {integrity: sha512-ts/YDNVaDUNZGMT+VCxycIZu+MQ2mO5eGnC6Tv0fAu+wTSnsmTlSeiKo8IgwwtLsyDTKTSTkwAG7R6pWQfFq2Q==}
+  /@book000/node-utils@1.12.38:
+    resolution: {integrity: sha512-f9Mn3senNpNDWDEaHfK516CZ36/MEowaDuhwjdiUrc+49qmplJyTpTlwVO2QMQ2DNAq5+MHjMte/KrNnY8ia8w==}
     dependencies:
       axios: 1.6.5
       cycle: 1.0.3
       form-data: 4.0.0
-      jsonc-parser: 3.2.0
+      jsonc-parser: 3.2.1
       logform: 2.6.0
       moment-timezone: 0.5.44
       winston: 3.11.0
@@ -4154,13 +4154,8 @@ packages:
     hasBin: true
     dev: true
 
-  /jsonc-parser@3.2.0:
-    resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
-    dev: false
-
   /jsonc-parser@3.2.1:
     resolution: {integrity: sha512-AilxAyFOAcK5wA1+LeaySVBrHsGQvUFCDWXKpZjzaL0PqW+xfBOttn8GNtWKFWqneyMZj41MWF9Kl6iPWLwgOA==}
-    dev: true
 
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
