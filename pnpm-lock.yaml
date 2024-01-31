@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@book000/node-utils':
-    specifier: 1.12.40
-    version: 1.12.40
+    specifier: 1.12.42
+    version: 1.12.42
   genson-js:
     specifier: 0.0.8
     version: 0.0.8
@@ -465,10 +465,10 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@book000/node-utils@1.12.40:
-    resolution: {integrity: sha512-vfogd6pVD+Ifdyqcw9DDtc/kqCHFMKB/IdXCmJ6JfNSSwrjAozVA2Bhv2BuZRVjHFKPmVE+DU5N7nRvyJ82M/w==}
+  /@book000/node-utils@1.12.42:
+    resolution: {integrity: sha512-tHIEiQFndIZ6e5JsmGx6eDIuiDYTdiDXXFhKweJGtzLj7HwEh8cJyml1PWVIxitBY7wTqZUdvSF7UYBsPp5BIw==}
     dependencies:
-      axios: 1.6.6
+      axios: 1.6.7
       cycle: 1.0.3
       form-data: 4.0.0
       jsonc-parser: 3.2.1
@@ -1593,8 +1593,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /axios@1.6.6:
-    resolution: {integrity: sha512-XZLZDFfXKM9U/Y/B4nNynfCRUqNyVZ4sBC/n9GDRCkq9vd2mIvKjKKsbIh1WPmHmNbg6ND7cTBY3Y2+u1G3/2Q==}
+  /axios@1.6.7:
+    resolution: {integrity: sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==}
     dependencies:
       follow-redirects: 1.15.5
       form-data: 4.0.0
