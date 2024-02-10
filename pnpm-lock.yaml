@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@book000/node-utils':
-    specifier: 1.12.53
-    version: 1.12.53
+    specifier: 1.12.54
+    version: 1.12.54
   genson-js:
     specifier: 0.0.8
     version: 0.0.8
@@ -465,15 +465,15 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@book000/node-utils@1.12.53:
-    resolution: {integrity: sha512-kRHP3D810HBbmy6CJUxwAWhk7iLizQJ9VyCWUWLVNxQrrYXbLZ5N2HTksBYyk3K6Ph21eKtTojq5tC6Jn6V2bg==}
+  /@book000/node-utils@1.12.54:
+    resolution: {integrity: sha512-7Y0nT5lslrh1AG9kayHrM46wD8cSmdIBKwFIDQHr01So98jF2/hsEocNYfASazHRyHKZnq+HDvlegwqmAC3TgQ==}
     dependencies:
       axios: 1.6.7
       cycle: 1.0.3
       form-data: 4.0.0
       jsonc-parser: 3.2.1
       logform: 2.6.0
-      moment-timezone: 0.5.44
+      moment-timezone: 0.5.45
       winston: 3.11.0
       winston-daily-rotate-file: 4.7.1(winston@3.11.0)
     transitivePeerDependencies:
@@ -4430,8 +4430,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  /moment-timezone@0.5.44:
-    resolution: {integrity: sha512-nv3YpzI/8lkQn0U6RkLd+f0W/zy/JnoR5/EyPz/dNkPTBjA2jNLCVxaiQ8QpeLymhSZvX0wCL5s27NQWdOPwAw==}
+  /moment-timezone@0.5.45:
+    resolution: {integrity: sha512-HIWmqA86KcmCAhnMAN0wuDOARV/525R2+lOLotuGFzn4HO+FH+/645z2wx0Dt3iDv6/p61SIvKnDstISainhLQ==}
     dependencies:
       moment: 2.30.1
     dev: false
