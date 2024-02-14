@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@book000/node-utils':
-    specifier: 1.12.59
-    version: 1.12.59
+    specifier: 1.12.60
+    version: 1.12.60
   genson-js:
     specifier: 0.0.8
     version: 0.0.8
@@ -465,8 +465,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@book000/node-utils@1.12.59:
-    resolution: {integrity: sha512-8PqXXO3aSe+73jXF1ixUNChQwxuT0r3z79ixp/PAhA0WV3MLWWSfTQaHrGfdZvDj9feOEpm44coJ6qFXctc49A==}
+  /@book000/node-utils@1.12.60:
+    resolution: {integrity: sha512-SeupBg8LbHMT8tgAke79mSq76TlPe1Vyz8mNgAT7ojkUO95hom6+3L4vH7scUPVHYvOU+lHP3MynAJy2ZrstLw==}
     dependencies:
       axios: 1.6.7
       cycle: 1.0.3
