@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@book000/node-utils':
-    specifier: 1.12.60
-    version: 1.12.60
+    specifier: 1.12.61
+    version: 1.12.61
   genson-js:
     specifier: 0.0.8
     version: 0.0.8
@@ -465,8 +465,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@book000/node-utils@1.12.60:
-    resolution: {integrity: sha512-SeupBg8LbHMT8tgAke79mSq76TlPe1Vyz8mNgAT7ojkUO95hom6+3L4vH7scUPVHYvOU+lHP3MynAJy2ZrstLw==}
+  /@book000/node-utils@1.12.61:
+    resolution: {integrity: sha512-/AJRfKRpJoR491hKFzl/LMrIvi2VvD4GjPilRNqa1nh+VKfG1VDC+D3fCQByBlzbFgGq2z9IxANmO5o035wb1g==}
     dependencies:
       axios: 1.6.7
       cycle: 1.0.3
@@ -475,7 +475,7 @@ packages:
       logform: 2.6.0
       moment-timezone: 0.5.45
       winston: 3.11.0
-      winston-daily-rotate-file: 4.7.1(winston@3.11.0)
+      winston-daily-rotate-file: 5.0.0(winston@3.11.0)
     transitivePeerDependencies:
       - debug
     dev: false
@@ -4605,8 +4605,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /object-hash@2.2.0:
-    resolution: {integrity: sha512-gScRMn0bS5fH+IuwyIFgnh9zBdo4DV+6GhygmWM9HyNJSgS0hScp1f5vjtm7oIIOiT9trXrShAkLFSc2IqKNgw==}
+  /object-hash@3.0.0:
+    resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
     engines: {node: '>= 6'}
     dev: false
 
@@ -6076,14 +6076,14 @@ packages:
     dependencies:
       isexe: 2.0.0
 
-  /winston-daily-rotate-file@4.7.1(winston@3.11.0):
-    resolution: {integrity: sha512-7LGPiYGBPNyGHLn9z33i96zx/bd71pjBn9tqQzO3I4Tayv94WPmBNwKC7CO1wPHdP9uvu+Md/1nr6VSH9h0iaA==}
+  /winston-daily-rotate-file@5.0.0(winston@3.11.0):
+    resolution: {integrity: sha512-JDjiXXkM5qvwY06733vf09I2wnMXpZEhxEVOSPenZMii+g7pcDcTBt2MRugnoi8BwVSuCT2jfRXBUy+n1Zz/Yw==}
     engines: {node: '>=8'}
     peerDependencies:
       winston: ^3
     dependencies:
       file-stream-rotator: 0.6.1
-      object-hash: 2.2.0
+      object-hash: 3.0.0
       triple-beam: 1.4.1
       winston: 3.11.0
       winston-transport: 4.7.0
