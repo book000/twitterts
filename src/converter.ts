@@ -302,13 +302,17 @@ export const ObjectConverter = {
     if (!userResult) {
       throw new ResponseParseError('Failed to get userResult')
     }
+    const userId = userResult.rest_id ?? userResult.id
+    if (!userId) {
+      throw new ResponseParseError('Failed to get user id')
+    }
     return {
       id: Number(legacy.id_str),
       source: tweet.source ?? 'NULL',
       truncated: false,
       user: {
-        id: Number(userResult.rest_id),
-        id_str: userResult.rest_id,
+        id: Number(userId),
+        id_str: userId,
         ...userResult.legacy,
       },
       ...legacy,

@@ -66,8 +66,8 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
             }
             url?: {
               urls: {
-                display_url: string
-                expanded_url: string
+                display_url?: string
+                expanded_url?: string
                 url: string
                 indices: number[]
               }[]
@@ -92,11 +92,11 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           screen_name: string
           statuses_count: number
           translator_type: string
+          url?: string
           verified: boolean
           want_retweets: boolean
           withheld_in_countries: string[]
           following?: boolean
-          url?: string
           verified_type?: string
           followed_by?: boolean
           blocking?: boolean
@@ -112,6 +112,7 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           can_highlight_tweets: boolean
           highlighted_tweets: string
         }
+        user_seed_tweet_count?: number
         creator_subscriptions_count?: number
         has_hidden_likes_on_profile?: boolean
         has_hidden_subscriptions_on_profile?: boolean

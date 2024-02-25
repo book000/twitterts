@@ -25,7 +25,6 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
               config?: {
                 enable_call?: boolean
                 enable_dm?: boolean
-                enable_email?: boolean
                 enable_sms?: boolean
                 community_results?: {
                   result: {
@@ -40,8 +39,6 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
                       }
                       id: string
                     }[]
-                    default_theme: string
-                    custom_theme?: string
                     member_count: number
                     default_banner_media: {
                       media_info: {
@@ -91,23 +88,17 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
                     name: string
                     rest_id: string
                     id: string
+                    default_theme?: string
+                    custom_theme?: string
                   }
                   id: string
                 }
+                enable_email?: boolean
                 show_more_jobs?: boolean
               }
               data?: {
                 address?: {
                   formatted_address: string
-                }
-                contact?: {
-                  email?: {
-                    email_address: string
-                  }
-                  phone?: {
-                    country_code: string
-                    number: string
-                  }
                 }
                 website?: {
                   display: string
@@ -134,6 +125,25 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
                 google_verification_data?: {
                   static_map_image_url?: string
                 }
+                contact?: {
+                  email?: {
+                    email_address: string
+                  }
+                  phone?: {
+                    country_code: string
+                    number: string
+                  }
+                }
+                jobs?: {
+                  id: string
+                  redirect_url: string
+                  location: string
+                  title: string
+                  salary_currency_code?: string
+                  salary_interval?: number
+                  salary_max?: number
+                  salary_min?: number
+                }[]
                 items?: {
                   __typename: string
                   product_core_data: {
@@ -148,42 +158,32 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
                       external_url: {
                         url: string
                       }
+                      mobile_url?: {
+                        url: string
+                      }
                       price: {
                         currency_code: string
                         micro_value: string
                       }
+                      title: string
                       product_sale?: {
                         price: {
                           currency_code: string
                           micro_value: string
                         }
                       }
-                      title: string
-                      mobile_url?: {
-                        url: string
-                      }
                     }
                     product_identifiers: {
+                      custom_product_type?: string[]
                       google_product_category?: {
                         shortened_google_product_category_name: string
                       }
-                      custom_product_type?: string[]
                     }
                     product_metadata: {
                       product_key: string
                     }
                   }
                   id: string
-                }[]
-                jobs?: {
-                  id: string
-                  redirect_url: string
-                  location: string
-                  title: string
-                  salary_currency_code?: string
-                  salary_interval?: number
-                  salary_max?: number
-                  salary_min?: number
                 }[]
               }
             }
