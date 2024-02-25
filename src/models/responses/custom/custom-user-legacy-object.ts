@@ -20,8 +20,8 @@ export interface CustomUserLegacyObject {
     }
     url?: {
       urls: {
-        display_url: string
-        expanded_url: string
+        display_url?: string
+        expanded_url?: string
         url: string
         indices: number[]
       }[]
@@ -40,21 +40,20 @@ export interface CustomUserLegacyObject {
   normal_followers_count: number
   pinned_tweet_ids_str: string[]
   possibly_sensitive: boolean
+  profile_banner_url?: string
   profile_image_url_https: string
   profile_interstitial_type: string
   screen_name: string
   statuses_count: number
   translator_type: string
+  url?: string
   verified: boolean
+  verified_type?: string
   want_retweets?: boolean
   withheld_in_countries: string[]
-  profile_banner_url?: string
-  url?: string
   following?: boolean
-  verified_type?: string
   followed_by?: boolean
   blocking?: boolean
   protected?: boolean
-  muting?: boolean
   needs_phone_verification?: boolean
 }

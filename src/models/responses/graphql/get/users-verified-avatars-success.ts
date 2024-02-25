@@ -9,10 +9,10 @@ export interface GraphQLGetUsersVerifiedAvatarsSuccessResponse {
         __typename: string
         is_blue_verified: boolean
         profile_image_shape: string
-        has_nft_avatar: boolean
         affiliates_highlighted_label: {}
         rest_id: string
         legacy: {}
+        has_nft_avatar?: boolean
       }
     }[]
   }

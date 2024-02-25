@@ -67,7 +67,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           is_blue_verified: boolean
                           profile_image_shape: string
                           legacy: {
-                            following?: boolean
                             can_dm: boolean
                             can_media_tag: boolean
                             created_at: string
@@ -111,11 +110,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             screen_name: string
                             statuses_count: number
                             translator_type: string
-                            url?: string
                             verified: boolean
                             want_retweets: boolean
                             withheld_in_countries: string[]
+                            url?: string
                             verified_type?: string
+                            following?: boolean
                             followed_by?: boolean
                             protected?: boolean
                           }
@@ -169,27 +169,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         hashtags: {
                           indices: number[]
                           text: string
-                        }[]
-                        symbols: {
-                          indices: number[]
-                          text: string
-                        }[]
-                        timestamps?: {
-                          indices: number[]
-                          seconds: number
-                          text: string
-                        }[]
-                        urls: {
-                          display_url: string
-                          expanded_url: string
-                          url: string
-                          indices: number[]
-                        }[]
-                        user_mentions: {
-                          id_str: string
-                          name: string
-                          screen_name: string
-                          indices: number[]
                         }[]
                         media?: {
                           display_url: string
@@ -278,8 +257,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               h: number
                             }[]
                           }
-                          source_status_id_str?: string
-                          source_user_id_str?: string
+                          allow_download_status?: {
+                            allow_download: boolean
+                          }
                           additional_media_info?: {
                             monetizable: boolean
                             source_user?: {
@@ -363,6 +343,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     normal_followers_count: number
                                     pinned_tweet_ids_str: string[]
                                     possibly_sensitive: boolean
+                                    profile_banner_url?: string
                                     profile_image_url_https: string
                                     profile_interstitial_type: string
                                     screen_name: string
@@ -372,10 +353,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     verified: boolean
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
-                                    profile_banner_url?: string
                                     blocking?: boolean
-                                    verified_type?: string
                                     following?: boolean
+                                    verified_type?: string
                                   }
                                   professional?: {
                                     rest_id: string
@@ -412,28 +392,36 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               url: string
                             }[]
                           }
-                          ext_alt_text?: string
+                          source_status_id_str?: string
+                          source_user_id_str?: string
                           sensitive_media_warning?: {
-                            other?: boolean
                             adult_content?: boolean
+                            other?: boolean
+                            graphic_violence?: boolean
                           }
+                          ext_alt_text?: string
                         }[]
-                      }
-                      favorite_count: number
-                      favorited: boolean
-                      full_text: string
-                      is_quote_status: boolean
-                      lang: string
-                      quote_count: number
-                      reply_count: number
-                      retweet_count: number
-                      retweeted: boolean
-                      user_id_str: string
-                      id_str: string
-                      possibly_sensitive?: boolean
-                      possibly_sensitive_editable?: boolean
-                      scopes?: {
-                        followers: boolean
+                        symbols: {
+                          indices: number[]
+                          text: string
+                        }[]
+                        timestamps?: {
+                          indices: number[]
+                          seconds: number
+                          text: string
+                        }[]
+                        urls: {
+                          display_url: string
+                          expanded_url: string
+                          url: string
+                          indices: number[]
+                        }[]
+                        user_mentions: {
+                          id_str: string
+                          name: string
+                          screen_name: string
+                          indices: number[]
+                        }[]
                       }
                       extended_entities?: {
                         media: {
@@ -523,8 +511,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               h: number
                             }[]
                           }
-                          source_status_id_str?: string
-                          source_user_id_str?: string
+                          allow_download_status?: {
+                            allow_download: boolean
+                          }
                           additional_media_info?: {
                             monetizable: boolean
                             source_user?: {
@@ -608,6 +597,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     normal_followers_count: number
                                     pinned_tweet_ids_str: string[]
                                     possibly_sensitive: boolean
+                                    profile_banner_url?: string
                                     profile_image_url_https: string
                                     profile_interstitial_type: string
                                     screen_name: string
@@ -617,10 +607,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     verified: boolean
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
-                                    profile_banner_url?: string
                                     blocking?: boolean
-                                    verified_type?: string
                                     following?: boolean
+                                    verified_type?: string
                                   }
                                   professional?: {
                                     rest_id: string
@@ -657,12 +646,34 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               url: string
                             }[]
                           }
-                          ext_alt_text?: string
+                          source_status_id_str?: string
+                          source_user_id_str?: string
                           sensitive_media_warning?: {
-                            other?: boolean
                             adult_content?: boolean
+                            other?: boolean
+                            graphic_violence?: boolean
                           }
+                          ext_alt_text?: string
                         }[]
+                      }
+                      favorite_count: number
+                      favorited: boolean
+                      full_text: string
+                      is_quote_status: boolean
+                      lang: string
+                      possibly_sensitive?: boolean
+                      possibly_sensitive_editable?: boolean
+                      quote_count: number
+                      reply_count: number
+                      retweet_count: number
+                      retweeted: boolean
+                      user_id_str: string
+                      id_str: string
+                      quoted_status_id_str?: string
+                      quoted_status_permalink?: {
+                        url: string
+                        expanded: string
+                        display: string
                       }
                       retweeted_status_result?: {
                         result: {
@@ -712,7 +723,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 is_blue_verified: boolean
                                 profile_image_shape: string
                                 legacy: {
-                                  following?: boolean
                                   can_dm: boolean
                                   can_media_tag: boolean
                                   created_at: string
@@ -750,7 +760,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   normal_followers_count: number
                                   pinned_tweet_ids_str: string[]
                                   possibly_sensitive: boolean
-                                  profile_banner_url?: string
                                   profile_image_url_https: string
                                   profile_interstitial_type: string
                                   screen_name: string
@@ -759,7 +768,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   verified: boolean
                                   want_retweets: boolean
                                   withheld_in_countries: string[]
+                                  profile_banner_url?: string
                                   url?: string
+                                  following?: boolean
                                   verified_type?: string
                                   followed_by?: boolean
                                   protected?: boolean
@@ -808,27 +819,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               hashtags: {
                                 indices: number[]
                                 text: string
-                              }[]
-                              symbols: {
-                                indices: number[]
-                                text: string
-                              }[]
-                              timestamps?: {
-                                indices: number[]
-                                seconds: number
-                                text: string
-                              }[]
-                              urls: {
-                                display_url: string
-                                expanded_url: string
-                                url: string
-                                indices: number[]
-                              }[]
-                              user_mentions: {
-                                id_str: string
-                                name: string
-                                screen_name: string
-                                indices: number[]
                               }[]
                               media?: {
                                 display_url: string
@@ -885,6 +875,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }[]
                                   }
                                 }
+                                sensitive_media_warning?: {
+                                  adult_content?: boolean
+                                  other?: boolean
+                                  graphic_violence?: boolean
+                                }
                                 sizes: {
                                   large: {
                                     h: number
@@ -917,19 +912,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     h: number
                                   }[]
                                 }
-                                video_info?: {
-                                  aspect_ratio: number[]
-                                  variants: {
-                                    bitrate?: number
-                                    content_type: string
-                                    url: string
-                                  }[]
-                                  duration_millis?: number
-                                }
                                 additional_media_info?: {
                                   monetizable: boolean
                                   title?: string
                                   description?: string
+                                  embeddable?: boolean
                                   call_to_actions?: {
                                     visit_site?: {
                                       url: string
@@ -938,14 +925,26 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       url: string
                                     }
                                   }
-                                  embeddable?: boolean
                                   source_user?: {
                                     user_results: {
                                       result: {
                                         __typename: string
                                         id: string
                                         rest_id: string
-                                        affiliates_highlighted_label: {}
+                                        affiliates_highlighted_label: {
+                                          label?: {
+                                            url: {
+                                              url: string
+                                              urlType: string
+                                            }
+                                            badge: {
+                                              url: string
+                                            }
+                                            description: string
+                                            userLabelType: string
+                                            userLabelDisplayType: string
+                                          }
+                                        }
                                         has_graduated_access: boolean
                                         is_blue_verified: boolean
                                         profile_image_shape: string
@@ -987,16 +986,16 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           normal_followers_count: number
                                           pinned_tweet_ids_str: string[]
                                           possibly_sensitive: boolean
-                                          profile_banner_url: string
                                           profile_image_url_https: string
                                           profile_interstitial_type: string
                                           screen_name: string
                                           statuses_count: number
                                           translator_type: string
-                                          url?: string
                                           verified: boolean
                                           want_retweets: boolean
                                           withheld_in_countries: unknown[]
+                                          profile_banner_url?: string
+                                          url?: string
                                           blocking?: boolean
                                         }
                                         professional?: {
@@ -1012,31 +1011,40 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }
                                   }
                                 }
-                                sensitive_media_warning?: {
-                                  other?: boolean
-                                  adult_content?: boolean
+                                video_info?: {
+                                  aspect_ratio: number[]
+                                  duration_millis?: number
+                                  variants: {
+                                    bitrate?: number
+                                    content_type: string
+                                    url: string
+                                  }[]
                                 }
                                 ext_alt_text?: string
                                 source_status_id_str?: string
                                 source_user_id_str?: string
                               }[]
-                            }
-                            favorite_count: number
-                            favorited: boolean
-                            full_text: string
-                            is_quote_status: boolean
-                            lang: string
-                            quote_count: number
-                            reply_count: number
-                            retweet_count: number
-                            retweeted: boolean
-                            user_id_str: string
-                            id_str: string
-                            quoted_status_id_str?: string
-                            quoted_status_permalink?: {
-                              url: string
-                              expanded: string
-                              display: string
+                              symbols: {
+                                indices: number[]
+                                text: string
+                              }[]
+                              timestamps?: {
+                                indices: number[]
+                                seconds: number
+                                text: string
+                              }[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
+                              user_mentions: {
+                                id_str: string
+                                name: string
+                                screen_name: string
+                                indices: number[]
+                              }[]
                             }
                             extended_entities?: {
                               media: {
@@ -1094,6 +1102,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }[]
                                   }
                                 }
+                                sensitive_media_warning?: {
+                                  adult_content?: boolean
+                                  other?: boolean
+                                  graphic_violence?: boolean
+                                }
                                 sizes: {
                                   large: {
                                     h: number
@@ -1126,19 +1139,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     h: number
                                   }[]
                                 }
-                                video_info?: {
-                                  aspect_ratio: number[]
-                                  variants: {
-                                    bitrate?: number
-                                    content_type: string
-                                    url: string
-                                  }[]
-                                  duration_millis?: number
-                                }
                                 additional_media_info?: {
                                   monetizable: boolean
                                   title?: string
                                   description?: string
+                                  embeddable?: boolean
                                   call_to_actions?: {
                                     visit_site?: {
                                       url: string
@@ -1147,14 +1152,26 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       url: string
                                     }
                                   }
-                                  embeddable?: boolean
                                   source_user?: {
                                     user_results: {
                                       result: {
                                         __typename: string
                                         id: string
                                         rest_id: string
-                                        affiliates_highlighted_label: {}
+                                        affiliates_highlighted_label: {
+                                          label?: {
+                                            url: {
+                                              url: string
+                                              urlType: string
+                                            }
+                                            badge: {
+                                              url: string
+                                            }
+                                            description: string
+                                            userLabelType: string
+                                            userLabelDisplayType: string
+                                          }
+                                        }
                                         has_graduated_access: boolean
                                         is_blue_verified: boolean
                                         profile_image_shape: string
@@ -1196,16 +1213,16 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           normal_followers_count: number
                                           pinned_tweet_ids_str: string[]
                                           possibly_sensitive: boolean
-                                          profile_banner_url: string
                                           profile_image_url_https: string
                                           profile_interstitial_type: string
                                           screen_name: string
                                           statuses_count: number
                                           translator_type: string
-                                          url?: string
                                           verified: boolean
                                           want_retweets: boolean
                                           withheld_in_countries: unknown[]
+                                          profile_banner_url?: string
+                                          url?: string
                                           blocking?: boolean
                                         }
                                         professional?: {
@@ -1221,17 +1238,42 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }
                                   }
                                 }
-                                sensitive_media_warning?: {
-                                  other?: boolean
-                                  adult_content?: boolean
+                                video_info?: {
+                                  aspect_ratio: number[]
+                                  duration_millis?: number
+                                  variants: {
+                                    bitrate?: number
+                                    content_type: string
+                                    url: string
+                                  }[]
                                 }
                                 ext_alt_text?: string
                                 source_status_id_str?: string
                                 source_user_id_str?: string
                               }[]
                             }
+                            favorite_count: number
+                            favorited: boolean
+                            full_text: string
+                            is_quote_status: boolean
+                            lang: string
                             possibly_sensitive?: boolean
                             possibly_sensitive_editable?: boolean
+                            quote_count: number
+                            reply_count: number
+                            retweet_count: number
+                            retweeted: boolean
+                            user_id_str: string
+                            id_str: string
+                            quoted_status_id_str?: string
+                            quoted_status_permalink?: {
+                              url: string
+                              expanded: string
+                              display: string
+                            }
+                            in_reply_to_screen_name?: string
+                            in_reply_to_user_id_str?: string
+                            in_reply_to_status_id_str?: string
                             conversation_control?: {
                               policy: string
                               conversation_owner_results: {
@@ -1243,9 +1285,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 }
                               }
                             }
-                            in_reply_to_screen_name?: string
-                            in_reply_to_status_id_str?: string
-                            in_reply_to_user_id_str?: string
                             limited_actions?: string
                             place?: {
                               bounding_box: {
@@ -1265,7 +1304,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             }
                           }
                           quoted_status_result?: {
-                            result: {
+                            result?: {
                               __typename: string
                               rest_id?: string
                               core?: {
@@ -1363,9 +1402,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   }[]
                                 }
                               }
-                              unified_card?: {
-                                card_fetch_state: string
-                              }
                               edit_control?: {
                                 edit_tweet_ids?: string[]
                                 editable_until_msecs?: string
@@ -1405,136 +1441,8 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     media_url_https: string
                                     type: string
                                     url: string
-                                    additional_media_info?: {
-                                      title?: string
-                                      description?: string
-                                      call_to_actions?: {
-                                        visit_site: {
-                                          url: string
-                                        }
-                                      }
-                                      embeddable?: boolean
-                                      monetizable: boolean
-                                      source_user?: {
-                                        user_results: {
-                                          result: {
-                                            __typename: string
-                                            id: string
-                                            rest_id: string
-                                            affiliates_highlighted_label: {
-                                              label: {
-                                                url: {
-                                                  url: string
-                                                  urlType: string
-                                                }
-                                                badge: {
-                                                  url: string
-                                                }
-                                                description: string
-                                                userLabelType: string
-                                                userLabelDisplayType: string
-                                              }
-                                            }
-                                            has_graduated_access: boolean
-                                            is_blue_verified: boolean
-                                            profile_image_shape: string
-                                            legacy: {
-                                              can_dm: boolean
-                                              can_media_tag: boolean
-                                              created_at: string
-                                              default_profile: boolean
-                                              default_profile_image: boolean
-                                              description: string
-                                              entities: {
-                                                description: {
-                                                  urls: {
-                                                    display_url: string
-                                                    expanded_url: string
-                                                    url: string
-                                                    indices: number[]
-                                                  }[]
-                                                }
-                                                url: {
-                                                  urls: {
-                                                    display_url: string
-                                                    expanded_url: string
-                                                    url: string
-                                                    indices: number[]
-                                                  }[]
-                                                }
-                                              }
-                                              fast_followers_count: number
-                                              favourites_count: number
-                                              followers_count: number
-                                              friends_count: number
-                                              has_custom_timelines: boolean
-                                              is_translator: boolean
-                                              listed_count: number
-                                              location: string
-                                              media_count: number
-                                              name: string
-                                              normal_followers_count: number
-                                              pinned_tweet_ids_str: unknown[]
-                                              possibly_sensitive: boolean
-                                              profile_banner_url: string
-                                              profile_image_url_https: string
-                                              profile_interstitial_type: string
-                                              screen_name: string
-                                              statuses_count: number
-                                              translator_type: string
-                                              url: string
-                                              verified: boolean
-                                              verified_type: string
-                                              want_retweets: boolean
-                                              withheld_in_countries: unknown[]
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
                                     ext_media_availability: {
                                       status: string
-                                    }
-                                    sizes: {
-                                      large: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      medium: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      small: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      thumb: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                    }
-                                    original_info: {
-                                      height: number
-                                      width: number
-                                      focus_rects: {
-                                        x: number
-                                        y: number
-                                        w: number
-                                        h: number
-                                      }[]
-                                    }
-                                    video_info?: {
-                                      aspect_ratio: number[]
-                                      duration_millis?: number
-                                      variants: {
-                                        bitrate?: number
-                                        content_type: string
-                                        url: string
-                                      }[]
                                     }
                                     features?: {
                                       large: {
@@ -1578,12 +1486,147 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                         }[]
                                       }
                                     }
+                                    sizes: {
+                                      large: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      medium: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      small: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      thumb: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                    }
+                                    original_info: {
+                                      height: number
+                                      width: number
+                                      focus_rects: {
+                                        x: number
+                                        y: number
+                                        w: number
+                                        h: number
+                                      }[]
+                                    }
+                                    additional_media_info?: {
+                                      monetizable: boolean
+                                      title?: string
+                                      description?: string
+                                      call_to_actions?: {
+                                        visit_site?: {
+                                          url: string
+                                        }
+                                        watch_now?: {
+                                          url: string
+                                        }
+                                      }
+                                      embeddable?: boolean
+                                      source_user?: {
+                                        user_results: {
+                                          result: {
+                                            __typename: string
+                                            id: string
+                                            rest_id: string
+                                            affiliates_highlighted_label: {
+                                              label?: {
+                                                url: {
+                                                  url: string
+                                                  urlType: string
+                                                }
+                                                badge: {
+                                                  url: string
+                                                }
+                                                description: string
+                                                userLabelType: string
+                                                userLabelDisplayType: string
+                                              }
+                                            }
+                                            has_graduated_access: boolean
+                                            is_blue_verified: boolean
+                                            profile_image_shape: string
+                                            legacy: {
+                                              can_dm: boolean
+                                              can_media_tag: boolean
+                                              created_at: string
+                                              default_profile: boolean
+                                              default_profile_image: boolean
+                                              description: string
+                                              entities: {
+                                                description: {
+                                                  urls: {
+                                                    display_url: string
+                                                    expanded_url: string
+                                                    url: string
+                                                    indices: number[]
+                                                  }[]
+                                                }
+                                                url?: {
+                                                  urls: {
+                                                    display_url: string
+                                                    expanded_url: string
+                                                    url: string
+                                                    indices: number[]
+                                                  }[]
+                                                }
+                                              }
+                                              fast_followers_count: number
+                                              favourites_count: number
+                                              followers_count: number
+                                              friends_count: number
+                                              has_custom_timelines: boolean
+                                              is_translator: boolean
+                                              listed_count: number
+                                              location: string
+                                              media_count: number
+                                              name: string
+                                              normal_followers_count: number
+                                              pinned_tweet_ids_str: string[]
+                                              possibly_sensitive: boolean
+                                              profile_banner_url: string
+                                              profile_image_url_https: string
+                                              profile_interstitial_type: string
+                                              screen_name: string
+                                              statuses_count: number
+                                              translator_type: string
+                                              verified: boolean
+                                              want_retweets: boolean
+                                              withheld_in_countries: unknown[]
+                                              url?: string
+                                              verified_type?: string
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                    video_info?: {
+                                      aspect_ratio: number[]
+                                      duration_millis?: number
+                                      variants: {
+                                        bitrate?: number
+                                        content_type: string
+                                        url: string
+                                      }[]
+                                    }
                                     ext_alt_text?: string
                                     source_status_id_str?: string
                                     source_user_id_str?: string
                                   }[]
                                   symbols: unknown[]
-                                  timestamps?: unknown[]
+                                  timestamps?: {
+                                    indices: number[]
+                                    seconds: number
+                                    text: string
+                                  }[]
                                   urls: {
                                     display_url: string
                                     expanded_url: string
@@ -1607,136 +1650,8 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     media_url_https: string
                                     type: string
                                     url: string
-                                    additional_media_info?: {
-                                      title?: string
-                                      description?: string
-                                      call_to_actions?: {
-                                        visit_site: {
-                                          url: string
-                                        }
-                                      }
-                                      embeddable?: boolean
-                                      monetizable: boolean
-                                      source_user?: {
-                                        user_results: {
-                                          result: {
-                                            __typename: string
-                                            id: string
-                                            rest_id: string
-                                            affiliates_highlighted_label: {
-                                              label: {
-                                                url: {
-                                                  url: string
-                                                  urlType: string
-                                                }
-                                                badge: {
-                                                  url: string
-                                                }
-                                                description: string
-                                                userLabelType: string
-                                                userLabelDisplayType: string
-                                              }
-                                            }
-                                            has_graduated_access: boolean
-                                            is_blue_verified: boolean
-                                            profile_image_shape: string
-                                            legacy: {
-                                              can_dm: boolean
-                                              can_media_tag: boolean
-                                              created_at: string
-                                              default_profile: boolean
-                                              default_profile_image: boolean
-                                              description: string
-                                              entities: {
-                                                description: {
-                                                  urls: {
-                                                    display_url: string
-                                                    expanded_url: string
-                                                    url: string
-                                                    indices: number[]
-                                                  }[]
-                                                }
-                                                url: {
-                                                  urls: {
-                                                    display_url: string
-                                                    expanded_url: string
-                                                    url: string
-                                                    indices: number[]
-                                                  }[]
-                                                }
-                                              }
-                                              fast_followers_count: number
-                                              favourites_count: number
-                                              followers_count: number
-                                              friends_count: number
-                                              has_custom_timelines: boolean
-                                              is_translator: boolean
-                                              listed_count: number
-                                              location: string
-                                              media_count: number
-                                              name: string
-                                              normal_followers_count: number
-                                              pinned_tweet_ids_str: unknown[]
-                                              possibly_sensitive: boolean
-                                              profile_banner_url: string
-                                              profile_image_url_https: string
-                                              profile_interstitial_type: string
-                                              screen_name: string
-                                              statuses_count: number
-                                              translator_type: string
-                                              url: string
-                                              verified: boolean
-                                              verified_type: string
-                                              want_retweets: boolean
-                                              withheld_in_countries: unknown[]
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
                                     ext_media_availability: {
                                       status: string
-                                    }
-                                    sizes: {
-                                      large: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      medium: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      small: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      thumb: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                    }
-                                    original_info: {
-                                      height: number
-                                      width: number
-                                      focus_rects: {
-                                        x: number
-                                        y: number
-                                        w: number
-                                        h: number
-                                      }[]
-                                    }
-                                    video_info?: {
-                                      aspect_ratio: number[]
-                                      duration_millis?: number
-                                      variants: {
-                                        bitrate?: number
-                                        content_type: string
-                                        url: string
-                                      }[]
                                     }
                                     features?: {
                                       large: {
@@ -1779,6 +1694,137 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           type: string
                                         }[]
                                       }
+                                    }
+                                    sizes: {
+                                      large: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      medium: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      small: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      thumb: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                    }
+                                    original_info: {
+                                      height: number
+                                      width: number
+                                      focus_rects: {
+                                        x: number
+                                        y: number
+                                        w: number
+                                        h: number
+                                      }[]
+                                    }
+                                    additional_media_info?: {
+                                      monetizable: boolean
+                                      title?: string
+                                      description?: string
+                                      call_to_actions?: {
+                                        visit_site?: {
+                                          url: string
+                                        }
+                                        watch_now?: {
+                                          url: string
+                                        }
+                                      }
+                                      embeddable?: boolean
+                                      source_user?: {
+                                        user_results: {
+                                          result: {
+                                            __typename: string
+                                            id: string
+                                            rest_id: string
+                                            affiliates_highlighted_label: {
+                                              label?: {
+                                                url: {
+                                                  url: string
+                                                  urlType: string
+                                                }
+                                                badge: {
+                                                  url: string
+                                                }
+                                                description: string
+                                                userLabelType: string
+                                                userLabelDisplayType: string
+                                              }
+                                            }
+                                            has_graduated_access: boolean
+                                            is_blue_verified: boolean
+                                            profile_image_shape: string
+                                            legacy: {
+                                              can_dm: boolean
+                                              can_media_tag: boolean
+                                              created_at: string
+                                              default_profile: boolean
+                                              default_profile_image: boolean
+                                              description: string
+                                              entities: {
+                                                description: {
+                                                  urls: {
+                                                    display_url: string
+                                                    expanded_url: string
+                                                    url: string
+                                                    indices: number[]
+                                                  }[]
+                                                }
+                                                url?: {
+                                                  urls: {
+                                                    display_url: string
+                                                    expanded_url: string
+                                                    url: string
+                                                    indices: number[]
+                                                  }[]
+                                                }
+                                              }
+                                              fast_followers_count: number
+                                              favourites_count: number
+                                              followers_count: number
+                                              friends_count: number
+                                              has_custom_timelines: boolean
+                                              is_translator: boolean
+                                              listed_count: number
+                                              location: string
+                                              media_count: number
+                                              name: string
+                                              normal_followers_count: number
+                                              pinned_tweet_ids_str: string[]
+                                              possibly_sensitive: boolean
+                                              profile_banner_url: string
+                                              profile_image_url_https: string
+                                              profile_interstitial_type: string
+                                              screen_name: string
+                                              statuses_count: number
+                                              translator_type: string
+                                              verified: boolean
+                                              want_retweets: boolean
+                                              withheld_in_countries: unknown[]
+                                              url?: string
+                                              verified_type?: string
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                    video_info?: {
+                                      aspect_ratio: number[]
+                                      duration_millis?: number
+                                      variants: {
+                                        bitrate?: number
+                                        content_type: string
+                                        url: string
+                                      }[]
                                     }
                                     ext_alt_text?: string
                                     source_status_id_str?: string
@@ -1833,6 +1879,18 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 }
                                 limited_actions?: string
                               }
+                              unified_card?: {
+                                card_fetch_state: string
+                              }
+                              quotedRefResult?: {
+                                result?: {
+                                  __typename: string
+                                  rest_id?: string
+                                  tweet?: {
+                                    rest_id: string
+                                  }
+                                }
+                              }
                               card?: {
                                 rest_id: string
                                 legacy: {
@@ -1840,10 +1898,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     key: string
                                     value: {
                                       image_value?: {
-                                        alt?: string
                                         height: number
                                         width: number
                                         url: string
+                                        alt?: string
                                       }
                                       type: string
                                       string_value?: string
@@ -1901,6 +1959,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       is_blue_verified?: boolean
                                       profile_image_shape?: string
                                       legacy?: {
+                                        following?: boolean
                                         can_dm: boolean
                                         can_media_tag: boolean
                                         created_at: string
@@ -1948,9 +2007,8 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                         verified: boolean
                                         want_retweets: boolean
                                         withheld_in_countries: unknown[]
-                                        blocking?: boolean
                                         verified_type?: string
-                                        following?: boolean
+                                        blocking?: boolean
                                       }
                                       professional?: {
                                         rest_id: string
@@ -1965,15 +2023,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       reason?: string
                                     }
                                   }[]
-                                }
-                              }
-                              quotedRefResult?: {
-                                result?: {
-                                  __typename: string
-                                  rest_id?: string
-                                  tweet?: {
-                                    rest_id: string
-                                  }
                                 }
                               }
                               tweet?: {
@@ -2047,6 +2096,305 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           icon_name: string
                                         }[]
                                       }
+                                    }
+                                  }
+                                }
+                                unmention_data: {}
+                                edit_control: {
+                                  edit_tweet_ids: string[]
+                                  editable_until_msecs: string
+                                  is_edit_eligible: boolean
+                                  edits_remaining: string
+                                }
+                                is_translatable: boolean
+                                views: {
+                                  count: string
+                                  state: string
+                                }
+                                source: string
+                                legacy: {
+                                  bookmark_count: number
+                                  bookmarked: boolean
+                                  created_at: string
+                                  conversation_control: {
+                                    policy: string
+                                    conversation_owner_results: {
+                                      result: {
+                                        __typename: string
+                                        legacy: {
+                                          screen_name: string
+                                        }
+                                      }
+                                    }
+                                  }
+                                  conversation_id_str: string
+                                  display_text_range: number[]
+                                  entities: {
+                                    hashtags: {
+                                      indices: number[]
+                                      text: string
+                                    }[]
+                                    media?: {
+                                      display_url: string
+                                      expanded_url: string
+                                      ext_alt_text?: string
+                                      id_str: string
+                                      indices: number[]
+                                      media_key: string
+                                      media_url_https: string
+                                      type: string
+                                      url: string
+                                      ext_media_availability: {
+                                        status: string
+                                      }
+                                      features?: {
+                                        large: {
+                                          faces: {
+                                            x: number
+                                            y: number
+                                            h: number
+                                            w: number
+                                          }[]
+                                        }
+                                        medium: {
+                                          faces: {
+                                            x: number
+                                            y: number
+                                            h: number
+                                            w: number
+                                          }[]
+                                        }
+                                        small: {
+                                          faces: {
+                                            x: number
+                                            y: number
+                                            h: number
+                                            w: number
+                                          }[]
+                                        }
+                                        orig: {
+                                          faces: {
+                                            x: number
+                                            y: number
+                                            h: number
+                                            w: number
+                                          }[]
+                                        }
+                                        all?: {
+                                          tags: {
+                                            user_id: string
+                                            name: string
+                                            screen_name: string
+                                            type: string
+                                          }[]
+                                        }
+                                      }
+                                      sizes: {
+                                        large: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        medium: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        small: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        thumb: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                      }
+                                      original_info: {
+                                        height: number
+                                        width: number
+                                        focus_rects: {
+                                          x: number
+                                          y: number
+                                          w: number
+                                          h: number
+                                        }[]
+                                      }
+                                      additional_media_info?: {
+                                        monetizable: boolean
+                                      }
+                                      video_info?: {
+                                        aspect_ratio: number[]
+                                        duration_millis: number
+                                        variants: {
+                                          content_type: string
+                                          url: string
+                                          bitrate?: number
+                                        }[]
+                                      }
+                                    }[]
+                                    symbols: unknown[]
+                                    timestamps?: unknown[]
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                    user_mentions: {
+                                      id_str: string
+                                      name: string
+                                      screen_name: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                  extended_entities?: {
+                                    media: {
+                                      display_url: string
+                                      expanded_url: string
+                                      ext_alt_text?: string
+                                      id_str: string
+                                      indices: number[]
+                                      media_key: string
+                                      media_url_https: string
+                                      type: string
+                                      url: string
+                                      ext_media_availability: {
+                                        status: string
+                                      }
+                                      features?: {
+                                        large: {
+                                          faces: {
+                                            x: number
+                                            y: number
+                                            h: number
+                                            w: number
+                                          }[]
+                                        }
+                                        medium: {
+                                          faces: {
+                                            x: number
+                                            y: number
+                                            h: number
+                                            w: number
+                                          }[]
+                                        }
+                                        small: {
+                                          faces: {
+                                            x: number
+                                            y: number
+                                            h: number
+                                            w: number
+                                          }[]
+                                        }
+                                        orig: {
+                                          faces: {
+                                            x: number
+                                            y: number
+                                            h: number
+                                            w: number
+                                          }[]
+                                        }
+                                        all?: {
+                                          tags: {
+                                            user_id: string
+                                            name: string
+                                            screen_name: string
+                                            type: string
+                                          }[]
+                                        }
+                                      }
+                                      sizes: {
+                                        large: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        medium: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        small: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        thumb: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                      }
+                                      original_info: {
+                                        height: number
+                                        width: number
+                                        focus_rects: {
+                                          x: number
+                                          y: number
+                                          w: number
+                                          h: number
+                                        }[]
+                                      }
+                                      additional_media_info?: {
+                                        monetizable: boolean
+                                      }
+                                      video_info?: {
+                                        aspect_ratio: number[]
+                                        duration_millis: number
+                                        variants: {
+                                          content_type: string
+                                          url: string
+                                          bitrate?: number
+                                        }[]
+                                      }
+                                    }[]
+                                  }
+                                  favorite_count: number
+                                  favorited: boolean
+                                  full_text: string
+                                  is_quote_status: boolean
+                                  lang: string
+                                  limited_actions?: string
+                                  possibly_sensitive?: boolean
+                                  possibly_sensitive_editable?: boolean
+                                  quote_count: number
+                                  reply_count: number
+                                  retweet_count: number
+                                  retweeted: boolean
+                                  user_id_str: string
+                                  id_str: string
+                                  quoted_status_id_str?: string
+                                  quoted_status_permalink?: {
+                                    url: string
+                                    expanded: string
+                                    display: string
+                                  }
+                                  place?: {
+                                    bounding_box: {
+                                      coordinates: number[][][]
+                                      type: string
+                                    }
+                                    country: string
+                                    country_code: string
+                                    full_name: string
+                                    name: string
+                                    id: string
+                                    place_type: string
+                                    url: string
+                                  }
+                                }
+                                edit_perspective?: {
+                                  favorited: boolean
+                                  retweeted: boolean
+                                }
+                                quotedRefResult?: {
+                                  result?: {
+                                    __typename: string
+                                    rest_id?: string
+                                    tweet?: {
+                                      rest_id: string
                                     }
                                   }
                                 }
@@ -2160,301 +2508,8 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }[]
                                   }
                                 }
-                                unmention_data: {}
                                 unified_card?: {
                                   card_fetch_state: string
-                                }
-                                edit_control: {
-                                  edit_tweet_ids: string[]
-                                  editable_until_msecs: string
-                                  is_edit_eligible: boolean
-                                  edits_remaining: string
-                                }
-                                is_translatable: boolean
-                                views: {
-                                  count: string
-                                  state: string
-                                }
-                                source: string
-                                legacy: {
-                                  bookmark_count: number
-                                  bookmarked: boolean
-                                  created_at: string
-                                  conversation_control: {
-                                    policy: string
-                                    conversation_owner_results: {
-                                      result: {
-                                        __typename: string
-                                        legacy: {
-                                          screen_name: string
-                                        }
-                                      }
-                                    }
-                                  }
-                                  conversation_id_str: string
-                                  display_text_range: number[]
-                                  entities: {
-                                    hashtags: {
-                                      indices: number[]
-                                      text: string
-                                    }[]
-                                    symbols: unknown[]
-                                    timestamps?: unknown[]
-                                    urls: {
-                                      display_url: string
-                                      expanded_url: string
-                                      url: string
-                                      indices: number[]
-                                    }[]
-                                    user_mentions: {
-                                      id_str: string
-                                      name: string
-                                      screen_name: string
-                                      indices: number[]
-                                    }[]
-                                    media?: {
-                                      display_url: string
-                                      expanded_url: string
-                                      id_str: string
-                                      indices: number[]
-                                      media_key: string
-                                      media_url_https: string
-                                      type: string
-                                      url: string
-                                      ext_media_availability: {
-                                        status: string
-                                      }
-                                      features?: {
-                                        large: {
-                                          faces: {
-                                            x: number
-                                            y: number
-                                            h: number
-                                            w: number
-                                          }[]
-                                        }
-                                        medium: {
-                                          faces: {
-                                            x: number
-                                            y: number
-                                            h: number
-                                            w: number
-                                          }[]
-                                        }
-                                        small: {
-                                          faces: {
-                                            x: number
-                                            y: number
-                                            h: number
-                                            w: number
-                                          }[]
-                                        }
-                                        orig: {
-                                          faces: {
-                                            x: number
-                                            y: number
-                                            h: number
-                                            w: number
-                                          }[]
-                                        }
-                                        all?: {
-                                          tags: {
-                                            user_id: string
-                                            name: string
-                                            screen_name: string
-                                            type: string
-                                          }[]
-                                        }
-                                      }
-                                      sizes: {
-                                        large: {
-                                          h: number
-                                          w: number
-                                          resize: string
-                                        }
-                                        medium: {
-                                          h: number
-                                          w: number
-                                          resize: string
-                                        }
-                                        small: {
-                                          h: number
-                                          w: number
-                                          resize: string
-                                        }
-                                        thumb: {
-                                          h: number
-                                          w: number
-                                          resize: string
-                                        }
-                                      }
-                                      original_info: {
-                                        height: number
-                                        width: number
-                                        focus_rects: {
-                                          x: number
-                                          y: number
-                                          w: number
-                                          h: number
-                                        }[]
-                                      }
-                                      additional_media_info?: {
-                                        monetizable: boolean
-                                      }
-                                      video_info?: {
-                                        aspect_ratio: number[]
-                                        duration_millis: number
-                                        variants: {
-                                          content_type: string
-                                          url: string
-                                          bitrate?: number
-                                        }[]
-                                      }
-                                    }[]
-                                  }
-                                  favorite_count: number
-                                  favorited: boolean
-                                  full_text: string
-                                  is_quote_status: boolean
-                                  lang: string
-                                  limited_actions?: string
-                                  possibly_sensitive?: boolean
-                                  possibly_sensitive_editable?: boolean
-                                  quote_count: number
-                                  reply_count: number
-                                  retweet_count: number
-                                  retweeted: boolean
-                                  user_id_str: string
-                                  id_str: string
-                                  extended_entities?: {
-                                    media: {
-                                      display_url: string
-                                      expanded_url: string
-                                      id_str: string
-                                      indices: number[]
-                                      media_key: string
-                                      media_url_https: string
-                                      type: string
-                                      url: string
-                                      ext_media_availability: {
-                                        status: string
-                                      }
-                                      features?: {
-                                        large: {
-                                          faces: {
-                                            x: number
-                                            y: number
-                                            h: number
-                                            w: number
-                                          }[]
-                                        }
-                                        medium: {
-                                          faces: {
-                                            x: number
-                                            y: number
-                                            h: number
-                                            w: number
-                                          }[]
-                                        }
-                                        small: {
-                                          faces: {
-                                            x: number
-                                            y: number
-                                            h: number
-                                            w: number
-                                          }[]
-                                        }
-                                        orig: {
-                                          faces: {
-                                            x: number
-                                            y: number
-                                            h: number
-                                            w: number
-                                          }[]
-                                        }
-                                        all?: {
-                                          tags: {
-                                            user_id: string
-                                            name: string
-                                            screen_name: string
-                                            type: string
-                                          }[]
-                                        }
-                                      }
-                                      sizes: {
-                                        large: {
-                                          h: number
-                                          w: number
-                                          resize: string
-                                        }
-                                        medium: {
-                                          h: number
-                                          w: number
-                                          resize: string
-                                        }
-                                        small: {
-                                          h: number
-                                          w: number
-                                          resize: string
-                                        }
-                                        thumb: {
-                                          h: number
-                                          w: number
-                                          resize: string
-                                        }
-                                      }
-                                      original_info: {
-                                        height: number
-                                        width: number
-                                        focus_rects: {
-                                          x: number
-                                          y: number
-                                          w: number
-                                          h: number
-                                        }[]
-                                      }
-                                      additional_media_info?: {
-                                        monetizable: boolean
-                                      }
-                                      video_info?: {
-                                        aspect_ratio: number[]
-                                        duration_millis: number
-                                        variants: {
-                                          content_type: string
-                                          url: string
-                                          bitrate?: number
-                                        }[]
-                                      }
-                                    }[]
-                                  }
-                                  quoted_status_id_str?: string
-                                  quoted_status_permalink?: {
-                                    url: string
-                                    expanded: string
-                                    display: string
-                                  }
-                                  place?: {
-                                    bounding_box: {
-                                      coordinates: number[][][]
-                                      type: string
-                                    }
-                                    country: string
-                                    country_code: string
-                                    full_name: string
-                                    name: string
-                                    id: string
-                                    place_type: string
-                                    url: string
-                                  }
-                                }
-                                quotedRefResult?: {
-                                  result?: {
-                                    __typename: string
-                                    rest_id?: string
-                                    tweet?: {
-                                      rest_id: string
-                                    }
-                                  }
                                 }
                                 birdwatch_pivot?: {
                                   callToAction: {
@@ -2513,13 +2568,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   }
                                 }[]
                               }
-                              previous_counts?: {
-                                bookmark_count: number
-                                favorite_count: number
-                                quote_count: number
-                                reply_count: number
-                                retweet_count: number
-                              }
                               note_tweet?: {
                                 is_expandable: boolean
                                 note_tweet_results: {
@@ -2558,6 +2606,17 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }
                                   }
                                 }
+                              }
+                              edit_perspective?: {
+                                favorited: boolean
+                                retweeted: boolean
+                              }
+                              previous_counts?: {
+                                bookmark_count: number
+                                favorite_count: number
+                                quote_count: number
+                                reply_count: number
+                                retweet_count: number
                               }
                               birdwatch_pivot?: {
                                 callToAction: {
@@ -2618,10 +2677,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   type: string
                                   string_value?: string
                                   scribe_key?: string
-                                  user_value?: {
-                                    id_str: string
-                                    path: unknown[]
-                                  }
                                   image_color_value?: {
                                     palette: {
                                       rgb: {
@@ -2631,6 +2686,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       }
                                       percentage: number
                                     }[]
+                                  }
+                                  user_value?: {
+                                    id_str: string
+                                    path: unknown[]
                                   }
                                   boolean_value?: boolean
                                 }
@@ -2716,10 +2775,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     translator_type: string
                                     url?: string
                                     verified: boolean
+                                    verified_type?: string
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
                                     blocking?: boolean
-                                    verified_type?: string
                                     following?: boolean
                                     protected?: boolean
                                   }
@@ -2791,6 +2850,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             reply_count: number
                             retweet_count: number
                           }
+                          edit_perspective?: {
+                            favorited: boolean
+                            retweeted: boolean
+                          }
                           birdwatch_pivot?: {
                             callToAction: {
                               prompt: string
@@ -2832,24 +2895,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           }
                         }
                       }
-                      quoted_status_id_str?: string
-                      quoted_status_permalink?: {
-                        url: string
-                        expanded: string
-                        display: string
+                      scopes?: {
+                        followers: boolean
                       }
-                      conversation_control?: {
-                        policy: string
-                        conversation_owner_results: {
-                          result: {
-                            __typename: string
-                            legacy: {
-                              screen_name: string
-                            }
-                          }
-                        }
-                      }
-                      limited_actions?: string
                       place?: {
                         bounding_box: {
                           coordinates: number[][][]
@@ -2864,8 +2912,20 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         url: string
                       }
                       in_reply_to_screen_name?: string
-                      in_reply_to_user_id_str?: string
                       in_reply_to_status_id_str?: string
+                      in_reply_to_user_id_str?: string
+                      conversation_control?: {
+                        policy: string
+                        conversation_owner_results: {
+                          result: {
+                            __typename: string
+                            legacy: {
+                              screen_name: string
+                            }
+                          }
+                        }
+                      }
+                      limited_actions?: string
                       coordinates?: {
                         type: string
                         coordinates: number[]
@@ -2874,167 +2934,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         type: string
                         coordinates: number[]
                       }
-                    }
-                    card?: {
-                      rest_id: string
-                      legacy: {
-                        binding_values: {
-                          key: string
-                          value: {
-                            string_value?: string
-                            type: string
-                            scribe_key?: string
-                            image_value?: {
-                              height: number
-                              width: number
-                              url: string
-                              alt?: string
-                            }
-                            image_color_value?: {
-                              palette: {
-                                rgb: {
-                                  blue: number
-                                  green: number
-                                  red: number
-                                }
-                                percentage: number
-                              }[]
-                            }
-                            user_value?: {
-                              id_str: string
-                              path: unknown[]
-                            }
-                            boolean_value?: boolean
-                          }
-                        }[]
-                        card_platform: {
-                          platform: {
-                            audience: {
-                              name: string
-                            }
-                            device: {
-                              name: string
-                              version: string
-                            }
-                          }
-                        }
-                        name: string
-                        url: string
-                        user_refs_results: {
-                          result: {
-                            __typename: string
-                            id?: string
-                            rest_id?: string
-                            affiliates_highlighted_label?: {
-                              label?: {
-                                url?: {
-                                  url: string
-                                  urlType: string
-                                }
-                                badge: {
-                                  url: string
-                                }
-                                description: string
-                                userLabelType: string
-                                userLabelDisplayType?: string
-                                longDescription?: {
-                                  text: string
-                                  entities: {
-                                    fromIndex: number
-                                    toIndex: number
-                                    ref: {
-                                      type: string
-                                      screen_name: string
-                                      mention_results: {
-                                        result: {
-                                          __typename: string
-                                          legacy: {
-                                            screen_name: string
-                                          }
-                                          rest_id: string
-                                        }
-                                      }
-                                    }
-                                  }[]
-                                }
-                              }
-                            }
-                            has_graduated_access?: boolean
-                            is_blue_verified?: boolean
-                            profile_image_shape?: string
-                            legacy?: {
-                              blocking?: boolean
-                              can_dm: boolean
-                              can_media_tag: boolean
-                              created_at: string
-                              default_profile: boolean
-                              default_profile_image: boolean
-                              description: string
-                              entities: {
-                                description: {
-                                  urls: {
-                                    display_url: string
-                                    expanded_url: string
-                                    url: string
-                                    indices: number[]
-                                  }[]
-                                }
-                                url?: {
-                                  urls: {
-                                    display_url: string
-                                    expanded_url: string
-                                    url: string
-                                    indices: number[]
-                                  }[]
-                                }
-                              }
-                              fast_followers_count: number
-                              favourites_count: number
-                              followers_count: number
-                              friends_count: number
-                              has_custom_timelines: boolean
-                              is_translator: boolean
-                              listed_count: number
-                              location: string
-                              media_count: number
-                              name: string
-                              normal_followers_count: number
-                              pinned_tweet_ids_str: string[]
-                              possibly_sensitive: boolean
-                              profile_banner_url?: string
-                              profile_image_url_https: string
-                              profile_interstitial_type: string
-                              screen_name: string
-                              statuses_count: number
-                              translator_type: string
-                              url?: string
-                              verified: boolean
-                              verified_type?: string
-                              want_retweets: boolean
-                              withheld_in_countries: string[]
-                              following?: boolean
-                              followed_by?: boolean
-                              protected?: boolean
-                            }
-                            professional?: {
-                              rest_id: string
-                              professional_type: string
-                              category: {
-                                id: number
-                                name: string
-                                icon_name: string
-                              }[]
-                            }
-                            message?: string
-                            reason?: string
-                            super_follow_eligible?: boolean
-                            has_nft_avatar?: boolean
-                          }
-                        }[]
-                      }
-                    }
-                    unified_card?: {
-                      card_fetch_state: string
                     }
                     note_tweet?: {
                       is_expandable: boolean
@@ -3085,6 +2984,1890 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         }
                       }
                     }
+                    quoted_status_result?: {
+                      result?: {
+                        __typename: string
+                        tweet?: {
+                          rest_id: string
+                          core: {
+                            user_results: {
+                              result: {
+                                __typename: string
+                                id: string
+                                rest_id: string
+                                affiliates_highlighted_label: {}
+                                has_graduated_access: boolean
+                                is_blue_verified: boolean
+                                profile_image_shape: string
+                                legacy: {
+                                  can_dm: boolean
+                                  can_media_tag: boolean
+                                  created_at: string
+                                  default_profile: boolean
+                                  default_profile_image: boolean
+                                  description: string
+                                  entities: {
+                                    description: {
+                                      urls: {
+                                        display_url: string
+                                        expanded_url: string
+                                        url: string
+                                        indices: number[]
+                                      }[]
+                                    }
+                                    url?: {
+                                      urls: {
+                                        display_url: string
+                                        expanded_url: string
+                                        url: string
+                                        indices: number[]
+                                      }[]
+                                    }
+                                  }
+                                  fast_followers_count: number
+                                  favourites_count: number
+                                  followers_count: number
+                                  friends_count: number
+                                  has_custom_timelines: boolean
+                                  is_translator: boolean
+                                  listed_count: number
+                                  location: string
+                                  media_count: number
+                                  name: string
+                                  normal_followers_count: number
+                                  pinned_tweet_ids_str: string[]
+                                  possibly_sensitive: boolean
+                                  profile_banner_url?: string
+                                  profile_image_url_https: string
+                                  profile_interstitial_type: string
+                                  screen_name: string
+                                  statuses_count: number
+                                  translator_type: string
+                                  verified: boolean
+                                  want_retweets: boolean
+                                  withheld_in_countries: string[]
+                                  url?: string
+                                  verified_type?: string
+                                  following?: boolean
+                                }
+                                professional?: {
+                                  rest_id: string
+                                  professional_type: string
+                                  category: {
+                                    id: number
+                                    name: string
+                                    icon_name: string
+                                  }[]
+                                }
+                              }
+                            }
+                          }
+                          unmention_data: {}
+                          edit_control: {
+                            edit_tweet_ids?: string[]
+                            editable_until_msecs?: string
+                            is_edit_eligible?: boolean
+                            edits_remaining?: string
+                            initial_tweet_id?: string
+                            edit_control_initial?: {
+                              edit_tweet_ids: string[]
+                              editable_until_msecs: string
+                              is_edit_eligible: boolean
+                              edits_remaining: string
+                            }
+                          }
+                          is_translatable: boolean
+                          views: {
+                            count?: string
+                            state: string
+                          }
+                          source: string
+                          legacy: {
+                            bookmark_count: number
+                            bookmarked: boolean
+                            created_at: string
+                            conversation_control?: {
+                              policy: string
+                              conversation_owner_results: {
+                                result: {
+                                  __typename: string
+                                  legacy: {
+                                    screen_name: string
+                                  }
+                                }
+                              }
+                            }
+                            conversation_id_str: string
+                            display_text_range: number[]
+                            entities: {
+                              hashtags: {
+                                indices: number[]
+                                text: string
+                              }[]
+                              media?: {
+                                display_url: string
+                                expanded_url: string
+                                id_str: string
+                                indices: number[]
+                                media_key: string
+                                media_url_https: string
+                                type: string
+                                url: string
+                                ext_media_availability: {
+                                  status: string
+                                }
+                                features?: {
+                                  large: {
+                                    faces: {
+                                      x: number
+                                      y: number
+                                      h: number
+                                      w: number
+                                    }[]
+                                  }
+                                  medium: {
+                                    faces: {
+                                      x: number
+                                      y: number
+                                      h: number
+                                      w: number
+                                    }[]
+                                  }
+                                  small: {
+                                    faces: {
+                                      x: number
+                                      y: number
+                                      h: number
+                                      w: number
+                                    }[]
+                                  }
+                                  orig: {
+                                    faces: {
+                                      x: number
+                                      y: number
+                                      h: number
+                                      w: number
+                                    }[]
+                                  }
+                                  all?: {
+                                    tags: {
+                                      user_id: string
+                                      name: string
+                                      screen_name: string
+                                      type: string
+                                    }[]
+                                  }
+                                }
+                                sizes: {
+                                  large: {
+                                    h: number
+                                    w: number
+                                    resize: string
+                                  }
+                                  medium: {
+                                    h: number
+                                    w: number
+                                    resize: string
+                                  }
+                                  small: {
+                                    h: number
+                                    w: number
+                                    resize: string
+                                  }
+                                  thumb: {
+                                    h: number
+                                    w: number
+                                    resize: string
+                                  }
+                                }
+                                original_info: {
+                                  height: number
+                                  width: number
+                                  focus_rects: {
+                                    x: number
+                                    y: number
+                                    w: number
+                                    h: number
+                                  }[]
+                                }
+                                ext_alt_text?: string
+                                additional_media_info?: {
+                                  monetizable: boolean
+                                  source_user?: {
+                                    user_results: {
+                                      result: {
+                                        __typename: string
+                                        id: string
+                                        rest_id: string
+                                        affiliates_highlighted_label: {}
+                                        has_graduated_access: boolean
+                                        is_blue_verified: boolean
+                                        profile_image_shape: string
+                                        legacy: {
+                                          can_dm: boolean
+                                          can_media_tag: boolean
+                                          created_at: string
+                                          default_profile: boolean
+                                          default_profile_image: boolean
+                                          description: string
+                                          entities: {
+                                            description: {
+                                              urls: unknown[]
+                                            }
+                                          }
+                                          fast_followers_count: number
+                                          favourites_count: number
+                                          followers_count: number
+                                          friends_count: number
+                                          has_custom_timelines: boolean
+                                          is_translator: boolean
+                                          listed_count: number
+                                          location: string
+                                          media_count: number
+                                          name: string
+                                          normal_followers_count: number
+                                          pinned_tweet_ids_str: string[]
+                                          possibly_sensitive: boolean
+                                          profile_banner_url: string
+                                          profile_image_url_https: string
+                                          profile_interstitial_type: string
+                                          screen_name: string
+                                          statuses_count: number
+                                          translator_type: string
+                                          verified: boolean
+                                          want_retweets: boolean
+                                          withheld_in_countries: unknown[]
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                                video_info?: {
+                                  aspect_ratio: number[]
+                                  duration_millis?: number
+                                  variants: {
+                                    bitrate?: number
+                                    content_type: string
+                                    url: string
+                                  }[]
+                                }
+                                source_status_id_str?: string
+                                source_user_id_str?: string
+                              }[]
+                              symbols: unknown[]
+                              timestamps?: unknown[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
+                              user_mentions: {
+                                id_str: string
+                                name: string
+                                screen_name: string
+                                indices: number[]
+                              }[]
+                            }
+                            extended_entities?: {
+                              media: {
+                                display_url: string
+                                expanded_url: string
+                                id_str: string
+                                indices: number[]
+                                media_key: string
+                                media_url_https: string
+                                type: string
+                                url: string
+                                ext_media_availability: {
+                                  status: string
+                                }
+                                features?: {
+                                  large: {
+                                    faces: {
+                                      x: number
+                                      y: number
+                                      h: number
+                                      w: number
+                                    }[]
+                                  }
+                                  medium: {
+                                    faces: {
+                                      x: number
+                                      y: number
+                                      h: number
+                                      w: number
+                                    }[]
+                                  }
+                                  small: {
+                                    faces: {
+                                      x: number
+                                      y: number
+                                      h: number
+                                      w: number
+                                    }[]
+                                  }
+                                  orig: {
+                                    faces: {
+                                      x: number
+                                      y: number
+                                      h: number
+                                      w: number
+                                    }[]
+                                  }
+                                  all?: {
+                                    tags: {
+                                      user_id: string
+                                      name: string
+                                      screen_name: string
+                                      type: string
+                                    }[]
+                                  }
+                                }
+                                sizes: {
+                                  large: {
+                                    h: number
+                                    w: number
+                                    resize: string
+                                  }
+                                  medium: {
+                                    h: number
+                                    w: number
+                                    resize: string
+                                  }
+                                  small: {
+                                    h: number
+                                    w: number
+                                    resize: string
+                                  }
+                                  thumb: {
+                                    h: number
+                                    w: number
+                                    resize: string
+                                  }
+                                }
+                                original_info: {
+                                  height: number
+                                  width: number
+                                  focus_rects: {
+                                    x: number
+                                    y: number
+                                    w: number
+                                    h: number
+                                  }[]
+                                }
+                                ext_alt_text?: string
+                                additional_media_info?: {
+                                  monetizable: boolean
+                                  source_user?: {
+                                    user_results: {
+                                      result: {
+                                        __typename: string
+                                        id: string
+                                        rest_id: string
+                                        affiliates_highlighted_label: {}
+                                        has_graduated_access: boolean
+                                        is_blue_verified: boolean
+                                        profile_image_shape: string
+                                        legacy: {
+                                          can_dm: boolean
+                                          can_media_tag: boolean
+                                          created_at: string
+                                          default_profile: boolean
+                                          default_profile_image: boolean
+                                          description: string
+                                          entities: {
+                                            description: {
+                                              urls: unknown[]
+                                            }
+                                          }
+                                          fast_followers_count: number
+                                          favourites_count: number
+                                          followers_count: number
+                                          friends_count: number
+                                          has_custom_timelines: boolean
+                                          is_translator: boolean
+                                          listed_count: number
+                                          location: string
+                                          media_count: number
+                                          name: string
+                                          normal_followers_count: number
+                                          pinned_tweet_ids_str: string[]
+                                          possibly_sensitive: boolean
+                                          profile_banner_url: string
+                                          profile_image_url_https: string
+                                          profile_interstitial_type: string
+                                          screen_name: string
+                                          statuses_count: number
+                                          translator_type: string
+                                          verified: boolean
+                                          want_retweets: boolean
+                                          withheld_in_countries: unknown[]
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                                video_info?: {
+                                  aspect_ratio: number[]
+                                  duration_millis?: number
+                                  variants: {
+                                    bitrate?: number
+                                    content_type: string
+                                    url: string
+                                  }[]
+                                }
+                                source_status_id_str?: string
+                                source_user_id_str?: string
+                              }[]
+                            }
+                            favorite_count: number
+                            favorited: boolean
+                            full_text: string
+                            is_quote_status: boolean
+                            lang: string
+                            limited_actions?: string
+                            possibly_sensitive?: boolean
+                            possibly_sensitive_editable?: boolean
+                            quote_count: number
+                            reply_count: number
+                            retweet_count: number
+                            retweeted: boolean
+                            user_id_str: string
+                            id_str: string
+                            quoted_status_id_str?: string
+                            quoted_status_permalink?: {
+                              url: string
+                              expanded: string
+                              display: string
+                            }
+                            scopes?: {
+                              followers: boolean
+                            }
+                            place?: {
+                              bounding_box: {
+                                coordinates: number[][][]
+                                type: string
+                              }
+                              country: string
+                              country_code: string
+                              full_name: string
+                              name: string
+                              id: string
+                              place_type: string
+                              url: string
+                            }
+                          }
+                          card?: {
+                            rest_id: string
+                            legacy: {
+                              binding_values: {
+                                key: string
+                                value: {
+                                  image_value?: {
+                                    height: number
+                                    width: number
+                                    url: string
+                                  }
+                                  type: string
+                                  string_value?: string
+                                  scribe_key?: string
+                                  image_color_value?: {
+                                    palette: {
+                                      rgb: {
+                                        blue: number
+                                        green: number
+                                        red: number
+                                      }
+                                      percentage: number
+                                    }[]
+                                  }
+                                  user_value?: {
+                                    id_str: string
+                                    path: unknown[]
+                                  }
+                                  boolean_value?: boolean
+                                }
+                              }[]
+                              card_platform: {
+                                platform: {
+                                  audience: {
+                                    name: string
+                                  }
+                                  device: {
+                                    name: string
+                                    version: string
+                                  }
+                                }
+                              }
+                              name: string
+                              url: string
+                              user_refs_results: {
+                                result: {
+                                  __typename: string
+                                  id: string
+                                  rest_id: string
+                                  affiliates_highlighted_label: {}
+                                  has_graduated_access: boolean
+                                  is_blue_verified: boolean
+                                  profile_image_shape: string
+                                  legacy: {
+                                    can_dm: boolean
+                                    can_media_tag: boolean
+                                    created_at: string
+                                    default_profile: boolean
+                                    default_profile_image: boolean
+                                    description: string
+                                    entities: {
+                                      description: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                      url?: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                    }
+                                    fast_followers_count: number
+                                    favourites_count: number
+                                    followers_count: number
+                                    friends_count: number
+                                    has_custom_timelines: boolean
+                                    is_translator: boolean
+                                    listed_count: number
+                                    location: string
+                                    media_count: number
+                                    name: string
+                                    normal_followers_count: number
+                                    pinned_tweet_ids_str: string[]
+                                    possibly_sensitive: boolean
+                                    profile_banner_url?: string
+                                    profile_image_url_https: string
+                                    profile_interstitial_type: string
+                                    screen_name: string
+                                    statuses_count: number
+                                    translator_type: string
+                                    url?: string
+                                    verified: boolean
+                                    verified_type?: string
+                                    want_retweets: boolean
+                                    withheld_in_countries: unknown[]
+                                    blocking?: boolean
+                                    muting?: boolean
+                                  }
+                                  professional?: {
+                                    rest_id: string
+                                    professional_type: string
+                                    category: {
+                                      id: number
+                                      name: string
+                                      icon_name: string
+                                    }[]
+                                  }
+                                }
+                              }[]
+                            }
+                          }
+                          unified_card?: {
+                            card_fetch_state: string
+                          }
+                          quotedRefResult?: {
+                            result?: {
+                              __typename: string
+                              rest_id?: string
+                              tweet?: {
+                                rest_id: string
+                              }
+                            }
+                          }
+                          birdwatch_pivot?: {
+                            callToAction: {
+                              prompt: string
+                              title: string
+                              destinationUrl: string
+                            }
+                            destinationUrl: string
+                            footer: {
+                              text: string
+                              entities: {
+                                fromIndex: number
+                                toIndex: number
+                                ref: {
+                                  type: string
+                                  url: string
+                                  urlType: string
+                                }
+                              }[]
+                            }
+                            note: {
+                              rest_id: string
+                            }
+                            subtitle: {
+                              text: string
+                              entities: {
+                                fromIndex: number
+                                toIndex: number
+                                ref: {
+                                  type: string
+                                  url: string
+                                  urlType: string
+                                }
+                              }[]
+                            }
+                            title: string
+                            shorttitle: string
+                            visualStyle: string
+                            iconType: string
+                          }
+                          previous_counts?: {
+                            bookmark_count: number
+                            favorite_count: number
+                            quote_count: number
+                            reply_count: number
+                            retweet_count: number
+                          }
+                          edit_perspective?: {
+                            favorited: boolean
+                            retweeted: boolean
+                          }
+                          community_results?: {
+                            result: {
+                              __typename: string
+                              id_str: string
+                              name: string
+                              description: string
+                              created_at: number
+                              question?: string
+                              actions: {
+                                delete_action_result: {
+                                  __typename: string
+                                  reason: string
+                                }
+                                join_action_result: {
+                                  __typename: string
+                                  reason?: string
+                                  message?: string
+                                }
+                                leave_action_result: {
+                                  __typename: string
+                                  reason: string
+                                  message: string
+                                }
+                                pin_action_result: {
+                                  __typename: string
+                                }
+                              }
+                              admin_results: {
+                                result: {
+                                  __typename: string
+                                  id: string
+                                  rest_id: string
+                                  affiliates_highlighted_label: {}
+                                  has_graduated_access: boolean
+                                  is_blue_verified: boolean
+                                  profile_image_shape: string
+                                  legacy: {
+                                    can_dm: boolean
+                                    can_media_tag: boolean
+                                    created_at: string
+                                    default_profile: boolean
+                                    default_profile_image: boolean
+                                    description: string
+                                    entities: {
+                                      description: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                      url?: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                    }
+                                    fast_followers_count: number
+                                    favourites_count: number
+                                    followers_count: number
+                                    friends_count: number
+                                    has_custom_timelines: boolean
+                                    is_translator: boolean
+                                    listed_count: number
+                                    location: string
+                                    media_count: number
+                                    name: string
+                                    normal_followers_count: number
+                                    pinned_tweet_ids_str: string[]
+                                    possibly_sensitive: boolean
+                                    profile_banner_url: string
+                                    profile_image_url_https: string
+                                    profile_interstitial_type: string
+                                    screen_name: string
+                                    statuses_count: number
+                                    translator_type: string
+                                    url?: string
+                                    verified: boolean
+                                    want_retweets: boolean
+                                    withheld_in_countries: unknown[]
+                                  }
+                                  professional?: {
+                                    rest_id: string
+                                    professional_type: string
+                                    category: unknown[]
+                                  }
+                                }
+                              }
+                              creator_results: {
+                                result: {
+                                  __typename: string
+                                  id: string
+                                  rest_id: string
+                                  affiliates_highlighted_label: {}
+                                  has_graduated_access: boolean
+                                  is_blue_verified: boolean
+                                  profile_image_shape: string
+                                  legacy: {
+                                    can_dm: boolean
+                                    can_media_tag: boolean
+                                    created_at: string
+                                    default_profile: boolean
+                                    default_profile_image: boolean
+                                    description: string
+                                    entities: {
+                                      description: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                      url?: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                    }
+                                    fast_followers_count: number
+                                    favourites_count: number
+                                    followers_count: number
+                                    friends_count: number
+                                    has_custom_timelines: boolean
+                                    is_translator: boolean
+                                    listed_count: number
+                                    location: string
+                                    media_count: number
+                                    name: string
+                                    normal_followers_count: number
+                                    pinned_tweet_ids_str: string[]
+                                    possibly_sensitive: boolean
+                                    profile_banner_url: string
+                                    profile_image_url_https: string
+                                    profile_interstitial_type: string
+                                    screen_name: string
+                                    statuses_count: number
+                                    translator_type: string
+                                    url?: string
+                                    verified: boolean
+                                    want_retweets: boolean
+                                    withheld_in_countries: unknown[]
+                                  }
+                                  professional?: {
+                                    rest_id: string
+                                    professional_type: string
+                                    category: unknown[]
+                                  }
+                                }
+                              }
+                              invites_result: {
+                                __typename: string
+                                reason: string
+                                message: string
+                              }
+                              join_policy: string
+                              invites_policy: string
+                              is_pinned: boolean
+                              members_facepile_results: {
+                                result: {
+                                  __typename: string
+                                  id: string
+                                  rest_id: string
+                                  affiliates_highlighted_label: {}
+                                  has_graduated_access: boolean
+                                  is_blue_verified: boolean
+                                  profile_image_shape: string
+                                  legacy: {
+                                    can_dm: boolean
+                                    can_media_tag: boolean
+                                    created_at: string
+                                    default_profile: boolean
+                                    default_profile_image: boolean
+                                    description: string
+                                    entities: {
+                                      description: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                      url?: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                    }
+                                    fast_followers_count: number
+                                    favourites_count: number
+                                    followers_count: number
+                                    friends_count: number
+                                    has_custom_timelines: boolean
+                                    is_translator: boolean
+                                    listed_count: number
+                                    location: string
+                                    media_count: number
+                                    name: string
+                                    normal_followers_count: number
+                                    pinned_tweet_ids_str: string[]
+                                    possibly_sensitive: boolean
+                                    profile_banner_url: string
+                                    profile_image_url_https: string
+                                    profile_interstitial_type: string
+                                    screen_name: string
+                                    statuses_count: number
+                                    translator_type: string
+                                    url?: string
+                                    verified: boolean
+                                    want_retweets: boolean
+                                    withheld_in_countries: unknown[]
+                                    protected?: boolean
+                                  }
+                                  professional?: {
+                                    rest_id: string
+                                    professional_type: string
+                                    category: {
+                                      id: number
+                                      name: string
+                                      icon_name: string
+                                    }[]
+                                  }
+                                }
+                              }[]
+                              moderator_count: number
+                              member_count: number
+                              role: string
+                              rules: {
+                                rest_id: string
+                                name: string
+                                description?: string
+                              }[]
+                              custom_banner_media: {
+                                media_info: {
+                                  color_info: {
+                                    palette: {
+                                      rgb: {
+                                        red: number
+                                        green: number
+                                        blue: number
+                                      }
+                                      percentage: number
+                                    }[]
+                                  }
+                                  original_img_url: string
+                                  original_img_width: number
+                                  original_img_height: number
+                                  salient_rect: {
+                                    left: number
+                                    top: number
+                                    width: number
+                                    height: number
+                                  }
+                                }
+                              }
+                              default_banner_media: {
+                                media_info: {
+                                  color_info: {
+                                    palette: {
+                                      rgb: {
+                                        red: number
+                                        green: number
+                                        blue: number
+                                      }
+                                      percentage: number
+                                    }[]
+                                  }
+                                  original_img_url: string
+                                  original_img_width: number
+                                  original_img_height: number
+                                }
+                              }
+                              viewer_relationship: {
+                                moderation_state: {
+                                  __typename: string
+                                }
+                              }
+                              join_requests_result: {
+                                __typename: string
+                              }
+                              default_theme?: string
+                              custom_theme?: string
+                            }
+                          }
+                          note_tweet?: {
+                            is_expandable: boolean
+                            note_tweet_results: {
+                              result: {
+                                id: string
+                                text: string
+                                entity_set: {
+                                  hashtags: {
+                                    indices: number[]
+                                    text: string
+                                  }[]
+                                  symbols: unknown[]
+                                  timestamps?: unknown[]
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
+                                    indices: number[]
+                                  }[]
+                                  user_mentions: {
+                                    id_str: string
+                                    name: string
+                                    screen_name: string
+                                    indices: number[]
+                                  }[]
+                                }
+                                richtext?: {
+                                  richtext_tags: {
+                                    from_index: number
+                                    to_index: number
+                                    richtext_types: string[]
+                                  }[]
+                                }
+                                media?: {
+                                  inline_media: unknown[]
+                                }
+                              }
+                            }
+                          }
+                        }
+                        limitedActionResults?: {
+                          limited_actions: {
+                            action: string
+                            prompt?: {
+                              __typename: string
+                              cta_type?: string
+                              headline: {
+                                text: string
+                                entities: unknown[]
+                              }
+                              subtext: {
+                                text: string
+                                entities: unknown[]
+                              }
+                            }
+                          }[]
+                        }
+                        rest_id?: string
+                        core?: {
+                          user_results: {
+                            result: {
+                              __typename: string
+                              id: string
+                              rest_id: string
+                              affiliates_highlighted_label: {
+                                label?: {
+                                  url?: {
+                                    url: string
+                                    urlType: string
+                                  }
+                                  badge: {
+                                    url: string
+                                  }
+                                  description: string
+                                  userLabelType: string
+                                  userLabelDisplayType?: string
+                                  longDescription?: {
+                                    text: string
+                                    entities: {
+                                      fromIndex: number
+                                      toIndex: number
+                                      ref: {
+                                        type: string
+                                        screen_name: string
+                                        mention_results: {
+                                          result: {
+                                            __typename: string
+                                            legacy?: {
+                                              screen_name: string
+                                            }
+                                            rest_id?: string
+                                            reason?: string
+                                            message?: string
+                                          }
+                                        }
+                                      }
+                                    }[]
+                                  }
+                                }
+                              }
+                              has_graduated_access: boolean
+                              is_blue_verified: boolean
+                              profile_image_shape: string
+                              legacy: {
+                                can_dm: boolean
+                                can_media_tag: boolean
+                                created_at: string
+                                default_profile: boolean
+                                default_profile_image: boolean
+                                description: string
+                                entities: {
+                                  description: {
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                  url?: {
+                                    urls: {
+                                      display_url?: string
+                                      expanded_url?: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                }
+                                fast_followers_count: number
+                                favourites_count: number
+                                followers_count: number
+                                friends_count: number
+                                has_custom_timelines: boolean
+                                is_translator: boolean
+                                listed_count: number
+                                location: string
+                                media_count: number
+                                name: string
+                                normal_followers_count: number
+                                pinned_tweet_ids_str: string[]
+                                possibly_sensitive: boolean
+                                profile_banner_url?: string
+                                profile_image_url_https: string
+                                profile_interstitial_type: string
+                                screen_name: string
+                                statuses_count: number
+                                translator_type: string
+                                verified: boolean
+                                want_retweets: boolean
+                                withheld_in_countries: string[]
+                                url?: string
+                                following?: boolean
+                                verified_type?: string
+                                followed_by?: boolean
+                              }
+                              professional?: {
+                                rest_id: string
+                                professional_type: string
+                                category: {
+                                  id: number
+                                  name: string
+                                  icon_name: string
+                                }[]
+                              }
+                              super_follow_eligible?: boolean
+                              has_nft_avatar?: boolean
+                            }
+                          }
+                        }
+                        unmention_data?: {
+                          hydrate?: {
+                            unmentioned_users_results: {
+                              rest_id: string
+                            }[]
+                          }
+                        }
+                        edit_control?: {
+                          edit_tweet_ids?: string[]
+                          editable_until_msecs?: string
+                          is_edit_eligible?: boolean
+                          edits_remaining?: string
+                          initial_tweet_id?: string
+                          edit_control_initial?: {
+                            edit_tweet_ids: string[]
+                            editable_until_msecs: string
+                            is_edit_eligible: boolean
+                            edits_remaining: string
+                          }
+                        }
+                        is_translatable?: boolean
+                        views?: {
+                          count?: string
+                          state: string
+                        }
+                        source?: string
+                        legacy?: {
+                          bookmark_count: number
+                          bookmarked: boolean
+                          created_at: string
+                          conversation_id_str: string
+                          display_text_range: number[]
+                          entities: {
+                            hashtags: {
+                              indices: number[]
+                              text: string
+                            }[]
+                            symbols: {
+                              indices: number[]
+                              text: string
+                            }[]
+                            timestamps?: {
+                              indices: number[]
+                              seconds: number
+                              text: string
+                            }[]
+                            urls: {
+                              display_url: string
+                              expanded_url: string
+                              url: string
+                              indices: number[]
+                            }[]
+                            user_mentions: {
+                              id_str: string
+                              name: string
+                              screen_name: string
+                              indices: number[]
+                            }[]
+                            media?: {
+                              display_url: string
+                              expanded_url: string
+                              id_str: string
+                              indices: number[]
+                              media_key: string
+                              media_url_https: string
+                              type: string
+                              url: string
+                              ext_media_availability: {
+                                status: string
+                                reason?: string
+                              }
+                              features?: {
+                                large: {
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
+                                }
+                                medium: {
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
+                                }
+                                small: {
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
+                                }
+                                orig: {
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
+                                }
+                                all?: {
+                                  tags: {
+                                    user_id: string
+                                    name: string
+                                    screen_name: string
+                                    type: string
+                                  }[]
+                                }
+                              }
+                              sizes: {
+                                large: {
+                                  h: number
+                                  w: number
+                                  resize: string
+                                }
+                                medium: {
+                                  h: number
+                                  w: number
+                                  resize: string
+                                }
+                                small: {
+                                  h: number
+                                  w: number
+                                  resize: string
+                                }
+                                thumb: {
+                                  h: number
+                                  w: number
+                                  resize: string
+                                }
+                              }
+                              original_info: {
+                                height: number
+                                width: number
+                                focus_rects: {
+                                  x: number
+                                  y: number
+                                  w: number
+                                  h: number
+                                }[]
+                              }
+                              additional_media_info?: {
+                                monetizable: boolean
+                                source_user?: {
+                                  user_results: {
+                                    result: {
+                                      __typename: string
+                                      id: string
+                                      rest_id: string
+                                      affiliates_highlighted_label: {
+                                        label?: {
+                                          url: {
+                                            url: string
+                                            urlType: string
+                                          }
+                                          badge: {
+                                            url: string
+                                          }
+                                          description: string
+                                          userLabelType: string
+                                          userLabelDisplayType: string
+                                        }
+                                      }
+                                      has_graduated_access: boolean
+                                      is_blue_verified: boolean
+                                      profile_image_shape: string
+                                      legacy: {
+                                        can_dm: boolean
+                                        can_media_tag: boolean
+                                        created_at: string
+                                        default_profile: boolean
+                                        default_profile_image: boolean
+                                        description: string
+                                        entities: {
+                                          description: {
+                                            urls: {
+                                              display_url: string
+                                              expanded_url: string
+                                              url: string
+                                              indices: number[]
+                                            }[]
+                                          }
+                                          url?: {
+                                            urls: {
+                                              display_url: string
+                                              expanded_url: string
+                                              url: string
+                                              indices: number[]
+                                            }[]
+                                          }
+                                        }
+                                        fast_followers_count: number
+                                        favourites_count: number
+                                        followers_count: number
+                                        friends_count: number
+                                        has_custom_timelines: boolean
+                                        is_translator: boolean
+                                        listed_count: number
+                                        location: string
+                                        media_count: number
+                                        name: string
+                                        normal_followers_count: number
+                                        pinned_tweet_ids_str: string[]
+                                        possibly_sensitive: boolean
+                                        profile_banner_url?: string
+                                        profile_image_url_https: string
+                                        profile_interstitial_type: string
+                                        screen_name: string
+                                        statuses_count: number
+                                        translator_type: string
+                                        verified: boolean
+                                        want_retweets: boolean
+                                        withheld_in_countries: string[]
+                                        blocking?: boolean
+                                        url?: string
+                                        verified_type?: string
+                                        following?: boolean
+                                      }
+                                      professional?: {
+                                        rest_id: string
+                                        professional_type: string
+                                        category: {
+                                          id: number
+                                          name: string
+                                          icon_name: string
+                                        }[]
+                                      }
+                                      super_follow_eligible?: boolean
+                                    }
+                                  }
+                                }
+                                title?: string
+                                description?: string
+                                embeddable?: boolean
+                                call_to_actions?: {
+                                  visit_site?: {
+                                    url: string
+                                  }
+                                  watch_now?: {
+                                    url: string
+                                  }
+                                }
+                              }
+                              video_info?: {
+                                aspect_ratio: number[]
+                                duration_millis?: number
+                                variants: {
+                                  bitrate?: number
+                                  content_type: string
+                                  url: string
+                                }[]
+                              }
+                              source_status_id_str?: string
+                              source_user_id_str?: string
+                              ext_alt_text?: string
+                            }[]
+                          }
+                          favorite_count: number
+                          favorited: boolean
+                          full_text: string
+                          is_quote_status: boolean
+                          lang: string
+                          quote_count: number
+                          reply_count: number
+                          retweet_count: number
+                          retweeted: boolean
+                          user_id_str: string
+                          id_str: string
+                          possibly_sensitive?: boolean
+                          possibly_sensitive_editable?: boolean
+                          extended_entities?: {
+                            media: {
+                              display_url: string
+                              expanded_url: string
+                              id_str: string
+                              indices: number[]
+                              media_key: string
+                              media_url_https: string
+                              type: string
+                              url: string
+                              ext_media_availability: {
+                                status: string
+                                reason?: string
+                              }
+                              features?: {
+                                large: {
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
+                                }
+                                medium: {
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
+                                }
+                                small: {
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
+                                }
+                                orig: {
+                                  faces: {
+                                    x: number
+                                    y: number
+                                    h: number
+                                    w: number
+                                  }[]
+                                }
+                                all?: {
+                                  tags: {
+                                    user_id: string
+                                    name: string
+                                    screen_name: string
+                                    type: string
+                                  }[]
+                                }
+                              }
+                              sizes: {
+                                large: {
+                                  h: number
+                                  w: number
+                                  resize: string
+                                }
+                                medium: {
+                                  h: number
+                                  w: number
+                                  resize: string
+                                }
+                                small: {
+                                  h: number
+                                  w: number
+                                  resize: string
+                                }
+                                thumb: {
+                                  h: number
+                                  w: number
+                                  resize: string
+                                }
+                              }
+                              original_info: {
+                                height: number
+                                width: number
+                                focus_rects: {
+                                  x: number
+                                  y: number
+                                  w: number
+                                  h: number
+                                }[]
+                              }
+                              additional_media_info?: {
+                                monetizable: boolean
+                                source_user?: {
+                                  user_results: {
+                                    result: {
+                                      __typename: string
+                                      id: string
+                                      rest_id: string
+                                      affiliates_highlighted_label: {
+                                        label?: {
+                                          url: {
+                                            url: string
+                                            urlType: string
+                                          }
+                                          badge: {
+                                            url: string
+                                          }
+                                          description: string
+                                          userLabelType: string
+                                          userLabelDisplayType: string
+                                        }
+                                      }
+                                      has_graduated_access: boolean
+                                      is_blue_verified: boolean
+                                      profile_image_shape: string
+                                      legacy: {
+                                        can_dm: boolean
+                                        can_media_tag: boolean
+                                        created_at: string
+                                        default_profile: boolean
+                                        default_profile_image: boolean
+                                        description: string
+                                        entities: {
+                                          description: {
+                                            urls: {
+                                              display_url: string
+                                              expanded_url: string
+                                              url: string
+                                              indices: number[]
+                                            }[]
+                                          }
+                                          url?: {
+                                            urls: {
+                                              display_url: string
+                                              expanded_url: string
+                                              url: string
+                                              indices: number[]
+                                            }[]
+                                          }
+                                        }
+                                        fast_followers_count: number
+                                        favourites_count: number
+                                        followers_count: number
+                                        friends_count: number
+                                        has_custom_timelines: boolean
+                                        is_translator: boolean
+                                        listed_count: number
+                                        location: string
+                                        media_count: number
+                                        name: string
+                                        normal_followers_count: number
+                                        pinned_tweet_ids_str: string[]
+                                        possibly_sensitive: boolean
+                                        profile_banner_url?: string
+                                        profile_image_url_https: string
+                                        profile_interstitial_type: string
+                                        screen_name: string
+                                        statuses_count: number
+                                        translator_type: string
+                                        verified: boolean
+                                        want_retweets: boolean
+                                        withheld_in_countries: string[]
+                                        blocking?: boolean
+                                        url?: string
+                                        verified_type?: string
+                                        following?: boolean
+                                      }
+                                      professional?: {
+                                        rest_id: string
+                                        professional_type: string
+                                        category: {
+                                          id: number
+                                          name: string
+                                          icon_name: string
+                                        }[]
+                                      }
+                                      super_follow_eligible?: boolean
+                                    }
+                                  }
+                                }
+                                title?: string
+                                description?: string
+                                embeddable?: boolean
+                                call_to_actions?: {
+                                  visit_site?: {
+                                    url: string
+                                  }
+                                  watch_now?: {
+                                    url: string
+                                  }
+                                }
+                              }
+                              video_info?: {
+                                aspect_ratio: number[]
+                                duration_millis?: number
+                                variants: {
+                                  bitrate?: number
+                                  content_type: string
+                                  url: string
+                                }[]
+                              }
+                              source_status_id_str?: string
+                              source_user_id_str?: string
+                              ext_alt_text?: string
+                            }[]
+                          }
+                          in_reply_to_screen_name?: string
+                          in_reply_to_status_id_str?: string
+                          in_reply_to_user_id_str?: string
+                          quoted_status_id_str?: string
+                          quoted_status_permalink?: {
+                            url: string
+                            expanded: string
+                            display: string
+                          }
+                          place?: {
+                            bounding_box: {
+                              coordinates: number[][][]
+                              type: string
+                            }
+                            country: string
+                            country_code: string
+                            full_name: string
+                            name: string
+                            id: string
+                            place_type: string
+                            url: string
+                          }
+                          conversation_control?: {
+                            policy: string
+                            conversation_owner_results: {
+                              result: {
+                                __typename: string
+                                legacy: {
+                                  screen_name: string
+                                }
+                              }
+                            }
+                          }
+                          limited_actions?: string
+                          supplemental_language?: string
+                          scopes?: {
+                            followers: boolean
+                          }
+                        }
+                        card?: {
+                          rest_id: string
+                          legacy: {
+                            binding_values: {
+                              key: string
+                              value: {
+                                image_value?: {
+                                  height: number
+                                  width: number
+                                  url: string
+                                  alt?: string
+                                }
+                                type: string
+                                string_value?: string
+                                scribe_key?: string
+                                image_color_value?: {
+                                  palette: {
+                                    rgb: {
+                                      blue: number
+                                      green: number
+                                      red: number
+                                    }
+                                    percentage: number
+                                  }[]
+                                }
+                                user_value?: {
+                                  id_str: string
+                                  path: unknown[]
+                                }
+                                boolean_value?: boolean
+                              }
+                            }[]
+                            card_platform: {
+                              platform: {
+                                audience: {
+                                  name: string
+                                }
+                                device: {
+                                  name: string
+                                  version: string
+                                }
+                              }
+                            }
+                            name: string
+                            url: string
+                            user_refs_results: {
+                              result: {
+                                __typename: string
+                                id?: string
+                                rest_id?: string
+                                affiliates_highlighted_label?: {
+                                  label?: {
+                                    url: {
+                                      url: string
+                                      urlType: string
+                                    }
+                                    badge: {
+                                      url: string
+                                    }
+                                    description: string
+                                    userLabelType: string
+                                    userLabelDisplayType: string
+                                  }
+                                }
+                                has_graduated_access?: boolean
+                                is_blue_verified?: boolean
+                                profile_image_shape?: string
+                                legacy?: {
+                                  blocking?: boolean
+                                  can_dm: boolean
+                                  can_media_tag: boolean
+                                  created_at: string
+                                  default_profile: boolean
+                                  default_profile_image: boolean
+                                  description: string
+                                  entities: {
+                                    description: {
+                                      urls: {
+                                        display_url: string
+                                        expanded_url: string
+                                        url: string
+                                        indices: number[]
+                                      }[]
+                                    }
+                                    url?: {
+                                      urls: {
+                                        display_url: string
+                                        expanded_url: string
+                                        url: string
+                                        indices: number[]
+                                      }[]
+                                    }
+                                  }
+                                  fast_followers_count: number
+                                  favourites_count: number
+                                  followers_count: number
+                                  friends_count: number
+                                  has_custom_timelines: boolean
+                                  is_translator: boolean
+                                  listed_count: number
+                                  location: string
+                                  media_count: number
+                                  name: string
+                                  normal_followers_count: number
+                                  pinned_tweet_ids_str: string[]
+                                  possibly_sensitive: boolean
+                                  profile_banner_url?: string
+                                  profile_image_url_https: string
+                                  profile_interstitial_type: string
+                                  screen_name: string
+                                  statuses_count: number
+                                  translator_type: string
+                                  url?: string
+                                  verified: boolean
+                                  verified_type?: string
+                                  want_retweets: boolean
+                                  withheld_in_countries: unknown[]
+                                  following?: boolean
+                                  followed_by?: boolean
+                                  protected?: boolean
+                                }
+                                professional?: {
+                                  rest_id: string
+                                  professional_type: string
+                                  category: {
+                                    id: number
+                                    name: string
+                                    icon_name: string
+                                  }[]
+                                }
+                                message?: string
+                                reason?: string
+                              }
+                            }[]
+                          }
+                        }
+                        unified_card?: {
+                          card_fetch_state: string
+                        }
+                        note_tweet?: {
+                          is_expandable: boolean
+                          note_tweet_results: {
+                            result: {
+                              id: string
+                              text: string
+                              entity_set: {
+                                hashtags: {
+                                  indices: number[]
+                                  text: string
+                                }[]
+                                symbols: {
+                                  indices: number[]
+                                  text: string
+                                }[]
+                                urls: {
+                                  display_url: string
+                                  expanded_url: string
+                                  url: string
+                                  indices: number[]
+                                }[]
+                                user_mentions: {
+                                  id_str: string
+                                  name: string
+                                  screen_name: string
+                                  indices: number[]
+                                }[]
+                                timestamps?: {
+                                  indices: number[]
+                                  seconds: number
+                                  text: string
+                                }[]
+                              }
+                              richtext?: {
+                                richtext_tags: {
+                                  from_index: number
+                                  to_index: number
+                                  richtext_types: string[]
+                                }[]
+                              }
+                              media?: {
+                                inline_media: {
+                                  media_id: string
+                                  index: number
+                                }[]
+                              }
+                            }
+                          }
+                        }
+                        quotedRefResult?: {
+                          result?: {
+                            __typename: string
+                            rest_id?: string
+                            tweet?: {
+                              rest_id: string
+                            }
+                          }
+                        }
+                        previous_counts?: {
+                          bookmark_count: number
+                          favorite_count: number
+                          quote_count: number
+                          reply_count: number
+                          retweet_count: number
+                        }
+                        birdwatch_pivot?: {
+                          callToAction: {
+                            prompt: string
+                            title: string
+                            destinationUrl: string
+                          }
+                          destinationUrl: string
+                          footer: {
+                            text: string
+                            entities: {
+                              fromIndex: number
+                              toIndex: number
+                              ref: {
+                                type: string
+                                url: string
+                                urlType: string
+                              }
+                            }[]
+                          }
+                          note: {
+                            rest_id: string
+                          }
+                          subtitle: {
+                            text: string
+                            entities: {
+                              fromIndex: number
+                              toIndex: number
+                              ref: {
+                                type: string
+                                url: string
+                                urlType: string
+                              }
+                            }[]
+                          }
+                          title: string
+                          shorttitle: string
+                          visualStyle: string
+                          iconType: string
+                        }
+                        edit_perspective?: {
+                          favorited: boolean
+                          retweeted: boolean
+                        }
+                      }
+                    }
                     tweet?: {
                       rest_id: string
                       core: {
@@ -3095,10 +4878,16 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             rest_id: string
                             affiliates_highlighted_label: {
                               label?: {
+                                url?: {
+                                  url: string
+                                  urlType: string
+                                }
                                 badge: {
                                   url: string
                                 }
                                 description: string
+                                userLabelType: string
+                                userLabelDisplayType?: string
                                 longDescription?: {
                                   text: string
                                   entities: {
@@ -3119,12 +4908,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }
                                   }[]
                                 }
-                                userLabelType: string
-                                url?: {
-                                  url: string
-                                  urlType: string
-                                }
-                                userLabelDisplayType?: string
                               }
                             }
                             has_graduated_access: boolean
@@ -3174,12 +4957,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               screen_name: string
                               statuses_count: number
                               translator_type: string
-                              url?: string
                               verified: boolean
                               want_retweets: boolean
                               withheld_in_countries: unknown[]
-                              following?: boolean
+                              url?: string
                               followed_by?: boolean
+                              following?: boolean
                               verified_type?: string
                               protected?: boolean
                             }
@@ -3192,136 +4975,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 icon_name: string
                               }[]
                             }
-                            has_nft_avatar?: boolean
                             super_follow_eligible?: boolean
+                            has_nft_avatar?: boolean
                           }
-                        }
-                      }
-                      card?: {
-                        rest_id: string
-                        legacy: {
-                          binding_values: {
-                            key: string
-                            value: {
-                              string_value?: string
-                              type: string
-                              scribe_key?: string
-                              image_value?: {
-                                height: number
-                                width: number
-                                url: string
-                                alt?: string
-                              }
-                              image_color_value?: {
-                                palette: {
-                                  rgb: {
-                                    blue: number
-                                    green: number
-                                    red: number
-                                  }
-                                  percentage: number
-                                }[]
-                              }
-                              user_value?: {
-                                id_str: string
-                                path: unknown[]
-                              }
-                            }
-                          }[]
-                          card_platform: {
-                            platform: {
-                              audience: {
-                                name: string
-                              }
-                              device: {
-                                name: string
-                                version: string
-                              }
-                            }
-                          }
-                          name: string
-                          url: string
-                          user_refs_results: {
-                            result: {
-                              __typename: string
-                              id?: string
-                              rest_id?: string
-                              affiliates_highlighted_label?: {}
-                              has_graduated_access?: boolean
-                              is_blue_verified?: boolean
-                              profile_image_shape?: string
-                              legacy?: {
-                                can_dm: boolean
-                                can_media_tag: boolean
-                                created_at: string
-                                default_profile: boolean
-                                default_profile_image: boolean
-                                description: string
-                                entities: {
-                                  description: {
-                                    urls: {
-                                      display_url: string
-                                      expanded_url: string
-                                      url: string
-                                      indices: number[]
-                                    }[]
-                                  }
-                                  url?: {
-                                    urls: {
-                                      display_url: string
-                                      expanded_url: string
-                                      url: string
-                                      indices: number[]
-                                    }[]
-                                  }
-                                }
-                                fast_followers_count: number
-                                favourites_count: number
-                                followers_count: number
-                                friends_count: number
-                                has_custom_timelines: boolean
-                                is_translator: boolean
-                                listed_count: number
-                                location: string
-                                media_count: number
-                                name: string
-                                normal_followers_count: number
-                                pinned_tweet_ids_str: string[]
-                                possibly_sensitive: boolean
-                                profile_banner_url?: string
-                                profile_image_url_https: string
-                                profile_interstitial_type: string
-                                screen_name: string
-                                statuses_count: number
-                                translator_type: string
-                                url?: string
-                                verified: boolean
-                                want_retweets: boolean
-                                withheld_in_countries: unknown[]
-                                blocking?: boolean
-                                verified_type?: string
-                                protected?: boolean
-                                following?: boolean
-                              }
-                              message?: string
-                              reason?: string
-                              professional?: {
-                                rest_id: string
-                                professional_type: string
-                                category: {
-                                  id: number
-                                  name: string
-                                  icon_name: string
-                                }[]
-                              }
-                            }
-                          }[]
                         }
                       }
                       unmention_data: {}
-                      unified_card?: {
-                        card_fetch_state: string
-                      }
                       edit_control: {
                         edit_tweet_ids?: string[]
                         editable_until_msecs?: string
@@ -3467,6 +5126,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 h: number
                               }[]
                             }
+                            allow_download_status?: {
+                              allow_download: boolean
+                            }
                             additional_media_info?: {
                               monetizable: boolean
                               source_user?: {
@@ -3555,9 +5217,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               aspect_ratio: number[]
                               duration_millis?: number
                               variants: {
-                                bitrate?: number
                                 content_type: string
                                 url: string
+                                bitrate?: number
                               }[]
                             }
                             source_status_id_str?: string
@@ -3574,15 +5236,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         is_quote_status: boolean
                         lang: string
                         limited_actions?: string
-                        possibly_sensitive?: boolean
-                        possibly_sensitive_editable?: boolean
                         quote_count: number
                         reply_count: number
                         retweet_count: number
                         retweeted: boolean
-                        scopes?: {
-                          followers: boolean
-                        }
                         user_id_str: string
                         id_str: string
                         extended_entities?: {
@@ -3672,6 +5329,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 h: number
                               }[]
                             }
+                            allow_download_status?: {
+                              allow_download: boolean
+                            }
                             additional_media_info?: {
                               monetizable: boolean
                               source_user?: {
@@ -3760,9 +5420,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               aspect_ratio: number[]
                               duration_millis?: number
                               variants: {
-                                bitrate?: number
                                 content_type: string
                                 url: string
+                                bitrate?: number
                               }[]
                             }
                             source_status_id_str?: string
@@ -3772,6 +5432,17 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               other: boolean
                             }
                           }[]
+                        }
+                        possibly_sensitive?: boolean
+                        possibly_sensitive_editable?: boolean
+                        scopes?: {
+                          followers: boolean
+                        }
+                        quoted_status_id_str?: string
+                        quoted_status_permalink?: {
+                          url: string
+                          expanded: string
+                          display: string
                         }
                         retweeted_status_result?: {
                           result: {
@@ -3826,16 +5497,16 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       normal_followers_count: number
                                       pinned_tweet_ids_str: string[]
                                       possibly_sensitive: boolean
-                                      profile_banner_url?: string
                                       profile_image_url_https: string
                                       profile_interstitial_type: string
                                       screen_name: string
                                       statuses_count: number
                                       translator_type: string
-                                      url?: string
                                       verified: boolean
                                       want_retweets: boolean
                                       withheld_in_countries: unknown[]
+                                      url?: string
+                                      profile_banner_url?: string
                                       following?: boolean
                                     }
                                     professional?: {
@@ -3870,431 +5541,319 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 state: string
                               }
                               source: string
-                              legacy: {
-                                bookmark_count: number
-                                bookmarked: boolean
-                                created_at: string
-                                conversation_control?: {
-                                  policy: string
-                                  conversation_owner_results: {
-                                    result: {
-                                      __typename: string
-                                      legacy: {
-                                        screen_name: string
-                                      }
-                                    }
-                                  }
-                                }
-                                conversation_id_str: string
-                                display_text_range: number[]
-                                entities: {
-                                  hashtags: {
-                                    indices: number[]
-                                    text: string
-                                  }[]
-                                  symbols: unknown[]
-                                  timestamps?: unknown[]
-                                  urls: {
-                                    display_url: string
-                                    expanded_url: string
-                                    url: string
-                                    indices: number[]
-                                  }[]
-                                  user_mentions: {
-                                    id_str: string
-                                    name: string
-                                    screen_name: string
-                                    indices: number[]
-                                  }[]
-                                  media?: {
-                                    display_url: string
-                                    expanded_url: string
-                                    id_str: string
-                                    indices: number[]
-                                    media_key: string
-                                    media_url_https: string
-                                    type: string
-                                    url: string
-                                    ext_media_availability: {
-                                      status: string
-                                    }
-                                    features?: {
-                                      large: {
-                                        faces: {
-                                          x: number
-                                          y: number
-                                          h: number
-                                          w: number
-                                        }[]
-                                      }
-                                      medium: {
-                                        faces: {
-                                          x: number
-                                          y: number
-                                          h: number
-                                          w: number
-                                        }[]
-                                      }
-                                      small: {
-                                        faces: {
-                                          x: number
-                                          y: number
-                                          h: number
-                                          w: number
-                                        }[]
-                                      }
-                                      orig: {
-                                        faces: {
-                                          x: number
-                                          y: number
-                                          h: number
-                                          w: number
-                                        }[]
-                                      }
-                                      all?: {
-                                        tags: {
-                                          user_id: string
-                                          name: string
-                                          screen_name: string
-                                          type: string
-                                        }[]
-                                      }
-                                    }
-                                    sizes: {
-                                      large: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      medium: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      small: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      thumb: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                    }
-                                    original_info: {
-                                      height: number
-                                      width: number
-                                      focus_rects: {
-                                        x: number
-                                        y: number
-                                        w: number
-                                        h: number
-                                      }[]
-                                    }
-                                    additional_media_info?: {
-                                      monetizable: boolean
-                                      title?: string
-                                      description?: string
-                                      embeddable?: boolean
-                                    }
-                                    video_info?: {
-                                      aspect_ratio: number[]
-                                      duration_millis?: number
-                                      variants: {
-                                        content_type: string
-                                        url: string
-                                        bitrate?: number
-                                      }[]
-                                    }
-                                    sensitive_media_warning?: {
-                                      other: boolean
-                                    }
-                                  }[]
-                                }
-                                favorite_count: number
-                                favorited: boolean
-                                full_text: string
-                                is_quote_status: boolean
-                                lang: string
-                                limited_actions?: string
-                                quote_count: number
-                                reply_count: number
-                                retweet_count: number
-                                retweeted: boolean
-                                user_id_str: string
-                                id_str: string
-                                extended_entities?: {
-                                  media: {
-                                    display_url: string
-                                    expanded_url: string
-                                    id_str: string
-                                    indices: number[]
-                                    media_key: string
-                                    media_url_https: string
-                                    type: string
-                                    url: string
-                                    ext_media_availability: {
-                                      status: string
-                                    }
-                                    features?: {
-                                      large: {
-                                        faces: {
-                                          x: number
-                                          y: number
-                                          h: number
-                                          w: number
-                                        }[]
-                                      }
-                                      medium: {
-                                        faces: {
-                                          x: number
-                                          y: number
-                                          h: number
-                                          w: number
-                                        }[]
-                                      }
-                                      small: {
-                                        faces: {
-                                          x: number
-                                          y: number
-                                          h: number
-                                          w: number
-                                        }[]
-                                      }
-                                      orig: {
-                                        faces: {
-                                          x: number
-                                          y: number
-                                          h: number
-                                          w: number
-                                        }[]
-                                      }
-                                      all?: {
-                                        tags: {
-                                          user_id: string
-                                          name: string
-                                          screen_name: string
-                                          type: string
-                                        }[]
-                                      }
-                                    }
-                                    sizes: {
-                                      large: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      medium: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      small: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                      thumb: {
-                                        h: number
-                                        w: number
-                                        resize: string
-                                      }
-                                    }
-                                    original_info: {
-                                      height: number
-                                      width: number
-                                      focus_rects: {
-                                        x: number
-                                        y: number
-                                        w: number
-                                        h: number
-                                      }[]
-                                    }
-                                    additional_media_info?: {
-                                      monetizable: boolean
-                                      title?: string
-                                      description?: string
-                                      embeddable?: boolean
-                                    }
-                                    video_info?: {
-                                      aspect_ratio: number[]
-                                      duration_millis?: number
-                                      variants: {
-                                        content_type: string
-                                        url: string
-                                        bitrate?: number
-                                      }[]
-                                    }
-                                    sensitive_media_warning?: {
-                                      other: boolean
-                                    }
-                                  }[]
-                                }
-                                possibly_sensitive?: boolean
-                                possibly_sensitive_editable?: boolean
-                                quoted_status_id_str?: string
-                                quoted_status_permalink?: {
-                                  url: string
-                                  expanded: string
-                                  display: string
-                                }
-                              }
-                              card?: {
-                                rest_id: string
-                                legacy: {
-                                  binding_values: {
-                                    key: string
-                                    value: {
-                                      image_value?: {
-                                        height: number
-                                        width: number
-                                        url: string
-                                      }
-                                      type: string
-                                      string_value?: string
-                                      scribe_key?: string
-                                      user_value?: {
-                                        id_str: string
-                                        path: unknown[]
-                                      }
-                                      image_color_value?: {
-                                        palette: {
-                                          rgb: {
-                                            blue: number
-                                            green: number
-                                            red: number
-                                          }
-                                          percentage: number
-                                        }[]
-                                      }
-                                    }
-                                  }[]
-                                  card_platform: {
-                                    platform: {
-                                      audience: {
-                                        name: string
-                                      }
-                                      device: {
-                                        name: string
-                                        version: string
-                                      }
-                                    }
-                                  }
-                                  name: string
-                                  url: string
-                                  user_refs_results: {
-                                    result: {
-                                      __typename: string
-                                      id: string
-                                      rest_id: string
-                                      affiliates_highlighted_label: {}
-                                      has_graduated_access: boolean
-                                      is_blue_verified: boolean
-                                      profile_image_shape: string
-                                      legacy: {
-                                        can_dm: boolean
-                                        can_media_tag: boolean
-                                        created_at: string
-                                        default_profile: boolean
-                                        default_profile_image: boolean
-                                        description: string
-                                        entities: {
-                                          description: {
-                                            urls: {
-                                              display_url: string
-                                              expanded_url: string
-                                              url: string
-                                              indices: number[]
-                                            }[]
-                                          }
-                                          url: {
-                                            urls: {
-                                              display_url: string
-                                              expanded_url: string
-                                              url: string
-                                              indices: number[]
-                                            }[]
-                                          }
-                                        }
-                                        fast_followers_count: number
-                                        favourites_count: number
-                                        followers_count: number
-                                        friends_count: number
-                                        has_custom_timelines: boolean
-                                        is_translator: boolean
-                                        listed_count: number
-                                        location: string
-                                        media_count: number
-                                        name: string
-                                        normal_followers_count: number
-                                        pinned_tweet_ids_str: string[]
-                                        possibly_sensitive: boolean
-                                        profile_banner_url: string
-                                        profile_image_url_https: string
-                                        profile_interstitial_type: string
-                                        screen_name: string
-                                        statuses_count: number
-                                        translator_type: string
-                                        url: string
-                                        verified: boolean
-                                        want_retweets: boolean
-                                        withheld_in_countries: unknown[]
-                                        blocking?: boolean
-                                        verified_type?: string
-                                      }
-                                      professional?: {
-                                        rest_id: string
-                                        professional_type: string
-                                        category: {
-                                          id: number
-                                          name: string
-                                          icon_name: string
-                                        }[]
-                                      }
-                                    }
-                                  }[]
-                                }
-                              }
-                              unified_card?: {
-                                card_fetch_state: string
-                              }
-                              note_tweet?: {
-                                is_expandable: boolean
-                                note_tweet_results: {
-                                  result: {
-                                    id: string
-                                    text: string
-                                    entity_set: {
-                                      hashtags: unknown[]
-                                      symbols: unknown[]
-                                      urls: {
-                                        display_url: string
-                                        expanded_url: string
-                                        url: string
-                                        indices: number[]
-                                      }[]
-                                      user_mentions: unknown[]
-                                    }
-                                    richtext?: {
-                                      richtext_tags: unknown[]
-                                    }
-                                    media?: {
-                                      inline_media: unknown[]
-                                    }
-                                  }
-                                }
-                              }
-                              previous_counts?: {
-                                bookmark_count: number
-                                favorite_count: number
-                                quote_count: number
-                                reply_count: number
-                                retweet_count: number
-                              }
                               quoted_status_result?: {
                                 result: {
                                   __typename: string
+                                  tweet?: {
+                                    rest_id: string
+                                    core: {
+                                      user_results: {
+                                        result: {
+                                          __typename: string
+                                          id: string
+                                          rest_id: string
+                                          affiliates_highlighted_label: {}
+                                          has_graduated_access: boolean
+                                          is_blue_verified: boolean
+                                          profile_image_shape: string
+                                          legacy: {
+                                            can_dm: boolean
+                                            can_media_tag: boolean
+                                            created_at: string
+                                            default_profile: boolean
+                                            default_profile_image: boolean
+                                            description: string
+                                            entities: {
+                                              description: {
+                                                urls: {
+                                                  display_url: string
+                                                  expanded_url: string
+                                                  url: string
+                                                  indices: number[]
+                                                }[]
+                                              }
+                                              url?: {
+                                                urls: {
+                                                  display_url: string
+                                                  expanded_url: string
+                                                  url: string
+                                                  indices: number[]
+                                                }[]
+                                              }
+                                            }
+                                            fast_followers_count: number
+                                            favourites_count: number
+                                            followers_count: number
+                                            friends_count: number
+                                            has_custom_timelines: boolean
+                                            is_translator: boolean
+                                            listed_count: number
+                                            location: string
+                                            media_count: number
+                                            name: string
+                                            normal_followers_count: number
+                                            pinned_tweet_ids_str: string[]
+                                            possibly_sensitive: boolean
+                                            profile_banner_url: string
+                                            profile_image_url_https: string
+                                            profile_interstitial_type: string
+                                            screen_name: string
+                                            statuses_count: number
+                                            translator_type: string
+                                            verified: boolean
+                                            want_retweets: boolean
+                                            withheld_in_countries: unknown[]
+                                            url?: string
+                                          }
+                                          professional?: {
+                                            rest_id: string
+                                            professional_type: string
+                                            category: {
+                                              id: number
+                                              name: string
+                                              icon_name: string
+                                            }[]
+                                          }
+                                        }
+                                      }
+                                    }
+                                    unmention_data: {}
+                                    edit_control: {
+                                      edit_tweet_ids: string[]
+                                      editable_until_msecs: string
+                                      is_edit_eligible: boolean
+                                      edits_remaining: string
+                                    }
+                                    is_translatable: boolean
+                                    views: {
+                                      count?: string
+                                      state: string
+                                    }
+                                    source: string
+                                    legacy: {
+                                      bookmark_count: number
+                                      bookmarked: boolean
+                                      created_at: string
+                                      conversation_control: {
+                                        policy: string
+                                        conversation_owner_results: {
+                                          result: {
+                                            __typename: string
+                                            legacy: {
+                                              screen_name: string
+                                            }
+                                          }
+                                        }
+                                      }
+                                      conversation_id_str: string
+                                      display_text_range: number[]
+                                      entities: {
+                                        hashtags: {
+                                          indices: number[]
+                                          text: string
+                                        }[]
+                                        symbols: unknown[]
+                                        timestamps?: unknown[]
+                                        urls: unknown[]
+                                        user_mentions: unknown[]
+                                        media?: {
+                                          display_url: string
+                                          expanded_url: string
+                                          id_str: string
+                                          indices: number[]
+                                          media_key: string
+                                          media_url_https: string
+                                          type: string
+                                          url: string
+                                          ext_media_availability: {
+                                            status: string
+                                          }
+                                          features: {
+                                            large: {
+                                              faces: {
+                                                x: number
+                                                y: number
+                                                h: number
+                                                w: number
+                                              }[]
+                                            }
+                                            medium: {
+                                              faces: {
+                                                x: number
+                                                y: number
+                                                h: number
+                                                w: number
+                                              }[]
+                                            }
+                                            small: {
+                                              faces: {
+                                                x: number
+                                                y: number
+                                                h: number
+                                                w: number
+                                              }[]
+                                            }
+                                            orig: {
+                                              faces: {
+                                                x: number
+                                                y: number
+                                                h: number
+                                                w: number
+                                              }[]
+                                            }
+                                          }
+                                          sizes: {
+                                            large: {
+                                              h: number
+                                              w: number
+                                              resize: string
+                                            }
+                                            medium: {
+                                              h: number
+                                              w: number
+                                              resize: string
+                                            }
+                                            small: {
+                                              h: number
+                                              w: number
+                                              resize: string
+                                            }
+                                            thumb: {
+                                              h: number
+                                              w: number
+                                              resize: string
+                                            }
+                                          }
+                                          original_info: {
+                                            height: number
+                                            width: number
+                                            focus_rects: {
+                                              x: number
+                                              y: number
+                                              w: number
+                                              h: number
+                                            }[]
+                                          }
+                                        }[]
+                                      }
+                                      favorite_count: number
+                                      favorited: boolean
+                                      full_text: string
+                                      is_quote_status: boolean
+                                      lang: string
+                                      limited_actions: string
+                                      quote_count: number
+                                      reply_count: number
+                                      retweet_count: number
+                                      retweeted: boolean
+                                      user_id_str: string
+                                      id_str: string
+                                      extended_entities?: {
+                                        media: {
+                                          display_url: string
+                                          expanded_url: string
+                                          id_str: string
+                                          indices: number[]
+                                          media_key: string
+                                          media_url_https: string
+                                          type: string
+                                          url: string
+                                          ext_media_availability: {
+                                            status: string
+                                          }
+                                          features: {
+                                            large: {
+                                              faces: {
+                                                x: number
+                                                y: number
+                                                h: number
+                                                w: number
+                                              }[]
+                                            }
+                                            medium: {
+                                              faces: {
+                                                x: number
+                                                y: number
+                                                h: number
+                                                w: number
+                                              }[]
+                                            }
+                                            small: {
+                                              faces: {
+                                                x: number
+                                                y: number
+                                                h: number
+                                                w: number
+                                              }[]
+                                            }
+                                            orig: {
+                                              faces: {
+                                                x: number
+                                                y: number
+                                                h: number
+                                                w: number
+                                              }[]
+                                            }
+                                          }
+                                          sizes: {
+                                            large: {
+                                              h: number
+                                              w: number
+                                              resize: string
+                                            }
+                                            medium: {
+                                              h: number
+                                              w: number
+                                              resize: string
+                                            }
+                                            small: {
+                                              h: number
+                                              w: number
+                                              resize: string
+                                            }
+                                            thumb: {
+                                              h: number
+                                              w: number
+                                              resize: string
+                                            }
+                                          }
+                                          original_info: {
+                                            height: number
+                                            width: number
+                                            focus_rects: {
+                                              x: number
+                                              y: number
+                                              w: number
+                                              h: number
+                                            }[]
+                                          }
+                                        }[]
+                                      }
+                                      possibly_sensitive?: boolean
+                                      possibly_sensitive_editable?: boolean
+                                    }
+                                    edit_perspective?: {
+                                      favorited: boolean
+                                      retweeted: boolean
+                                    }
+                                  }
+                                  limitedActionResults?: {
+                                    limited_actions: {
+                                      action: string
+                                      prompt: {
+                                        __typename: string
+                                        cta_type: string
+                                        headline: {
+                                          text: string
+                                          entities: unknown[]
+                                        }
+                                        subtext: {
+                                          text: string
+                                          entities: unknown[]
+                                        }
+                                      }
+                                    }[]
+                                  }
                                   rest_id?: string
                                   core?: {
                                     user_results: {
@@ -4375,6 +5934,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     is_edit_eligible: boolean
                                     edits_remaining: string
                                   }
+                                  edit_perspective?: {
+                                    favorited: boolean
+                                    retweeted: boolean
+                                  }
                                   is_translatable?: boolean
                                   views?: {
                                     count: string
@@ -4388,7 +5951,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     conversation_id_str: string
                                     display_text_range: number[]
                                     entities: {
-                                      hashtags: unknown[]
+                                      hashtags: {
+                                        indices: number[]
+                                        text: string
+                                      }[]
                                       symbols: unknown[]
                                       timestamps?: unknown[]
                                       urls: unknown[]
@@ -4496,6 +6062,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     retweeted: boolean
                                     user_id_str: string
                                     id_str: string
+                                    quoted_status_id_str?: string
+                                    quoted_status_permalink?: {
+                                      url: string
+                                      expanded: string
+                                      display: string
+                                    }
                                     extended_entities?: {
                                       media: {
                                         display_url: string
@@ -4594,328 +6166,444 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     in_reply_to_screen_name?: string
                                     in_reply_to_status_id_str?: string
                                     in_reply_to_user_id_str?: string
-                                    quoted_status_id_str?: string
-                                    quoted_status_permalink?: {
-                                      url: string
-                                      expanded: string
-                                      display: string
-                                    }
-                                  }
-                                  tweet?: {
-                                    rest_id: string
-                                    core: {
-                                      user_results: {
-                                        result: {
-                                          __typename: string
-                                          id: string
-                                          rest_id: string
-                                          affiliates_highlighted_label: {}
-                                          has_graduated_access: boolean
-                                          is_blue_verified: boolean
-                                          profile_image_shape: string
-                                          legacy: {
-                                            can_dm: boolean
-                                            can_media_tag: boolean
-                                            created_at: string
-                                            default_profile: boolean
-                                            default_profile_image: boolean
-                                            description: string
-                                            entities: {
-                                              description: {
-                                                urls: {
-                                                  display_url: string
-                                                  expanded_url: string
-                                                  url: string
-                                                  indices: number[]
-                                                }[]
-                                              }
-                                              url?: {
-                                                urls: {
-                                                  display_url: string
-                                                  expanded_url: string
-                                                  url: string
-                                                  indices: number[]
-                                                }[]
-                                              }
-                                            }
-                                            fast_followers_count: number
-                                            favourites_count: number
-                                            followers_count: number
-                                            friends_count: number
-                                            has_custom_timelines: boolean
-                                            is_translator: boolean
-                                            listed_count: number
-                                            location: string
-                                            media_count: number
-                                            name: string
-                                            normal_followers_count: number
-                                            pinned_tweet_ids_str: string[]
-                                            possibly_sensitive: boolean
-                                            profile_banner_url: string
-                                            profile_image_url_https: string
-                                            profile_interstitial_type: string
-                                            screen_name: string
-                                            statuses_count: number
-                                            translator_type: string
-                                            url?: string
-                                            verified: boolean
-                                            want_retweets: boolean
-                                            withheld_in_countries: unknown[]
-                                          }
-                                          professional?: {
-                                            rest_id: string
-                                            professional_type: string
-                                            category: {
-                                              id: number
-                                              name: string
-                                              icon_name: string
-                                            }[]
-                                          }
-                                        }
-                                      }
-                                    }
-                                    unmention_data: {}
-                                    edit_control: {
-                                      edit_tweet_ids: string[]
-                                      editable_until_msecs: string
-                                      is_edit_eligible: boolean
-                                      edits_remaining: string
-                                    }
-                                    is_translatable: boolean
-                                    views: {
-                                      count: string
-                                      state: string
-                                    }
-                                    source: string
-                                    legacy: {
-                                      bookmark_count: number
-                                      bookmarked: boolean
-                                      created_at: string
-                                      conversation_control: {
-                                        policy: string
-                                        conversation_owner_results: {
-                                          result: {
-                                            __typename: string
-                                            legacy: {
-                                              screen_name: string
-                                            }
-                                          }
-                                        }
-                                      }
-                                      conversation_id_str: string
-                                      display_text_range: number[]
-                                      entities: {
-                                        hashtags: {
-                                          indices: number[]
-                                          text: string
-                                        }[]
-                                        media?: {
-                                          display_url: string
-                                          expanded_url: string
-                                          id_str: string
-                                          indices: number[]
-                                          media_key: string
-                                          media_url_https: string
-                                          type: string
-                                          url: string
-                                          ext_media_availability: {
-                                            status: string
-                                          }
-                                          features: {
-                                            large: {
-                                              faces: {
-                                                x: number
-                                                y: number
-                                                h: number
-                                                w: number
-                                              }[]
-                                            }
-                                            medium: {
-                                              faces: {
-                                                x: number
-                                                y: number
-                                                h: number
-                                                w: number
-                                              }[]
-                                            }
-                                            small: {
-                                              faces: {
-                                                x: number
-                                                y: number
-                                                h: number
-                                                w: number
-                                              }[]
-                                            }
-                                            orig: {
-                                              faces: {
-                                                x: number
-                                                y: number
-                                                h: number
-                                                w: number
-                                              }[]
-                                            }
-                                          }
-                                          sizes: {
-                                            large: {
-                                              h: number
-                                              w: number
-                                              resize: string
-                                            }
-                                            medium: {
-                                              h: number
-                                              w: number
-                                              resize: string
-                                            }
-                                            small: {
-                                              h: number
-                                              w: number
-                                              resize: string
-                                            }
-                                            thumb: {
-                                              h: number
-                                              w: number
-                                              resize: string
-                                            }
-                                          }
-                                          original_info: {
-                                            height: number
-                                            width: number
-                                            focus_rects: {
-                                              x: number
-                                              y: number
-                                              w: number
-                                              h: number
-                                            }[]
-                                          }
-                                        }[]
-                                        symbols: unknown[]
-                                        timestamps?: unknown[]
-                                        urls: unknown[]
-                                        user_mentions: unknown[]
-                                      }
-                                      extended_entities?: {
-                                        media: {
-                                          display_url: string
-                                          expanded_url: string
-                                          id_str: string
-                                          indices: number[]
-                                          media_key: string
-                                          media_url_https: string
-                                          type: string
-                                          url: string
-                                          ext_media_availability: {
-                                            status: string
-                                          }
-                                          features: {
-                                            large: {
-                                              faces: {
-                                                x: number
-                                                y: number
-                                                h: number
-                                                w: number
-                                              }[]
-                                            }
-                                            medium: {
-                                              faces: {
-                                                x: number
-                                                y: number
-                                                h: number
-                                                w: number
-                                              }[]
-                                            }
-                                            small: {
-                                              faces: {
-                                                x: number
-                                                y: number
-                                                h: number
-                                                w: number
-                                              }[]
-                                            }
-                                            orig: {
-                                              faces: {
-                                                x: number
-                                                y: number
-                                                h: number
-                                                w: number
-                                              }[]
-                                            }
-                                          }
-                                          sizes: {
-                                            large: {
-                                              h: number
-                                              w: number
-                                              resize: string
-                                            }
-                                            medium: {
-                                              h: number
-                                              w: number
-                                              resize: string
-                                            }
-                                            small: {
-                                              h: number
-                                              w: number
-                                              resize: string
-                                            }
-                                            thumb: {
-                                              h: number
-                                              w: number
-                                              resize: string
-                                            }
-                                          }
-                                          original_info: {
-                                            height: number
-                                            width: number
-                                            focus_rects: {
-                                              x: number
-                                              y: number
-                                              w: number
-                                              h: number
-                                            }[]
-                                          }
-                                        }[]
-                                      }
-                                      favorite_count: number
-                                      favorited: boolean
-                                      full_text: string
-                                      is_quote_status: boolean
-                                      lang: string
-                                      limited_actions: string
-                                      possibly_sensitive?: boolean
-                                      possibly_sensitive_editable?: boolean
-                                      quote_count: number
-                                      reply_count: number
-                                      retweet_count: number
-                                      retweeted: boolean
-                                      user_id_str: string
-                                      id_str: string
-                                    }
-                                  }
-                                  limitedActionResults?: {
-                                    limited_actions: {
-                                      action: string
-                                      prompt: {
-                                        __typename: string
-                                        cta_type: string
-                                        headline: {
-                                          text: string
-                                          entities: unknown[]
-                                        }
-                                        subtext: {
-                                          text: string
-                                          entities: unknown[]
-                                        }
-                                      }
-                                    }[]
                                   }
                                   quotedRefResult?: {
                                     result?: {
                                       __typename: string
-                                      tweet: {
+                                      rest_id?: string
+                                      tweet?: {
                                         rest_id: string
                                       }
                                     }
                                   }
                                 }
+                              }
+                              legacy: {
+                                bookmark_count: number
+                                bookmarked: boolean
+                                created_at: string
+                                conversation_control?: {
+                                  policy: string
+                                  conversation_owner_results: {
+                                    result: {
+                                      __typename: string
+                                      legacy: {
+                                        screen_name: string
+                                      }
+                                    }
+                                  }
+                                }
+                                conversation_id_str: string
+                                display_text_range: number[]
+                                entities: {
+                                  hashtags: {
+                                    indices: number[]
+                                    text: string
+                                  }[]
+                                  media?: {
+                                    display_url: string
+                                    expanded_url: string
+                                    id_str: string
+                                    indices: number[]
+                                    media_key: string
+                                    media_url_https: string
+                                    type: string
+                                    url: string
+                                    ext_media_availability: {
+                                      status: string
+                                    }
+                                    features?: {
+                                      large: {
+                                        faces: {
+                                          x: number
+                                          y: number
+                                          h: number
+                                          w: number
+                                        }[]
+                                      }
+                                      medium: {
+                                        faces: {
+                                          x: number
+                                          y: number
+                                          h: number
+                                          w: number
+                                        }[]
+                                      }
+                                      small: {
+                                        faces: {
+                                          x: number
+                                          y: number
+                                          h: number
+                                          w: number
+                                        }[]
+                                      }
+                                      orig: {
+                                        faces: {
+                                          x: number
+                                          y: number
+                                          h: number
+                                          w: number
+                                        }[]
+                                      }
+                                      all?: {
+                                        tags: {
+                                          user_id: string
+                                          name: string
+                                          screen_name: string
+                                          type: string
+                                        }[]
+                                      }
+                                    }
+                                    sizes: {
+                                      large: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      medium: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      small: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      thumb: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                    }
+                                    original_info: {
+                                      height: number
+                                      width: number
+                                      focus_rects: {
+                                        x: number
+                                        y: number
+                                        w: number
+                                        h: number
+                                      }[]
+                                    }
+                                    additional_media_info?: {
+                                      monetizable: boolean
+                                      title?: string
+                                      description?: string
+                                      embeddable?: boolean
+                                    }
+                                    video_info?: {
+                                      aspect_ratio: number[]
+                                      duration_millis?: number
+                                      variants: {
+                                        bitrate?: number
+                                        content_type: string
+                                        url: string
+                                      }[]
+                                    }
+                                    sensitive_media_warning?: {
+                                      other: boolean
+                                    }
+                                  }[]
+                                  symbols: unknown[]
+                                  timestamps?: unknown[]
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
+                                    indices: number[]
+                                  }[]
+                                  user_mentions: {
+                                    id_str: string
+                                    name: string
+                                    screen_name: string
+                                    indices: number[]
+                                  }[]
+                                }
+                                extended_entities?: {
+                                  media: {
+                                    display_url: string
+                                    expanded_url: string
+                                    id_str: string
+                                    indices: number[]
+                                    media_key: string
+                                    media_url_https: string
+                                    type: string
+                                    url: string
+                                    ext_media_availability: {
+                                      status: string
+                                    }
+                                    features?: {
+                                      large: {
+                                        faces: {
+                                          x: number
+                                          y: number
+                                          h: number
+                                          w: number
+                                        }[]
+                                      }
+                                      medium: {
+                                        faces: {
+                                          x: number
+                                          y: number
+                                          h: number
+                                          w: number
+                                        }[]
+                                      }
+                                      small: {
+                                        faces: {
+                                          x: number
+                                          y: number
+                                          h: number
+                                          w: number
+                                        }[]
+                                      }
+                                      orig: {
+                                        faces: {
+                                          x: number
+                                          y: number
+                                          h: number
+                                          w: number
+                                        }[]
+                                      }
+                                      all?: {
+                                        tags: {
+                                          user_id: string
+                                          name: string
+                                          screen_name: string
+                                          type: string
+                                        }[]
+                                      }
+                                    }
+                                    sizes: {
+                                      large: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      medium: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      small: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      thumb: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                    }
+                                    original_info: {
+                                      height: number
+                                      width: number
+                                      focus_rects: {
+                                        x: number
+                                        y: number
+                                        w: number
+                                        h: number
+                                      }[]
+                                    }
+                                    additional_media_info?: {
+                                      monetizable: boolean
+                                      title?: string
+                                      description?: string
+                                      embeddable?: boolean
+                                    }
+                                    video_info?: {
+                                      aspect_ratio: number[]
+                                      duration_millis?: number
+                                      variants: {
+                                        bitrate?: number
+                                        content_type: string
+                                        url: string
+                                      }[]
+                                    }
+                                    sensitive_media_warning?: {
+                                      other: boolean
+                                    }
+                                  }[]
+                                }
+                                favorite_count: number
+                                favorited: boolean
+                                full_text: string
+                                is_quote_status: boolean
+                                lang: string
+                                limited_actions?: string
+                                possibly_sensitive?: boolean
+                                possibly_sensitive_editable?: boolean
+                                quote_count: number
+                                quoted_status_id_str?: string
+                                quoted_status_permalink?: {
+                                  url: string
+                                  expanded: string
+                                  display: string
+                                }
+                                reply_count: number
+                                retweet_count: number
+                                retweeted: boolean
+                                user_id_str: string
+                                id_str: string
+                              }
+                              unified_card?: {
+                                card_fetch_state: string
+                              }
+                              edit_perspective?: {
+                                favorited: boolean
+                                retweeted: boolean
+                              }
+                              card?: {
+                                rest_id: string
+                                legacy: {
+                                  binding_values: {
+                                    key: string
+                                    value: {
+                                      string_value?: string
+                                      type: string
+                                      image_value?: {
+                                        height: number
+                                        width: number
+                                        url: string
+                                      }
+                                      scribe_key?: string
+                                      user_value?: {
+                                        id_str: string
+                                        path: unknown[]
+                                      }
+                                      image_color_value?: {
+                                        palette: {
+                                          rgb: {
+                                            blue: number
+                                            green: number
+                                            red: number
+                                          }
+                                          percentage: number
+                                        }[]
+                                      }
+                                      boolean_value?: boolean
+                                    }
+                                  }[]
+                                  card_platform: {
+                                    platform: {
+                                      audience: {
+                                        name: string
+                                      }
+                                      device: {
+                                        name: string
+                                        version: string
+                                      }
+                                    }
+                                  }
+                                  name: string
+                                  url: string
+                                  user_refs_results: {
+                                    result: {
+                                      __typename: string
+                                      id: string
+                                      rest_id: string
+                                      affiliates_highlighted_label: {}
+                                      has_graduated_access: boolean
+                                      is_blue_verified: boolean
+                                      profile_image_shape: string
+                                      legacy: {
+                                        blocking?: boolean
+                                        can_dm: boolean
+                                        can_media_tag: boolean
+                                        created_at: string
+                                        default_profile: boolean
+                                        default_profile_image: boolean
+                                        description: string
+                                        entities: {
+                                          description: {
+                                            urls: {
+                                              display_url: string
+                                              expanded_url: string
+                                              url: string
+                                              indices: number[]
+                                            }[]
+                                          }
+                                          url: {
+                                            urls: {
+                                              display_url: string
+                                              expanded_url: string
+                                              url: string
+                                              indices: number[]
+                                            }[]
+                                          }
+                                        }
+                                        fast_followers_count: number
+                                        favourites_count: number
+                                        followers_count: number
+                                        friends_count: number
+                                        has_custom_timelines: boolean
+                                        is_translator: boolean
+                                        listed_count: number
+                                        location: string
+                                        media_count: number
+                                        name: string
+                                        normal_followers_count: number
+                                        pinned_tweet_ids_str: string[]
+                                        possibly_sensitive: boolean
+                                        profile_banner_url: string
+                                        profile_image_url_https: string
+                                        profile_interstitial_type: string
+                                        screen_name: string
+                                        statuses_count: number
+                                        translator_type: string
+                                        url: string
+                                        verified: boolean
+                                        verified_type?: string
+                                        want_retweets: boolean
+                                        withheld_in_countries: unknown[]
+                                      }
+                                      professional?: {
+                                        rest_id: string
+                                        professional_type: string
+                                        category: {
+                                          id: number
+                                          name: string
+                                          icon_name: string
+                                        }[]
+                                      }
+                                    }
+                                  }[]
+                                }
+                              }
+                              note_tweet?: {
+                                is_expandable: boolean
+                                note_tweet_results: {
+                                  result: {
+                                    id: string
+                                    text: string
+                                    entity_set: {
+                                      hashtags: unknown[]
+                                      symbols: unknown[]
+                                      urls: {
+                                        display_url: string
+                                        expanded_url: string
+                                        url: string
+                                        indices: number[]
+                                      }[]
+                                      user_mentions: unknown[]
+                                    }
+                                    richtext?: {
+                                      richtext_tags: unknown[]
+                                    }
+                                    media?: {
+                                      inline_media: unknown[]
+                                    }
+                                  }
+                                }
+                              }
+                              previous_counts?: {
+                                bookmark_count: number
+                                favorite_count: number
+                                quote_count: number
+                                reply_count: number
+                                retweet_count: number
                               }
                             }
                             limitedActionResults: {
@@ -4937,12 +6625,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             }
                           }
                         }
-                        quoted_status_id_str?: string
-                        quoted_status_permalink?: {
-                          url: string
-                          expanded: string
-                          display: string
-                        }
                         place?: {
                           bounding_box: {
                             coordinates: number[][][]
@@ -4956,6 +6638,130 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           place_type: string
                           url: string
                         }
+                        in_reply_to_screen_name?: string
+                        in_reply_to_user_id_str?: string
+                      }
+                      card?: {
+                        rest_id: string
+                        legacy: {
+                          binding_values: {
+                            key: string
+                            value: {
+                              string_value?: string
+                              type: string
+                              scribe_key?: string
+                              image_value?: {
+                                height: number
+                                width: number
+                                url: string
+                                alt?: string
+                              }
+                              user_value?: {
+                                id_str: string
+                                path: unknown[]
+                              }
+                              image_color_value?: {
+                                palette: {
+                                  rgb: {
+                                    blue: number
+                                    green: number
+                                    red: number
+                                  }
+                                  percentage: number
+                                }[]
+                              }
+                              boolean_value?: boolean
+                            }
+                          }[]
+                          card_platform: {
+                            platform: {
+                              audience: {
+                                name: string
+                              }
+                              device: {
+                                name: string
+                                version: string
+                              }
+                            }
+                          }
+                          name: string
+                          url: string
+                          user_refs_results: {
+                            result: {
+                              __typename: string
+                              id?: string
+                              rest_id?: string
+                              affiliates_highlighted_label?: {}
+                              has_graduated_access?: boolean
+                              is_blue_verified?: boolean
+                              profile_image_shape?: string
+                              legacy?: {
+                                can_dm: boolean
+                                can_media_tag: boolean
+                                created_at: string
+                                default_profile: boolean
+                                default_profile_image: boolean
+                                description: string
+                                entities: {
+                                  description: {
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                  url?: {
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                }
+                                fast_followers_count: number
+                                favourites_count: number
+                                followers_count: number
+                                friends_count: number
+                                has_custom_timelines: boolean
+                                is_translator: boolean
+                                listed_count: number
+                                location: string
+                                media_count: number
+                                name: string
+                                normal_followers_count: number
+                                pinned_tweet_ids_str: string[]
+                                possibly_sensitive: boolean
+                                profile_banner_url?: string
+                                profile_image_url_https: string
+                                profile_interstitial_type: string
+                                screen_name: string
+                                statuses_count: number
+                                translator_type: string
+                                url?: string
+                                verified: boolean
+                                want_retweets: boolean
+                                withheld_in_countries: unknown[]
+                                verified_type?: string
+                                blocking?: boolean
+                                protected?: boolean
+                                following?: boolean
+                              }
+                              professional?: {
+                                rest_id: string
+                                professional_type: string
+                                category: {
+                                  id: number
+                                  name: string
+                                  icon_name: string
+                                }[]
+                              }
+                              message?: string
+                              reason?: string
+                            }
+                          }[]
+                        }
                       }
                       quoted_status_result?: {
                         result: {
@@ -4967,7 +6773,20 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 __typename: string
                                 id: string
                                 rest_id: string
-                                affiliates_highlighted_label: {}
+                                affiliates_highlighted_label: {
+                                  label?: {
+                                    url: {
+                                      url: string
+                                      urlType: string
+                                    }
+                                    badge: {
+                                      url: string
+                                    }
+                                    description: string
+                                    userLabelType: string
+                                    userLabelDisplayType: string
+                                  }
+                                }
                                 has_graduated_access: boolean
                                 is_blue_verified: boolean
                                 profile_image_shape: string
@@ -5009,19 +6828,19 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   normal_followers_count: number
                                   pinned_tweet_ids_str: string[]
                                   possibly_sensitive: boolean
+                                  profile_banner_url?: string
                                   profile_image_url_https: string
                                   profile_interstitial_type: string
                                   screen_name: string
                                   statuses_count: number
                                   translator_type: string
+                                  url?: string
                                   verified: boolean
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
-                                  profile_banner_url?: string
-                                  url?: string
-                                  followed_by?: boolean
-                                  following?: boolean
                                   verified_type?: string
+                                  following?: boolean
+                                  followed_by?: boolean
                                 }
                                 professional?: {
                                   rest_id: string
@@ -5066,20 +6885,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               hashtags: {
                                 indices: number[]
                                 text: string
-                              }[]
-                              symbols: unknown[]
-                              timestamps?: unknown[]
-                              urls: {
-                                display_url: string
-                                expanded_url: string
-                                url: string
-                                indices: number[]
-                              }[]
-                              user_mentions: {
-                                id_str: string
-                                name: string
-                                screen_name: string
-                                indices: number[]
                               }[]
                               media?: {
                                 display_url: string
@@ -5169,20 +6974,31 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 }
                                 additional_media_info?: {
                                   monetizable: boolean
-                                  title?: string
-                                  description?: string
-                                  embeddable?: boolean
                                   source_user?: {
                                     user_results: {
                                       result: {
                                         __typename: string
                                         id: string
                                         rest_id: string
-                                        affiliates_highlighted_label: {}
+                                        affiliates_highlighted_label: {
+                                          label?: {
+                                            url: {
+                                              url: string
+                                              urlType: string
+                                            }
+                                            badge: {
+                                              url: string
+                                            }
+                                            description: string
+                                            userLabelType: string
+                                            userLabelDisplayType: string
+                                          }
+                                        }
                                         has_graduated_access: boolean
                                         is_blue_verified: boolean
                                         profile_image_shape: string
                                         legacy: {
+                                          blocking?: boolean
                                           can_dm: boolean
                                           can_media_tag: boolean
                                           created_at: string
@@ -5192,6 +7008,14 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           entities: {
                                             description: {
                                               urls: unknown[]
+                                            }
+                                            url?: {
+                                              urls: {
+                                                display_url: string
+                                                expanded_url: string
+                                                url: string
+                                                indices: number[]
+                                              }[]
                                             }
                                           }
                                           fast_followers_count: number
@@ -5207,19 +7031,33 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           normal_followers_count: number
                                           pinned_tweet_ids_str: string[]
                                           possibly_sensitive: boolean
+                                          profile_banner_url?: string
                                           profile_image_url_https: string
                                           profile_interstitial_type: string
                                           screen_name: string
                                           statuses_count: number
                                           translator_type: string
+                                          url?: string
                                           verified: boolean
                                           want_retweets: boolean
                                           withheld_in_countries: unknown[]
-                                          profile_banner_url?: string
+                                          verified_type?: string
+                                        }
+                                        professional?: {
+                                          rest_id: string
+                                          professional_type: string
+                                          category: {
+                                            id: number
+                                            name: string
+                                            icon_name: string
+                                          }[]
                                         }
                                       }
                                     }
                                   }
+                                  title?: string
+                                  description?: string
+                                  embeddable?: boolean
                                 }
                                 video_info?: {
                                   aspect_ratio: number[]
@@ -5233,18 +7071,21 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 source_status_id_str?: string
                                 source_user_id_str?: string
                               }[]
+                              symbols: unknown[]
+                              timestamps?: unknown[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
+                              user_mentions: {
+                                id_str: string
+                                name: string
+                                screen_name: string
+                                indices: number[]
+                              }[]
                             }
-                            favorite_count: number
-                            favorited: boolean
-                            full_text: string
-                            is_quote_status: boolean
-                            lang: string
-                            quote_count: number
-                            reply_count: number
-                            retweet_count: number
-                            retweeted: boolean
-                            user_id_str: string
-                            id_str: string
                             extended_entities?: {
                               media: {
                                 display_url: string
@@ -5334,20 +7175,31 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 }
                                 additional_media_info?: {
                                   monetizable: boolean
-                                  title?: string
-                                  description?: string
-                                  embeddable?: boolean
                                   source_user?: {
                                     user_results: {
                                       result: {
                                         __typename: string
                                         id: string
                                         rest_id: string
-                                        affiliates_highlighted_label: {}
+                                        affiliates_highlighted_label: {
+                                          label?: {
+                                            url: {
+                                              url: string
+                                              urlType: string
+                                            }
+                                            badge: {
+                                              url: string
+                                            }
+                                            description: string
+                                            userLabelType: string
+                                            userLabelDisplayType: string
+                                          }
+                                        }
                                         has_graduated_access: boolean
                                         is_blue_verified: boolean
                                         profile_image_shape: string
                                         legacy: {
+                                          blocking?: boolean
                                           can_dm: boolean
                                           can_media_tag: boolean
                                           created_at: string
@@ -5357,6 +7209,14 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           entities: {
                                             description: {
                                               urls: unknown[]
+                                            }
+                                            url?: {
+                                              urls: {
+                                                display_url: string
+                                                expanded_url: string
+                                                url: string
+                                                indices: number[]
+                                              }[]
                                             }
                                           }
                                           fast_followers_count: number
@@ -5372,19 +7232,33 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                           normal_followers_count: number
                                           pinned_tweet_ids_str: string[]
                                           possibly_sensitive: boolean
+                                          profile_banner_url?: string
                                           profile_image_url_https: string
                                           profile_interstitial_type: string
                                           screen_name: string
                                           statuses_count: number
                                           translator_type: string
+                                          url?: string
                                           verified: boolean
                                           want_retweets: boolean
                                           withheld_in_countries: unknown[]
-                                          profile_banner_url?: string
+                                          verified_type?: string
+                                        }
+                                        professional?: {
+                                          rest_id: string
+                                          professional_type: string
+                                          category: {
+                                            id: number
+                                            name: string
+                                            icon_name: string
+                                          }[]
                                         }
                                       }
                                     }
                                   }
+                                  title?: string
+                                  description?: string
+                                  embeddable?: boolean
                                 }
                                 video_info?: {
                                   aspect_ratio: number[]
@@ -5399,8 +7273,19 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 source_user_id_str?: string
                               }[]
                             }
+                            favorite_count: number
+                            favorited: boolean
+                            full_text: string
+                            is_quote_status: boolean
+                            lang: string
                             possibly_sensitive?: boolean
                             possibly_sensitive_editable?: boolean
+                            quote_count: number
+                            reply_count: number
+                            retweet_count: number
+                            retweeted: boolean
+                            user_id_str: string
+                            id_str: string
                             quoted_status_id_str?: string
                             quoted_status_permalink?: {
                               url: string
@@ -5422,6 +7307,127 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               }
                             }
                             limited_actions?: string
+                          }
+                          card?: {
+                            rest_id: string
+                            legacy: {
+                              binding_values: {
+                                key: string
+                                value: {
+                                  image_value?: {
+                                    height: number
+                                    width: number
+                                    url: string
+                                  }
+                                  type: string
+                                  string_value?: string
+                                  scribe_key?: string
+                                  user_value?: {
+                                    id_str: string
+                                    path: unknown[]
+                                  }
+                                  image_color_value?: {
+                                    palette: {
+                                      rgb: {
+                                        blue: number
+                                        green: number
+                                        red: number
+                                      }
+                                      percentage: number
+                                    }[]
+                                  }
+                                  boolean_value?: boolean
+                                }
+                              }[]
+                              card_platform: {
+                                platform: {
+                                  audience: {
+                                    name: string
+                                  }
+                                  device: {
+                                    name: string
+                                    version: string
+                                  }
+                                }
+                              }
+                              name: string
+                              url: string
+                              user_refs_results: {
+                                result: {
+                                  __typename: string
+                                  id: string
+                                  rest_id: string
+                                  affiliates_highlighted_label: {}
+                                  has_graduated_access: boolean
+                                  is_blue_verified: boolean
+                                  profile_image_shape: string
+                                  legacy: {
+                                    blocking?: boolean
+                                    can_dm: boolean
+                                    can_media_tag: boolean
+                                    created_at: string
+                                    default_profile: boolean
+                                    default_profile_image: boolean
+                                    description: string
+                                    entities: {
+                                      description: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                      url: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          url: string
+                                          indices: number[]
+                                        }[]
+                                      }
+                                    }
+                                    fast_followers_count: number
+                                    favourites_count: number
+                                    followers_count: number
+                                    friends_count: number
+                                    has_custom_timelines: boolean
+                                    is_translator: boolean
+                                    listed_count: number
+                                    location: string
+                                    media_count: number
+                                    name: string
+                                    normal_followers_count: number
+                                    pinned_tweet_ids_str: string[]
+                                    possibly_sensitive: boolean
+                                    profile_banner_url: string
+                                    profile_image_url_https: string
+                                    profile_interstitial_type: string
+                                    screen_name: string
+                                    statuses_count: number
+                                    translator_type: string
+                                    url: string
+                                    verified: boolean
+                                    verified_type?: string
+                                    want_retweets: boolean
+                                    withheld_in_countries: unknown[]
+                                    protected?: boolean
+                                  }
+                                  professional?: {
+                                    rest_id: string
+                                    professional_type: string
+                                    category: {
+                                      id: number
+                                      name: string
+                                      icon_name: string
+                                    }[]
+                                  }
+                                }
+                              }[]
+                            }
+                          }
+                          unified_card?: {
+                            card_fetch_state: string
                           }
                           tweet?: {
                             rest_id: string
@@ -5549,52 +7555,8 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   media_url_https: string
                                   type: string
                                   url: string
-                                  additional_media_info?: {
-                                    monetizable: boolean
-                                  }
                                   ext_media_availability: {
                                     status: string
-                                  }
-                                  sizes: {
-                                    large: {
-                                      h: number
-                                      w: number
-                                      resize: string
-                                    }
-                                    medium: {
-                                      h: number
-                                      w: number
-                                      resize: string
-                                    }
-                                    small: {
-                                      h: number
-                                      w: number
-                                      resize: string
-                                    }
-                                    thumb: {
-                                      h: number
-                                      w: number
-                                      resize: string
-                                    }
-                                  }
-                                  original_info: {
-                                    height: number
-                                    width: number
-                                    focus_rects: {
-                                      x: number
-                                      y: number
-                                      w: number
-                                      h: number
-                                    }[]
-                                  }
-                                  video_info?: {
-                                    aspect_ratio: number[]
-                                    duration_millis?: number
-                                    variants: {
-                                      bitrate?: number
-                                      content_type: string
-                                      url: string
-                                    }[]
                                   }
                                   features?: {
                                     large: {
@@ -5637,6 +7599,50 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                         type: string
                                       }[]
                                     }
+                                  }
+                                  sizes: {
+                                    large: {
+                                      h: number
+                                      w: number
+                                      resize: string
+                                    }
+                                    medium: {
+                                      h: number
+                                      w: number
+                                      resize: string
+                                    }
+                                    small: {
+                                      h: number
+                                      w: number
+                                      resize: string
+                                    }
+                                    thumb: {
+                                      h: number
+                                      w: number
+                                      resize: string
+                                    }
+                                  }
+                                  original_info: {
+                                    height: number
+                                    width: number
+                                    focus_rects: {
+                                      x: number
+                                      y: number
+                                      w: number
+                                      h: number
+                                    }[]
+                                  }
+                                  additional_media_info?: {
+                                    monetizable: boolean
+                                  }
+                                  video_info?: {
+                                    aspect_ratio: number[]
+                                    duration_millis?: number
+                                    variants: {
+                                      bitrate?: number
+                                      content_type: string
+                                      url: string
+                                    }[]
                                   }
                                 }[]
                                 symbols: unknown[]
@@ -5664,52 +7670,8 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   media_url_https: string
                                   type: string
                                   url: string
-                                  additional_media_info?: {
-                                    monetizable: boolean
-                                  }
                                   ext_media_availability: {
                                     status: string
-                                  }
-                                  sizes: {
-                                    large: {
-                                      h: number
-                                      w: number
-                                      resize: string
-                                    }
-                                    medium: {
-                                      h: number
-                                      w: number
-                                      resize: string
-                                    }
-                                    small: {
-                                      h: number
-                                      w: number
-                                      resize: string
-                                    }
-                                    thumb: {
-                                      h: number
-                                      w: number
-                                      resize: string
-                                    }
-                                  }
-                                  original_info: {
-                                    height: number
-                                    width: number
-                                    focus_rects: {
-                                      x: number
-                                      y: number
-                                      w: number
-                                      h: number
-                                    }[]
-                                  }
-                                  video_info?: {
-                                    aspect_ratio: number[]
-                                    duration_millis?: number
-                                    variants: {
-                                      bitrate?: number
-                                      content_type: string
-                                      url: string
-                                    }[]
                                   }
                                   features?: {
                                     large: {
@@ -5753,6 +7715,50 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       }[]
                                     }
                                   }
+                                  sizes: {
+                                    large: {
+                                      h: number
+                                      w: number
+                                      resize: string
+                                    }
+                                    medium: {
+                                      h: number
+                                      w: number
+                                      resize: string
+                                    }
+                                    small: {
+                                      h: number
+                                      w: number
+                                      resize: string
+                                    }
+                                    thumb: {
+                                      h: number
+                                      w: number
+                                      resize: string
+                                    }
+                                  }
+                                  original_info: {
+                                    height: number
+                                    width: number
+                                    focus_rects: {
+                                      x: number
+                                      y: number
+                                      w: number
+                                      h: number
+                                    }[]
+                                  }
+                                  additional_media_info?: {
+                                    monetizable: boolean
+                                  }
+                                  video_info?: {
+                                    aspect_ratio: number[]
+                                    duration_millis?: number
+                                    variants: {
+                                      bitrate?: number
+                                      content_type: string
+                                      url: string
+                                    }[]
+                                  }
                                 }[]
                               }
                               favorite_count: number
@@ -5769,6 +7775,15 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               retweeted: boolean
                               user_id_str: string
                               id_str: string
+                              quoted_status_id_str?: string
+                              quoted_status_permalink?: {
+                                url: string
+                                expanded: string
+                                display: string
+                              }
+                              scopes?: {
+                                followers: boolean
+                              }
                               place?: {
                                 bounding_box: {
                                   coordinates: number[][][]
@@ -5782,25 +7797,17 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 place_type: string
                                 url: string
                               }
-                              quoted_status_id_str?: string
-                              quoted_status_permalink?: {
-                                url: string
-                                expanded: string
-                                display: string
-                              }
                               in_reply_to_screen_name?: string
                               in_reply_to_status_id_str?: string
                               in_reply_to_user_id_str?: string
-                              scopes?: {
-                                followers: boolean
-                              }
                             }
                             quotedRefResult?: {
                               result?: {
                                 __typename: string
-                                tweet: {
+                                tweet?: {
                                   rest_id: string
                                 }
+                                rest_id?: string
                               }
                             }
                             unified_card?: {
@@ -5861,7 +7868,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     is_blue_verified: boolean
                                     profile_image_shape: string
                                     legacy: {
-                                      protected?: boolean
                                       can_dm: boolean
                                       can_media_tag: boolean
                                       created_at: string
@@ -5899,7 +7905,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       normal_followers_count: number
                                       pinned_tweet_ids_str: string[]
                                       possibly_sensitive: boolean
-                                      profile_banner_url: string
+                                      profile_banner_url?: string
                                       profile_image_url_https: string
                                       profile_interstitial_type: string
                                       screen_name: string
@@ -5909,8 +7915,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       verified: boolean
                                       want_retweets: boolean
                                       withheld_in_countries: unknown[]
-                                      verified_type?: string
                                       blocking?: boolean
+                                      verified_type?: string
+                                      protected?: boolean
                                     }
                                     professional?: {
                                       rest_id: string
@@ -5925,72 +7932,16 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 }[]
                               }
                             }
+                            edit_perspective?: {
+                              favorited: boolean
+                              retweeted: boolean
+                            }
                             previous_counts?: {
                               bookmark_count: number
                               favorite_count: number
                               quote_count: number
                               reply_count: number
                               retweet_count: number
-                            }
-                            note_tweet?: {
-                              is_expandable: boolean
-                              note_tweet_results: {
-                                result: {
-                                  id: string
-                                  text: string
-                                  entity_set: {
-                                    hashtags: unknown[]
-                                    symbols: unknown[]
-                                    timestamps: unknown[]
-                                    urls: {
-                                      display_url: string
-                                      expanded_url: string
-                                      url: string
-                                      indices: number[]
-                                    }[]
-                                    user_mentions: unknown[]
-                                  }
-                                }
-                              }
-                            }
-                            birdwatch_pivot?: {
-                              callToAction: {
-                                prompt: string
-                                title: string
-                                destinationUrl: string
-                              }
-                              destinationUrl: string
-                              footer: {
-                                text: string
-                                entities: {
-                                  fromIndex: number
-                                  toIndex: number
-                                  ref: {
-                                    type: string
-                                    url: string
-                                    urlType: string
-                                  }
-                                }[]
-                              }
-                              note: {
-                                rest_id: string
-                              }
-                              subtitle: {
-                                text: string
-                                entities: {
-                                  fromIndex: number
-                                  toIndex: number
-                                  ref: {
-                                    type: string
-                                    url: string
-                                    urlType: string
-                                  }
-                                }[]
-                              }
-                              title: string
-                              shorttitle: string
-                              visualStyle: string
-                              iconType: string
                             }
                             community_results?: {
                               result: {
@@ -5999,7 +7950,8 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 name: string
                                 description: string
                                 created_at: number
-                                default_theme: string
+                                question?: string
+                                search_tags?: string[]
                                 actions: {
                                   delete_action_result: {
                                     __typename: string
@@ -6029,6 +7981,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     is_blue_verified: boolean
                                     profile_image_shape: string
                                     legacy: {
+                                      blocking?: boolean
                                       can_dm: boolean
                                       can_media_tag: boolean
                                       created_at: string
@@ -6093,6 +8046,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     is_blue_verified: boolean
                                     profile_image_shape: string
                                     legacy: {
+                                      blocking?: boolean
                                       can_dm: boolean
                                       can_media_tag: boolean
                                       created_at: string
@@ -6165,6 +8119,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     is_blue_verified: boolean
                                     profile_image_shape: string
                                     legacy: {
+                                      blocking?: boolean
                                       can_dm: boolean
                                       can_media_tag: boolean
                                       created_at: string
@@ -6207,6 +8162,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       verified: boolean
                                       want_retweets: boolean
                                       withheld_in_countries: unknown[]
+                                      protected?: boolean
                                     }
                                     professional?: {
                                       rest_id: string
@@ -6275,7 +8231,71 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 join_requests_result: {
                                   __typename: string
                                 }
+                                default_theme?: string
                               }
+                            }
+                            note_tweet?: {
+                              is_expandable: boolean
+                              note_tweet_results: {
+                                result: {
+                                  id: string
+                                  text: string
+                                  entity_set: {
+                                    hashtags: {
+                                      indices: number[]
+                                      text: string
+                                    }[]
+                                    symbols: unknown[]
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                    user_mentions: unknown[]
+                                    timestamps?: unknown[]
+                                  }
+                                }
+                              }
+                            }
+                            birdwatch_pivot?: {
+                              callToAction: {
+                                prompt: string
+                                title: string
+                                destinationUrl: string
+                              }
+                              destinationUrl: string
+                              footer: {
+                                text: string
+                                entities: {
+                                  fromIndex: number
+                                  toIndex: number
+                                  ref: {
+                                    type: string
+                                    url: string
+                                    urlType: string
+                                  }
+                                }[]
+                              }
+                              note: {
+                                rest_id: string
+                              }
+                              subtitle: {
+                                text: string
+                                entities: {
+                                  fromIndex: number
+                                  toIndex: number
+                                  ref: {
+                                    type: string
+                                    url: string
+                                    urlType: string
+                                  }
+                                }[]
+                              }
+                              title: string
+                              shorttitle: string
+                              visualStyle: string
+                              iconType: string
                             }
                           }
                           limitedActionResults?: {
@@ -6298,40 +8318,15 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           quotedRefResult?: {
                             result?: {
                               __typename: string
-                              rest_id?: string
                               tweet?: {
                                 rest_id: string
                               }
+                              rest_id?: string
                             }
                           }
-                          unified_card?: {
-                            card_fetch_state: string
-                          }
-                          note_tweet?: {
-                            is_expandable: boolean
-                            note_tweet_results: {
-                              result: {
-                                id: string
-                                text: string
-                                entity_set: {
-                                  hashtags: unknown[]
-                                  symbols: unknown[]
-                                  urls: {
-                                    display_url: string
-                                    expanded_url: string
-                                    url: string
-                                    indices: number[]
-                                  }[]
-                                  user_mentions: unknown[]
-                                }
-                                richtext?: {
-                                  richtext_tags: unknown[]
-                                }
-                                media?: {
-                                  inline_media: unknown[]
-                                }
-                              }
-                            }
+                          edit_perspective?: {
+                            favorited: boolean
+                            retweeted: boolean
                           }
                           birdwatch_pivot?: {
                             callToAction: {
@@ -6372,121 +8367,30 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             visualStyle: string
                             iconType: string
                           }
-                          card?: {
-                            rest_id: string
-                            legacy: {
-                              binding_values: {
-                                key: string
-                                value: {
-                                  image_value?: {
-                                    height: number
-                                    width: number
+                          note_tweet?: {
+                            is_expandable: boolean
+                            note_tweet_results: {
+                              result: {
+                                id: string
+                                text: string
+                                entity_set: {
+                                  hashtags: unknown[]
+                                  symbols: unknown[]
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
                                     url: string
-                                  }
-                                  type: string
-                                  string_value?: string
-                                  scribe_key?: string
-                                  user_value?: {
-                                    id_str: string
-                                    path: unknown[]
-                                  }
-                                  image_color_value?: {
-                                    palette: {
-                                      rgb: {
-                                        blue: number
-                                        green: number
-                                        red: number
-                                      }
-                                      percentage: number
-                                    }[]
-                                  }
+                                    indices: number[]
+                                  }[]
+                                  user_mentions: unknown[]
                                 }
-                              }[]
-                              card_platform: {
-                                platform: {
-                                  audience: {
-                                    name: string
-                                  }
-                                  device: {
-                                    name: string
-                                    version: string
-                                  }
+                                richtext?: {
+                                  richtext_tags: unknown[]
+                                }
+                                media?: {
+                                  inline_media: unknown[]
                                 }
                               }
-                              name: string
-                              url: string
-                              user_refs_results: {
-                                result: {
-                                  __typename: string
-                                  id: string
-                                  rest_id: string
-                                  affiliates_highlighted_label: {}
-                                  has_graduated_access: boolean
-                                  is_blue_verified: boolean
-                                  profile_image_shape: string
-                                  legacy: {
-                                    can_dm: boolean
-                                    can_media_tag: boolean
-                                    created_at: string
-                                    default_profile: boolean
-                                    default_profile_image: boolean
-                                    description: string
-                                    entities: {
-                                      description: {
-                                        urls: {
-                                          display_url: string
-                                          expanded_url: string
-                                          url: string
-                                          indices: number[]
-                                        }[]
-                                      }
-                                      url: {
-                                        urls: {
-                                          display_url: string
-                                          expanded_url: string
-                                          url: string
-                                          indices: number[]
-                                        }[]
-                                      }
-                                    }
-                                    fast_followers_count: number
-                                    favourites_count: number
-                                    followers_count: number
-                                    friends_count: number
-                                    has_custom_timelines: boolean
-                                    is_translator: boolean
-                                    listed_count: number
-                                    location: string
-                                    media_count: number
-                                    name: string
-                                    normal_followers_count: number
-                                    pinned_tweet_ids_str: string[]
-                                    possibly_sensitive: boolean
-                                    profile_banner_url: string
-                                    profile_image_url_https: string
-                                    profile_interstitial_type: string
-                                    screen_name: string
-                                    statuses_count: number
-                                    translator_type: string
-                                    url: string
-                                    verified: boolean
-                                    want_retweets: boolean
-                                    withheld_in_countries: unknown[]
-                                    protected?: boolean
-                                    blocking?: boolean
-                                    verified_type?: string
-                                  }
-                                  professional?: {
-                                    rest_id: string
-                                    professional_type: string
-                                    category: {
-                                      id: number
-                                      name: string
-                                      icon_name: string
-                                    }[]
-                                  }
-                                }
-                              }[]
                             }
                           }
                           previous_counts?: {
@@ -6497,6 +8401,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             retweet_count: number
                           }
                         }
+                      }
+                      unified_card?: {
+                        card_fetch_state: string
                       }
                       previous_counts?: {
                         bookmark_count: number
@@ -6512,8 +8419,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           name: string
                           description: string
                           created_at: number
-                          default_theme: string
-                          custom_theme?: string
+                          search_tags?: string[]
                           actions: {
                             delete_action_result: {
                               __typename: string
@@ -6571,7 +8477,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               is_blue_verified: boolean
                               profile_image_shape: string
                               legacy: {
-                                blocking?: boolean
                                 can_dm: boolean
                                 can_media_tag: boolean
                                 created_at: string
@@ -6615,10 +8520,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 screen_name: string
                                 statuses_count: number
                                 translator_type: string
-                                url?: string
                                 verified: boolean
                                 want_retweets: boolean
                                 withheld_in_countries: unknown[]
+                                url?: string
+                                blocking?: boolean
                                 protected?: boolean
                               }
                               professional?: {
@@ -6670,7 +8576,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               is_blue_verified: boolean
                               profile_image_shape: string
                               legacy: {
-                                blocking?: boolean
                                 can_dm: boolean
                                 can_media_tag: boolean
                                 created_at: string
@@ -6714,10 +8619,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 screen_name: string
                                 statuses_count: number
                                 translator_type: string
-                                url?: string
                                 verified: boolean
                                 want_retweets: boolean
                                 withheld_in_countries: unknown[]
+                                url?: string
+                                blocking?: boolean
                                 protected?: boolean
                               }
                               professional?: {
@@ -6777,7 +8683,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               is_blue_verified?: boolean
                               profile_image_shape?: string
                               legacy?: {
-                                blocking?: boolean
                                 can_dm: boolean
                                 can_media_tag: boolean
                                 created_at: string
@@ -6821,11 +8726,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 screen_name: string
                                 statuses_count: number
                                 translator_type: string
-                                url?: string
                                 verified: boolean
                                 want_retweets: boolean
                                 withheld_in_countries: unknown[]
+                                url?: string
                                 protected?: boolean
+                                blocking?: boolean
                               }
                               professional?: {
                                 rest_id: string
@@ -6849,7 +8755,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             name: string
                             description?: string
                           }[]
-                          custom_banner_media: {
+                          custom_banner_media?: {
                             media_info: {
                               color_info: {
                                 palette: {
@@ -6898,6 +8804,8 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             __typename: string
                           }
                           question?: string
+                          default_theme?: string
+                          custom_theme?: string
                         }
                       }
                       community_relationship?: {
@@ -6921,8 +8829,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             name: string
                             description: string
                             created_at: number
-                            default_theme: string
-                            custom_theme?: string
+                            search_tags?: string[]
                             actions: {
                               delete_action_result: {
                                 __typename: string
@@ -6980,7 +8887,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 is_blue_verified: boolean
                                 profile_image_shape: string
                                 legacy: {
-                                  blocking?: boolean
                                   can_dm: boolean
                                   can_media_tag: boolean
                                   created_at: string
@@ -7024,10 +8930,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   screen_name: string
                                   statuses_count: number
                                   translator_type: string
-                                  url?: string
                                   verified: boolean
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
+                                  url?: string
+                                  blocking?: boolean
                                   protected?: boolean
                                 }
                                 professional?: {
@@ -7079,7 +8986,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 is_blue_verified: boolean
                                 profile_image_shape: string
                                 legacy: {
-                                  blocking?: boolean
                                   can_dm: boolean
                                   can_media_tag: boolean
                                   created_at: string
@@ -7123,10 +9029,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   screen_name: string
                                   statuses_count: number
                                   translator_type: string
-                                  url?: string
                                   verified: boolean
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
+                                  url?: string
+                                  blocking?: boolean
                                   protected?: boolean
                                 }
                                 professional?: {
@@ -7186,7 +9093,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 is_blue_verified?: boolean
                                 profile_image_shape?: string
                                 legacy?: {
-                                  blocking?: boolean
                                   can_dm: boolean
                                   can_media_tag: boolean
                                   created_at: string
@@ -7230,11 +9136,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   screen_name: string
                                   statuses_count: number
                                   translator_type: string
-                                  url?: string
                                   verified: boolean
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
+                                  url?: string
                                   protected?: boolean
+                                  blocking?: boolean
                                 }
                                 professional?: {
                                   rest_id: string
@@ -7258,7 +9165,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               name: string
                               description?: string
                             }[]
-                            custom_banner_media: {
+                            custom_banner_media?: {
                               media_info: {
                                 color_info: {
                                   palette: {
@@ -7307,6 +9214,8 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               __typename: string
                             }
                             question?: string
+                            default_theme?: string
+                            custom_theme?: string
                           }
                         }
                         role: string
@@ -7357,16 +9266,16 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               normal_followers_count: number
                               pinned_tweet_ids_str: string[]
                               possibly_sensitive: boolean
-                              profile_banner_url?: string
                               profile_image_url_https: string
                               profile_interstitial_type: string
                               screen_name: string
                               statuses_count: number
                               translator_type: string
-                              url?: string
                               verified: boolean
                               want_retweets: boolean
                               withheld_in_countries: unknown[]
+                              profile_banner_url?: string
+                              url?: string
                             }
                             professional?: {
                               rest_id: string
@@ -7379,6 +9288,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             }
                           }
                         }
+                      }
+                      edit_perspective?: {
+                        favorited: boolean
+                        retweeted: boolean
                       }
                       note_tweet?: {
                         is_expandable: boolean
@@ -7478,1849 +9391,166 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         }
                       }[]
                     }
-                    quoted_status_result?: {
-                      result: {
-                        __typename: string
-                        rest_id?: string
-                        core?: {
-                          user_results: {
-                            result: {
-                              __typename: string
-                              id: string
-                              rest_id: string
-                              affiliates_highlighted_label: {
-                                label?: {
-                                  url?: {
-                                    url: string
-                                    urlType: string
-                                  }
-                                  badge: {
-                                    url: string
-                                  }
-                                  description: string
-                                  userLabelType: string
-                                  userLabelDisplayType?: string
-                                  longDescription?: {
-                                    text: string
-                                    entities: {
-                                      fromIndex: number
-                                      toIndex: number
-                                      ref: {
-                                        type: string
-                                        screen_name: string
-                                        mention_results: {
-                                          result: {
-                                            __typename: string
-                                            legacy: {
-                                              screen_name: string
-                                            }
-                                            rest_id: string
-                                          }
-                                        }
-                                      }
-                                    }[]
-                                  }
-                                }
-                              }
-                              has_graduated_access: boolean
-                              is_blue_verified: boolean
-                              profile_image_shape: string
-                              legacy: {
-                                following?: boolean
-                                can_dm: boolean
-                                can_media_tag: boolean
-                                created_at: string
-                                default_profile: boolean
-                                default_profile_image: boolean
-                                description: string
-                                entities: {
-                                  description: {
-                                    urls: {
-                                      display_url: string
-                                      expanded_url: string
-                                      url: string
-                                      indices: number[]
-                                    }[]
-                                  }
-                                  url?: {
-                                    urls: {
-                                      display_url?: string
-                                      expanded_url?: string
-                                      url: string
-                                      indices: number[]
-                                    }[]
-                                  }
-                                }
-                                fast_followers_count: number
-                                favourites_count: number
-                                followers_count: number
-                                friends_count: number
-                                has_custom_timelines: boolean
-                                is_translator: boolean
-                                listed_count: number
-                                location: string
-                                media_count: number
-                                name: string
-                                normal_followers_count: number
-                                pinned_tweet_ids_str: string[]
-                                possibly_sensitive: boolean
-                                profile_banner_url?: string
-                                profile_image_url_https: string
-                                profile_interstitial_type: string
-                                screen_name: string
-                                statuses_count: number
-                                translator_type: string
-                                url?: string
-                                verified: boolean
-                                want_retweets: boolean
-                                withheld_in_countries: string[]
-                                verified_type?: string
-                                followed_by?: boolean
-                              }
-                              professional?: {
-                                rest_id: string
-                                professional_type: string
-                                category: {
-                                  id: number
-                                  name: string
-                                  icon_name: string
-                                }[]
-                              }
-                              super_follow_eligible?: boolean
-                              has_nft_avatar?: boolean
+                    unified_card?: {
+                      card_fetch_state: string
+                    }
+                    card?: {
+                      rest_id: string
+                      legacy: {
+                        binding_values: {
+                          key: string
+                          value: {
+                            image_value?: {
+                              height: number
+                              width: number
+                              url: string
+                              alt?: string
                             }
-                          }
-                        }
-                        unmention_data?: {
-                          hydrate?: {
-                            unmentioned_users_results: {
-                              rest_id: string
-                            }[]
-                          }
-                        }
-                        unified_card?: {
-                          card_fetch_state: string
-                        }
-                        edit_control?: {
-                          edit_tweet_ids?: string[]
-                          editable_until_msecs?: string
-                          is_edit_eligible?: boolean
-                          edits_remaining?: string
-                          initial_tweet_id?: string
-                          edit_control_initial?: {
-                            edit_tweet_ids: string[]
-                            editable_until_msecs: string
-                            is_edit_eligible: boolean
-                            edits_remaining: string
-                          }
-                        }
-                        is_translatable?: boolean
-                        views?: {
-                          count?: string
-                          state: string
-                        }
-                        source?: string
-                        legacy?: {
-                          bookmark_count: number
-                          bookmarked: boolean
-                          created_at: string
-                          conversation_id_str: string
-                          display_text_range: number[]
-                          entities: {
-                            hashtags: {
-                              indices: number[]
-                              text: string
-                            }[]
-                            media?: {
-                              display_url: string
-                              expanded_url: string
+                            type: string
+                            string_value?: string
+                            scribe_key?: string
+                            user_value?: {
                               id_str: string
-                              indices: number[]
-                              media_key: string
-                              media_url_https: string
-                              type: string
-                              url: string
-                              additional_media_info?: {
-                                title?: string
-                                description?: string
-                                call_to_actions?: {
-                                  visit_site?: {
-                                    url: string
-                                  }
-                                  watch_now?: {
-                                    url: string
-                                  }
+                              path: unknown[]
+                            }
+                            image_color_value?: {
+                              palette: {
+                                rgb: {
+                                  blue: number
+                                  green: number
+                                  red: number
                                 }
-                                embeddable?: boolean
-                                monetizable: boolean
-                                source_user?: {
-                                  user_results: {
-                                    result: {
-                                      __typename: string
-                                      id: string
-                                      rest_id: string
-                                      affiliates_highlighted_label: {
-                                        label?: {
-                                          url: {
-                                            url: string
-                                            urlType: string
-                                          }
-                                          badge: {
-                                            url: string
-                                          }
-                                          description: string
-                                          userLabelType: string
-                                          userLabelDisplayType: string
-                                        }
-                                      }
-                                      has_graduated_access: boolean
-                                      is_blue_verified: boolean
-                                      profile_image_shape: string
-                                      legacy: {
-                                        can_dm: boolean
-                                        can_media_tag: boolean
-                                        created_at: string
-                                        default_profile: boolean
-                                        default_profile_image: boolean
-                                        description: string
-                                        entities: {
-                                          description: {
-                                            urls: {
-                                              display_url: string
-                                              expanded_url: string
-                                              url: string
-                                              indices: number[]
-                                            }[]
-                                          }
-                                          url?: {
-                                            urls: {
-                                              display_url: string
-                                              expanded_url: string
-                                              url: string
-                                              indices: number[]
-                                            }[]
-                                          }
-                                        }
-                                        fast_followers_count: number
-                                        favourites_count: number
-                                        followers_count: number
-                                        friends_count: number
-                                        has_custom_timelines: boolean
-                                        is_translator: boolean
-                                        listed_count: number
-                                        location: string
-                                        media_count: number
-                                        name: string
-                                        normal_followers_count: number
-                                        pinned_tweet_ids_str: string[]
-                                        possibly_sensitive: boolean
-                                        profile_banner_url?: string
-                                        profile_image_url_https: string
-                                        profile_interstitial_type: string
-                                        screen_name: string
-                                        statuses_count: number
-                                        translator_type: string
-                                        verified: boolean
-                                        want_retweets: boolean
-                                        withheld_in_countries: string[]
-                                        url?: string
-                                        blocking?: boolean
-                                        verified_type?: string
-                                        following?: boolean
-                                      }
-                                      professional?: {
-                                        rest_id: string
-                                        professional_type: string
-                                        category: {
-                                          id: number
-                                          name: string
-                                          icon_name: string
-                                        }[]
-                                      }
-                                      super_follow_eligible?: boolean
-                                    }
-                                  }
-                                }
-                              }
-                              ext_media_availability: {
-                                status: string
-                                reason?: string
-                              }
-                              sizes: {
-                                large: {
-                                  h: number
-                                  w: number
-                                  resize: string
-                                }
-                                medium: {
-                                  h: number
-                                  w: number
-                                  resize: string
-                                }
-                                small: {
-                                  h: number
-                                  w: number
-                                  resize: string
-                                }
-                                thumb: {
-                                  h: number
-                                  w: number
-                                  resize: string
-                                }
-                              }
-                              original_info: {
-                                height: number
-                                width: number
-                                focus_rects: {
-                                  x: number
-                                  y: number
-                                  w: number
-                                  h: number
-                                }[]
-                              }
-                              video_info?: {
-                                aspect_ratio: number[]
-                                duration_millis?: number
-                                variants: {
-                                  bitrate?: number
-                                  content_type: string
-                                  url: string
-                                }[]
-                              }
-                              features?: {
-                                large: {
-                                  faces: {
-                                    x: number
-                                    y: number
-                                    h: number
-                                    w: number
-                                  }[]
-                                }
-                                medium: {
-                                  faces: {
-                                    x: number
-                                    y: number
-                                    h: number
-                                    w: number
-                                  }[]
-                                }
-                                small: {
-                                  faces: {
-                                    x: number
-                                    y: number
-                                    h: number
-                                    w: number
-                                  }[]
-                                }
-                                orig: {
-                                  faces: {
-                                    x: number
-                                    y: number
-                                    h: number
-                                    w: number
-                                  }[]
-                                }
-                                all?: {
-                                  tags: {
-                                    user_id: string
-                                    name: string
-                                    screen_name: string
-                                    type: string
-                                  }[]
-                                }
-                              }
-                              ext_alt_text?: string
-                              source_status_id_str?: string
-                              source_user_id_str?: string
-                            }[]
-                            symbols: {
-                              indices: number[]
-                              text: string
-                            }[]
-                            timestamps?: {
-                              indices: number[]
-                              seconds: number
-                              text: string
-                            }[]
-                            urls: {
-                              display_url: string
-                              expanded_url: string
-                              url: string
-                              indices: number[]
-                            }[]
-                            user_mentions: {
-                              id_str: string
+                                percentage: number
+                              }[]
+                            }
+                            boolean_value?: boolean
+                          }
+                        }[]
+                        card_platform: {
+                          platform: {
+                            audience: {
                               name: string
-                              screen_name: string
-                              indices: number[]
-                            }[]
-                          }
-                          extended_entities?: {
-                            media: {
-                              display_url: string
-                              expanded_url: string
-                              id_str: string
-                              indices: number[]
-                              media_key: string
-                              media_url_https: string
-                              type: string
-                              url: string
-                              additional_media_info?: {
-                                title?: string
-                                description?: string
-                                call_to_actions?: {
-                                  visit_site?: {
-                                    url: string
-                                  }
-                                  watch_now?: {
-                                    url: string
-                                  }
-                                }
-                                embeddable?: boolean
-                                monetizable: boolean
-                                source_user?: {
-                                  user_results: {
-                                    result: {
-                                      __typename: string
-                                      id: string
-                                      rest_id: string
-                                      affiliates_highlighted_label: {
-                                        label?: {
-                                          url: {
-                                            url: string
-                                            urlType: string
-                                          }
-                                          badge: {
-                                            url: string
-                                          }
-                                          description: string
-                                          userLabelType: string
-                                          userLabelDisplayType: string
-                                        }
-                                      }
-                                      has_graduated_access: boolean
-                                      is_blue_verified: boolean
-                                      profile_image_shape: string
-                                      legacy: {
-                                        can_dm: boolean
-                                        can_media_tag: boolean
-                                        created_at: string
-                                        default_profile: boolean
-                                        default_profile_image: boolean
-                                        description: string
-                                        entities: {
-                                          description: {
-                                            urls: {
-                                              display_url: string
-                                              expanded_url: string
-                                              url: string
-                                              indices: number[]
-                                            }[]
-                                          }
-                                          url?: {
-                                            urls: {
-                                              display_url: string
-                                              expanded_url: string
-                                              url: string
-                                              indices: number[]
-                                            }[]
-                                          }
-                                        }
-                                        fast_followers_count: number
-                                        favourites_count: number
-                                        followers_count: number
-                                        friends_count: number
-                                        has_custom_timelines: boolean
-                                        is_translator: boolean
-                                        listed_count: number
-                                        location: string
-                                        media_count: number
-                                        name: string
-                                        normal_followers_count: number
-                                        pinned_tweet_ids_str: string[]
-                                        possibly_sensitive: boolean
-                                        profile_banner_url?: string
-                                        profile_image_url_https: string
-                                        profile_interstitial_type: string
-                                        screen_name: string
-                                        statuses_count: number
-                                        translator_type: string
-                                        verified: boolean
-                                        want_retweets: boolean
-                                        withheld_in_countries: string[]
-                                        url?: string
-                                        blocking?: boolean
-                                        verified_type?: string
-                                        following?: boolean
-                                      }
-                                      professional?: {
-                                        rest_id: string
-                                        professional_type: string
-                                        category: {
-                                          id: number
-                                          name: string
-                                          icon_name: string
-                                        }[]
-                                      }
-                                      super_follow_eligible?: boolean
-                                    }
-                                  }
-                                }
-                              }
-                              ext_media_availability: {
-                                status: string
-                                reason?: string
-                              }
-                              sizes: {
-                                large: {
-                                  h: number
-                                  w: number
-                                  resize: string
-                                }
-                                medium: {
-                                  h: number
-                                  w: number
-                                  resize: string
-                                }
-                                small: {
-                                  h: number
-                                  w: number
-                                  resize: string
-                                }
-                                thumb: {
-                                  h: number
-                                  w: number
-                                  resize: string
-                                }
-                              }
-                              original_info: {
-                                height: number
-                                width: number
-                                focus_rects: {
-                                  x: number
-                                  y: number
-                                  w: number
-                                  h: number
-                                }[]
-                              }
-                              video_info?: {
-                                aspect_ratio: number[]
-                                duration_millis?: number
-                                variants: {
-                                  bitrate?: number
-                                  content_type: string
-                                  url: string
-                                }[]
-                              }
-                              features?: {
-                                large: {
-                                  faces: {
-                                    x: number
-                                    y: number
-                                    h: number
-                                    w: number
-                                  }[]
-                                }
-                                medium: {
-                                  faces: {
-                                    x: number
-                                    y: number
-                                    h: number
-                                    w: number
-                                  }[]
-                                }
-                                small: {
-                                  faces: {
-                                    x: number
-                                    y: number
-                                    h: number
-                                    w: number
-                                  }[]
-                                }
-                                orig: {
-                                  faces: {
-                                    x: number
-                                    y: number
-                                    h: number
-                                    w: number
-                                  }[]
-                                }
-                                all?: {
-                                  tags: {
-                                    user_id: string
-                                    name: string
-                                    screen_name: string
-                                    type: string
-                                  }[]
-                                }
-                              }
-                              ext_alt_text?: string
-                              source_status_id_str?: string
-                              source_user_id_str?: string
-                            }[]
-                          }
-                          favorite_count: number
-                          favorited: boolean
-                          full_text: string
-                          is_quote_status: boolean
-                          lang: string
-                          possibly_sensitive?: boolean
-                          possibly_sensitive_editable?: boolean
-                          quote_count: number
-                          reply_count: number
-                          retweet_count: number
-                          retweeted: boolean
-                          user_id_str: string
-                          id_str: string
-                          in_reply_to_screen_name?: string
-                          in_reply_to_user_id_str?: string
-                          quoted_status_id_str?: string
-                          quoted_status_permalink?: {
-                            url: string
-                            expanded: string
-                            display: string
-                          }
-                          in_reply_to_status_id_str?: string
-                          place?: {
-                            bounding_box: {
-                              coordinates: number[][][]
-                              type: string
                             }
-                            country: string
-                            country_code: string
-                            full_name: string
-                            name: string
-                            id: string
-                            place_type: string
-                            url: string
-                          }
-                          scopes?: {
-                            followers: boolean
-                          }
-                          conversation_control?: {
-                            policy: string
-                            conversation_owner_results: {
-                              result: {
-                                __typename: string
-                                legacy: {
-                                  screen_name: string
-                                }
-                              }
+                            device: {
+                              name: string
+                              version: string
                             }
-                          }
-                          limited_actions?: string
-                          supplemental_language?: string
-                        }
-                        card?: {
-                          rest_id: string
-                          legacy: {
-                            binding_values: {
-                              key: string
-                              value: {
-                                image_value?: {
-                                  height: number
-                                  width: number
-                                  url: string
-                                  alt?: string
-                                }
-                                type: string
-                                string_value?: string
-                                scribe_key?: string
-                                user_value?: {
-                                  id_str: string
-                                  path: unknown[]
-                                }
-                                image_color_value?: {
-                                  palette: {
-                                    rgb: {
-                                      blue: number
-                                      green: number
-                                      red: number
-                                    }
-                                    percentage: number
-                                  }[]
-                                }
-                                boolean_value?: boolean
-                              }
-                            }[]
-                            card_platform: {
-                              platform: {
-                                audience: {
-                                  name: string
-                                }
-                                device: {
-                                  name: string
-                                  version: string
-                                }
-                              }
-                            }
-                            name: string
-                            url: string
-                            user_refs_results: {
-                              result: {
-                                __typename: string
-                                id?: string
-                                rest_id?: string
-                                affiliates_highlighted_label?: {
-                                  label?: {
-                                    url: {
-                                      url: string
-                                      urlType: string
-                                    }
-                                    badge: {
-                                      url: string
-                                    }
-                                    description: string
-                                    userLabelType: string
-                                    userLabelDisplayType: string
-                                  }
-                                }
-                                has_graduated_access?: boolean
-                                is_blue_verified?: boolean
-                                profile_image_shape?: string
-                                legacy?: {
-                                  blocking?: boolean
-                                  can_dm: boolean
-                                  can_media_tag: boolean
-                                  created_at: string
-                                  default_profile: boolean
-                                  default_profile_image: boolean
-                                  description: string
-                                  entities: {
-                                    description: {
-                                      urls: {
-                                        display_url: string
-                                        expanded_url: string
-                                        url: string
-                                        indices: number[]
-                                      }[]
-                                    }
-                                    url?: {
-                                      urls: {
-                                        display_url: string
-                                        expanded_url: string
-                                        url: string
-                                        indices: number[]
-                                      }[]
-                                    }
-                                  }
-                                  fast_followers_count: number
-                                  favourites_count: number
-                                  followers_count: number
-                                  friends_count: number
-                                  has_custom_timelines: boolean
-                                  is_translator: boolean
-                                  listed_count: number
-                                  location: string
-                                  media_count: number
-                                  name: string
-                                  normal_followers_count: number
-                                  pinned_tweet_ids_str: string[]
-                                  possibly_sensitive: boolean
-                                  profile_banner_url?: string
-                                  profile_image_url_https: string
-                                  profile_interstitial_type: string
-                                  screen_name: string
-                                  statuses_count: number
-                                  translator_type: string
-                                  url?: string
-                                  verified: boolean
-                                  want_retweets: boolean
-                                  withheld_in_countries: unknown[]
-                                  verified_type?: string
-                                  following?: boolean
-                                  protected?: boolean
-                                }
-                                professional?: {
-                                  rest_id: string
-                                  professional_type: string
-                                  category: {
-                                    id: number
-                                    name: string
-                                    icon_name: string
-                                  }[]
-                                }
-                                message?: string
-                                reason?: string
-                              }
-                            }[]
                           }
                         }
-                        quotedRefResult?: {
-                          result?: {
+                        name: string
+                        url: string
+                        user_refs_results: {
+                          result: {
                             __typename: string
+                            id?: string
                             rest_id?: string
-                            tweet?: {
-                              rest_id: string
-                            }
-                          }
-                        }
-                        note_tweet?: {
-                          is_expandable: boolean
-                          note_tweet_results: {
-                            result: {
-                              id: string
-                              text: string
-                              entity_set: {
-                                hashtags: {
-                                  indices: number[]
-                                  text: string
-                                }[]
-                                symbols: {
-                                  indices: number[]
-                                  text: string
-                                }[]
-                                timestamps?: {
-                                  indices: number[]
-                                  seconds: number
-                                  text: string
-                                }[]
-                                urls: {
-                                  display_url: string
-                                  expanded_url: string
+                            affiliates_highlighted_label?: {
+                              label?: {
+                                url?: {
                                   url: string
-                                  indices: number[]
-                                }[]
-                                user_mentions: {
-                                  id_str: string
-                                  name: string
-                                  screen_name: string
-                                  indices: number[]
-                                }[]
-                              }
-                              richtext?: {
-                                richtext_tags: {
-                                  from_index: number
-                                  to_index: number
-                                  richtext_types: string[]
-                                }[]
-                              }
-                              media?: {
-                                inline_media: {
-                                  media_id: string
-                                  index: number
-                                }[]
-                              }
-                            }
-                          }
-                        }
-                        tweet?: {
-                          rest_id: string
-                          core: {
-                            user_results: {
-                              result: {
-                                __typename: string
-                                id: string
-                                rest_id: string
-                                affiliates_highlighted_label: {}
-                                has_graduated_access: boolean
-                                is_blue_verified: boolean
-                                profile_image_shape: string
-                                legacy: {
-                                  can_dm: boolean
-                                  can_media_tag: boolean
-                                  created_at: string
-                                  default_profile: boolean
-                                  default_profile_image: boolean
-                                  description: string
+                                  urlType: string
+                                }
+                                badge: {
+                                  url: string
+                                }
+                                description: string
+                                userLabelType: string
+                                userLabelDisplayType?: string
+                                longDescription?: {
+                                  text: string
                                   entities: {
-                                    description: {
-                                      urls: {
-                                        display_url: string
-                                        expanded_url: string
-                                        url: string
-                                        indices: number[]
-                                      }[]
-                                    }
-                                    url?: {
-                                      urls: {
-                                        display_url: string
-                                        expanded_url: string
-                                        url: string
-                                        indices: number[]
-                                      }[]
-                                    }
-                                  }
-                                  fast_followers_count: number
-                                  favourites_count: number
-                                  followers_count: number
-                                  friends_count: number
-                                  has_custom_timelines: boolean
-                                  is_translator: boolean
-                                  listed_count: number
-                                  location: string
-                                  media_count: number
-                                  name: string
-                                  normal_followers_count: number
-                                  pinned_tweet_ids_str: string[]
-                                  possibly_sensitive: boolean
-                                  profile_banner_url?: string
-                                  profile_image_url_https: string
-                                  profile_interstitial_type: string
-                                  screen_name: string
-                                  statuses_count: number
-                                  translator_type: string
-                                  verified: boolean
-                                  want_retweets: boolean
-                                  withheld_in_countries: unknown[]
-                                  url?: string
-                                  following?: boolean
-                                  verified_type?: string
-                                }
-                                professional?: {
-                                  rest_id: string
-                                  professional_type: string
-                                  category: {
-                                    id: number
-                                    name: string
-                                    icon_name: string
-                                  }[]
-                                }
-                              }
-                            }
-                          }
-                          unmention_data: {}
-                          edit_control: {
-                            edit_tweet_ids?: string[]
-                            editable_until_msecs?: string
-                            is_edit_eligible?: boolean
-                            edits_remaining?: string
-                            initial_tweet_id?: string
-                            edit_control_initial?: {
-                              edit_tweet_ids: string[]
-                              editable_until_msecs: string
-                              is_edit_eligible: boolean
-                              edits_remaining: string
-                            }
-                          }
-                          is_translatable: boolean
-                          views: {
-                            count?: string
-                            state: string
-                          }
-                          source: string
-                          quotedRefResult?: {
-                            result?: {
-                              __typename: string
-                              tweet?: {
-                                rest_id: string
-                              }
-                              rest_id?: string
-                            }
-                          }
-                          legacy: {
-                            bookmark_count: number
-                            bookmarked: boolean
-                            created_at: string
-                            conversation_control?: {
-                              policy: string
-                              conversation_owner_results: {
-                                result: {
-                                  __typename: string
-                                  legacy: {
-                                    screen_name: string
-                                  }
-                                }
-                              }
-                            }
-                            conversation_id_str: string
-                            display_text_range: number[]
-                            entities: {
-                              hashtags: {
-                                indices: number[]
-                                text: string
-                              }[]
-                              symbols: unknown[]
-                              timestamps?: unknown[]
-                              urls: {
-                                display_url: string
-                                expanded_url: string
-                                url: string
-                                indices: number[]
-                              }[]
-                              user_mentions: {
-                                id_str: string
-                                name: string
-                                screen_name: string
-                                indices: number[]
-                              }[]
-                              media?: {
-                                display_url: string
-                                expanded_url: string
-                                id_str: string
-                                indices: number[]
-                                media_key: string
-                                media_url_https: string
-                                type: string
-                                url: string
-                                additional_media_info?: {
-                                  monetizable: boolean
-                                  source_user?: {
-                                    user_results: {
-                                      result: {
-                                        __typename: string
-                                        id: string
-                                        rest_id: string
-                                        affiliates_highlighted_label: {}
-                                        has_graduated_access: boolean
-                                        is_blue_verified: boolean
-                                        profile_image_shape: string
-                                        legacy: {
-                                          can_dm: boolean
-                                          can_media_tag: boolean
-                                          created_at: string
-                                          default_profile: boolean
-                                          default_profile_image: boolean
-                                          description: string
-                                          entities: {
-                                            description: {
-                                              urls: unknown[]
-                                            }
+                                    fromIndex: number
+                                    toIndex: number
+                                    ref: {
+                                      type: string
+                                      screen_name: string
+                                      mention_results: {
+                                        result: {
+                                          __typename: string
+                                          legacy: {
+                                            screen_name: string
                                           }
-                                          fast_followers_count: number
-                                          favourites_count: number
-                                          followers_count: number
-                                          friends_count: number
-                                          has_custom_timelines: boolean
-                                          is_translator: boolean
-                                          listed_count: number
-                                          location: string
-                                          media_count: number
-                                          name: string
-                                          normal_followers_count: number
-                                          pinned_tweet_ids_str: string[]
-                                          possibly_sensitive: boolean
-                                          profile_banner_url: string
-                                          profile_image_url_https: string
-                                          profile_interstitial_type: string
-                                          screen_name: string
-                                          statuses_count: number
-                                          translator_type: string
-                                          verified: boolean
-                                          want_retweets: boolean
-                                          withheld_in_countries: unknown[]
+                                          rest_id: string
                                         }
                                       }
                                     }
-                                  }
-                                }
-                                ext_media_availability: {
-                                  status: string
-                                }
-                                sizes: {
-                                  large: {
-                                    h: number
-                                    w: number
-                                    resize: string
-                                  }
-                                  medium: {
-                                    h: number
-                                    w: number
-                                    resize: string
-                                  }
-                                  small: {
-                                    h: number
-                                    w: number
-                                    resize: string
-                                  }
-                                  thumb: {
-                                    h: number
-                                    w: number
-                                    resize: string
-                                  }
-                                }
-                                original_info: {
-                                  height: number
-                                  width: number
-                                  focus_rects: {
-                                    x: number
-                                    y: number
-                                    w: number
-                                    h: number
                                   }[]
                                 }
-                                video_info?: {
-                                  aspect_ratio: number[]
-                                  duration_millis?: number
-                                  variants: {
-                                    bitrate?: number
-                                    content_type: string
-                                    url: string
-                                  }[]
-                                }
-                                features?: {
-                                  large: {
-                                    faces: {
-                                      x: number
-                                      y: number
-                                      h: number
-                                      w: number
-                                    }[]
-                                  }
-                                  medium: {
-                                    faces: {
-                                      x: number
-                                      y: number
-                                      h: number
-                                      w: number
-                                    }[]
-                                  }
-                                  small: {
-                                    faces: {
-                                      x: number
-                                      y: number
-                                      h: number
-                                      w: number
-                                    }[]
-                                  }
-                                  orig: {
-                                    faces: {
-                                      x: number
-                                      y: number
-                                      h: number
-                                      w: number
-                                    }[]
-                                  }
-                                  all?: {
-                                    tags: {
-                                      user_id: string
-                                      name: string
-                                      screen_name: string
-                                      type: string
-                                    }[]
-                                  }
-                                }
-                                ext_alt_text?: string
-                                source_status_id_str?: string
-                                source_user_id_str?: string
-                              }[]
-                            }
-                            favorite_count: number
-                            favorited: boolean
-                            full_text: string
-                            is_quote_status: boolean
-                            lang: string
-                            limited_actions?: string
-                            quote_count: number
-                            quoted_status_id_str?: string
-                            quoted_status_permalink?: {
-                              url: string
-                              expanded: string
-                              display: string
-                            }
-                            reply_count: number
-                            retweet_count: number
-                            retweeted: boolean
-                            user_id_str: string
-                            id_str: string
-                            extended_entities?: {
-                              media: {
-                                display_url: string
-                                expanded_url: string
-                                id_str: string
-                                indices: number[]
-                                media_key: string
-                                media_url_https: string
-                                type: string
-                                url: string
-                                additional_media_info?: {
-                                  monetizable: boolean
-                                  source_user?: {
-                                    user_results: {
-                                      result: {
-                                        __typename: string
-                                        id: string
-                                        rest_id: string
-                                        affiliates_highlighted_label: {}
-                                        has_graduated_access: boolean
-                                        is_blue_verified: boolean
-                                        profile_image_shape: string
-                                        legacy: {
-                                          can_dm: boolean
-                                          can_media_tag: boolean
-                                          created_at: string
-                                          default_profile: boolean
-                                          default_profile_image: boolean
-                                          description: string
-                                          entities: {
-                                            description: {
-                                              urls: unknown[]
-                                            }
-                                          }
-                                          fast_followers_count: number
-                                          favourites_count: number
-                                          followers_count: number
-                                          friends_count: number
-                                          has_custom_timelines: boolean
-                                          is_translator: boolean
-                                          listed_count: number
-                                          location: string
-                                          media_count: number
-                                          name: string
-                                          normal_followers_count: number
-                                          pinned_tweet_ids_str: string[]
-                                          possibly_sensitive: boolean
-                                          profile_banner_url: string
-                                          profile_image_url_https: string
-                                          profile_interstitial_type: string
-                                          screen_name: string
-                                          statuses_count: number
-                                          translator_type: string
-                                          verified: boolean
-                                          want_retweets: boolean
-                                          withheld_in_countries: unknown[]
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                                ext_media_availability: {
-                                  status: string
-                                }
-                                sizes: {
-                                  large: {
-                                    h: number
-                                    w: number
-                                    resize: string
-                                  }
-                                  medium: {
-                                    h: number
-                                    w: number
-                                    resize: string
-                                  }
-                                  small: {
-                                    h: number
-                                    w: number
-                                    resize: string
-                                  }
-                                  thumb: {
-                                    h: number
-                                    w: number
-                                    resize: string
-                                  }
-                                }
-                                original_info: {
-                                  height: number
-                                  width: number
-                                  focus_rects: {
-                                    x: number
-                                    y: number
-                                    w: number
-                                    h: number
-                                  }[]
-                                }
-                                video_info?: {
-                                  aspect_ratio: number[]
-                                  duration_millis?: number
-                                  variants: {
-                                    bitrate?: number
-                                    content_type: string
-                                    url: string
-                                  }[]
-                                }
-                                features?: {
-                                  large: {
-                                    faces: {
-                                      x: number
-                                      y: number
-                                      h: number
-                                      w: number
-                                    }[]
-                                  }
-                                  medium: {
-                                    faces: {
-                                      x: number
-                                      y: number
-                                      h: number
-                                      w: number
-                                    }[]
-                                  }
-                                  small: {
-                                    faces: {
-                                      x: number
-                                      y: number
-                                      h: number
-                                      w: number
-                                    }[]
-                                  }
-                                  orig: {
-                                    faces: {
-                                      x: number
-                                      y: number
-                                      h: number
-                                      w: number
-                                    }[]
-                                  }
-                                  all?: {
-                                    tags: {
-                                      user_id: string
-                                      name: string
-                                      screen_name: string
-                                      type: string
-                                    }[]
-                                  }
-                                }
-                                ext_alt_text?: string
-                                source_status_id_str?: string
-                                source_user_id_str?: string
-                              }[]
-                            }
-                            possibly_sensitive?: boolean
-                            possibly_sensitive_editable?: boolean
-                            place?: {
-                              bounding_box: {
-                                coordinates: number[][][]
-                                type: string
                               }
-                              country: string
-                              country_code: string
-                              full_name: string
-                              name: string
-                              id: string
-                              place_type: string
-                              url: string
                             }
-                            scopes?: {
-                              followers: boolean
-                            }
-                          }
-                          note_tweet?: {
-                            is_expandable: boolean
-                            note_tweet_results: {
-                              result: {
-                                id: string
-                                text: string
-                                entity_set: {
-                                  hashtags: {
-                                    indices: number[]
-                                    text: string
-                                  }[]
-                                  symbols: unknown[]
+                            has_graduated_access?: boolean
+                            is_blue_verified?: boolean
+                            profile_image_shape?: string
+                            legacy?: {
+                              blocking?: boolean
+                              can_dm: boolean
+                              can_media_tag: boolean
+                              created_at: string
+                              default_profile: boolean
+                              default_profile_image: boolean
+                              description: string
+                              entities: {
+                                description: {
                                   urls: {
                                     display_url: string
                                     expanded_url: string
                                     url: string
                                     indices: number[]
                                   }[]
-                                  user_mentions: {
-                                    id_str: string
-                                    name: string
-                                    screen_name: string
+                                }
+                                url?: {
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
                                     indices: number[]
                                   }[]
-                                  timestamps?: unknown[]
-                                }
-                                richtext?: {
-                                  richtext_tags: {
-                                    from_index: number
-                                    to_index: number
-                                    richtext_types: string[]
-                                  }[]
-                                }
-                                media?: {
-                                  inline_media: unknown[]
                                 }
                               }
-                            }
-                          }
-                          unified_card?: {
-                            card_fetch_state: string
-                          }
-                          card?: {
-                            rest_id: string
-                            legacy: {
-                              binding_values: {
-                                key: string
-                                value: {
-                                  image_value?: {
-                                    height: number
-                                    width: number
-                                    url: string
-                                  }
-                                  type: string
-                                  string_value?: string
-                                  scribe_key?: string
-                                  user_value?: {
-                                    id_str: string
-                                    path: unknown[]
-                                  }
-                                  image_color_value?: {
-                                    palette: {
-                                      rgb: {
-                                        blue: number
-                                        green: number
-                                        red: number
-                                      }
-                                      percentage: number
-                                    }[]
-                                  }
-                                  boolean_value?: boolean
-                                }
-                              }[]
-                              card_platform: {
-                                platform: {
-                                  audience: {
-                                    name: string
-                                  }
-                                  device: {
-                                    name: string
-                                    version: string
-                                  }
-                                }
-                              }
+                              fast_followers_count: number
+                              favourites_count: number
+                              followers_count: number
+                              friends_count: number
+                              has_custom_timelines: boolean
+                              is_translator: boolean
+                              listed_count: number
+                              location: string
+                              media_count: number
                               name: string
-                              url: string
-                              user_refs_results: {
-                                result: {
-                                  __typename: string
-                                  id: string
-                                  rest_id: string
-                                  affiliates_highlighted_label: {}
-                                  has_graduated_access: boolean
-                                  is_blue_verified: boolean
-                                  profile_image_shape: string
-                                  legacy: {
-                                    can_dm: boolean
-                                    can_media_tag: boolean
-                                    created_at: string
-                                    default_profile: boolean
-                                    default_profile_image: boolean
-                                    description: string
-                                    entities: {
-                                      description: {
-                                        urls: {
-                                          display_url: string
-                                          expanded_url: string
-                                          url: string
-                                          indices: number[]
-                                        }[]
-                                      }
-                                      url?: {
-                                        urls: {
-                                          display_url: string
-                                          expanded_url: string
-                                          url: string
-                                          indices: number[]
-                                        }[]
-                                      }
-                                    }
-                                    fast_followers_count: number
-                                    favourites_count: number
-                                    followers_count: number
-                                    friends_count: number
-                                    has_custom_timelines: boolean
-                                    is_translator: boolean
-                                    listed_count: number
-                                    location: string
-                                    media_count: number
-                                    name: string
-                                    normal_followers_count: number
-                                    pinned_tweet_ids_str: string[]
-                                    possibly_sensitive: boolean
-                                    profile_banner_url?: string
-                                    profile_image_url_https: string
-                                    profile_interstitial_type: string
-                                    screen_name: string
-                                    statuses_count: number
-                                    translator_type: string
-                                    url?: string
-                                    verified: boolean
-                                    want_retweets: boolean
-                                    withheld_in_countries: unknown[]
-                                    blocking?: boolean
-                                    verified_type?: string
-                                  }
-                                  professional?: {
-                                    rest_id: string
-                                    professional_type: string
-                                    category: {
-                                      id: number
-                                      name: string
-                                      icon_name: string
-                                    }[]
-                                  }
-                                }
-                              }[]
+                              normal_followers_count: number
+                              pinned_tweet_ids_str: string[]
+                              possibly_sensitive: boolean
+                              profile_banner_url?: string
+                              profile_image_url_https: string
+                              profile_interstitial_type: string
+                              screen_name: string
+                              statuses_count: number
+                              translator_type: string
+                              url?: string
+                              verified: boolean
+                              want_retweets: boolean
+                              withheld_in_countries: string[]
+                              verified_type?: string
+                              following?: boolean
+                              followed_by?: boolean
+                              protected?: boolean
+                              muting?: boolean
                             }
-                          }
-                          birdwatch_pivot?: {
-                            callToAction: {
-                              prompt: string
-                              title: string
-                              destinationUrl: string
-                            }
-                            destinationUrl: string
-                            footer: {
-                              text: string
-                              entities: {
-                                fromIndex: number
-                                toIndex: number
-                                ref: {
-                                  type: string
-                                  url: string
-                                  urlType: string
-                                }
-                              }[]
-                            }
-                            note: {
+                            professional?: {
                               rest_id: string
-                            }
-                            subtitle: {
-                              text: string
-                              entities: {
-                                fromIndex: number
-                                toIndex: number
-                                ref: {
-                                  type: string
-                                  url: string
-                                  urlType: string
-                                }
-                              }[]
-                            }
-                            title: string
-                            shorttitle: string
-                            visualStyle: string
-                            iconType: string
-                          }
-                          previous_counts?: {
-                            bookmark_count: number
-                            favorite_count: number
-                            quote_count: number
-                            reply_count: number
-                            retweet_count: number
-                          }
-                          community_results?: {
-                            result: {
-                              __typename: string
-                              id_str: string
-                              name: string
-                              description: string
-                              created_at: number
-                              default_theme: string
-                              custom_theme?: string
-                              actions: {
-                                delete_action_result: {
-                                  __typename: string
-                                  reason: string
-                                }
-                                join_action_result: {
-                                  __typename: string
-                                  reason?: string
-                                  message?: string
-                                }
-                                leave_action_result: {
-                                  __typename: string
-                                  reason: string
-                                  message: string
-                                }
-                                pin_action_result: {
-                                  __typename: string
-                                }
-                              }
-                              admin_results: {
-                                result: {
-                                  __typename: string
-                                  id: string
-                                  rest_id: string
-                                  affiliates_highlighted_label: {}
-                                  has_graduated_access: boolean
-                                  is_blue_verified: boolean
-                                  profile_image_shape: string
-                                  legacy: {
-                                    can_dm: boolean
-                                    can_media_tag: boolean
-                                    created_at: string
-                                    default_profile: boolean
-                                    default_profile_image: boolean
-                                    description: string
-                                    entities: {
-                                      description: {
-                                        urls: unknown[]
-                                      }
-                                      url?: {
-                                        urls: {
-                                          display_url: string
-                                          expanded_url: string
-                                          url: string
-                                          indices: number[]
-                                        }[]
-                                      }
-                                    }
-                                    fast_followers_count: number
-                                    favourites_count: number
-                                    followers_count: number
-                                    friends_count: number
-                                    has_custom_timelines: boolean
-                                    is_translator: boolean
-                                    listed_count: number
-                                    location: string
-                                    media_count: number
-                                    name: string
-                                    normal_followers_count: number
-                                    pinned_tweet_ids_str: string[]
-                                    possibly_sensitive: boolean
-                                    profile_banner_url: string
-                                    profile_image_url_https: string
-                                    profile_interstitial_type: string
-                                    screen_name: string
-                                    statuses_count: number
-                                    translator_type: string
-                                    verified: boolean
-                                    want_retweets: boolean
-                                    withheld_in_countries: unknown[]
-                                    url?: string
-                                  }
-                                }
-                              }
-                              creator_results: {
-                                result: {
-                                  __typename: string
-                                  id: string
-                                  rest_id: string
-                                  affiliates_highlighted_label: {}
-                                  has_graduated_access: boolean
-                                  is_blue_verified: boolean
-                                  profile_image_shape: string
-                                  legacy: {
-                                    can_dm: boolean
-                                    can_media_tag: boolean
-                                    created_at: string
-                                    default_profile: boolean
-                                    default_profile_image: boolean
-                                    description: string
-                                    entities: {
-                                      description: {
-                                        urls: unknown[]
-                                      }
-                                      url?: {
-                                        urls: {
-                                          display_url: string
-                                          expanded_url: string
-                                          url: string
-                                          indices: number[]
-                                        }[]
-                                      }
-                                    }
-                                    fast_followers_count: number
-                                    favourites_count: number
-                                    followers_count: number
-                                    friends_count: number
-                                    has_custom_timelines: boolean
-                                    is_translator: boolean
-                                    listed_count: number
-                                    location: string
-                                    media_count: number
-                                    name: string
-                                    normal_followers_count: number
-                                    pinned_tweet_ids_str: string[]
-                                    possibly_sensitive: boolean
-                                    profile_banner_url: string
-                                    profile_image_url_https: string
-                                    profile_interstitial_type: string
-                                    screen_name: string
-                                    statuses_count: number
-                                    translator_type: string
-                                    verified: boolean
-                                    want_retweets: boolean
-                                    withheld_in_countries: unknown[]
-                                    url?: string
-                                  }
-                                }
-                              }
-                              invites_result: {
-                                __typename: string
-                                reason: string
-                                message: string
-                              }
-                              join_policy: string
-                              invites_policy: string
-                              is_pinned: boolean
-                              members_facepile_results: {
-                                result: {
-                                  __typename: string
-                                  id: string
-                                  rest_id: string
-                                  affiliates_highlighted_label: {}
-                                  has_graduated_access: boolean
-                                  is_blue_verified: boolean
-                                  profile_image_shape: string
-                                  legacy: {
-                                    can_dm: boolean
-                                    can_media_tag: boolean
-                                    created_at: string
-                                    default_profile: boolean
-                                    default_profile_image: boolean
-                                    description: string
-                                    entities: {
-                                      description: {
-                                        urls: unknown[]
-                                      }
-                                      url?: {
-                                        urls: {
-                                          display_url: string
-                                          expanded_url: string
-                                          url: string
-                                          indices: number[]
-                                        }[]
-                                      }
-                                    }
-                                    fast_followers_count: number
-                                    favourites_count: number
-                                    followers_count: number
-                                    friends_count: number
-                                    has_custom_timelines: boolean
-                                    is_translator: boolean
-                                    listed_count: number
-                                    location: string
-                                    media_count: number
-                                    name: string
-                                    normal_followers_count: number
-                                    pinned_tweet_ids_str: string[]
-                                    possibly_sensitive: boolean
-                                    profile_banner_url: string
-                                    profile_image_url_https: string
-                                    profile_interstitial_type: string
-                                    screen_name: string
-                                    statuses_count: number
-                                    translator_type: string
-                                    verified: boolean
-                                    want_retweets: boolean
-                                    withheld_in_countries: unknown[]
-                                    url?: string
-                                    protected?: boolean
-                                  }
-                                  professional?: {
-                                    rest_id: string
-                                    professional_type: string
-                                    category: {
-                                      id: number
-                                      name: string
-                                      icon_name: string
-                                    }[]
-                                  }
-                                }
-                              }[]
-                              moderator_count: number
-                              member_count: number
-                              role: string
-                              rules: {
-                                rest_id: string
+                              professional_type: string
+                              category: {
+                                id: number
                                 name: string
+                                icon_name: string
                               }[]
-                              custom_banner_media: {
-                                media_info: {
-                                  color_info: {
-                                    palette: {
-                                      rgb: {
-                                        red: number
-                                        green: number
-                                        blue: number
-                                      }
-                                      percentage: number
-                                    }[]
-                                  }
-                                  original_img_url: string
-                                  original_img_width: number
-                                  original_img_height: number
-                                  salient_rect: {
-                                    left: number
-                                    top: number
-                                    width: number
-                                    height: number
-                                  }
-                                }
-                              }
-                              default_banner_media: {
-                                media_info: {
-                                  color_info: {
-                                    palette: {
-                                      rgb: {
-                                        red: number
-                                        green: number
-                                        blue: number
-                                      }
-                                      percentage: number
-                                    }[]
-                                  }
-                                  original_img_url: string
-                                  original_img_width: number
-                                  original_img_height: number
-                                }
-                              }
-                              viewer_relationship: {
-                                moderation_state: {
-                                  __typename: string
-                                }
-                              }
-                              join_requests_result: {
-                                __typename: string
-                              }
                             }
+                            message?: string
+                            reason?: string
+                            super_follow_eligible?: boolean
+                            has_nft_avatar?: boolean
                           }
-                        }
-                        limitedActionResults?: {
-                          limited_actions: {
-                            action: string
-                            prompt?: {
-                              __typename: string
-                              cta_type?: string
-                              headline: {
-                                text: string
-                                entities: unknown[]
-                              }
-                              subtext: {
-                                text: string
-                                entities: unknown[]
-                              }
-                            }
-                          }[]
-                        }
-                        birdwatch_pivot?: {
-                          callToAction: {
-                            prompt: string
-                            title: string
-                            destinationUrl: string
-                          }
-                          destinationUrl: string
-                          footer: {
-                            text: string
-                            entities: {
-                              fromIndex: number
-                              toIndex: number
-                              ref: {
-                                type: string
-                                url: string
-                                urlType: string
-                              }
-                            }[]
-                          }
-                          note: {
-                            rest_id: string
-                          }
-                          subtitle: {
-                            text: string
-                            entities: {
-                              fromIndex: number
-                              toIndex: number
-                              ref: {
-                                type: string
-                                url: string
-                                urlType: string
-                              }
-                            }[]
-                          }
-                          title: string
-                          shorttitle: string
-                          visualStyle: string
-                          iconType: string
-                        }
-                        previous_counts?: {
-                          bookmark_count: number
-                          favorite_count: number
-                          quote_count: number
-                          reply_count: number
-                          retweet_count: number
-                        }
+                        }[]
                       }
                     }
                     previous_counts?: {
@@ -9369,6 +9599,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                       visualStyle: string
                       iconType: string
                     }
+                    edit_perspective?: {
+                      favorited: boolean
+                      retweeted: boolean
+                    }
                   }
                 }
                 tweetDisplayType?: string
@@ -9396,7 +9630,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                       is_blue_verified: boolean
                       profile_image_shape: string
                       legacy: {
-                        following?: boolean
                         can_dm: boolean
                         can_media_tag: boolean
                         created_at: string
@@ -9442,9 +9675,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         translator_type: string
                         url?: string
                         verified: boolean
-                        verified_type?: string
                         want_retweets: boolean
                         withheld_in_countries: unknown[]
+                        verified_type?: string
+                        following?: boolean
                         protected?: boolean
                       }
                       professional?: {
@@ -9618,7 +9852,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               is_blue_verified: boolean
                               profile_image_shape: string
                               legacy: {
-                                following?: boolean
                                 can_dm: boolean
                                 can_media_tag: boolean
                                 created_at: string
@@ -9662,10 +9895,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 screen_name: string
                                 statuses_count: number
                                 translator_type: string
+                                url?: string
                                 verified: boolean
                                 want_retweets: boolean
                                 withheld_in_countries: unknown[]
-                                url?: string
+                                following?: boolean
                                 verified_type?: string
                                 followed_by?: boolean
                                 protected?: boolean
@@ -9684,147 +9918,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             }
                           }
                         }
-                        card?: {
-                          rest_id: string
-                          legacy: {
-                            binding_values: {
-                              key: string
-                              value: {
-                                image_value?: {
-                                  height: number
-                                  width: number
-                                  url: string
-                                  alt?: string
-                                }
-                                type: string
-                                string_value?: string
-                                scribe_key?: string
-                                user_value?: {
-                                  id_str: string
-                                  path: unknown[]
-                                }
-                                image_color_value?: {
-                                  palette: {
-                                    rgb: {
-                                      blue: number
-                                      green: number
-                                      red: number
-                                    }
-                                    percentage: number
-                                  }[]
-                                }
-                                boolean_value?: boolean
-                              }
-                            }[]
-                            card_platform: {
-                              platform: {
-                                audience: {
-                                  name: string
-                                }
-                                device: {
-                                  name: string
-                                  version: string
-                                }
-                              }
-                            }
-                            name: string
-                            url: string
-                            user_refs_results: {
-                              result: {
-                                __typename: string
-                                id: string
-                                rest_id: string
-                                affiliates_highlighted_label: {
-                                  label?: {
-                                    url: {
-                                      url: string
-                                      urlType: string
-                                    }
-                                    badge: {
-                                      url: string
-                                    }
-                                    description: string
-                                    userLabelType: string
-                                    userLabelDisplayType: string
-                                  }
-                                }
-                                has_graduated_access: boolean
-                                is_blue_verified: boolean
-                                profile_image_shape: string
-                                legacy: {
-                                  blocking?: boolean
-                                  can_dm: boolean
-                                  can_media_tag: boolean
-                                  created_at: string
-                                  default_profile: boolean
-                                  default_profile_image: boolean
-                                  description: string
-                                  entities: {
-                                    description: {
-                                      urls: {
-                                        display_url: string
-                                        expanded_url: string
-                                        url: string
-                                        indices: number[]
-                                      }[]
-                                    }
-                                    url?: {
-                                      urls: {
-                                        display_url: string
-                                        expanded_url: string
-                                        url: string
-                                        indices: number[]
-                                      }[]
-                                    }
-                                  }
-                                  fast_followers_count: number
-                                  favourites_count: number
-                                  followers_count: number
-                                  friends_count: number
-                                  has_custom_timelines: boolean
-                                  is_translator: boolean
-                                  listed_count: number
-                                  location: string
-                                  media_count: number
-                                  name: string
-                                  normal_followers_count: number
-                                  pinned_tweet_ids_str: string[]
-                                  possibly_sensitive: boolean
-                                  profile_banner_url?: string
-                                  profile_image_url_https: string
-                                  profile_interstitial_type: string
-                                  screen_name: string
-                                  statuses_count: number
-                                  translator_type: string
-                                  url?: string
-                                  verified: boolean
-                                  want_retweets: boolean
-                                  withheld_in_countries: unknown[]
-                                  verified_type?: string
-                                  following?: boolean
-                                }
-                                professional?: {
-                                  rest_id: string
-                                  professional_type: string
-                                  category: {
-                                    id: number
-                                    name: string
-                                    icon_name: string
-                                  }[]
-                                }
-                              }
-                            }[]
-                          }
-                        }
                         unmention_data?: {
                           hydrate?: {
                             unmentioned_users_results: {
                               rest_id: string
                             }[]
                           }
-                        }
-                        unified_card?: {
-                          card_fetch_state: string
                         }
                         edit_control?: {
                           edit_tweet_ids?: string[]
@@ -9855,24 +9954,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             hashtags: {
                               indices: number[]
                               text: string
-                            }[]
-                            symbols: unknown[]
-                            timestamps?: {
-                              indices: number[]
-                              seconds: number
-                              text: string
-                            }[]
-                            urls: {
-                              display_url: string
-                              expanded_url: string
-                              url: string
-                              indices: number[]
-                            }[]
-                            user_mentions: {
-                              id_str: string
-                              name: string
-                              screen_name: string
-                              indices: number[]
                             }[]
                             media?: {
                               display_url: string
@@ -9964,6 +10045,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 monetizable: boolean
                                 title?: string
                                 description?: string
+                                embeddable?: boolean
                                 call_to_actions?: {
                                   visit_site?: {
                                     url: string
@@ -9972,39 +10054,43 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     url: string
                                   }
                                 }
-                                embeddable?: boolean
                               }
                               video_info?: {
                                 aspect_ratio: number[]
                                 duration_millis?: number
                                 variants: {
-                                  bitrate?: number
                                   content_type: string
                                   url: string
+                                  bitrate?: number
                                 }[]
                               }
                               ext_alt_text?: string
+                              source_status_id_str?: string
+                              source_user_id_str?: string
                               sensitive_media_warning?: {
                                 other: boolean
+                                adult_content?: boolean
                               }
                             }[]
+                            symbols: unknown[]
+                            timestamps?: {
+                              indices: number[]
+                              seconds: number
+                              text: string
+                            }[]
+                            urls: {
+                              display_url: string
+                              expanded_url: string
+                              url: string
+                              indices: number[]
+                            }[]
+                            user_mentions: {
+                              id_str: string
+                              name: string
+                              screen_name: string
+                              indices: number[]
+                            }[]
                           }
-                          favorite_count: number
-                          favorited: boolean
-                          full_text: string
-                          is_quote_status: boolean
-                          lang: string
-                          possibly_sensitive?: boolean
-                          possibly_sensitive_editable?: boolean
-                          quote_count: number
-                          reply_count: number
-                          retweet_count: number
-                          retweeted: boolean
-                          user_id_str: string
-                          id_str: string
-                          in_reply_to_screen_name?: string
-                          in_reply_to_status_id_str?: string
-                          in_reply_to_user_id_str?: string
                           extended_entities?: {
                             media: {
                               display_url: string
@@ -10096,6 +10182,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 monetizable: boolean
                                 title?: string
                                 description?: string
+                                embeddable?: boolean
                                 call_to_actions?: {
                                   visit_site?: {
                                     url: string
@@ -10104,23 +10191,41 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     url: string
                                   }
                                 }
-                                embeddable?: boolean
                               }
                               video_info?: {
                                 aspect_ratio: number[]
                                 duration_millis?: number
                                 variants: {
-                                  bitrate?: number
                                   content_type: string
                                   url: string
+                                  bitrate?: number
                                 }[]
                               }
                               ext_alt_text?: string
+                              source_status_id_str?: string
+                              source_user_id_str?: string
                               sensitive_media_warning?: {
                                 other: boolean
+                                adult_content?: boolean
                               }
                             }[]
                           }
+                          favorite_count: number
+                          favorited: boolean
+                          full_text: string
+                          is_quote_status: boolean
+                          lang: string
+                          possibly_sensitive?: boolean
+                          possibly_sensitive_editable?: boolean
+                          quote_count: number
+                          reply_count: number
+                          retweet_count: number
+                          retweeted: boolean
+                          user_id_str: string
+                          id_str: string
+                          in_reply_to_screen_name?: string
+                          in_reply_to_status_id_str?: string
+                          in_reply_to_user_id_str?: string
                           quoted_status_id_str?: string
                           quoted_status_permalink?: {
                             url: string
@@ -10153,6 +10258,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             url: string
                           }
                         }
+                        unified_card?: {
+                          card_fetch_state: string
+                        }
                         quoted_status_result?: {
                           result: {
                             __typename: string
@@ -10181,7 +10289,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   is_blue_verified: boolean
                                   profile_image_shape: string
                                   legacy: {
-                                    following?: boolean
                                     can_dm: boolean
                                     can_media_tag: boolean
                                     created_at: string
@@ -10227,9 +10334,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     translator_type: string
                                     url?: string
                                     verified: boolean
-                                    verified_type?: string
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
+                                    following?: boolean
+                                    verified_type?: string
                                     followed_by?: boolean
                                   }
                                   professional?: {
@@ -10370,7 +10478,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     title?: string
                                     description?: string
                                     call_to_actions?: {
-                                      visit_site: {
+                                      watch_now?: {
+                                        url: string
+                                      }
+                                      visit_site?: {
                                         url: string
                                       }
                                     }
@@ -10380,14 +10491,17 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     aspect_ratio: number[]
                                     duration_millis?: number
                                     variants: {
+                                      bitrate?: number
                                       content_type: string
                                       url: string
-                                      bitrate?: number
                                     }[]
                                   }
                                   ext_alt_text?: string
                                 }[]
-                                symbols: unknown[]
+                                symbols: {
+                                  indices: number[]
+                                  text: string
+                                }[]
                                 timestamps?: {
                                   indices: number[]
                                   seconds: number
@@ -10498,7 +10612,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     title?: string
                                     description?: string
                                     call_to_actions?: {
-                                      visit_site: {
+                                      watch_now?: {
+                                        url: string
+                                      }
+                                      visit_site?: {
                                         url: string
                                       }
                                     }
@@ -10508,9 +10625,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     aspect_ratio: number[]
                                     duration_millis?: number
                                     variants: {
+                                      bitrate?: number
                                       content_type: string
                                       url: string
-                                      bitrate?: number
                                     }[]
                                   }
                                   ext_alt_text?: string
@@ -10597,7 +10714,20 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     __typename: string
                                     id: string
                                     rest_id: string
-                                    affiliates_highlighted_label: {}
+                                    affiliates_highlighted_label: {
+                                      label?: {
+                                        url: {
+                                          url: string
+                                          urlType: string
+                                        }
+                                        badge: {
+                                          url: string
+                                        }
+                                        description: string
+                                        userLabelType: string
+                                        userLabelDisplayType: string
+                                      }
+                                    }
                                     has_graduated_access: boolean
                                     is_blue_verified: boolean
                                     profile_image_shape: string
@@ -10640,7 +10770,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       normal_followers_count: number
                                       pinned_tweet_ids_str: string[]
                                       possibly_sensitive: boolean
-                                      profile_banner_url: string
+                                      profile_banner_url?: string
                                       profile_image_url_https: string
                                       profile_interstitial_type: string
                                       screen_name: string
@@ -10648,9 +10778,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                       translator_type: string
                                       url?: string
                                       verified: boolean
-                                      verified_type?: string
                                       want_retweets: boolean
                                       withheld_in_countries: unknown[]
+                                      verified_type?: string
                                       following?: boolean
                                       protected?: boolean
                                     }
@@ -10665,6 +10795,48 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }
                                   }
                                 }[]
+                              }
+                            }
+                            edit_perspective?: {
+                              favorited: boolean
+                              retweeted: boolean
+                            }
+                            note_tweet?: {
+                              is_expandable: boolean
+                              note_tweet_results: {
+                                result: {
+                                  id: string
+                                  text: string
+                                  entity_set: {
+                                    hashtags: {
+                                      indices: number[]
+                                      text: string
+                                    }[]
+                                    symbols: unknown[]
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                    user_mentions: {
+                                      id_str: string
+                                      name: string
+                                      screen_name: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                  richtext: {
+                                    richtext_tags: {
+                                      from_index: number
+                                      to_index: number
+                                      richtext_types: string[]
+                                    }[]
+                                  }
+                                  media: {
+                                    inline_media: unknown[]
+                                  }
+                                }
                               }
                             }
                             tweet?: {
@@ -10747,6 +10919,10 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 editable_until_msecs: string
                                 is_edit_eligible: boolean
                                 edits_remaining: string
+                              }
+                              edit_perspective?: {
+                                favorited: boolean
+                                retweeted: boolean
                               }
                               is_translatable: boolean
                               views: {
@@ -10996,44 +11172,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 }
                               }[]
                             }
-                            note_tweet?: {
-                              is_expandable: boolean
-                              note_tweet_results: {
-                                result: {
-                                  id: string
-                                  text: string
-                                  entity_set: {
-                                    hashtags: {
-                                      indices: number[]
-                                      text: string
-                                    }[]
-                                    symbols: unknown[]
-                                    urls: {
-                                      display_url: string
-                                      expanded_url: string
-                                      url: string
-                                      indices: number[]
-                                    }[]
-                                    user_mentions: {
-                                      id_str: string
-                                      name: string
-                                      screen_name: string
-                                      indices: number[]
-                                    }[]
-                                  }
-                                  richtext: {
-                                    richtext_tags: {
-                                      from_index: number
-                                      to_index: number
-                                      richtext_types: string[]
-                                    }[]
-                                  }
-                                  media: {
-                                    inline_media: unknown[]
-                                  }
-                                }
-                              }
-                            }
                             previous_counts?: {
                               bookmark_count: number
                               favorite_count: number
@@ -11041,6 +11179,184 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               reply_count: number
                               retweet_count: number
                             }
+                          }
+                        }
+                        note_tweet?: {
+                          is_expandable: boolean
+                          note_tweet_results: {
+                            result: {
+                              id: string
+                              text: string
+                              entity_set: {
+                                hashtags: {
+                                  indices: number[]
+                                  text: string
+                                }[]
+                                symbols: unknown[]
+                                urls: {
+                                  display_url: string
+                                  expanded_url: string
+                                  url: string
+                                  indices: number[]
+                                }[]
+                                user_mentions: {
+                                  id_str: string
+                                  name: string
+                                  screen_name: string
+                                  indices: number[]
+                                }[]
+                                timestamps?: unknown[]
+                              }
+                              richtext?: {
+                                richtext_tags: {
+                                  from_index: number
+                                  to_index: number
+                                  richtext_types: string[]
+                                }[]
+                              }
+                              media?: {
+                                inline_media: unknown[]
+                              }
+                            }
+                          }
+                        }
+                        previous_counts?: {
+                          bookmark_count: number
+                          favorite_count: number
+                          quote_count: number
+                          reply_count: number
+                          retweet_count: number
+                        }
+                        card?: {
+                          rest_id: string
+                          legacy: {
+                            binding_values: {
+                              key: string
+                              value: {
+                                image_value?: {
+                                  height: number
+                                  width: number
+                                  url: string
+                                  alt?: string
+                                }
+                                type: string
+                                string_value?: string
+                                scribe_key?: string
+                                image_color_value?: {
+                                  palette: {
+                                    rgb: {
+                                      blue: number
+                                      green: number
+                                      red: number
+                                    }
+                                    percentage: number
+                                  }[]
+                                }
+                                user_value?: {
+                                  id_str: string
+                                  path: unknown[]
+                                }
+                                boolean_value?: boolean
+                              }
+                            }[]
+                            card_platform: {
+                              platform: {
+                                audience: {
+                                  name: string
+                                }
+                                device: {
+                                  name: string
+                                  version: string
+                                }
+                              }
+                            }
+                            name: string
+                            url: string
+                            user_refs_results: {
+                              result: {
+                                __typename: string
+                                id: string
+                                rest_id: string
+                                affiliates_highlighted_label: {
+                                  label?: {
+                                    url: {
+                                      url: string
+                                      urlType: string
+                                    }
+                                    badge: {
+                                      url: string
+                                    }
+                                    description: string
+                                    userLabelType: string
+                                    userLabelDisplayType: string
+                                  }
+                                }
+                                has_graduated_access: boolean
+                                is_blue_verified: boolean
+                                profile_image_shape: string
+                                legacy: {
+                                  blocking?: boolean
+                                  can_dm: boolean
+                                  can_media_tag: boolean
+                                  created_at: string
+                                  default_profile: boolean
+                                  default_profile_image: boolean
+                                  description: string
+                                  entities: {
+                                    description: {
+                                      urls: {
+                                        display_url: string
+                                        expanded_url: string
+                                        url: string
+                                        indices: number[]
+                                      }[]
+                                    }
+                                    url?: {
+                                      urls: {
+                                        display_url: string
+                                        expanded_url: string
+                                        url: string
+                                        indices: number[]
+                                      }[]
+                                    }
+                                  }
+                                  fast_followers_count: number
+                                  favourites_count: number
+                                  followers_count: number
+                                  friends_count: number
+                                  has_custom_timelines: boolean
+                                  is_translator: boolean
+                                  listed_count: number
+                                  location: string
+                                  media_count: number
+                                  name: string
+                                  normal_followers_count: number
+                                  pinned_tweet_ids_str: string[]
+                                  possibly_sensitive: boolean
+                                  profile_banner_url?: string
+                                  profile_image_url_https: string
+                                  profile_interstitial_type: string
+                                  screen_name: string
+                                  statuses_count: number
+                                  translator_type: string
+                                  url?: string
+                                  verified: boolean
+                                  verified_type?: string
+                                  want_retweets: boolean
+                                  withheld_in_countries: unknown[]
+                                  following?: boolean
+                                }
+                                professional?: {
+                                  rest_id: string
+                                  professional_type: string
+                                  category: {
+                                    id: number
+                                    name: string
+                                    icon_name: string
+                                  }[]
+                                }
+                              }
+                            }[]
                           }
                         }
                         tweet?: {
@@ -11056,7 +11372,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 is_blue_verified: boolean
                                 profile_image_shape: string
                                 legacy: {
-                                  following?: boolean
                                   can_dm: boolean
                                   can_media_tag: boolean
                                   created_at: string
@@ -11100,10 +11415,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   screen_name: string
                                   statuses_count: number
                                   translator_type: string
-                                  url?: string
                                   verified: boolean
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
+                                  following?: boolean
+                                  url?: string
                                 }
                                 professional?: {
                                   rest_id: string
@@ -11233,7 +11549,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               }[]
                               symbols: unknown[]
                               timestamps?: unknown[]
-                              urls: unknown[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
                               user_mentions: {
                                 id_str: string
                                 name: string
@@ -11343,9 +11664,245 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               display: string
                             }
                           }
+                          edit_perspective?: {
+                            favorited: boolean
+                            retweeted: boolean
+                          }
                           quoted_status_result?: {
                             result: {
                               __typename: string
+                              rest_id?: string
+                              core?: {
+                                user_results: {
+                                  result: {
+                                    __typename: string
+                                    id: string
+                                    rest_id: string
+                                    affiliates_highlighted_label: {}
+                                    has_graduated_access: boolean
+                                    is_blue_verified: boolean
+                                    profile_image_shape: string
+                                    legacy: {
+                                      following: boolean
+                                      can_dm: boolean
+                                      can_media_tag: boolean
+                                      created_at: string
+                                      default_profile: boolean
+                                      default_profile_image: boolean
+                                      description: string
+                                      entities: {
+                                        description: {
+                                          urls: {
+                                            display_url: string
+                                            expanded_url: string
+                                            url: string
+                                            indices: number[]
+                                          }[]
+                                        }
+                                        url: {
+                                          urls: {
+                                            display_url: string
+                                            expanded_url: string
+                                            url: string
+                                            indices: number[]
+                                          }[]
+                                        }
+                                      }
+                                      fast_followers_count: number
+                                      favourites_count: number
+                                      followers_count: number
+                                      friends_count: number
+                                      has_custom_timelines: boolean
+                                      is_translator: boolean
+                                      listed_count: number
+                                      location: string
+                                      media_count: number
+                                      name: string
+                                      normal_followers_count: number
+                                      pinned_tweet_ids_str: string[]
+                                      possibly_sensitive: boolean
+                                      profile_banner_url: string
+                                      profile_image_url_https: string
+                                      profile_interstitial_type: string
+                                      screen_name: string
+                                      statuses_count: number
+                                      translator_type: string
+                                      url: string
+                                      verified: boolean
+                                      want_retweets: boolean
+                                      withheld_in_countries: unknown[]
+                                    }
+                                  }
+                                }
+                              }
+                              unmention_data?: {}
+                              edit_control?: {
+                                edit_tweet_ids: string[]
+                                editable_until_msecs: string
+                                is_edit_eligible: boolean
+                                edits_remaining: string
+                              }
+                              is_translatable?: boolean
+                              views?: {
+                                count: string
+                                state: string
+                              }
+                              source?: string
+                              legacy?: {
+                                bookmark_count: number
+                                bookmarked: boolean
+                                created_at: string
+                                conversation_id_str: string
+                                display_text_range: number[]
+                                entities: {
+                                  hashtags: {
+                                    indices: number[]
+                                    text: string
+                                  }[]
+                                  media?: {
+                                    display_url: string
+                                    expanded_url: string
+                                    id_str: string
+                                    indices: number[]
+                                    media_key: string
+                                    media_url_https: string
+                                    type: string
+                                    url: string
+                                    ext_media_availability: {
+                                      status: string
+                                    }
+                                    features: {
+                                      large: {
+                                        faces: unknown[]
+                                      }
+                                      medium: {
+                                        faces: unknown[]
+                                      }
+                                      small: {
+                                        faces: unknown[]
+                                      }
+                                      orig: {
+                                        faces: unknown[]
+                                      }
+                                    }
+                                    sizes: {
+                                      large: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      medium: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      small: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      thumb: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                    }
+                                    original_info: {
+                                      height: number
+                                      width: number
+                                      focus_rects: {
+                                        x: number
+                                        y: number
+                                        w: number
+                                        h: number
+                                      }[]
+                                    }
+                                  }[]
+                                  symbols: unknown[]
+                                  timestamps?: unknown[]
+                                  urls: {
+                                    display_url: string
+                                    expanded_url: string
+                                    url: string
+                                    indices: number[]
+                                  }[]
+                                  user_mentions: unknown[]
+                                }
+                                extended_entities?: {
+                                  media: {
+                                    display_url: string
+                                    expanded_url: string
+                                    id_str: string
+                                    indices: number[]
+                                    media_key: string
+                                    media_url_https: string
+                                    type: string
+                                    url: string
+                                    ext_media_availability: {
+                                      status: string
+                                    }
+                                    features: {
+                                      large: {
+                                        faces: unknown[]
+                                      }
+                                      medium: {
+                                        faces: unknown[]
+                                      }
+                                      small: {
+                                        faces: unknown[]
+                                      }
+                                      orig: {
+                                        faces: unknown[]
+                                      }
+                                    }
+                                    sizes: {
+                                      large: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      medium: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      small: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                      thumb: {
+                                        h: number
+                                        w: number
+                                        resize: string
+                                      }
+                                    }
+                                    original_info: {
+                                      height: number
+                                      width: number
+                                      focus_rects: {
+                                        x: number
+                                        y: number
+                                        w: number
+                                        h: number
+                                      }[]
+                                    }
+                                  }[]
+                                }
+                                favorite_count: number
+                                favorited: boolean
+                                full_text: string
+                                is_quote_status: boolean
+                                lang: string
+                                possibly_sensitive: boolean
+                                possibly_sensitive_editable: boolean
+                                quote_count: number
+                                reply_count: number
+                                retweet_count: number
+                                retweeted: boolean
+                                user_id_str: string
+                                id_str: string
+                              }
                               tweet?: {
                                 rest_id: string
                                 core: {
@@ -11421,6 +11978,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   }
                                 }
                                 unmention_data: {}
+                                unified_card?: {
+                                  card_fetch_state: string
+                                }
                                 edit_control: {
                                   edit_tweet_ids: string[]
                                   editable_until_msecs: string
@@ -11433,7 +11993,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   state: string
                                 }
                                 source: string
-                                quotedRefResult: {}
                                 legacy: {
                                   bookmark_count: number
                                   bookmarked: boolean
@@ -11452,10 +12011,136 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   conversation_id_str: string
                                   display_text_range: number[]
                                   entities: {
-                                    user_mentions: unknown[]
-                                    urls: unknown[]
                                     hashtags: unknown[]
+                                    media?: {
+                                      display_url: string
+                                      expanded_url: string
+                                      id_str: string
+                                      indices: number[]
+                                      media_key: string
+                                      media_url_https: string
+                                      type: string
+                                      url: string
+                                      ext_media_availability: {
+                                        status: string
+                                      }
+                                      features: {
+                                        large: {
+                                          faces: unknown[]
+                                        }
+                                        medium: {
+                                          faces: unknown[]
+                                        }
+                                        small: {
+                                          faces: unknown[]
+                                        }
+                                        orig: {
+                                          faces: unknown[]
+                                        }
+                                      }
+                                      sizes: {
+                                        large: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        medium: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        small: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        thumb: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                      }
+                                      original_info: {
+                                        height: number
+                                        width: number
+                                        focus_rects: {
+                                          x: number
+                                          y: number
+                                          w: number
+                                          h: number
+                                        }[]
+                                      }
+                                    }[]
                                     symbols: unknown[]
+                                    timestamps?: unknown[]
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                    user_mentions: unknown[]
+                                  }
+                                  extended_entities?: {
+                                    media: {
+                                      display_url: string
+                                      expanded_url: string
+                                      id_str: string
+                                      indices: number[]
+                                      media_key: string
+                                      media_url_https: string
+                                      type: string
+                                      url: string
+                                      ext_media_availability: {
+                                        status: string
+                                      }
+                                      features: {
+                                        large: {
+                                          faces: unknown[]
+                                        }
+                                        medium: {
+                                          faces: unknown[]
+                                        }
+                                        small: {
+                                          faces: unknown[]
+                                        }
+                                        orig: {
+                                          faces: unknown[]
+                                        }
+                                      }
+                                      sizes: {
+                                        large: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        medium: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        small: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                        thumb: {
+                                          h: number
+                                          w: number
+                                          resize: string
+                                        }
+                                      }
+                                      original_info: {
+                                        height: number
+                                        width: number
+                                        focus_rects: {
+                                          x: number
+                                          y: number
+                                          w: number
+                                          h: number
+                                        }[]
+                                      }
+                                    }[]
                                   }
                                   favorite_count: number
                                   favorited: boolean
@@ -11463,19 +12148,22 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   is_quote_status: boolean
                                   lang: string
                                   limited_actions: string
+                                  possibly_sensitive?: boolean
+                                  possibly_sensitive_editable?: boolean
                                   quote_count: number
-                                  quoted_status_id_str: string
-                                  quoted_status_permalink: {
-                                    url: string
-                                    expanded: string
-                                    display: string
-                                  }
                                   reply_count: number
                                   retweet_count: number
                                   retweeted: boolean
                                   user_id_str: string
                                   id_str: string
+                                  quoted_status_id_str?: string
+                                  quoted_status_permalink?: {
+                                    url: string
+                                    expanded: string
+                                    display: string
+                                  }
                                 }
+                                quotedRefResult?: {}
                               }
                               limitedActionResults?: {
                                 limited_actions: {
@@ -11493,70 +12181,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                     }
                                   }
                                 }[]
-                              }
-                              rest_id?: string
-                              core?: {
-                                user_results: {
-                                  result: {
-                                    __typename: string
-                                    id: string
-                                    rest_id: string
-                                    affiliates_highlighted_label: {}
-                                    has_graduated_access: boolean
-                                    is_blue_verified: boolean
-                                    profile_image_shape: string
-                                    legacy: {
-                                      following: boolean
-                                      can_dm: boolean
-                                      can_media_tag: boolean
-                                      created_at: string
-                                      default_profile: boolean
-                                      default_profile_image: boolean
-                                      description: string
-                                      entities: {
-                                        description: {
-                                          urls: {
-                                            display_url: string
-                                            expanded_url: string
-                                            url: string
-                                            indices: number[]
-                                          }[]
-                                        }
-                                        url: {
-                                          urls: {
-                                            display_url: string
-                                            expanded_url: string
-                                            url: string
-                                            indices: number[]
-                                          }[]
-                                        }
-                                      }
-                                      fast_followers_count: number
-                                      favourites_count: number
-                                      followers_count: number
-                                      friends_count: number
-                                      has_custom_timelines: boolean
-                                      is_translator: boolean
-                                      listed_count: number
-                                      location: string
-                                      media_count: number
-                                      name: string
-                                      normal_followers_count: number
-                                      pinned_tweet_ids_str: string[]
-                                      possibly_sensitive: boolean
-                                      profile_banner_url: string
-                                      profile_image_url_https: string
-                                      profile_interstitial_type: string
-                                      screen_name: string
-                                      statuses_count: number
-                                      translator_type: string
-                                      url: string
-                                      verified: boolean
-                                      want_retweets: boolean
-                                      withheld_in_countries: unknown[]
-                                    }
-                                  }
-                                }
                               }
                               card?: {
                                 rest_id: string
@@ -11658,57 +12282,13 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                   }[]
                                 }
                               }
-                              unmention_data?: {}
                               unified_card?: {
                                 card_fetch_state: string
                               }
-                              edit_control?: {
-                                edit_tweet_ids: string[]
-                                editable_until_msecs: string
-                                is_edit_eligible: boolean
-                                edits_remaining: string
-                              }
-                              is_translatable?: boolean
-                              views?: {
-                                count: string
-                                state: string
-                              }
-                              source?: string
-                              legacy?: {
-                                bookmark_count: number
-                                bookmarked: boolean
-                                created_at: string
-                                conversation_id_str: string
-                                display_text_range: number[]
-                                entities: {
-                                  user_mentions: unknown[]
-                                  urls: {
-                                    display_url: string
-                                    expanded_url: string
-                                    url: string
-                                    indices: number[]
-                                  }[]
-                                  hashtags: {
-                                    indices: number[]
-                                    text: string
-                                  }[]
-                                  symbols: unknown[]
-                                }
-                                favorite_count: number
-                                favorited: boolean
-                                full_text: string
-                                is_quote_status: boolean
-                                lang: string
-                                possibly_sensitive: boolean
-                                possibly_sensitive_editable: boolean
-                                quote_count: number
-                                reply_count: number
-                                retweet_count: number
-                                retweeted: boolean
-                                user_id_str: string
-                                id_str: string
-                              }
                             }
+                          }
+                          unified_card?: {
+                            card_fetch_state: string
                           }
                         }
                         limitedActionResults?: {
@@ -11728,51 +12308,9 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             }
                           }[]
                         }
-                        note_tweet?: {
-                          is_expandable: boolean
-                          note_tweet_results: {
-                            result: {
-                              id: string
-                              text: string
-                              entity_set: {
-                                hashtags: {
-                                  indices: number[]
-                                  text: string
-                                }[]
-                                symbols: unknown[]
-                                urls: {
-                                  display_url: string
-                                  expanded_url: string
-                                  url: string
-                                  indices: number[]
-                                }[]
-                                user_mentions: {
-                                  id_str: string
-                                  name: string
-                                  screen_name: string
-                                  indices: number[]
-                                }[]
-                                timestamps?: unknown[]
-                              }
-                              richtext?: {
-                                richtext_tags: {
-                                  from_index: number
-                                  to_index: number
-                                  richtext_types: string[]
-                                }[]
-                              }
-                              media?: {
-                                inline_media: unknown[]
-                              }
-                            }
-                          }
-                        }
-                        previous_counts?: {
-                          bookmark_count: number
-                          favorite_count: number
-                          quote_count: number
-                          reply_count: number
-                          retweet_count: number
+                        edit_perspective?: {
+                          favorited: boolean
+                          retweeted: boolean
                         }
                       }
                     }
@@ -11852,12 +12390,12 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                           screen_name: string
                           statuses_count: number
                           translator_type: string
-                          url?: string
                           verified: boolean
                           want_retweets: boolean
                           withheld_in_countries: unknown[]
-                          followed_by?: boolean
+                          url?: string
                           verified_type?: string
+                          followed_by?: boolean
                         }
                         professional?: {
                           rest_id: string
@@ -12224,63 +12762,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
               }
             }
           }[]
-          clientEventInfo?: {
-            component: string
-            element: string
-          }
-          cover?: {
-            type: string
-            halfCoverDisplayType: string
-            primaryText: {
-              text: string
-              entities: unknown[]
-            }
-            primaryCoverCta: {
-              text: string
-              ctaBehavior: {
-                type: string
-              }
-              callbacks: {
-                endpoint: string
-              }[]
-              clientEventInfo: {
-                action: string
-              }
-              buttonStyle?: string
-            }
-            secondaryText: {
-              text: string
-              entities: {
-                fromIndex: number
-                toIndex: number
-                ref: {
-                  type: string
-                  url: string
-                  urlType: string
-                }
-              }[]
-            }
-            impressionCallbacks: {
-              endpoint: string
-            }[]
-            dismissible?: boolean
-            secondaryCoverCta?: {
-              text: string
-              ctaBehavior: {
-                type: string
-                url: {
-                  url: string
-                  urlType: string
-                }
-              }
-              callbacks: {
-                endpoint: string
-              }[]
-              clientEventInfo: {
-                action: string
-              }
-            }
-          }
           entry_id_to_replace?: string
           entry?: {
             entryId: string
@@ -12355,11 +12836,129 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                               verified: boolean
                               want_retweets: boolean
                               withheld_in_countries: unknown[]
+                              verified_type?: string
+                            }
+                            professional?: {
+                              rest_id: string
+                              professional_type: string
+                              category: {
+                                id: number
+                                name: string
+                                icon_name: string
+                              }[]
                             }
                           }
                         }
                       }
+                      card?: {
+                        rest_id: string
+                        legacy: {
+                          binding_values: {
+                            key: string
+                            value: {
+                              image_value?: {
+                                height: number
+                                width: number
+                                url: string
+                              }
+                              type: string
+                              string_value?: string
+                              scribe_key?: string
+                              image_color_value?: {
+                                palette: {
+                                  rgb: {
+                                    blue: number
+                                    green: number
+                                    red: number
+                                  }
+                                  percentage: number
+                                }[]
+                              }
+                              user_value?: {
+                                id_str: string
+                                path: unknown[]
+                              }
+                            }
+                          }[]
+                          card_platform: {
+                            platform: {
+                              audience: {
+                                name: string
+                              }
+                              device: {
+                                name: string
+                                version: string
+                              }
+                            }
+                          }
+                          name: string
+                          url: string
+                          user_refs_results: {
+                            result: {
+                              __typename: string
+                              id: string
+                              rest_id: string
+                              affiliates_highlighted_label: {}
+                              has_graduated_access: boolean
+                              is_blue_verified: boolean
+                              profile_image_shape: string
+                              legacy: {
+                                can_dm: boolean
+                                can_media_tag: boolean
+                                created_at: string
+                                default_profile: boolean
+                                default_profile_image: boolean
+                                description: string
+                                entities: {
+                                  description: {
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                  url: {
+                                    urls: {
+                                      display_url: string
+                                      expanded_url: string
+                                      url: string
+                                      indices: number[]
+                                    }[]
+                                  }
+                                }
+                                fast_followers_count: number
+                                favourites_count: number
+                                followers_count: number
+                                friends_count: number
+                                has_custom_timelines: boolean
+                                is_translator: boolean
+                                listed_count: number
+                                location: string
+                                media_count: number
+                                name: string
+                                normal_followers_count: number
+                                pinned_tweet_ids_str: unknown[]
+                                possibly_sensitive: boolean
+                                profile_banner_url: string
+                                profile_image_url_https: string
+                                profile_interstitial_type: string
+                                screen_name: string
+                                statuses_count: number
+                                translator_type: string
+                                url: string
+                                verified: boolean
+                                want_retweets: boolean
+                                withheld_in_countries: unknown[]
+                              }
+                            }
+                          }[]
+                        }
+                      }
                       unmention_data: {}
+                      unified_card?: {
+                        card_fetch_state: string
+                      }
                       edit_control: {
                         edit_tweet_ids: string[]
                         editable_until_msecs: string
@@ -12383,85 +12982,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             indices: number[]
                             text: string
                           }[]
-                          media?: {
-                            display_url: string
-                            expanded_url: string
-                            id_str: string
-                            indices: number[]
-                            media_key: string
-                            media_url_https: string
-                            type: string
-                            url: string
-                            ext_media_availability: {
-                              status: string
-                            }
-                            features: {
-                              large: {
-                                faces: {
-                                  x: number
-                                  y: number
-                                  h: number
-                                  w: number
-                                }[]
-                              }
-                              medium: {
-                                faces: {
-                                  x: number
-                                  y: number
-                                  h: number
-                                  w: number
-                                }[]
-                              }
-                              small: {
-                                faces: {
-                                  x: number
-                                  y: number
-                                  h: number
-                                  w: number
-                                }[]
-                              }
-                              orig: {
-                                faces: {
-                                  x: number
-                                  y: number
-                                  h: number
-                                  w: number
-                                }[]
-                              }
-                            }
-                            sizes: {
-                              large: {
-                                h: number
-                                w: number
-                                resize: string
-                              }
-                              medium: {
-                                h: number
-                                w: number
-                                resize: string
-                              }
-                              small: {
-                                h: number
-                                w: number
-                                resize: string
-                              }
-                              thumb: {
-                                h: number
-                                w: number
-                                resize: string
-                              }
-                            }
-                            original_info: {
-                              height: number
-                              width: number
-                              focus_rects: {
-                                x: number
-                                y: number
-                                w: number
-                                h: number
-                              }[]
-                            }
-                          }[]
                           symbols: unknown[]
                           timestamps?: unknown[]
                           urls: {
@@ -12476,9 +12996,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             screen_name: string
                             indices: number[]
                           }[]
-                        }
-                        extended_entities?: {
-                          media: {
+                          media?: {
                             display_url: string
                             expanded_url: string
                             id_str: string
@@ -12487,42 +13005,11 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                             media_url_https: string
                             type: string
                             url: string
+                            additional_media_info?: {
+                              monetizable: boolean
+                            }
                             ext_media_availability: {
                               status: string
-                            }
-                            features: {
-                              large: {
-                                faces: {
-                                  x: number
-                                  y: number
-                                  h: number
-                                  w: number
-                                }[]
-                              }
-                              medium: {
-                                faces: {
-                                  x: number
-                                  y: number
-                                  h: number
-                                  w: number
-                                }[]
-                              }
-                              small: {
-                                faces: {
-                                  x: number
-                                  y: number
-                                  h: number
-                                  w: number
-                                }[]
-                              }
-                              orig: {
-                                faces: {
-                                  x: number
-                                  y: number
-                                  h: number
-                                  w: number
-                                }[]
-                              }
                             }
                             sizes: {
                               large: {
@@ -12555,6 +13042,49 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 w: number
                                 h: number
                               }[]
+                            }
+                            video_info?: {
+                              aspect_ratio: number[]
+                              duration_millis: number
+                              variants: {
+                                bitrate?: number
+                                content_type: string
+                                url: string
+                              }[]
+                            }
+                            features?: {
+                              large: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              medium: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              small: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              orig: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
                             }
                           }[]
                         }
@@ -12572,6 +13102,103 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                         retweeted: boolean
                         user_id_str: string
                         id_str: string
+                        extended_entities?: {
+                          media: {
+                            display_url: string
+                            expanded_url: string
+                            id_str: string
+                            indices: number[]
+                            media_key: string
+                            media_url_https: string
+                            type: string
+                            url: string
+                            additional_media_info?: {
+                              monetizable: boolean
+                            }
+                            ext_media_availability: {
+                              status: string
+                            }
+                            sizes: {
+                              large: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              medium: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              small: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                              thumb: {
+                                h: number
+                                w: number
+                                resize: string
+                              }
+                            }
+                            original_info: {
+                              height: number
+                              width: number
+                              focus_rects: {
+                                x: number
+                                y: number
+                                w: number
+                                h: number
+                              }[]
+                            }
+                            video_info?: {
+                              aspect_ratio: number[]
+                              duration_millis: number
+                              variants: {
+                                bitrate?: number
+                                content_type: string
+                                url: string
+                              }[]
+                            }
+                            features?: {
+                              large: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              medium: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              small: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                              orig: {
+                                faces: {
+                                  x: number
+                                  y: number
+                                  h: number
+                                  w: number
+                                }[]
+                              }
+                            }
+                          }[]
+                        }
+                      }
+                      edit_perspective?: {
+                        favorited: boolean
+                        retweeted: boolean
                       }
                       note_tweet?: {
                         is_expandable: boolean
@@ -12585,14 +13212,23 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                                 text: string
                               }[]
                               symbols: unknown[]
-                              urls: unknown[]
+                              timestamps?: unknown[]
+                              urls: {
+                                display_url: string
+                                expanded_url: string
+                                url: string
+                                indices: number[]
+                              }[]
                               user_mentions: unknown[]
+                            }
+                            richtext?: {
+                              richtext_tags: unknown[]
+                            }
+                            media?: {
+                              inline_media: unknown[]
                             }
                           }
                         }
-                      }
-                      unified_card?: {
-                        card_fetch_state: string
                       }
                     }
                     limitedActionResults: {
@@ -12606,6 +13242,63 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
               }
               feedbackInfo: {
                 feedbackKeys: unknown[]
+              }
+            }
+          }
+          clientEventInfo?: {
+            component: string
+            element: string
+          }
+          cover?: {
+            type: string
+            halfCoverDisplayType: string
+            primaryText: {
+              text: string
+              entities: unknown[]
+            }
+            primaryCoverCta: {
+              text: string
+              ctaBehavior: {
+                type: string
+              }
+              callbacks: {
+                endpoint: string
+              }[]
+              clientEventInfo: {
+                action: string
+              }
+              buttonStyle?: string
+            }
+            secondaryText: {
+              text: string
+              entities: {
+                fromIndex: number
+                toIndex: number
+                ref: {
+                  type: string
+                  url: string
+                  urlType: string
+                }
+              }[]
+            }
+            impressionCallbacks: {
+              endpoint: string
+            }[]
+            dismissible?: boolean
+            secondaryCoverCta?: {
+              text: string
+              ctaBehavior: {
+                type: string
+                url: {
+                  url: string
+                  urlType: string
+                }
+              }
+              callbacks: {
+                endpoint: string
+              }[]
+              clientEventInfo: {
+                action: string
               }
             }
           }
@@ -12625,6 +13318,7 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                 action: string
                 element: string
               }
+              encodedFeedbackRequest?: string
               richBehavior?: {
                 type: string
                 topic: {
@@ -12637,7 +13331,6 @@ export interface GraphQLPostHomeTimelineSuccessResponse {
                   not_interested: boolean
                 }
               }
-              encodedFeedbackRequest?: string
             }
           }[]
         }

@@ -1,7 +1,5 @@
 import { CustomSearchTimelineEntry } from '../models/responses/custom/custom-search-timeline-entry'
 import { BaseParser } from './base'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Twitter } from '../twitter'
 import {
   GraphQLGetHomeLatestTimelineResponse,
   GraphQLGetHomeTimelineResponse,
@@ -38,6 +36,9 @@ export class HomeTimelineParser extends BaseParser<
 
     if (!('data' in this.response)) {
       throw new Error('This response is error response.')
+    }
+    if (!this.response.data.home.home_timeline_urt) {
+      throw new Error('This response may not be the home timeline response.')
     }
 
     const instructions = this.response.data.home.home_timeline_urt

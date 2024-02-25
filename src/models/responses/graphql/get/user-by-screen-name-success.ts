@@ -66,8 +66,8 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
             }
             url?: {
               urls: {
-                display_url: string
-                expanded_url: string
+                display_url?: string
+                expanded_url?: string
                 url: string
                 indices: number[]
               }[]
@@ -86,17 +86,17 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           normal_followers_count: number
           pinned_tweet_ids_str: string[]
           possibly_sensitive: boolean
+          profile_banner_url?: string
           profile_image_url_https: string
           profile_interstitial_type: string
           screen_name: string
           statuses_count: number
           translator_type: string
+          url?: string
           verified: boolean
           want_retweets?: boolean
           withheld_in_countries: string[]
-          profile_banner_url?: string
           following?: boolean
-          url?: string
           verified_type?: string
           followed_by?: boolean
           blocking?: boolean
@@ -139,6 +139,7 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           can_highlight_tweets: boolean
           highlighted_tweets: string
         }
+        user_seed_tweet_count?: number
         business_account: {
           affiliates_count?: number
         }

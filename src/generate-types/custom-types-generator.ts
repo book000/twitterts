@@ -289,6 +289,9 @@ export class CustomTypesGenerator {
           if (!('data' in response)) {
             return []
           }
+          if (!response.data.home.home_timeline_urt?.instructions) {
+            return []
+          }
           return response.data.home.home_timeline_urt.instructions
             .filter(
               (instruction) =>
