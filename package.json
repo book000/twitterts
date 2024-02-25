@@ -35,21 +35,21 @@
     "prepublishOnly": "run-z lint"
   },
   "dependencies": {
-    "@book000/node-utils": "1.12.61",
+    "@book000/node-utils": "1.12.67",
     "genson-js": "0.0.8",
     "json-schema-to-typescript": "13.1.2",
     "mysql2": "3.9.1",
     "otplib": "12.0.1",
-    "puppeteer-core": "22.0.0",
+    "puppeteer-core": "22.2.0",
     "twitter-d": "0.6.0",
     "typeorm": "0.3.20",
     "typeorm-naming-strategies": "4.1.0"
   },
   "devDependencies": {
     "@types/jest": "29.5.12",
-    "@types/node": "20.11.17",
-    "@typescript-eslint/eslint-plugin": "7.0.1",
-    "@typescript-eslint/parser": "7.0.1",
+    "@types/node": "20.11.19",
+    "@typescript-eslint/eslint-plugin": "7.0.2",
+    "@typescript-eslint/parser": "7.0.2",
     "ctix": "2.3.0",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
@@ -90,5 +90,5 @@
       "jest-expect-message"
     ]
   },
-  "packageManager": "pnpm@8.15.2"
+  "packageManager": "pnpm@8.15.3"
 }
