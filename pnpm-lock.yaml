@@ -47,8 +47,8 @@ devDependencies:
     specifier: 7.0.2
     version: 7.0.2(eslint@8.56.0)(typescript@5.3.3)
   ctix:
-    specifier: 2.3.0
-    version: 2.3.0
+    specifier: 2.4.0
+    version: 2.4.0
   eslint:
     specifier: 8.56.0
     version: 8.56.0
@@ -2149,8 +2149,8 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  /ctix@2.3.0:
-    resolution: {integrity: sha512-hDIlQuQTmhYwCq7XL52zkGQ/GJStvUHyuSymEFFI5a5PdOJ+b0+TOGzxgDEM8mRr6uhxDqBThXEq5eAdeYaf2Q==}
+  /ctix@2.4.0:
+    resolution: {integrity: sha512-qjFLR5/9SLoifKmYAO1ecxuE557iWEcXv0N3+OU7rhfHDOiE5xWOKkwFXptDZ8oM4UR4dZiRBtZzlaOctI+g9g==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
@@ -2172,7 +2172,7 @@ packages:
       mathjs: 12.3.2
       minimist: 1.2.8
       my-easy-fp: 0.21.0
-      my-node-fp: 0.9.0
+      my-node-fp: 0.10.3
       my-only-either: 1.3.0
       ora: 5.4.1
       prettier: 3.2.5
@@ -4520,19 +4520,20 @@ packages:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
     dev: true
 
-  /my-easy-fp@0.14.0:
-    resolution: {integrity: sha512-y1olfATc31Akn7MzWy+he1JNqkJa8UWyDupe533GmG9q+fX1imiVpYiPmVhJnp9Bs/OsF/pPGG1p9DXzgiRAzA==}
-    dev: true
-
   /my-easy-fp@0.21.0:
     resolution: {integrity: sha512-oQy/Ec4WsBAf337BuOZNTRHRnuWaDax54BtHQKOL41zfFy2BEyLovOEbSH/i3k8uU5UcagijosPMQvyrMNeeJQ==}
     engines: {node: '>=16'}
     dev: true
 
-  /my-node-fp@0.9.0:
-    resolution: {integrity: sha512-uRJMuk6nWivhjhffxzlPL7gjHcggMOR+I4TzEiy80dsuk7O45aBWZao2sHpChgUr17yvBKAkPo1PvIVMqXJa0Q==}
+  /my-easy-fp@0.22.0:
+    resolution: {integrity: sha512-fWM/HrbfUiBt8GcwMXad5r8s2urQezRqNiaa5GispeXGKptpaz5m+NUwBazkow5oxktZGWyQj1bSx40xtq00zg==}
+    engines: {node: '>=16'}
+    dev: true
+
+  /my-node-fp@0.10.3:
+    resolution: {integrity: sha512-LXTord8vAfBCP4nX1Ct/d7jXuWxeiFvDwmX+HCiLHIoNhzxg7CaippiPZV8MQ/nfX9pXSf6jpJLr/fs5QHjwKw==}
     dependencies:
-      my-easy-fp: 0.14.0
+      my-easy-fp: 0.22.0
     dev: true
 
   /my-only-either@1.3.0:
