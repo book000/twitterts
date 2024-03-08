@@ -21,8 +21,8 @@ dependencies:
     specifier: 12.0.1
     version: 12.0.1
   puppeteer-core:
-    specifier: 22.4.0
-    version: 22.4.0
+    specifier: 22.4.1
+    version: 22.4.1
   twitter-d:
     specifier: 0.6.0
     version: 0.6.0
@@ -5021,8 +5021,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /puppeteer-core@22.4.0:
-    resolution: {integrity: sha512-MZttAbttrxi6O/B//rY6zQihjFe/vXeCLb5YvKH2xG6yrcVESo0Hc5/Cv49omwZyZzAJ1BK8BnDeatDsj+3hMw==}
+  /puppeteer-core@22.4.1:
+    resolution: {integrity: sha512-l9nf8NcirYOHdID12CIMWyy7dqcJCVtgVS+YAiJuUJHg8+9yjgPiG2PcNhojIEEpCkvw3FxvnyITVfKVmkWpjA==}
     engines: {node: '>=18'}
     dependencies:
       '@puppeteer/browsers': 2.1.0
