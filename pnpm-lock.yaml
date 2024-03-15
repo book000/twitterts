@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@book000/node-utils':
-    specifier: 1.12.90
-    version: 1.12.90
+    specifier: 1.12.91
+    version: 1.12.91
   genson-js:
     specifier: 0.0.8
     version: 0.0.8
@@ -465,10 +465,10 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@book000/node-utils@1.12.90:
-    resolution: {integrity: sha512-ImVLTL8FdFTHaHn4vqCP48TiNEQj6rfpsT6l0QI5WWbAfhkWuvmcZqVgBYH+frJw0/9aX1xMzcykaKzifXGvaQ==}
+  /@book000/node-utils@1.12.91:
+    resolution: {integrity: sha512-SpyCH4cPDEyt7zovgCriABj1k43HW4FTD8smPYabKrwzaFK1BpsSpUSRyJNea4aYeTYRV/BCAjAGF32OR+dT9g==}
     dependencies:
-      axios: 1.6.7
+      axios: 1.6.8
       cycle: 1.0.3
       form-data: 4.0.0
       jsonc-parser: 3.2.1
@@ -1609,10 +1609,10 @@ packages:
       possible-typed-array-names: 1.0.0
     dev: true
 
-  /axios@1.6.7:
-    resolution: {integrity: sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==}
+  /axios@1.6.8:
+    resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
     dependencies:
-      follow-redirects: 1.15.5
+      follow-redirects: 1.15.6
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -3046,8 +3046,8 @@ packages:
     resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
     dev: false
 
-  /follow-redirects@1.15.5:
-    resolution: {integrity: sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw==}
+  /follow-redirects@1.15.6:
+    resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
