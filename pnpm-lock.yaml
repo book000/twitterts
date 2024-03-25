@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@book000/node-utils':
-    specifier: 1.12.100
-    version: 1.12.100
+    specifier: 1.12.101
+    version: 1.12.101
   genson-js:
     specifier: 0.0.8
     version: 0.0.8
@@ -466,8 +466,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@book000/node-utils@1.12.100:
-    resolution: {integrity: sha512-Crn90r7jQWtSuiwKoN2rFS2UI2X56Q7viyN5NpOkGCdleZirRPlrzFuQTMEiWsXTtYXPyfpQbJLrb0tGrkTF/g==}
+  /@book000/node-utils@1.12.101:
+    resolution: {integrity: sha512-e1eA+v+Hk7pz2pJn8MvDBNL19b7SGw54HOUmZ1OKEkGap7vviW67wgVyTkrpTeGySfQVwvQbf0KJhPKE2PV8vg==}
     dependencies:
       axios: 1.6.8
       cycle: 1.0.3
@@ -475,8 +475,8 @@ packages:
       jsonc-parser: 3.2.1
       logform: 2.6.0
       moment-timezone: 0.5.45
-      winston: 3.12.0
-      winston-daily-rotate-file: 5.0.0(winston@3.12.0)
+      winston: 3.13.0
+      winston-daily-rotate-file: 5.0.0(winston@3.13.0)
     transitivePeerDependencies:
       - debug
     dev: false
@@ -6137,7 +6137,7 @@ packages:
     dependencies:
       isexe: 2.0.0
 
-  /winston-daily-rotate-file@5.0.0(winston@3.12.0):
+  /winston-daily-rotate-file@5.0.0(winston@3.13.0):
     resolution: {integrity: sha512-JDjiXXkM5qvwY06733vf09I2wnMXpZEhxEVOSPenZMii+g7pcDcTBt2MRugnoi8BwVSuCT2jfRXBUy+n1Zz/Yw==}
     engines: {node: '>=8'}
     peerDependencies:
@@ -6146,7 +6146,7 @@ packages:
       file-stream-rotator: 0.6.1
       object-hash: 3.0.0
       triple-beam: 1.4.1
-      winston: 3.12.0
+      winston: 3.13.0
       winston-transport: 4.7.0
     dev: false
 
@@ -6159,8 +6159,8 @@ packages:
       triple-beam: 1.4.1
     dev: false
 
-  /winston@3.12.0:
-    resolution: {integrity: sha512-OwbxKaOlESDi01mC9rkM0dQqQt2I8DAUMRLZ/HpbwvDXm85IryEHgoogy5fziQy38PntgZsLlhAYHz//UPHZ5w==}
+  /winston@3.13.0:
+    resolution: {integrity: sha512-rwidmA1w3SE4j0E5MuIufFhyJPBDG7Nu71RkZor1p2+qHvJSZ9GYDA81AyleQcZbh/+V6HjeBdfnTZJm9rSeQQ==}
     engines: {node: '>= 12.0.0'}
     dependencies:
       '@colors/colors': 1.6.0
