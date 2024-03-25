@@ -47,8 +47,8 @@ devDependencies:
     specifier: 7.3.1
     version: 7.3.1(eslint@8.57.0)(typescript@5.4.3)
   ctix:
-    specifier: 2.4.1
-    version: 2.4.1
+    specifier: 2.4.2
+    version: 2.4.2
   eslint:
     specifier: 8.57.0
     version: 8.57.0
@@ -2134,8 +2134,8 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  /ctix@2.4.1:
-    resolution: {integrity: sha512-L6XHxdJBtRC0K19OwVvo+NCnL/SBqpgi81cSHbG5pDSNDgdI0/nyVY20TCeCTPhum4J4JGTA5Ns9jTGjjU0q/A==}
+  /ctix@2.4.2:
+    resolution: {integrity: sha512-BVdxq/cv72Mzg8Z/DuUNsBPCWG4ZbOjZNbHvlnpehRpG7EvQmInFHjOy5bMEj2kUYwfcLQ6hTWk3q+vWK53oOw==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
