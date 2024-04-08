@@ -67,7 +67,7 @@
     "run-z": "2.0.0",
     "ts-jest": "29.1.2",
     "tsx": "4.7.2",
-    "typedoc": "0.25.12",
+    "typedoc": "0.25.13",
     "typescript": "5.4.4"
   },
   "jest": {
