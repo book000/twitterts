@@ -47,8 +47,8 @@ devDependencies:
     specifier: 7.6.0
     version: 7.6.0(eslint@8.57.0)(typescript@5.4.5)
   ctix:
-    specifier: 2.4.3
-    version: 2.4.3
+    specifier: 2.4.4
+    version: 2.4.4
   eslint:
     specifier: 8.57.0
     version: 8.57.0
@@ -2127,8 +2127,8 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  /ctix@2.4.3:
-    resolution: {integrity: sha512-MwOmuvMAfrItqI9TDfOtSk2bmPjN+ZVfT2dI6oKTAVGPeJDxmpWzAsvr2DuiOLuP4N8STPSxe2CQsGafuloZjQ==}
+  /ctix@2.4.4:
+    resolution: {integrity: sha512-IXLSnT08b+DClhnEKJxWmdq5Km4TY/UoAvLxsUHNa1XcjzzH0c4CHP7VkKr4l9JLY6doKDZn8JZXYJCTu+mHLw==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
@@ -2149,10 +2149,11 @@ packages:
       jsonc-parser: 3.2.1
       mathjs: 12.4.1
       minimist: 1.2.8
-      my-easy-fp: 0.21.0
+      my-easy-fp: 0.22.0
       my-node-fp: 0.10.3
       my-only-either: 1.3.0
       ora: 5.4.1
+      pathe: 1.1.2
       prettier: 3.2.5
       source-map-support: 0.5.21
       ts-morph: 22.0.0
@@ -4565,11 +4566,6 @@ packages:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
     dev: true
 
-  /my-easy-fp@0.21.0:
-    resolution: {integrity: sha512-oQy/Ec4WsBAf337BuOZNTRHRnuWaDax54BtHQKOL41zfFy2BEyLovOEbSH/i3k8uU5UcagijosPMQvyrMNeeJQ==}
-    engines: {node: '>=16'}
-    dev: true
-
   /my-easy-fp@0.22.0:
     resolution: {integrity: sha512-fWM/HrbfUiBt8GcwMXad5r8s2urQezRqNiaa5GispeXGKptpaz5m+NUwBazkow5oxktZGWyQj1bSx40xtq00zg==}
     engines: {node: '>=16'}
@@ -4930,6 +4926,10 @@ packages:
   /path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
+    dev: true
+
+  /pathe@1.1.2:
+    resolution: {integrity: sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==}
     dev: true
 
   /pend@1.2.0:
