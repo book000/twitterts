@@ -38,7 +38,7 @@
     "@book000/node-utils": "1.12.127",
     "genson-js": "0.0.8",
     "json-schema-to-typescript": "13.1.2",
-    "mysql2": "3.9.4",
+    "mysql2": "3.9.5",
     "otplib": "12.0.1",
     "puppeteer-core": "22.6.5",
     "twitter-d": "0.6.0",
