@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@book000/node-utils':
-        specifier: 1.13.1
-        version: 1.13.1
+        specifier: 1.13.3
+        version: 1.13.3
       genson-js:
         specifier: 0.0.8
         version: 0.0.8
@@ -288,8 +288,8 @@ packages:
       eslint: 9.1.0
       eslint-config-standard: 17.1.0
 
-  '@book000/node-utils@1.13.1':
-    resolution: {integrity: sha512-arboWSk+vw8WQN33iwqnU/zqlY0abwGb7+nU6UfzG+pGPS0IZPSaTnNqw9MRew6MZDez/keklDvYM+WDGjDX+w==}
+  '@book000/node-utils@1.13.3':
+    resolution: {integrity: sha512-WmUin8kc9c+8cViB5w84gnhrdX6hqpDSQe47IJlbPick1vR6t6Cn6meNgHrfUggdYYOpZoQF2DBerrGVOyHpsg==}
 
   '@colors/colors@1.6.0':
     resolution: {integrity: sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA==}
@@ -2669,6 +2669,7 @@ packages:
 
   reflect-metadata@0.2.1:
     resolution: {integrity: sha512-i5lLI6iw9AU3Uu4szRNPPEkomnkjRTaVt9hy/bn5g/oSzekBSMeLZblcjP74AW0vBabqERLLIrz+gR8QYR54Tw==}
+    deprecated: This version has a critical bug in fallback handling. Please upgrade to reflect-metadata@0.2.2 or newer.
 
   regenerator-runtime@0.14.1:
     resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
@@ -3615,7 +3616,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@book000/node-utils@1.13.1':
+  '@book000/node-utils@1.13.3':
     dependencies:
       axios: 1.6.8
       cycle: 1.0.3
