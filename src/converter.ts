@@ -28,6 +28,7 @@ export const ObjectConverter = {
   convertTweetEntities(legacy: CustomTweetLegacyObject): Entities {
     const entities: Entities = {}
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (legacy.entities.hashtags) {
       for (const hashtag of legacy.entities.hashtags) {
         entities.hashtags = entities.hashtags ?? []
@@ -78,14 +79,16 @@ export const ObjectConverter = {
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (legacy.entities.symbols) {
       for (const symbol of legacy.entities.symbols) {
         entities.symbols = entities.symbols ?? []
-        // @ts-ignore
+        // @ts-expect-error number[] to [number, number]
         entities.symbols.push(symbol)
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (legacy.entities.urls) {
       for (const url of legacy.entities.urls) {
         entities.urls = entities.urls ?? []
@@ -98,6 +101,7 @@ export const ObjectConverter = {
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (legacy.entities.user_mentions) {
       for (const userMention of legacy.entities.user_mentions) {
         entities.user_mentions = entities.user_mentions ?? []
@@ -188,7 +192,7 @@ export const ObjectConverter = {
       })
     }
 
-    if (legacy.entities?.url?.urls) {
+    if (legacy.entities.url?.urls) {
       for (const url of legacy.entities.url.urls) {
         entities.url = entities.url ?? {}
         entities.url.urls = entities.url.urls ?? []
@@ -316,6 +320,7 @@ export const ObjectConverter = {
         ...userResult.legacy,
       },
       ...legacy,
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       display_text_range: legacy.display_text_range
         ? [legacy.display_text_range[0], legacy.display_text_range[1]]
         : undefined,
@@ -360,17 +365,21 @@ export const ObjectConverter = {
       profile_banner_url: user.legacy.profile_banner_url,
       profile_image_url_https: user.legacy.profile_image_url_https,
       protected:
-        'protected' in user.legacy ? (user.legacy.protected as boolean) : false,
+        'protected' in user.legacy && user.legacy.protected
+          ? user.legacy.protected
+          : false,
       screen_name: user.legacy.screen_name,
-      // @ts-ignore
-      status: user.legacy.status,
+      // @ts-expect-error statusの型が異なるため
+      status: 'status' in user && user.status ? user.status : undefined,
       statuses_count: user.legacy.statuses_count,
       url: user.legacy.url,
       verified: user.legacy.verified,
-      // @ts-ignore
       withheld_in_countries: user.legacy.withheld_in_countries,
-      // @ts-ignore
-      withheld_scope: user.legacy.withheld_scope,
+      // @ts-expect-error withheld_scopeがunknownのため
+      withheld_scope:
+        'withheld_scope' in user.legacy
+          ? user.legacy.withheld_scope
+          : undefined,
     }
   },
 }

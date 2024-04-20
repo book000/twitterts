@@ -46,10 +46,11 @@ export class HomeTimelineParser extends BaseParser<
     const entries: CustomTimelineTweetEntry[] = instructions
       .filter(
         (instruction) =>
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           instruction.type === 'TimelineAddEntries' && instruction.entries
       )
       .flatMap((instruction) =>
-        instruction.entries?.filter(
+        instruction.entries.filter(
           (entry) =>
             entry.entryId.startsWith('tweet-') ||
             (isIncludingPromotedTweets
@@ -66,6 +67,7 @@ export class HomeTimelineParser extends BaseParser<
           ...entry.content.itemContent.tweet_results.result,
         }
       })
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       .filter((tweet) => !!tweet) as CustomTweetObject[]
     this.rawTweets = rawTweets
   }

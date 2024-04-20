@@ -32,10 +32,11 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
       this.response.data.user.result.timeline_v2.timeline.instructions
         .filter(
           (instruction) =>
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             instruction.type === 'TimelineAddEntries' && instruction.entries
         )
         .flatMap((instruction) =>
-          instruction.entries?.filter(
+          instruction.entries.filter(
             (entry) =>
               entry.entryId.startsWith('tweet-') ||
               (isIncludingPromotedTweets
@@ -47,6 +48,7 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
 
     const rawTweets = entries
       .map((entry) => entry.content.itemContent.tweet_results.result)
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       .filter((tweet) => !!tweet)
     this.tweets = rawTweets.map((tweet) =>
       ObjectConverter.convertToStatus(tweet as CustomTweetObject)
@@ -66,6 +68,7 @@ export class UserLikeTweetsParser extends BaseParser<'Likes'> {
     response: GraphQLGetLikesResponse
   ): response is GraphQLGetLikesErrorResponse {
     return (
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       'errors' in response && !!response.errors && response.errors.length > 0
     )
   }

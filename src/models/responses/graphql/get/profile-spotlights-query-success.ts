@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 /** GraphQL GET ProfileSpotlightsQuery 成功レスポンスモデル */
 
 export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 /** GraphQL GET QuickPromoteEligibility 成功レスポンスモデル */
 
 export interface GraphQLGetQuickPromoteEligibilitySuccessResponse {
