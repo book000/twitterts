@@ -1,7 +1,7 @@
 import { Logger } from '@book000/node-utils'
 import { createCompoundSchema, mergeSchemas, Schema } from 'genson-js/dist'
 import { compile } from 'json-schema-to-typescript'
-import { join, dirname } from 'node:path'
+import path from 'node:path'
 import fs from 'node:fs'
 import { Utils } from './utils'
 import { ResponseDatabase, ResponseEndPoint } from '../saving-responses'
@@ -102,7 +102,8 @@ export class CustomTypesGenerator {
           return []
         }
         if (
-          response.data.user.result.timeline_v2.timeline?.instructions ===
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          response.data.user.result.timeline_v2.timeline.instructions ===
           undefined
         ) {
           return []
@@ -154,7 +155,8 @@ export class CustomTypesGenerator {
           return []
         }
         if (
-          response.data.user.result.timeline_v2.timeline?.instructions ===
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          response.data.user.result.timeline_v2.timeline.instructions ===
           undefined
         ) {
           return []
@@ -162,10 +164,11 @@ export class CustomTypesGenerator {
         return response.data.user.result.timeline_v2.timeline.instructions
           .filter(
             (instruction) =>
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
               instruction.type === 'TimelineAddEntries' && instruction.entries
           )
           .flatMap((instruction) =>
-            instruction.entries?.filter(
+            instruction.entries.filter(
               (entry) =>
                 entry.entryId.startsWith('tweet-') ||
                 entry.entryId.startsWith('promoted-tweet') ||
@@ -347,9 +350,8 @@ export class CustomTypesGenerator {
           statusCode: 200,
         },
         (response) => {
-          if (
-            response.data.home.home_timeline_urt?.instructions === undefined
-          ) {
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (response.data.home.home_timeline_urt.instructions === undefined) {
             return []
           }
           return this.getTweetObjectsFromInstructions(
@@ -392,6 +394,7 @@ export class CustomTypesGenerator {
             return []
           }
           if (
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             response.data.search_by_raw_query.search_timeline.timeline
               .instructions === undefined
           ) {
@@ -417,7 +420,8 @@ export class CustomTypesGenerator {
             return []
           }
           if (
-            response.data.user.result.timeline_v2.timeline?.instructions ===
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            response.data.user.result.timeline_v2.timeline.instructions ===
             undefined
           ) {
             return []
@@ -459,6 +463,7 @@ export class CustomTypesGenerator {
             return []
           }
 
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (!response.data.threaded_conversation_with_injections_v2) {
             return []
           }
@@ -485,7 +490,7 @@ export class CustomTypesGenerator {
   private getTweetObjectsFromInstructions(
     instructions: {
       type: string
-      entries?: Array<{
+      entries?: {
         entryId: string
         sortIndex: string
         content: {
@@ -495,7 +500,7 @@ export class CustomTypesGenerator {
             }
           }
         }
-      }>
+      }[]
     }[]
   ): unknown[] {
     return instructions
@@ -585,7 +590,7 @@ export class CustomTypesGenerator {
   private getTweetLegacyObjectsFromInstructions(
     instructions: {
       type: string
-      entries?: Array<{
+      entries?: {
         entryId: string
         sortIndex: string
         content: {
@@ -600,7 +605,7 @@ export class CustomTypesGenerator {
             }
           }
         }
-      }>
+      }[]
     }[]
   ): unknown[] {
     return instructions
@@ -751,7 +756,7 @@ export class CustomTypesGenerator {
   private getVideoInfoFromInstructions(
     instructions: {
       type: string
-      entries?: Array<{
+      entries?: {
         entryId: string
         sortIndex: string
         content: {
@@ -771,7 +776,7 @@ export class CustomTypesGenerator {
             }
           }
         }
-      }>
+      }[]
     }[]
   ): unknown[] {
     return instructions
@@ -845,6 +850,7 @@ export class CustomTypesGenerator {
         .filter((response) => response.responseType === 'JSON')
         .map((response) => response.responseBody)
         .filter((body) => body.length > 0)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         .map((body) => JSON.parse(body))
       if (customizer) {
         responseBodys = responseBodys
@@ -892,18 +898,23 @@ export class CustomTypesGenerator {
     const logger = Logger.configure(
       'CustomTypeGenerator.generateTypeFromSchema'
     )
-    if (!schema) {
-      throw new Error('No schema found')
-    }
 
     const kebabName = name.replaceAll(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
-    const schemaPath = join(this.schemaDirectory, 'custom', `${kebabName}.json`)
-    const typesPath = join(this.typesDirectory, 'custom', `${kebabName}.ts`)
+    const schemaPath = path.join(
+      this.schemaDirectory,
+      'custom',
+      `${kebabName}.json`
+    )
+    const typesPath = path.join(
+      this.typesDirectory,
+      'custom',
+      `${kebabName}.ts`
+    )
 
-    fs.mkdirSync(dirname(schemaPath), { recursive: true })
+    fs.mkdirSync(path.dirname(schemaPath), { recursive: true })
     fs.writeFileSync(schemaPath, JSON.stringify(schema, null, 2))
 
-    fs.mkdirSync(dirname(typesPath), { recursive: true })
+    fs.mkdirSync(path.dirname(typesPath), { recursive: true })
     const types = await compile(
       schema,
       name,

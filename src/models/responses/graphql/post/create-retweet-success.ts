@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 /** GraphQL POST CreateRetweet 成功レスポンスモデル */
 
 export interface GraphQLPostCreateRetweetSuccessResponse {

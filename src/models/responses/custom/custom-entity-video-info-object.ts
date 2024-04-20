@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 /** エンティティ動画情報オブジェクト */
 
 export type CustomEntityVideoInfoObject = null | {

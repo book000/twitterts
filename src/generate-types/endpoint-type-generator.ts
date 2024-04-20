@@ -256,7 +256,7 @@ export class EndPointTypeGenerator {
   /**
    * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成する
    */
-  async generate(inputEndpoints: ResponseEndPointWithCount[]): Promise<void> {
+  generate(inputEndpoints: ResponseEndPointWithCount[]): void {
     const logger = Logger.configure('EndPointTypeGenerator.generate')
 
     const types = ['GraphQL'] as const

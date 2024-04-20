@@ -279,14 +279,11 @@ function getEndpoint(url: string): {
   overrideName?: string
 } | null {
   const urlObject = new URL(url)
-  if (!urlObject) {
-    return null
-  }
 
   const targets = targetUrls.filter(
     (targetUrl) => targetUrl.hostname === urlObject.hostname
   )
-  if (!targets || targets.length === 0) {
+  if (targets.length === 0) {
     return null
   }
 
@@ -368,7 +365,7 @@ async function getResponseDetails(
 
   // name に / がある場合は、その次の文字を大文字にする
   // name に _ がある場合は、その次の文字を大文字にする
-  let name = endpoint.name.replaceAll(/[/_](.)/g, (_, p1) =>
+  let name = endpoint.name.replaceAll(/[/_](.)/g, (_, p1: string) =>
     p1.toLocaleUpperCase()
   )
 
@@ -376,7 +373,7 @@ async function getResponseDetails(
   if (overrideName) {
     // overrideName で <NAME> より前に文字列がある場合は、name の先頭文字列を大文字にする
     if (overrideName.indexOf('<NAME>') > 0) {
-      name = name.replace(/^(.)/, (_, p1) => p1.toLocaleUpperCase())
+      name = name.replace(/^(.)/, (_, p1: string) => p1.toLocaleUpperCase())
     }
     name = overrideName.replace('<NAME>', name)
   }
@@ -424,9 +421,7 @@ export class TwitterScraperPage {
   /**
    * レスポンスの保持オブジェクト
    */
-  private readonly responses: {
-    [key: string]: string[]
-  } = {}
+  private readonly responses: Record<string, string[] | undefined> = {}
 
   /**
    * @param page Puppeteer のページ
@@ -459,18 +454,18 @@ export class TwitterScraperPage {
     const promise = new Promise<EndPointResponseType<M, T, N>>(
       (resolve, reject) => {
         const abortController = new AbortController()
-        setTimeout(timeout || 30_000, null, {
+        setTimeout(timeout ?? 30_000, null, {
           signal: abortController.signal,
         })
           .then(() => {
             reject(new TwitterTimeoutError('Response timeout.'))
           })
-          .catch((error) => {
+          .catch((error: unknown) => {
             // ignore abort error
             if (abortController.signal.aborted) {
               return
             }
-            reject(error)
+            reject(error as Error)
           })
 
         const key = getResponseKey({
@@ -556,7 +551,7 @@ export class TwitterScraperPage {
       )
     }
 
-    return JSON.parse(response)
+    return JSON.parse(response) as EndPointResponseType<M, T, N>
   }
 
   /**
@@ -583,18 +578,19 @@ export class TwitterScraperPage {
   ): Promise<void> {
     const element = await this.page
       .waitForSelector(selector, {
-        timeout: timeout || 30_000,
+        timeout: timeout ?? 30_000,
       })
       .catch(() => null)
     if (!element) {
       throw new TwitterOperationError(`Element not found: ${selector}`)
     }
-    await this.page.evaluate((element) => element?.scrollIntoView(), element)
+    await this.page.evaluate((element) => {
+      element.scrollIntoView()
+    }, element)
     await (isEvaluate
       ? this.page.evaluate((selector) => {
-          const element = document.querySelector(selector)
+          const element = document.querySelector<HTMLElement>(selector)
           if (element) {
-            // @ts-ignore
             element.click()
           }
         }, selector)
@@ -620,7 +616,7 @@ export class TwitterScraperPage {
           clearInterval(intervalId)
           reject(new TwitterTimeoutError('Redirect timeout.'))
         })
-        .catch((error) => {
+        .catch((error: unknown) => {
           // ignore abort error
           if (abortController.signal.aborted) {
             return
@@ -628,14 +624,22 @@ export class TwitterScraperPage {
           throw error
         })
 
-      const intervalId = setInterval(async () => {
-        const url = await this.page.evaluate(() => document.location.href)
-        if (url === sourceUrl) {
-          return
-        }
-        clearInterval(intervalId)
-        abortController.abort()
-        resolve(url)
+      const intervalId = setInterval(() => {
+        this.page
+          .evaluate(() => document.location.href)
+          .then((url) => {
+            if (url === sourceUrl) {
+              return
+            }
+            clearInterval(intervalId)
+            abortController.abort()
+            resolve(url)
+          })
+          .catch((error: unknown) => {
+            clearInterval(intervalId)
+            abortController.abort()
+            reject(error as Error)
+          })
       }, 500)
     })
   }
@@ -667,15 +671,20 @@ export class TwitterScraperPage {
    * @param page Puppeteer ページインスタンス
    */
   private setRetentionResponse(page: Page): void {
-    page.on('response', async (response) => {
-      const details = await getResponseDetails(response)
-      if (!details) {
-        return
-      }
-      const { key, text } = details
+    page.on('response', (response) => {
+      getResponseDetails(response)
+        .then((details) => {
+          if (!details) {
+            return
+          }
+          const { key, text } = details
 
-      this.responses[key] = this.responses[key] || []
-      this.responses[key].push(text)
+          this.responses[key] = this.responses[key] ?? []
+          this.responses[key]?.push(text)
+        })
+        .catch((error: unknown) => {
+          console.error('Failed to get response details', error)
+        })
     })
   }
 }
@@ -749,8 +758,11 @@ export class TwitterScraper {
         .waitForSelector('input[autocomplete="username"]')
         .then((element) => element?.type(username, { delay: 100 }))
         .catch(
-          (error) =>
-            new TwitterOperationError('Username input not found.', error)
+          (error: unknown) =>
+            new TwitterOperationError(
+              'Username input not found.',
+              error as Error
+            )
         )
 
       // next button
@@ -758,7 +770,8 @@ export class TwitterScraper {
         .waitForSelector('div[role="button"]:not([data-testid])')
         .then((element) => element?.click())
         .catch(
-          (error) => new TwitterOperationError('Next button not found.', error)
+          (error: unknown) =>
+            new TwitterOperationError('Next button not found.', error as Error)
         )
 
       const password = this.options.password
@@ -767,8 +780,11 @@ export class TwitterScraper {
         .waitForSelector('input[autocomplete="current-password"]')
         .then((element) => element?.type(password, { delay: 100 }))
         .catch(
-          (error) =>
-            new TwitterOperationError('Password input not found.', error)
+          (error: unknown) =>
+            new TwitterOperationError(
+              'Password input not found.',
+              error as Error
+            )
         )
 
       // login button
@@ -778,7 +794,8 @@ export class TwitterScraper {
         )
         .then((element) => element?.click())
         .catch(
-          (error) => new TwitterOperationError('Login button not found.', error)
+          (error: unknown) =>
+            new TwitterOperationError('Login button not found.', error as Error)
         )
 
       // need auth code ?
@@ -800,8 +817,11 @@ export class TwitterScraper {
           )
           .then((element) => element?.click())
           .catch(
-            (error) =>
-              new TwitterOperationError('OTP next button not found.', error)
+            (error: unknown) =>
+              new TwitterOperationError(
+                'OTP next button not found.',
+                error as Error
+              )
           )
 
         await new Promise<void>((resolve, reject) => {
@@ -812,7 +832,7 @@ export class TwitterScraper {
             .then(() => {
               reject(new TwitterTimeoutError('Login timeout.'))
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
               // ignore abort error
               if (abortController.signal.aborted) {
                 return
@@ -864,9 +884,9 @@ export class TwitterScraper {
    * @returns Puppeteer ブラウザインスタンス
    */
   private async createBrowser(): Promise<Browser> {
-    const width = this.options.puppeteerOptions?.defaultViewport?.width || 600
+    const width = this.options.puppeteerOptions?.defaultViewport?.width ?? 600
     const height =
-      this.options.puppeteerOptions?.defaultViewport?.height || 1000
+      this.options.puppeteerOptions?.defaultViewport?.height ?? 1000
     const puppeteerArguments = [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -883,17 +903,14 @@ export class TwitterScraper {
     if (this.options.puppeteerOptions?.enableDevtools) {
       puppeteerArguments.push('--auto-open-devtools-for-tabs')
     }
-    if (
-      this.options.puppeteerOptions?.proxy &&
-      this.options.puppeteerOptions?.proxy.server
-    ) {
+    if (this.options.puppeteerOptions?.proxy?.server) {
       puppeteerArguments.push(
         '--proxy-server=' + this.options.puppeteerOptions.proxy.server
       )
     }
 
     const userDataDirectory =
-      this.options.puppeteerOptions?.userDataDirectory || '/data/userdata'
+      this.options.puppeteerOptions?.userDataDirectory ?? '/data/userdata'
     const browser = await puppeteer.launch({
       headless: false,
       executablePath: this.options.puppeteerOptions?.executablePath,
@@ -906,9 +923,16 @@ export class TwitterScraper {
       userDataDir: userDataDirectory,
     })
 
-    process.on('SIGINT', async () => {
-      await browser.close()
-      process.exit(0)
+    process.on('SIGINT', () => {
+      browser
+        .close()
+        .then(() => {
+          process.exit(0)
+        })
+        .catch((error: unknown) => {
+          console.error('Failed to close browser', error)
+          process.exit(1)
+        })
     })
 
     return browser
@@ -930,16 +954,15 @@ export class TwitterScraper {
     await page.evaluateOnNewDocument(() => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       Object.defineProperty(navigator, 'webdriver', () => {})
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line no-proto
+
+      // @ts-expect-error __proto__ is not defined in types
+      // eslint-disable-next-line no-proto, @typescript-eslint/no-unsafe-member-access
       delete navigator.__proto__.webdriver
     })
 
     if (
-      this.options.puppeteerOptions?.proxy &&
-      this.options.puppeteerOptions?.proxy.username &&
-      this.options.puppeteerOptions?.proxy.password
+      this.options.puppeteerOptions?.proxy?.username &&
+      this.options.puppeteerOptions.proxy.password
     ) {
       await page.authenticate({
         username: this.options.puppeteerOptions.proxy.username,
@@ -967,41 +990,53 @@ export class TwitterScraper {
     if (!this.responseDatabase.isInitialized()) {
       return
     }
-    page.on('response', async (response) => {
+    page.on('response', (response) => {
       if (!this.responseDatabase) {
         return
       }
-      const details = await getResponseDetails(response)
-      if (!details) {
-        return
-      }
-      const url = response.url()
-      const { type, name, method, text } = details
+      getResponseDetails(response)
+        .then((details) => {
+          if (!details) {
+            return
+          }
+          const url = response.url()
+          const { type, name, method, text } = details
 
-      const onResponse = this.options.debugOptions?.outputResponse?.onResponse
-      if (onResponse) {
-        onResponse(details)
-      }
+          const onResponse =
+            this.options.debugOptions?.outputResponse?.onResponse
+          if (onResponse) {
+            onResponse(details)
+          }
 
-      const request = response.request()
+          const request = response.request()
 
-      const responseType = this.isJSON(text) ? 'JSON' : 'TEXT'
+          const responseType = this.isJSON(text) ? 'JSON' : 'TEXT'
 
-      await this.responseDatabase
-        .addResponse({
-          endpointType: type,
-          method,
-          endpoint: name,
-          url,
-          requestHeaders: JSON.stringify(request.headers()),
-          requestBody: request.postData() || '',
-          responseType,
-          statusCode: response.status(),
-          responseHeaders: JSON.stringify(response.headers()),
-          responseBody: text,
+          this.responseDatabase
+            ?.addResponse({
+              endpointType: type,
+              method,
+              endpoint: name,
+              url,
+              requestHeaders: JSON.stringify(request.headers()),
+              requestBody: request.postData() ?? '',
+              responseType,
+              statusCode: response.status(),
+              responseHeaders: JSON.stringify(response.headers()),
+              responseBody: text,
+            })
+            .catch((error: unknown) => {
+              ResponseDatabase.printDebug(
+                'Failed to save response',
+                error as Error
+              )
+            })
         })
-        .catch((error) => {
-          ResponseDatabase.printDebug('Failed to save response', error as Error)
+        .catch((error: unknown) => {
+          ResponseDatabase.printDebug(
+            'Failed to get response details',
+            error as Error
+          )
         })
     })
   }
@@ -1053,7 +1088,7 @@ export class TwitterScraper {
     page: Page,
     selector: string,
     timeout = 3000
-  ): Promise<ElementHandle<Element> | null> {
+  ): Promise<ElementHandle | null> {
     try {
       return await page.waitForSelector(selector, { timeout })
     } catch {

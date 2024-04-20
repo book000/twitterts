@@ -1,5 +1,4 @@
-/* eslint-disable unicorn/prevent-abbreviations */
-import { join, parse } from 'node:path'
+import nodePath from 'node:path'
 import fs from 'node:fs'
 import { Logger } from '@book000/node-utils'
 import { ResponseDatabase } from './saving-responses'
@@ -58,7 +57,7 @@ class MigrateSavedResponse {
     parentDirectory: string,
     baseDirectories: string[] = []
   ): string[] {
-    const baseDirectory = join(parentDirectory, ...baseDirectories)
+    const baseDirectory = nodePath.join(parentDirectory, ...baseDirectories)
     return fs
       .readdirSync(baseDirectory, {
         withFileTypes: true,
@@ -78,11 +77,11 @@ class MigrateSavedResponse {
     parentDirectory: string,
     baseDirectories: string[] = []
   ): string[] {
-    const baseDirectory = join(parentDirectory, ...baseDirectories)
+    const baseDirectory = nodePath.join(parentDirectory, ...baseDirectories)
     return fs
       .readdirSync(baseDirectory, { withFileTypes: true })
       .filter((dirent) => dirent.isFile() && dirent.name.endsWith('.json'))
-      .map((dirent) => join(baseDirectory, dirent.name))
+      .map((dirent) => nodePath.join(baseDirectory, dirent.name))
   }
 
   getEndPointFolders(debugOutputDirectory: string): EndPointFolder[] {
@@ -124,7 +123,7 @@ class MigrateSavedResponse {
     const logger = Logger.configure('MigrateSavedResponse:run')
 
     const debugOutputDirectory =
-      process.env.DEBUG_OUTPUT_DIRECTORY || './data/responses'
+      process.env.DEBUG_OUTPUT_DIRECTORY ?? './data/responses'
 
     logger.info('📁 Directories')
     logger.info(`  📂 Debug output: ${debugOutputDirectory}`)
@@ -197,7 +196,7 @@ class MigrateSavedResponse {
           continue
         }
 
-        const { name: fileName } = parse(path)
+        const { name: fileName } = nodePath.parse(path)
         const unixTime = Number.parseInt(fileName)
         const createdAt = new Date(unixTime)
 
@@ -267,7 +266,7 @@ class MigrateSavedResponse {
         .values(bulkInsertData)
         .orIgnore()
         .execute()
-        .catch((error: Error) => {
+        .catch((error: unknown) => {
           logger.error('Failed to insert responses', error as Error)
         })
     })

@@ -1,4 +1,4 @@
-import { DataSource, MoreThan, MoreThanOrEqual } from 'typeorm'
+import { DataSource } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
 import { DBResponse } from './response-entity'
 import { TwitterTsError } from '../models/exceptions'
@@ -71,11 +71,11 @@ export class ResponseDatabase {
 
   constructor(options: ResponseDatabaseOptions = {}) {
     const configuration = {
-      DB_HOSTNAME: options.hostname || process.env.RESPONSE_DB_HOSTNAME,
-      DB_PORT: options.port || process.env.RESPONSE_DB_PORT,
-      DB_USERNAME: options.username || process.env.RESPONSE_DB_USERNAME,
-      DB_PASSWORD: options.password || process.env.RESPONSE_DB_PASSWORD,
-      DB_DATABASE: options.database || process.env.RESPONSE_DB_DATABASE,
+      DB_HOSTNAME: options.hostname ?? process.env.RESPONSE_DB_HOSTNAME,
+      DB_PORT: options.port ?? process.env.RESPONSE_DB_PORT,
+      DB_USERNAME: options.username ?? process.env.RESPONSE_DB_USERNAME,
+      DB_PASSWORD: options.password ?? process.env.RESPONSE_DB_PASSWORD,
+      DB_DATABASE: options.database ?? process.env.RESPONSE_DB_DATABASE,
     }
 
     // DB_PORTがintパースできない場合はエラー
@@ -146,7 +146,7 @@ export class ResponseDatabase {
     await this.dataSource.synchronize()
 
     // 現在のパーティションを取得する
-    this.partitions = await this.getPartitions()
+    this.partitions = await this.fetchPartitions()
 
     // パーティションの初期作成 (パーティションがひとつも設定されていない場合)
     if (this.partitions.length === 0) {
@@ -176,7 +176,7 @@ export class ResponseDatabase {
     response.url = options.url
     response.urlHash = crypto
       .createHash('sha256')
-      .update(options.url || '')
+      .update(options.url ?? '')
       .digest('hex')
     response.requestHeaders = options.requestHeaders
     response.requestBody = options.requestBody
@@ -185,8 +185,8 @@ export class ResponseDatabase {
     response.responseHeaders = options.responseHeaders
     response.responseBody = options.responseBody
     response.createdAt = now
-    return response.save().catch((error) => {
-      if (error.code === 'ER_DUP_ENTRY') {
+    return response.save().catch((error: unknown) => {
+      if ((error as { code: string }).code === 'ER_DUP_ENTRY') {
         // eslint-disable-next-line unicorn/no-useless-undefined
         return undefined
       }
@@ -194,7 +194,7 @@ export class ResponseDatabase {
   }
 
   /**
-   * レスポンスを取得する。但し直近90日間のレスポンスのみ取得可能
+   * レスポンスを取得する
    *
    * @param endpoint エンドポイントの情報。指定しない場合はすべてのレスポンスを取得する
    * @param rangeOptions 取得するレスポンスの範囲
@@ -208,7 +208,7 @@ export class ResponseDatabase {
     if (!this.dataSource.isInitialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
-    const options = rangeOptions || {}
+    const options = rangeOptions ?? {}
     const page = options.page
     const limit = options.limit
 
@@ -228,18 +228,9 @@ export class ResponseDatabase {
               method: endpoint.method,
               endpoint: endpoint.endpoint,
               statusCode: endpoint.statusCode,
-              // 90日前以降のレスポンスのみ取得する
-              createdAt: MoreThanOrEqual(
-                new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
-              ),
             },
           ]
-      : {
-          // 90日前以降のレスポンスのみ取得する
-          createdAt: MoreThanOrEqual(
-            new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
-          ),
-        }
+      : {}
     if (page === undefined || limit === undefined) {
       return DBResponse.find({ where: endpoints, order: { createdAt: 'DESC' } })
     }
@@ -259,7 +250,7 @@ export class ResponseDatabase {
   }
 
   /**
-   * レスポンスの数を取得する。但し直近90日間のレスポンスのみ取得可能
+   * レスポンスの数を取得する
    *
    * @param endpoint エンドポイントの情報。指定しない場合はすべてのレスポンスを取得する
    * @returns レスポンスの数
@@ -277,9 +268,6 @@ export class ResponseDatabase {
             method: v.method,
             endpoint: v.endpoint,
             statusCode: v.statusCode,
-            createdAt: MoreThanOrEqual(
-              new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
-            ),
           }))
         : [
             {
@@ -287,22 +275,14 @@ export class ResponseDatabase {
               method: endpoint.method,
               endpoint: endpoint.endpoint,
               statusCode: endpoint.statusCode,
-              createdAt: MoreThanOrEqual(
-                new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
-              ),
             },
           ]
-      : {
-          // 90日前以降のレスポンスのみ取得する
-          createdAt: MoreThanOrEqual(
-            new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)
-          ),
-        }
+      : {}
     return DBResponse.count({ where: endpoints })
   }
 
   /**
-   * エンドポイントを取得する。但し直近90日間のレスポンスのみ取得可能
+   * エンドポイントを取得する
    */
   public async getEndpoints(): Promise<ResponseEndPointWithCount[]> {
     if (!this.dataSource.isInitialized) {
@@ -312,7 +292,6 @@ export class ResponseDatabase {
     return DBResponse.createQueryBuilder()
       .where({
         responseType: 'JSON',
-        createdAt: MoreThan(new Date(Date.now() - 1000 * 60 * 60 * 24 * 90)),
       })
       .groupBy('endpoint_type, method, endpoint, status_code')
       .select([
@@ -330,15 +309,18 @@ export class ResponseDatabase {
    *
    * @returns パーティションの配列
    */
-  private async getPartitions(): Promise<string[]> {
+  private async fetchPartitions(): Promise<string[]> {
     if (!this.dataSource.isInitialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
-    const results = await this.dataSource.query(
+    const results: {
+      PARTITION_NAME: string | null
+    }[] = await this.dataSource.query(
       'SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = "responses"'
     )
+
     const partitions = results
-      .map((v: { PARTITION_NAME: string }) => {
+      .map((v) => {
         return v.PARTITION_NAME
       })
       .filter((v: string | null): v is string => v !== null)
@@ -367,8 +349,8 @@ export class ResponseDatabase {
           `TO_DAYS('${nextMonth.toISOString().slice(0, 10)}')` +
           `), PARTITION pmax VALUES LESS THAN MAXVALUE)`
       )
-      .catch((error) => {
-        if (error.code === 'ER_SAME_NAME_PARTITION') {
+      .catch((error: unknown) => {
+        if ((error as { code: string }).code === 'ER_SAME_NAME_PARTITION') {
           return
         }
         throw error
@@ -393,6 +375,27 @@ export class ResponseDatabase {
     this.partitions.push(partitionName)
   }
 
+  /**
+   * 日付パーティションを削除する。削除されるとデータは失われる
+   *
+   * @param partitionName パーティション名
+   */
+  public async dropPartition(partitionName: string): Promise<void> {
+    if (!this.dataSource.isInitialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    if (!this.partitions.includes(partitionName)) {
+      return
+    }
+    await this.dataSource.query(
+      `ALTER TABLE responses DROP PARTITION ${partitionName}`
+    )
+    this.partitions = this.partitions.filter((v) => v !== partitionName)
+  }
+
+  /**
+   * データソースをクローズする
+   */
   public async close(): Promise<void> {
     if (!this.dataSource.isInitialized) {
       return
@@ -402,6 +405,16 @@ export class ResponseDatabase {
 
   public isInitialized(): boolean {
     return this.dataSource.isInitialized
+  }
+
+  public getPartitions(): string[] {
+    return this.partitions
+  }
+
+  public convertPartitonNameToDate(partitionName: string): Date {
+    const year = Number.parseInt(partitionName.slice(1, 5))
+    const month = Number.parseInt(partitionName.slice(5, 7))
+    return new Date(year, month - 1)
   }
 
   /**
@@ -442,11 +455,10 @@ export class ResponseDatabase {
       return
     }
     if (error !== undefined) {
-      // eslint-disable-next-line no-console
       console.error(`[TwitterTs@ResponseDatabase] ${text}`, error)
       return
     }
-    // eslint-disable-next-line no-console
+
     console.debug(`[TwitterTs@ResponseDatabase] ${text}`)
   }
 }

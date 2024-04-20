@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 /** GraphQL POST PutClientEducationFlag 成功レスポンスモデル */
 
 export interface GraphQLPostPutClientEducationFlagSuccessResponse {

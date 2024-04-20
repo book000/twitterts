@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 /** GraphQL GET AuthenticatedUserTFLists 成功レスポンスモデル */
 
 export interface GraphQLGetAuthenticatedUserTFListsSuccessResponse {

@@ -72,9 +72,9 @@ class GenerateTypes {
   async run(): Promise<void> {
     const logger = Logger.configure('GenerateTypes:run')
 
-    const schemaDirectory = process.env.SCHEMA_DIRECTORY || './data/schema'
+    const schemaDirectory = process.env.SCHEMA_DIRECTORY ?? './data/schema'
     const typesDirectory =
-      process.env.TYPES_DIRECTORY || './src/models/responses'
+      process.env.TYPES_DIRECTORY ?? './src/models/responses'
     const isAllParallel = process.env.IS_ALL_PARALLEL === 'true'
     const isTypesGenerateParallel =
       isAllParallel || process.env.IS_TYPES_GENERATE_PARALLEL === 'true'
@@ -109,6 +109,22 @@ class GenerateTypes {
       logger.info('🚀 Sync responses database')
       await responseDatabase.sync()
 
+      // remove old partition data
+      logger.info('🚀 Remove old partition data')
+      const partitions = responseDatabase.getPartitions()
+      // 3か月よりも前のパーティションを削除
+      const date = new Date()
+      date.setMonth(date.getMonth() - 3)
+      const targetPartitions = partitions.filter(
+        (partition) =>
+          responseDatabase.convertPartitonNameToDate(partition) < date
+      )
+
+      for (const targetPartition of targetPartitions) {
+        logger.info(`🚀 Dropping partition...: ${targetPartition}`)
+        await responseDatabase.dropPartition(targetPartition)
+      }
+
       logger.info('🔍 Getting endpoints...')
       const rawEndpoints = await this.calculateTime('GetEndpoints', () =>
         responseDatabase.getEndpoints()
@@ -119,36 +135,30 @@ class GenerateTypes {
       logger.info(`🔍 Found ${endpoints.length} endpoints`)
 
       // msで計測
-      await this.calculateTime(
-        'TwitterTypesGenerator',
-        async () =>
-          await new TwitterTypesGenerator(responseDatabase).generateTypes({
-            directory: {
-              schema: schemaDirectory,
-              types: typesDirectory,
-            },
-            parallel: isTypesGenerateParallel,
-            limit: pageLimit,
-            endpoints,
-          })
-      )
+      await this.calculateTime('TwitterTypesGenerator', async () => {
+        await new TwitterTypesGenerator(responseDatabase).generateTypes({
+          directory: {
+            schema: schemaDirectory,
+            types: typesDirectory,
+          },
+          parallel: isTypesGenerateParallel,
+          limit: pageLimit,
+          endpoints,
+        })
+      })
 
-      await this.calculateTime(
-        'CustomTypesGenerator',
-        async () =>
-          await new CustomTypesGenerator(
-            responseDatabase,
-            schemaDirectory,
-            typesDirectory,
-            pageLimit
-          ).generate(isCustomTypeGenerateParallel)
-      )
+      await this.calculateTime('CustomTypesGenerator', async () => {
+        await new CustomTypesGenerator(
+          responseDatabase,
+          schemaDirectory,
+          typesDirectory,
+          pageLimit
+        ).generate(isCustomTypeGenerateParallel)
+      })
 
-      await this.calculateTime(
-        'EndPointTypeGenerator',
-        async () =>
-          await new EndPointTypeGenerator(typesDirectory).generate(endpoints)
-      )
+      await this.calculateTime('EndPointTypeGenerator', () => {
+        new EndPointTypeGenerator(typesDirectory).generate(endpoints)
+      })
 
       await responseDatabase.close()
       logger.info('🎉 All done!')

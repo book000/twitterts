@@ -1,6 +1,0 @@
-dist
-output
-node_modules
-data
-logs
-src/types/**/*.guard.ts

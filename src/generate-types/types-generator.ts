@@ -1,7 +1,7 @@
 import { Logger } from '@book000/node-utils'
 import { createCompoundSchema, mergeSchemas } from 'genson-js/dist'
 import { compile } from 'json-schema-to-typescript'
-import { dirname } from 'node:path'
+import path from 'node:path'
 import fs from 'node:fs'
 import { Utils } from './utils'
 import {
@@ -129,13 +129,16 @@ export class TwitterTypesGenerator {
         .filter((response) => response.responseType === 'JSON')
         .map((response) => response.responseBody)
         .filter((body) => body.length > 0)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         .map((body) => JSON.parse(body))
 
       const responseBodyErrors = responseBodys
         .filter(
           (responseBody) =>
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             'errors' in responseBody && responseBody.errors.length > 0
         )
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
         .map((responseBody) => responseBody.errors[0].message)
       if (!options.ignoreError && responseBodyErrors.length > 0) {
         const uniqueErrors = responseBodyErrors.filter(
@@ -147,6 +150,7 @@ export class TwitterTypesGenerator {
 
         responseBodys = responseBodys.filter(
           (responseBody) =>
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             !('errors' in responseBody && responseBody.errors.length > 0)
         )
       }
@@ -159,10 +163,10 @@ export class TwitterTypesGenerator {
       return
     }
 
-    fs.mkdirSync(dirname(options.path.schema), { recursive: true })
+    fs.mkdirSync(path.dirname(options.path.schema), { recursive: true })
     fs.writeFileSync(options.path.schema, JSON.stringify(schema, null, 2))
 
-    fs.mkdirSync(dirname(options.path.types), { recursive: true })
+    fs.mkdirSync(path.dirname(options.path.types), { recursive: true })
     const types = await compile(
       schema,
       options.name,

@@ -30,17 +30,32 @@ async function main(): Promise<void> {
     },
   })
 
-  process.on('SIGINT', async () => {
-    await twitter.close()
-    process.exit()
+  process.on('SIGINT', () => {
+    twitter
+      .close()
+      .then(() => {
+        process.exit()
+      })
+      .catch((error: unknown) => {
+        console.error(error)
+        process.exit()
+      })
   })
 
   const browser = twitter.scraper.getBrowser()
   if (browser) {
-    browser.on('disconnected', async () => {
-      await twitter.close()
-      // eslint-disable-next-line unicorn/no-process-exit
-      process.exit()
+    browser.on('disconnected', () => {
+      twitter
+        .close()
+        .then(() => {
+          // eslint-disable-next-line unicorn/no-process-exit
+          process.exit()
+        })
+        .catch((error: unknown) => {
+          console.error(error)
+          // eslint-disable-next-line unicorn/no-process-exit
+          process.exit()
+        })
     })
   }
 }

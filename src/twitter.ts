@@ -8,7 +8,6 @@ import {
   TwitterOperationError,
   TwitterTimeoutError,
   TwitterTsError,
-  UserNotFoundError,
 } from './models/exceptions'
 import {
   GetUserByScreenNameOptions,
@@ -173,9 +172,6 @@ export class Twitter {
     if (this.isErrorResponse(response)) {
       throw new TwitterOperationError(response.errors[0].message)
     }
-    if (!response.data.user.result) {
-      throw new UserNotFoundError()
-    }
 
     return response
   }
@@ -207,6 +203,7 @@ export class Twitter {
   ): Promise<CustomTweetObject[]> {
     // おすすめタブ: HomeTimeline
     // フォロー中タブ: HomeLatestTimeline
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!options.timelineType) {
       throw new IllegalArgumentError('timelineType is required')
     }
@@ -224,7 +221,7 @@ export class Twitter {
     const endpointName = endpointNames[options.timelineType]
 
     const url = 'https://twitter.com/home'
-    const limit = options.limit || 20
+    const limit = options.limit ?? 20
 
     const page = await this.scraper.getScraperPage()
     const results = []
@@ -249,7 +246,7 @@ export class Twitter {
         }
         const getResponse = page.shiftResponse('GET', 'GRAPHQL', endpointName)
         const postResponse = page.shiftResponse('POST', 'GRAPHQL', endpointName)
-        const response = (getResponse ||
+        const response = (getResponse ??
           postResponse) as CustomGraphQLTimelineSuccessResponse | null
         if (!response) {
           await page.scrollToBottom()
@@ -308,8 +305,8 @@ export class Twitter {
     if (!options.query) {
       throw new IllegalArgumentError('query is required')
     }
-    const searchType = options.searchType || SearchType.POPULAR
-    const limit = options.limit || 20
+    const searchType = options.searchType ?? SearchType.POPULAR
+    const limit = options.limit ?? 20
     const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
     const url = new URL(`https://twitter.com/search`)
@@ -375,7 +372,7 @@ export class Twitter {
       throw new IllegalArgumentError('screenName must not include "/"')
     }
 
-    const limit = options.limit || 20
+    const limit = options.limit ?? 20
     const url = `https://twitter.com/${options.screenName}`
     const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
@@ -435,7 +432,7 @@ export class Twitter {
       throw new IllegalArgumentError('screenName must not include "/"')
     }
 
-    const limit = options.limit || 20
+    const limit = options.limit ?? 20
     const url = `https://twitter.com/${options.screenName}/likes`
     const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
@@ -518,9 +515,6 @@ export class Twitter {
         'TweetDetail',
         30_000
       )
-      if (!responseDetail) {
-        throw new TwitterOperationError('Failed to get tweet detail')
-      }
 
       if (this.isErrorResponse(responseDetail)) {
         throw new TwitterOperationError(responseDetail.errors[0].message)
@@ -580,16 +574,15 @@ export class Twitter {
     // ツイートページを閉じる
     try {
       const url = `https://twitter.com/i/status/${options.tweetId}`
-      const responseDetail = await page.waitSingleResponse(
+
+      // ツイート情報を取得できるまで待つ
+      await page.waitSingleResponse(
         url,
         'GET',
         'GRAPHQL',
         'TweetDetail',
         30_000
       )
-      if (!responseDetail) {
-        throw new TwitterOperationError('Failed to get tweet detail')
-      }
 
       // いいねボタンが表示されるまで待つ
       const likeButtonSelector =
@@ -632,9 +625,6 @@ export class Twitter {
 
       // いいね完了まで待つ
       const responseFavorite = await responseFavoritePromise
-      if (!responseFavorite) {
-        throw new TwitterOperationError('Failed to favorite tweet')
-      }
 
       // ツイートページを閉じる
       await page.close()
@@ -675,16 +665,15 @@ export class Twitter {
     // ツイートページを閉じる
     try {
       const url = `https://twitter.com/i/status/${options.tweetId}`
-      const responseDetail = await page.waitSingleResponse(
+
+      // ツイート情報が取得できるまで待つ
+      await page.waitSingleResponse(
         url,
         'GET',
         'GRAPHQL',
         'TweetDetail',
         30_000
       )
-      if (!responseDetail) {
-        throw new TwitterOperationError('Failed to get tweet detail')
-      }
 
       // いいねボタンが表示されるまで待つ
       const likeButtonSelector =
@@ -727,9 +716,6 @@ export class Twitter {
 
       // いいね完了まで待つ
       const responseFavorite = await responseFavoritePromise
-      if (!responseFavorite) {
-        throw new TwitterOperationError('Failed to favorite tweet')
-      }
 
       // ツイートページを閉じる
       await page.close()
@@ -882,14 +868,15 @@ export class Twitter {
    * @returns エラーレスポンスかどうか
    */
   public isErrorResponse(response: any): response is { errors: any[] } {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
     return response.errors && response.errors.length > 0
   }
 
-  private async getUserStatus(page: Page): Promise<string | void> {
+  private async getUserStatus(page: Page): Promise<string | undefined> {
     // 1234567890-follow
     // 1234567890-unblock
     const testId = await page.evaluate(() => {
-      return new Promise<string | void>((resolve) => {
+      return new Promise<string | undefined>((resolve) => {
         const interval = setInterval(() => {
           const element = document.querySelector<HTMLElement>(
             'div[data-testid="placementTracking"] div[role="button"]'
@@ -901,7 +888,8 @@ export class Twitter {
         setTimeout(
           () => {
             clearInterval(interval)
-            resolve()
+            // eslint-disable-next-line unicorn/no-useless-undefined
+            resolve(undefined)
           },
           1000 * 60 * 2
         ) // 2分

@@ -1,8 +1,6 @@
 import { ObjectConverter } from '../converter'
 import { BaseParser } from './base'
 import { Status } from 'twitter-d'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Twitter } from '../twitter'
 import { CustomUserTweetEntry } from '../models/responses/custom/custom-user-tweet-entry'
 import { GraphQLGetUserTweetsResponse } from '../models/responses/endpoints'
 import { GraphQLGetUserTweetsErrorResponse } from '../models/responses/graphql/get/user-tweets-error'
@@ -65,6 +63,7 @@ export class UserTweetsParser extends BaseParser<'UserTweets'> {
   private isErrorResponse(
     response: GraphQLGetUserTweetsResponse
   ): response is GraphQLGetUserTweetsErrorResponse {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return 'errors' in response && response.errors && response.errors.length > 0
   }
 }

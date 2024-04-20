@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 /** レスポンスユーザーレガシーオブジェクト */
 
 export interface CustomUserLegacyObject {
