@@ -15,8 +15,8 @@ importers:
         specifier: 0.0.8
         version: 0.0.8
       json-schema-to-typescript:
-        specifier: 14.0.0
-        version: 14.0.0
+        specifier: 14.0.4
+        version: 14.0.4
       mysql2:
         specifier: 3.9.7
         version: 3.9.7
@@ -663,10 +663,6 @@ packages:
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
-
-  '@types/prettier@3.0.0':
-    resolution: {integrity: sha512-mFMBfMOz8QxhYVbuINtswBp9VL2b4Y0QqYHwqLz3YbgtfAcat2Dl6Y1o4e22S/OVE6Ebl9m7wWiMT2lSbAs1wA==}
-    deprecated: This is a stub types definition. prettier provides its own type definitions, so you do not need this installed.
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -2157,8 +2153,8 @@ packages:
   json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
 
-  json-schema-to-typescript@14.0.0:
-    resolution: {integrity: sha512-y/Pj93Ggu69LyRPxqpe16t8LA/5ZyJVoqmUf+o+2cBG33dH/GsDn5oDZD3EiOTkHXjVuZg4qWnWzTtS2LcoeiA==}
+  json-schema-to-typescript@14.0.4:
+    resolution: {integrity: sha512-covPOp3hrbD+oEcMvDxP5Rh6xNZj7lOTZkXAeQoDyu1PuEl1A6oRZ3Sy05HN11vXXmdJ6gLh5P3Qz0mgMPTzzw==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
@@ -4057,10 +4053,6 @@ snapshots:
       undici-types: 5.26.5
 
   '@types/normalize-package-data@2.4.4': {}
-
-  '@types/prettier@3.0.0':
-    dependencies:
-      prettier: 3.2.5
 
   '@types/semver@7.5.8': {}
 
@@ -5991,12 +5983,11 @@ snapshots:
 
   json-parse-even-better-errors@2.3.1: {}
 
-  json-schema-to-typescript@14.0.0:
+  json-schema-to-typescript@14.0.4:
     dependencies:
       '@apidevtools/json-schema-ref-parser': 11.6.1
       '@types/json-schema': 7.0.15
       '@types/lodash': 4.17.0
-      '@types/prettier': 3.0.0
       cli-color: 2.0.4
       glob: 10.3.12
       is-glob: 4.0.3
