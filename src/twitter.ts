@@ -586,9 +586,9 @@ export class Twitter {
 
       // いいねボタンが表示されるまで待つ
       const likeButtonSelector =
-        'article[tabindex="-1"] div[role="button"][data-testid="like"]'
+        'article[tabindex="-1"] button[role="button"][data-testid="like"]'
       const unlikeButtonSelector =
-        'article[tabindex="-1"] div[role="button"][data-testid="unlike"]'
+        'article[tabindex="-1"] button[role="button"][data-testid="unlike"]'
       const likeButton = await page.page.waitForSelector(
         `${likeButtonSelector}, ${unlikeButtonSelector}`,
         {
@@ -677,9 +677,9 @@ export class Twitter {
 
       // いいねボタンが表示されるまで待つ
       const likeButtonSelector =
-        'article[tabindex="-1"] div[role="button"][data-testid="like"]'
+        'article[tabindex="-1"] button[role="button"][data-testid="like"]'
       const unlikeButtonSelector =
-        'article[tabindex="-1"] div[role="button"][data-testid="unlike"]'
+        'article[tabindex="-1"] button[role="button"][data-testid="unlike"]'
       const unlikeButton = await page.page.waitForSelector(
         `${likeButtonSelector}, ${unlikeButtonSelector}`,
         {
@@ -759,7 +759,7 @@ export class Twitter {
 
       // プロフィールの表示制限
       const viewProfileButton = await page.page.$(
-        'div[data-testid="emptyState"] div[role="button"]'
+        'button[data-testid="emptyState"] div[role="button"]'
       )
       if (viewProfileButton) {
         await viewProfileButton.click()
@@ -776,12 +776,12 @@ export class Twitter {
         throw new AlreadyBlockedError()
       }
 
-      await page.waitAndClick('div[data-testid="userActions"]', true)
+      await page.waitAndClick('button[data-testid="userActions"]', true)
       await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick('div[role="menuitem"][data-testid="block"]', true)
       await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick(
-        'div[data-testid="confirmationSheetConfirm"]',
+        'button[data-testid="confirmationSheetConfirm"]',
         true
       )
       await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -833,12 +833,12 @@ export class Twitter {
         throw new NotBlockedError()
       }
 
-      await page.waitAndClick('div[data-testid="userActions"]', true)
+      await page.waitAndClick('button[data-testid="userActions"]', true)
       await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick('div[role="menuitem"][data-testid="block"]', true)
       await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick(
-        'div[data-testid="confirmationSheetConfirm"]',
+        'button[data-testid="confirmationSheetConfirm"]',
         true
       )
       await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -879,7 +879,7 @@ export class Twitter {
       return new Promise<string | undefined>((resolve) => {
         const interval = setInterval(() => {
           const element = document.querySelector<HTMLElement>(
-            'div[data-testid="placementTracking"] div[role="button"]'
+            'div[data-testid="placementTracking"] button[role="button"]'
           )
           if (element) {
             resolve(element.dataset.testid?.split('-')[1])

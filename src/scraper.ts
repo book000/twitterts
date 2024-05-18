@@ -767,7 +767,7 @@ export class TwitterScraper {
 
       // next button
       await loginPage
-        .waitForSelector('div[role="button"]:not([data-testid])')
+        .waitForSelector('div.css-175oi2r button.r-13qz1uu')
         .then((element) => element?.click())
         .catch(
           (error: unknown) =>
@@ -790,7 +790,7 @@ export class TwitterScraper {
       // login button
       await loginPage
         .waitForSelector(
-          'div[role="button"][data-testid="LoginForm_Login_Button"]'
+          'button[role="button"][data-testid="LoginForm_Login_Button"]'
         )
         .then((element) => element?.click())
         .catch(
@@ -813,7 +813,7 @@ export class TwitterScraper {
         await authCodeInput.type(authCode, { delay: 100 })
         await loginPage
           .waitForSelector(
-            'div[role="button"][data-testid="ocfEnterTextNextButton"]'
+            'button[role="button"][data-testid="ocfEnterTextNextButton"]'
           )
           .then((element) => element?.click())
           .catch(
