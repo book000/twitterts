@@ -82,7 +82,7 @@ export class Twitter {
     let response
     try {
       response = await page.waitSingleResponse(
-        `https://twitter.com/${options.screenName}`,
+        `https://x.com/${options.screenName}`,
         'GET',
         'GRAPHQL',
         'UserByScreenName'
@@ -155,7 +155,7 @@ export class Twitter {
     try {
       // UserByRestIdだとログインユーザー自分自身の場合に取得できない。
       response = await page.waitSingleResponse(
-        `https://twitter.com/intent/user?user_id=${options.userId}`,
+        `https://x.com/intent/user?user_id=${options.userId}`,
         'GET',
         'GRAPHQL',
         'UserByScreenName'
@@ -220,7 +220,7 @@ export class Twitter {
 
     const endpointName = endpointNames[options.timelineType]
 
-    const url = 'https://twitter.com/home'
+    const url = 'https://x.com/home'
     const limit = options.limit ?? 20
 
     const page = await this.scraper.getScraperPage()
@@ -309,7 +309,7 @@ export class Twitter {
     const limit = options.limit ?? 20
     const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
-    const url = new URL(`https://twitter.com/search`)
+    const url = new URL(`https://x.com/search`)
     url.searchParams.set('q', options.query)
     if (searchType) {
       url.searchParams.set('f', searchType)
@@ -373,7 +373,7 @@ export class Twitter {
     }
 
     const limit = options.limit ?? 20
-    const url = `https://twitter.com/${options.screenName}`
+    const url = `https://x.com/${options.screenName}`
     const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
     const page = await this.scraper.getScraperPage()
@@ -433,7 +433,7 @@ export class Twitter {
     }
 
     const limit = options.limit ?? 20
-    const url = `https://twitter.com/${options.screenName}/likes`
+    const url = `https://x.com/${options.screenName}/likes`
     const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
     const page = await this.scraper.getScraperPage()
@@ -507,7 +507,7 @@ export class Twitter {
     const page = await this.scraper.getScraperPage()
 
     try {
-      const url = `https://twitter.com/i/status/${options.tweetId}`
+      const url = `https://x.com/i/status/${options.tweetId}`
       const responseDetail = await page.waitSingleResponse(
         url,
         'GET',
@@ -573,7 +573,7 @@ export class Twitter {
     // -> いいね完了しなかった場合は TwitterOperationError を投げる
     // ツイートページを閉じる
     try {
-      const url = `https://twitter.com/i/status/${options.tweetId}`
+      const url = `https://x.com/i/status/${options.tweetId}`
 
       // ツイート情報を取得できるまで待つ
       await page.waitSingleResponse(
@@ -664,7 +664,7 @@ export class Twitter {
     // -> いいね完了しなかった場合は TwitterOperationError を投げる
     // ツイートページを閉じる
     try {
-      const url = `https://twitter.com/i/status/${options.tweetId}`
+      const url = `https://x.com/i/status/${options.tweetId}`
 
       // ツイート情報が取得できるまで待つ
       await page.waitSingleResponse(
@@ -741,8 +741,8 @@ export class Twitter {
     }
 
     const url = options.screenName
-      ? `https://twitter.com/${options.screenName}`
-      : `https://twitter.com/i/user/${options.userId}`
+      ? `https://x.com/${options.screenName}`
+      : `https://x.com/i/user/${options.userId}`
 
     const page = await this.scraper.getScraperPage()
 
@@ -807,8 +807,8 @@ export class Twitter {
     }
 
     const url = options.screenName
-      ? `https://twitter.com/${options.screenName}`
-      : `https://twitter.com/i/user/${options.userId}`
+      ? `https://x.com/${options.screenName}`
+      : `https://x.com/i/user/${options.userId}`
 
     const page = await this.scraper.getScraperPage()
     await page.goto(url)
