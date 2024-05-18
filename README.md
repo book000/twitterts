@@ -1,6 +1,6 @@
 # 🕊 twitterts
 
-[Twitter](https://twitter.com) Unofficial Scraping API Library for TypeScript
+[Twitter](https://x.com) Unofficial Scraping API Library for TypeScript
 
 ## 🚀 Install
 
@@ -26,7 +26,7 @@ pnpm add @book000/twitterts
 
 ## ✨ Features
 
-- It uses Puppeteer to capture traffic that occurs on `twitter.com`.
+- It uses Puppeteer to capture traffic that occurs on `x.com`.
 - The data will be retrieved using a Twitter account. A valid Twitter account is required.
 
 ## 📚 API Document

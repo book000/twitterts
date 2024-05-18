@@ -251,23 +251,23 @@ interface TargetUrl {
 const targetUrls: TargetUrl[] = [
   {
     type: 'GRAPHQL',
-    hostname: 'api.twitter.com',
+    hostname: 'api.x.com',
     pathnames: ['graphql', '*', '<NAME>'],
   },
   {
     type: 'GRAPHQL',
-    hostname: 'twitter.com',
+    hostname: 'x.com',
     pathnames: ['i', 'api', 'graphql', '*', '<NAME>'],
   },
   {
     type: 'REST',
-    hostname: 'twitter.com',
+    hostname: 'x.com',
     pathnames: ['i', 'api', '1.1', '<NAME*>'],
     overrideName: 'V1<NAME>',
   },
   {
     type: 'REST',
-    hostname: 'twitter.com',
+    hostname: 'x.com',
     pathnames: ['i', 'api', '2', '<NAME*>'],
     overrideName: 'V2<NAME>',
   },
@@ -740,7 +740,7 @@ export class TwitterScraper {
     // ログイン処理
     const loginPage = await this.newPage()
 
-    await loginPage.goto('https://twitter.com', {
+    await loginPage.goto('https://x.com', {
       waitUntil: ['load', 'networkidle2'],
     })
     await setTimeout(3000)
@@ -748,8 +748,8 @@ export class TwitterScraper {
     const href = await loginPage.evaluate(() => {
       return document.location.href
     })
-    if (href !== 'https://twitter.com/home') {
-      await loginPage.goto('https://twitter.com/i/flow/login', {
+    if (href !== 'https://x.com/home') {
+      await loginPage.goto('https://x.com/i/flow/login', {
         waitUntil: ['load', 'networkidle2'],
       })
 
@@ -767,7 +767,7 @@ export class TwitterScraper {
 
       // next button
       await loginPage
-        .waitForSelector('div[role="button"]:not([data-testid])')
+        .waitForSelector('div.css-175oi2r button.r-13qz1uu')
         .then((element) => element?.click())
         .catch(
           (error: unknown) =>
@@ -790,7 +790,7 @@ export class TwitterScraper {
       // login button
       await loginPage
         .waitForSelector(
-          'div[role="button"][data-testid="LoginForm_Login_Button"]'
+          'button[role="button"][data-testid="LoginForm_Login_Button"]'
         )
         .then((element) => element?.click())
         .catch(
@@ -813,7 +813,7 @@ export class TwitterScraper {
         await authCodeInput.type(authCode, { delay: 100 })
         await loginPage
           .waitForSelector(
-            'div[role="button"][data-testid="ocfEnterTextNextButton"]'
+            'button[role="button"][data-testid="ocfEnterTextNextButton"]'
           )
           .then((element) => element?.click())
           .catch(
@@ -840,7 +840,7 @@ export class TwitterScraper {
               throw error
             })
           const interval = setInterval(() => {
-            if (loginPage.url() === 'https://twitter.com/home') {
+            if (loginPage.url() === 'https://x.com/home') {
               clearInterval(interval)
               abortController.abort()
               resolve()

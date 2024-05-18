@@ -82,7 +82,7 @@ export class Twitter {
     let response
     try {
       response = await page.waitSingleResponse(
-        `https://twitter.com/${options.screenName}`,
+        `https://x.com/${options.screenName}`,
         'GET',
         'GRAPHQL',
         'UserByScreenName'
@@ -155,7 +155,7 @@ export class Twitter {
     try {
       // UserByRestIdだとログインユーザー自分自身の場合に取得できない。
       response = await page.waitSingleResponse(
-        `https://twitter.com/intent/user?user_id=${options.userId}`,
+        `https://x.com/intent/user?user_id=${options.userId}`,
         'GET',
         'GRAPHQL',
         'UserByScreenName'
@@ -220,7 +220,7 @@ export class Twitter {
 
     const endpointName = endpointNames[options.timelineType]
 
-    const url = 'https://twitter.com/home'
+    const url = 'https://x.com/home'
     const limit = options.limit ?? 20
 
     const page = await this.scraper.getScraperPage()
@@ -309,7 +309,7 @@ export class Twitter {
     const limit = options.limit ?? 20
     const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
-    const url = new URL(`https://twitter.com/search`)
+    const url = new URL(`https://x.com/search`)
     url.searchParams.set('q', options.query)
     if (searchType) {
       url.searchParams.set('f', searchType)
@@ -373,7 +373,7 @@ export class Twitter {
     }
 
     const limit = options.limit ?? 20
-    const url = `https://twitter.com/${options.screenName}`
+    const url = `https://x.com/${options.screenName}`
     const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
     const page = await this.scraper.getScraperPage()
@@ -433,7 +433,7 @@ export class Twitter {
     }
 
     const limit = options.limit ?? 20
-    const url = `https://twitter.com/${options.screenName}/likes`
+    const url = `https://x.com/${options.screenName}/likes`
     const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
 
     const page = await this.scraper.getScraperPage()
@@ -507,7 +507,7 @@ export class Twitter {
     const page = await this.scraper.getScraperPage()
 
     try {
-      const url = `https://twitter.com/i/status/${options.tweetId}`
+      const url = `https://x.com/i/status/${options.tweetId}`
       const responseDetail = await page.waitSingleResponse(
         url,
         'GET',
@@ -573,7 +573,7 @@ export class Twitter {
     // -> いいね完了しなかった場合は TwitterOperationError を投げる
     // ツイートページを閉じる
     try {
-      const url = `https://twitter.com/i/status/${options.tweetId}`
+      const url = `https://x.com/i/status/${options.tweetId}`
 
       // ツイート情報を取得できるまで待つ
       await page.waitSingleResponse(
@@ -586,9 +586,9 @@ export class Twitter {
 
       // いいねボタンが表示されるまで待つ
       const likeButtonSelector =
-        'article[tabindex="-1"] div[role="button"][data-testid="like"]'
+        'article[tabindex="-1"] button[role="button"][data-testid="like"]'
       const unlikeButtonSelector =
-        'article[tabindex="-1"] div[role="button"][data-testid="unlike"]'
+        'article[tabindex="-1"] button[role="button"][data-testid="unlike"]'
       const likeButton = await page.page.waitForSelector(
         `${likeButtonSelector}, ${unlikeButtonSelector}`,
         {
@@ -664,7 +664,7 @@ export class Twitter {
     // -> いいね完了しなかった場合は TwitterOperationError を投げる
     // ツイートページを閉じる
     try {
-      const url = `https://twitter.com/i/status/${options.tweetId}`
+      const url = `https://x.com/i/status/${options.tweetId}`
 
       // ツイート情報が取得できるまで待つ
       await page.waitSingleResponse(
@@ -677,9 +677,9 @@ export class Twitter {
 
       // いいねボタンが表示されるまで待つ
       const likeButtonSelector =
-        'article[tabindex="-1"] div[role="button"][data-testid="like"]'
+        'article[tabindex="-1"] button[role="button"][data-testid="like"]'
       const unlikeButtonSelector =
-        'article[tabindex="-1"] div[role="button"][data-testid="unlike"]'
+        'article[tabindex="-1"] button[role="button"][data-testid="unlike"]'
       const unlikeButton = await page.page.waitForSelector(
         `${likeButtonSelector}, ${unlikeButtonSelector}`,
         {
@@ -741,8 +741,8 @@ export class Twitter {
     }
 
     const url = options.screenName
-      ? `https://twitter.com/${options.screenName}`
-      : `https://twitter.com/i/user/${options.userId}`
+      ? `https://x.com/${options.screenName}`
+      : `https://x.com/i/user/${options.userId}`
 
     const page = await this.scraper.getScraperPage()
 
@@ -759,7 +759,7 @@ export class Twitter {
 
       // プロフィールの表示制限
       const viewProfileButton = await page.page.$(
-        'div[data-testid="emptyState"] div[role="button"]'
+        'button[data-testid="emptyState"] div[role="button"]'
       )
       if (viewProfileButton) {
         await viewProfileButton.click()
@@ -776,12 +776,12 @@ export class Twitter {
         throw new AlreadyBlockedError()
       }
 
-      await page.waitAndClick('div[data-testid="userActions"]', true)
+      await page.waitAndClick('button[data-testid="userActions"]', true)
       await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick('div[role="menuitem"][data-testid="block"]', true)
       await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick(
-        'div[data-testid="confirmationSheetConfirm"]',
+        'button[data-testid="confirmationSheetConfirm"]',
         true
       )
       await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -807,8 +807,8 @@ export class Twitter {
     }
 
     const url = options.screenName
-      ? `https://twitter.com/${options.screenName}`
-      : `https://twitter.com/i/user/${options.userId}`
+      ? `https://x.com/${options.screenName}`
+      : `https://x.com/i/user/${options.userId}`
 
     const page = await this.scraper.getScraperPage()
     await page.goto(url)
@@ -833,12 +833,12 @@ export class Twitter {
         throw new NotBlockedError()
       }
 
-      await page.waitAndClick('div[data-testid="userActions"]', true)
+      await page.waitAndClick('button[data-testid="userActions"]', true)
       await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick('div[role="menuitem"][data-testid="block"]', true)
       await new Promise((resolve) => setTimeout(resolve, 500))
       await page.waitAndClick(
-        'div[data-testid="confirmationSheetConfirm"]',
+        'button[data-testid="confirmationSheetConfirm"]',
         true
       )
       await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -879,7 +879,7 @@ export class Twitter {
       return new Promise<string | undefined>((resolve) => {
         const interval = setInterval(() => {
           const element = document.querySelector<HTMLElement>(
-            'div[data-testid="placementTracking"] div[role="button"]'
+            'div[data-testid="placementTracking"] button[role="button"]'
           )
           if (element) {
             resolve(element.dataset.testid?.split('-')[1])
