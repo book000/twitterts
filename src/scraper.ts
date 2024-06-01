@@ -801,7 +801,7 @@ export class TwitterScraper {
       // need auth code ?
       const authCodeInput = await this.getElement(
         loginPage,
-        'input[data-testid="ocfEnterTextTextInput"]',
+        'input[data-testid="ocfEnterTextTextInput"][inputmode="numeric"]',
         3000
       )
       if (authCodeInput) {
