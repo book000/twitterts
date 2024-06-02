@@ -46,8 +46,8 @@ importers:
         specifier: 20.13.0
         version: 20.13.0
       ctix:
-        specifier: 2.4.4
-        version: 2.4.4
+        specifier: 2.4.5
+        version: 2.4.5
       eslint:
         specifier: 9.4.0
         version: 9.4.0
@@ -1117,8 +1117,8 @@ packages:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
 
-  ctix@2.4.4:
-    resolution: {integrity: sha512-IXLSnT08b+DClhnEKJxWmdq5Km4TY/UoAvLxsUHNa1XcjzzH0c4CHP7VkKr4l9JLY6doKDZn8JZXYJCTu+mHLw==}
+  ctix@2.4.5:
+    resolution: {integrity: sha512-i0JGaiOqi/hWiEXeJB97mrbidyG7ScEwagDB/7K3P7fRVJpPuHLf3v6R0+xNPJJMFuyIBSTW9dvGjhnDLgn2pQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -4601,7 +4601,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  ctix@2.4.4:
+  ctix@2.4.5:
     dependencies:
       chalk: 4.1.2
       change-case: 4.1.2

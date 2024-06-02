@@ -49,7 +49,7 @@
     "@book000/eslint-config": "1.6.28",
     "@types/jest": "29.5.12",
     "@types/node": "20.13.0",
-    "ctix": "2.4.4",
+    "ctix": "2.4.5",
     "eslint": "9.4.0",
     "eslint-config-standard": "17.1.0",
     "eslint-plugin-import": "2.29.1",
