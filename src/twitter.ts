@@ -14,7 +14,6 @@ import {
   LikeTweetOptions,
   SearchTweetsOptions,
   SearchType,
-  GetUserLikeTweetsOptions,
   GetUserTweetsOptions,
   GetScreenNameByUserIdOptions,
   GetUserByUserIdOptions,
@@ -26,7 +25,6 @@ import {
   GetTweetOptions,
 } from './options'
 import { SearchTimelineParser } from './parser/search-timeline'
-import { UserLikeTweetsParser } from './parser/user-like-tweets'
 import { UserTweetsParser } from './parser/user-tweets'
 import { TwitterScraper, TwitterScraperOptions } from './scraper'
 import { ObjectConverter } from './converter'
@@ -393,70 +391,6 @@ export class Twitter {
           continue
         }
         const parser = new UserTweetsParser(response, isIncludingPromotedTweets)
-        const tweets = parser.getTweets()
-        if (tweets.length === 0) {
-          break
-        }
-        results.push(...tweets)
-        if (results.length >= limit) {
-          break
-        }
-        lastResponseAt = Date.now()
-      }
-    } catch (error) {
-      if (error instanceof TwitterTsError) {
-        throw error
-      }
-
-      throw new TwitterOperationError((error as Error).message)
-    } finally {
-      await page.close()
-    }
-
-    return results
-  }
-
-  /**
-   * ユーザーのいいねしたツイートを取得する
-   *
-   * @param options ユーザーいいねツイート取得オプション
-   * @returns ユーザーのツイート
-   */
-  public async getUserLikeTweets(
-    options: GetUserLikeTweetsOptions
-  ): Promise<Status[]> {
-    if (!options.screenName) {
-      throw new IllegalArgumentError('screenName is required')
-    }
-    if (options.screenName.includes('/')) {
-      throw new IllegalArgumentError('screenName must not include "/"')
-    }
-
-    const limit = options.limit ?? 20
-    const url = `https://x.com/${options.screenName}/likes`
-    const isIncludingPromotedTweets = options.isIncludingPromotedTweets ?? false
-
-    const page = await this.scraper.getScraperPage()
-    const results = []
-
-    try {
-      await page.goto(url)
-
-      let lastResponseAt = Date.now()
-      while (true) {
-        if (Date.now() - lastResponseAt > 1000 * 30) {
-          // 30秒以上レスポンスがない場合はタイムアウトとして終了
-          break
-        }
-        const response = page.shiftResponse('GET', 'GRAPHQL', 'Likes')
-        if (!response) {
-          await page.scrollToBottom()
-          continue
-        }
-        const parser = new UserLikeTweetsParser(
-          response,
-          isIncludingPromotedTweets
-        )
         const tweets = parser.getTweets()
         if (tweets.length === 0) {
           break
