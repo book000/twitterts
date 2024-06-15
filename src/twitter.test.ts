@@ -140,14 +140,6 @@ describe('Twitter', () => {
     expect(response.length).toBeGreaterThan(0)
   })
 
-  test('getUserLikeTweets', async () => {
-    const response = await twitter.getUserLikeTweets({
-      screenName: 'book000',
-    })
-    expect(response).toBeTruthy()
-    expect(response.length).toBeGreaterThan(0)
-  })
-
   test('getTweet', async () => {
     const response = await twitter.getTweet({
       tweetId: '1685608131618086912',

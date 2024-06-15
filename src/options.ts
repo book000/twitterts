@@ -110,20 +110,6 @@ export interface GetTweetOptions {
 }
 
 /**
- * {@link Twitter["getUserLikeTweets"]} のオプション
- */
-export interface GetUserLikeTweetsOptions {
-  /** スクリーンネーム */
-  screenName: string
-
-  /** 取得するツイートの最大数。デフォルトは 20 */
-  limit?: number
-
-  /** プロモーションツイートを含めるかどうか。デフォルトは false */
-  isIncludingPromotedTweets?: boolean
-}
-
-/**
  * {@link Twitter["likeTweet"]} のオプション
  */
 export interface LikeTweetOptions {
