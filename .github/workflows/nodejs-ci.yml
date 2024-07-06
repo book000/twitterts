@@ -24,6 +24,9 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+concurrency:
+  group: ${{ github.workflow }}
+
 jobs:
   node-ci:
     runs-on: ubuntu-latest
