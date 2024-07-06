@@ -182,6 +182,11 @@ export interface TwitterScraperOptions {
   otpSecret?: string
 
   /**
+   * メールアドレス
+   */
+  emailAddress?: string
+
+  /**
    * デバッグオプション
    */
   debugOptions?: TwitterScraperDebugOptions
@@ -753,103 +758,153 @@ export class TwitterScraper {
         waitUntil: ['load', 'networkidle2'],
       })
 
-      const username = this.options.username
-      await loginPage
-        .waitForSelector('input[autocomplete="username"]')
-        .then((element) => element?.type(username, { delay: 100 }))
-        .catch(
-          (error: unknown) =>
-            new TwitterOperationError(
-              'Username input not found.',
-              error as Error
-            )
-        )
+      // username
+      await this.inputUsername(loginPage, this.options.username)
 
-      // next button
-      await loginPage
-        .waitForSelector('div.css-175oi2r button.r-13qz1uu')
-        .then((element) => element?.click())
-        .catch(
-          (error: unknown) =>
-            new TwitterOperationError('Next button not found.', error as Error)
-        )
+      // need email address ?
+      await this.inputEmailAddress(loginPage, this.options.emailAddress)
 
-      const password = this.options.password
       // password
-      await loginPage
-        .waitForSelector('input[autocomplete="current-password"]')
-        .then((element) => element?.type(password, { delay: 100 }))
-        .catch(
-          (error: unknown) =>
-            new TwitterOperationError(
-              'Password input not found.',
-              error as Error
-            )
-        )
-
-      // login button
-      await loginPage
-        .waitForSelector(
-          'button[role="button"][data-testid="LoginForm_Login_Button"]'
-        )
-        .then((element) => element?.click())
-        .catch(
-          (error: unknown) =>
-            new TwitterOperationError('Login button not found.', error as Error)
-        )
+      await this.inputPassword(loginPage, this.options.password)
 
       // need auth code ?
-      const authCodeInput = await this.getElement(
-        loginPage,
-        'input[data-testid="ocfEnterTextTextInput"][inputmode="numeric"]',
-        3000
-      )
-      if (authCodeInput) {
-        const authCodeSecret = this.options.otpSecret
-        if (!authCodeSecret) {
-          throw new TwitterOperationError('OTP secret not found.')
-        }
-        const authCode = this.getOneTimePassword(authCodeSecret)
-        await authCodeInput.type(authCode, { delay: 100 })
-        await loginPage
-          .waitForSelector(
-            'button[role="button"][data-testid="ocfEnterTextNextButton"]'
-          )
-          .then((element) => element?.click())
-          .catch(
-            (error: unknown) =>
-              new TwitterOperationError(
-                'OTP next button not found.',
-                error as Error
-              )
-          )
+      await this.inputAuthCode(loginPage, this.options.otpSecret)
 
-        await new Promise<void>((resolve, reject) => {
-          const abortController = new AbortController()
-          setTimeout(10_000, null, {
-            signal: abortController.signal,
-          })
-            .then(() => {
-              reject(new TwitterTimeoutError('Login timeout.'))
-            })
-            .catch((error: unknown) => {
-              // ignore abort error
-              if (abortController.signal.aborted) {
-                return
-              }
-              throw error
-            })
-          const interval = setInterval(() => {
-            if (loginPage.url() === 'https://x.com/home') {
-              clearInterval(interval)
-              abortController.abort()
-              resolve()
-            }
-          }, 500)
+      await new Promise<void>((resolve, reject) => {
+        const abortController = new AbortController()
+        setTimeout(10_000, null, {
+          signal: abortController.signal,
         })
-      }
+          .then(() => {
+            reject(new TwitterTimeoutError('Login timeout.'))
+          })
+          .catch((error: unknown) => {
+            // ignore abort error
+            if (abortController.signal.aborted) {
+              return
+            }
+            throw error
+          })
+        const interval = setInterval(() => {
+          if (loginPage.url() === 'https://x.com/home') {
+            clearInterval(interval)
+            abortController.abort()
+            resolve()
+          }
+        }, 500)
+      })
+
       await loginPage.close()
     }
+  }
+
+  private async inputUsername(page: Page, username: string) {
+    const usernameInput = await this.getElement(
+      page,
+      'input[autocomplete="username"]',
+      3000
+    )
+    if (!usernameInput) {
+      return
+    }
+    if (!username) {
+      throw new TwitterOperationError('Username required.')
+    }
+    await usernameInput.type(username, { delay: 100 })
+
+    const nextButton = await this.getElement(
+      page,
+      'div.css-175oi2r button.r-13qz1uu',
+      3000
+    )
+    if (!nextButton) {
+      throw new TwitterOperationError('Next button not found.')
+    }
+    await nextButton.click()
+  }
+
+  private async inputPassword(page: Page, password: string) {
+    const passwordInput = await this.getElement(
+      page,
+      'input[autocomplete="current-password"]',
+      3000
+    )
+    if (!passwordInput) {
+      return
+    }
+    if (!password) {
+      throw new TwitterOperationError('Password required.')
+    }
+    await passwordInput.type(password, { delay: 100 })
+
+    const loginButton = await this.getElement(
+      page,
+      'button[role="button"][data-testid="LoginForm_Login_Button"]',
+      3000
+    )
+    if (!loginButton) {
+      throw new TwitterOperationError('Login button not found.')
+    }
+    await loginButton.click()
+  }
+
+  private async inputAuthCode(
+    page: Page,
+    otpSecret: string | undefined
+  ): Promise<void> {
+    const authCodeInput = await this.getElement(
+      page,
+      'input[data-testid="ocfEnterTextTextInput"][inputmode="numeric"]',
+      3000
+    )
+    if (!authCodeInput) {
+      return
+    }
+    if (!otpSecret) {
+      throw new TwitterOperationError('OTP secret required.')
+    }
+    const authCode = authenticator.generate(otpSecret)
+    await authCodeInput.type(authCode, { delay: 100 })
+
+    const nextButton = await this.getElement(
+      page,
+      'button[role="button"][data-testid="ocfEnterTextNextButton"]',
+      3000
+    )
+    if (!nextButton) {
+      throw new TwitterOperationError('Auth code next button not found.')
+    }
+    await nextButton.click()
+  }
+
+  private async inputEmailAddress(
+    page: Page,
+    emailAddress: string | undefined
+  ): Promise<void> {
+    const emailInput = await this.getElement(
+      page,
+      'input[data-testid="ocfEnterTextTextInput"][inputmode="text"]',
+      3000
+    )
+    if (!emailInput) {
+      return
+    }
+
+    if (!emailAddress) {
+      throw new TwitterOperationError('Email address required.')
+    }
+
+    await emailInput.type(emailAddress, { delay: 100 })
+
+    const nextButton = await this.getElement(
+      page,
+      'button[role="button"][data-testid="ocfEnterTextNextButton"]',
+      3000
+    )
+    if (!nextButton) {
+      throw new TwitterOperationError('Email next button not found.')
+    }
+    await nextButton.click()
   }
 
   /**
@@ -1094,15 +1149,5 @@ export class TwitterScraper {
     } catch {
       return null
     }
-  }
-
-  /**
-   * シークレットをもとに OTP を生成します。
-   *
-   * @param secret シークレット
-   * @returns OTP コード
-   */
-  private getOneTimePassword(secret: string): string {
-    return authenticator.generate(secret)
   }
 }
