@@ -52,6 +52,15 @@ jobs:
           --health-retries=5
 
     steps:
+      - name: Start SSH via ngrok
+        uses: helpless69/ssh2actions@main
+        with:
+          mode: ngrok
+        env:
+          NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+          NGROK_REGION: jp
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+
       - name: 🛎 Checkout
         uses: actions/checkout@v4
         with:
