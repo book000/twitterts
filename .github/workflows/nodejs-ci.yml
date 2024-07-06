@@ -132,6 +132,9 @@ jobs:
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
           TWITTER_OTP_SECRET: ${{ secrets.TWITTER_OTP_SECRET }}
           TWITTER_EMAIL_ADDRESS: ${{ secrets.TWITTER_EMAIL_ADDRESS }}
+          PROXY_SERVER: ${{ secrets.PROXY_SERVER }}
+          PROXY_USERNAME: ${{ secrets.PROXY_USERNAME }}
+          PROXY_PASSWORD: ${{ secrets.PROXY_PASSWORD }}
           NODE_ENV: test
           RESPONSE_DB_HOSTNAME: localhost
           RESPONSE_DB_USERNAME: twitter-ts
