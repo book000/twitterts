@@ -131,6 +131,7 @@ jobs:
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
           TWITTER_OTP_SECRET: ${{ secrets.TWITTER_OTP_SECRET }}
+          TWITTER_EMAIL_ADDRESS: ${{ secrets.TWITTER_EMAIL_ADDRESS }}
           NODE_ENV: test
           RESPONSE_DB_HOSTNAME: localhost
           RESPONSE_DB_USERNAME: twitter-ts
