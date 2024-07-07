@@ -35,7 +35,7 @@
     "prepublishOnly": "run-z lint"
   },
   "dependencies": {
-    "@book000/node-utils": "1.13.159",
+    "@book000/node-utils": "1.13.161",
     "genson-js": "0.0.8",
     "json-schema-to-typescript": "14.1.0",
     "mysql2": "3.10.2",
