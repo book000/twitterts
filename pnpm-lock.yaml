@@ -18,8 +18,8 @@ importers:
         specifier: 14.1.0
         version: 14.1.0
       mysql2:
-        specifier: 3.10.2
-        version: 3.10.2
+        specifier: 3.10.3
+        version: 3.10.3
       otplib:
         specifier: 12.0.1
         version: 12.0.1
@@ -31,10 +31,10 @@ importers:
         version: 0.6.0
       typeorm:
         specifier: 0.3.20
-        version: 0.3.20(mysql2@3.10.2)
+        version: 0.3.20(mysql2@3.10.3)
       typeorm-naming-strategies:
         specifier: 4.1.0
-        version: 4.1.0(typeorm@0.3.20(mysql2@3.10.2))
+        version: 4.1.0(typeorm@0.3.20(mysql2@3.10.3))
     devDependencies:
       '@book000/eslint-config':
         specifier: 1.7.20
@@ -850,6 +850,10 @@ packages:
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
+
+  aws-ssl-profiles@1.1.1:
+    resolution: {integrity: sha512-+H+kuK34PfMaI9PNU/NSjBKL5hh/KDM9J72kwYeYEm0A8B1AC4fuCy3qsjnA7lxklgyXsB68yn8Z2xoZEjgwCQ==}
+    engines: {node: '>= 6.0.0'}
 
   axios@1.7.2:
     resolution: {integrity: sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==}
@@ -2409,8 +2413,8 @@ packages:
   my-only-either@1.3.0:
     resolution: {integrity: sha512-Ww01dhgmQLLHwEww6b0F5eyPMz0zfCYId4SsP8p7VPxtxPrh6v+fwORrBDYAHgOcVE2Bg9+wwztDKkSEbuxZog==}
 
-  mysql2@3.10.2:
-    resolution: {integrity: sha512-KCXPEvAkO0RcHPr362O5N8tFY2fXvbjfkPvRY/wGumh4EOemo9Hm5FjQZqv/pCmrnuxGu5OxnSENG0gTXqKMgQ==}
+  mysql2@3.10.3:
+    resolution: {integrity: sha512-k43gmH9i79rZD4hGPdj7pDuT0UBiFjs4UzXEy1cJrV0QqcSABomoLwvejqdbcXN+Vd7gi999CVM6o9vCPKq29g==}
     engines: {node: '>= 8.0'}
 
   mz@2.7.0:
@@ -4334,6 +4338,8 @@ snapshots:
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.0.0
+
+  aws-ssl-profiles@1.1.1: {}
 
   axios@1.7.2:
     dependencies:
@@ -6293,8 +6299,9 @@ snapshots:
 
   my-only-either@1.3.0: {}
 
-  mysql2@3.10.2:
+  mysql2@3.10.3:
     dependencies:
+      aws-ssl-profiles: 1.1.1
       denque: 2.1.0
       generate-function: 2.3.1
       iconv-lite: 0.6.3
@@ -7120,11 +7127,11 @@ snapshots:
       typescript: 5.4.5
       yaml: 2.4.5
 
-  typeorm-naming-strategies@4.1.0(typeorm@0.3.20(mysql2@3.10.2)):
+  typeorm-naming-strategies@4.1.0(typeorm@0.3.20(mysql2@3.10.3)):
     dependencies:
-      typeorm: 0.3.20(mysql2@3.10.2)
+      typeorm: 0.3.20(mysql2@3.10.3)
 
-  typeorm@0.3.20(mysql2@3.10.2):
+  typeorm@0.3.20(mysql2@3.10.3):
     dependencies:
       '@sqltools/formatter': 1.2.5
       app-root-path: 3.1.0
@@ -7142,7 +7149,7 @@ snapshots:
       uuid: 9.0.1
       yargs: 17.7.2
     optionalDependencies:
-      mysql2: 3.10.2
+      mysql2: 3.10.3
     transitivePeerDependencies:
       - supports-color
 
