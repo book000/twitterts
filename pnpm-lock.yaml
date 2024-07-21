@@ -91,8 +91,8 @@ importers:
         specifier: 4.16.2
         version: 4.16.2
       typedoc:
-        specifier: 0.26.4
-        version: 0.26.4(typescript@5.4.5)
+        specifier: 0.26.5
+        version: 0.26.5(typescript@5.4.5)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -3164,8 +3164,8 @@ packages:
     resolution: {integrity: sha512-EGjWssW7Tsk4DGfE+5yluuljS1OGYWiI1J6e8puZz9nTMM51Oug8CD5Zo4gWMsOhq5BI+1bF+rWTm4Vbj3ivRA==}
     engines: {node: '>= 18'}
 
-  typedoc@0.26.4:
-    resolution: {integrity: sha512-FlW6HpvULDKgc3rK04V+nbFyXogPV88hurarDPOjuuB5HAwuAlrCMQ5NeH7Zt68a/ikOKu6Z/0hFXAeC9xPccQ==}
+  typedoc@0.26.5:
+    resolution: {integrity: sha512-Vn9YKdjKtDZqSk+by7beZ+xzkkr8T8CYoiasqyt4TTRFy5+UHzL/mF/o4wGBjRF+rlWQHDb0t6xCpA3JNL5phg==}
     engines: {node: '>= 18'}
     hasBin: true
     peerDependencies:
@@ -7085,7 +7085,7 @@ snapshots:
 
   typed-function@4.2.1: {}
 
-  typedoc@0.26.4(typescript@5.4.5):
+  typedoc@0.26.5(typescript@5.4.5):
     dependencies:
       lunr: 2.3.9
       markdown-it: 14.1.0
