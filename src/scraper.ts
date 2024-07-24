@@ -685,7 +685,7 @@ export class TwitterScraperPage {
           const { key, text } = details
 
           this.responses[key] = this.responses[key] ?? []
-          this.responses[key]?.push(text)
+          this.responses[key].push(text)
         })
         .catch((error: unknown) => {
           console.error('Failed to get response details', error)
