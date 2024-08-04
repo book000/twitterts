@@ -143,7 +143,14 @@ export class ResponseDatabase {
     if (!this.dataSource.isInitialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
-    await this.dataSource.synchronize()
+
+    // 運用環境の場合、FORCE_SYNCHRONIZEがtrueの場合のみ同期する
+    if (
+      process.env.NODE_ENV === 'production' &&
+      process.env.FORCE_SYNCHRONIZE === 'true'
+    ) {
+      await this.dataSource.synchronize()
+    }
 
     // 現在のパーティションを取得する
     this.partitions = await this.fetchPartitions()
