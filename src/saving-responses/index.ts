@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm'
+import { DataSource, EntityManager } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
 import { DBResponse } from './response-entity'
 import { TwitterTsError } from '../models/exceptions'
@@ -241,12 +241,18 @@ export class ResponseDatabase {
       )
     }
 
-    return DBResponse.find({
-      where: endpoints,
-      order: { createdAt: 'DESC' },
-      skip: (page - 1) * limit,
-      take: limit,
-    })
+    return await this.dataSource.transaction(
+      'READ COMMITTED',
+      async (manager: EntityManager) => {
+        // eslint-disable-next-line unicorn/no-array-method-this-argument
+        return await manager.find(DBResponse, {
+          where: endpoints,
+          order: { createdAt: 'DESC' },
+          skip: (page - 1) * limit,
+          take: limit,
+        })
+      }
+    )
   }
 
   /**
@@ -278,7 +284,13 @@ export class ResponseDatabase {
             },
           ]
       : {}
-    return DBResponse.count({ where: endpoints })
+
+    return await this.dataSource.transaction(
+      'READ COMMITTED',
+      async (manager: EntityManager) => {
+        return await manager.count(DBResponse, { where: endpoints })
+      }
+    )
   }
 
   /**
@@ -289,19 +301,26 @@ export class ResponseDatabase {
       throw new TwitterTsError('Responses database is not initialized')
     }
     // endpointType, endpointの組み合わせを取得する
-    return DBResponse.createQueryBuilder()
-      .where({
-        responseType: 'JSON',
-      })
-      .groupBy('endpoint_type, method, endpoint, status_code')
-      .select([
-        'endpoint_type AS endpointType',
-        'method',
-        'endpoint',
-        'status_code AS statusCode',
-        'COUNT(*) AS count',
-      ])
-      .getRawMany<ResponseEndPointWithCount>()
+
+    return await this.dataSource.transaction(
+      'READ COMMITTED',
+      async (manager: EntityManager) => {
+        return await manager
+          .createQueryBuilder(DBResponse, 'response')
+          .where({
+            responseType: 'JSON',
+          })
+          .groupBy('endpoint_type, method, endpoint, status_code')
+          .select([
+            'endpoint_type AS endpointType',
+            'method',
+            'endpoint',
+            'status_code AS statusCode',
+            'COUNT(*) AS count',
+          ])
+          .getRawMany<ResponseEndPointWithCount>()
+      }
+    )
   }
 
   /**
