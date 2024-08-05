@@ -38,7 +38,7 @@ importers:
     devDependencies:
       '@book000/eslint-config':
         specifier: 1.7.28
-        version: 1.7.28(eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.1(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0)(typescript@5.5.4)
+        version: 1.7.28(eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.2(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0)(typescript@5.5.4)
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -53,13 +53,13 @@ importers:
         version: 9.8.0
       eslint-config-standard:
         specifier: 17.1.0
-        version: 17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.1(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0)
+        version: 17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.2(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0)
       eslint-plugin-import:
         specifier: 2.29.1
         version: 2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0)
       eslint-plugin-n:
-        specifier: 17.10.1
-        version: 17.10.1(eslint@9.8.0)
+        specifier: 17.10.2
+        version: 17.10.2(eslint@9.8.0)
       eslint-plugin-promise:
         specifier: 7.0.0
         version: 7.0.0(eslint@9.8.0)
@@ -1405,8 +1405,8 @@ packages:
       '@typescript-eslint/parser':
         optional: true
 
-  eslint-plugin-n@17.10.1:
-    resolution: {integrity: sha512-hm/q37W6efDptJXdwirsm6A257iY6ZNtpoSG0wEzFzjJ3AhL7OhEIhdSR2e4OdYfHO5EDeqlCfFrjf9q208IPw==}
+  eslint-plugin-n@17.10.2:
+    resolution: {integrity: sha512-e+s4eAf5NtJaxPhTNu3qMO0Iz40WANS93w9LQgYcvuljgvDmWi/a3rh+OrNyMHeng6aOWGJO0rCg5lH4zi8yTw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.23.0'
@@ -3597,13 +3597,13 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@book000/eslint-config@1.7.28(eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.1(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0)(typescript@5.5.4)':
+  '@book000/eslint-config@1.7.28(eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.2(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0))(eslint@9.8.0)(typescript@5.5.4)':
     dependencies:
       '@eslint/eslintrc': 3.1.0
       '@typescript-eslint/parser': 7.18.0(eslint@9.8.0)(typescript@5.5.4)
       eslint: 9.8.0
       eslint-config-prettier: 9.1.0(eslint@9.8.0)
-      eslint-config-standard: 17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.1(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0)
+      eslint-config-standard: 17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.2(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0)
       eslint-plugin-unicorn: 55.0.0(eslint@9.8.0)
       globals: 15.8.0
       typescript-eslint: 7.18.0(eslint@9.8.0)(typescript@5.5.4)
@@ -4944,11 +4944,11 @@ snapshots:
     dependencies:
       eslint: 9.8.0
 
-  eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.1(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0):
+  eslint-config-standard@17.1.0(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0))(eslint-plugin-n@17.10.2(eslint@9.8.0))(eslint-plugin-promise@7.0.0(eslint@9.8.0))(eslint@9.8.0):
     dependencies:
       eslint: 9.8.0
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.18.0(eslint@9.8.0)(typescript@5.5.4))(eslint@9.8.0)
-      eslint-plugin-n: 17.10.1(eslint@9.8.0)
+      eslint-plugin-n: 17.10.2(eslint@9.8.0)
       eslint-plugin-promise: 7.0.0(eslint@9.8.0)
 
   eslint-import-resolver-node@0.3.9:
@@ -5003,7 +5003,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-n@17.10.1(eslint@9.8.0):
+  eslint-plugin-n@17.10.2(eslint@9.8.0):
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@9.8.0)
       enhanced-resolve: 5.17.1
@@ -5028,7 +5028,7 @@ snapshots:
       core-js-compat: 3.37.1
       eslint: 9.8.0
       esquery: 1.6.0
-      globals: 15.8.0
+      globals: 15.9.0
       indent-string: 4.0.0
       is-builtin-module: 3.2.1
       jsesc: 3.0.2
