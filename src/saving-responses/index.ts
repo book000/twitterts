@@ -164,6 +164,8 @@ export class ResponseDatabase {
       await this.pool.query(createTableSql)
     }
 
+    this.initialized = true
+
     // 現在のパーティションを取得する
     this.partitions = await this.fetchPartitions()
 
@@ -171,8 +173,6 @@ export class ResponseDatabase {
     if (this.partitions.length === 0) {
       await this.initPartition()
     }
-
-    this.initialized = true
 
     return true
   }
