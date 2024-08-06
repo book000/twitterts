@@ -191,9 +191,14 @@ export class ResponseDatabase {
     }
 
     // id列がない場合は追加する
-    await this.pool.query(
-      'ALTER TABLE responses ADD COLUMN id INT PRIMARY KEY AUTO_INCREMENT FIRST'
+    const [idColumn] = await this.pool.query<RowDataPacket[]>(
+      'SHOW COLUMNS FROM responses WHERE Field = "id"'
     )
+    if (idColumn.length === 0) {
+      await this.pool.query(
+        'ALTER TABLE responses ADD COLUMN id INT PRIMARY KEY AUTO_INCREMENT FIRST'
+      )
+    }
 
     // ユニークキーがない場合は追加する
     const [uniqueKey] = await this.pool.query<RowDataPacket[]>(
