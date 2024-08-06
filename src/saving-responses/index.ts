@@ -151,8 +151,8 @@ export class ResponseDatabase {
       "  `response_body` longtext NOT NULL COMMENT 'レスポンスボディ'," +
       "  `created_at` datetime(3) NOT NULL COMMENT 'データ登録日時' DEFAULT CURRENT_TIMESTAMP(3)," +
       '  PRIMARY KEY (`id`, `created_at`),' +
-      '  UNIQUE KEY `unique_id` (`id`),' +
       '  UNIQUE KEY `unique_response` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`),' +
+      '  KEY `idx_id` (`id`),' +
       '  KEY `idx_endpoint_method_status` (`endpoint_type`,`method`,`endpoint`,`status_code`)' +
       ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci'
 
@@ -237,9 +237,9 @@ export class ResponseDatabase {
       )
     }
 
-    // idx_から始まるインデックスは、idx_endpoint_method_statusのみとする。それ以外は削除する
+    // idx_から始まるインデックスは、idx_endpoint_method_statusかidx_idのみとする。それ以外は削除する
     const [indexes] = await this.pool.query<RowDataPacket[]>(
-      'SHOW INDEX FROM responses WHERE Key_name LIKE "idx_%" AND Key_name != "idx_endpoint_method_status"'
+      'SHOW INDEX FROM responses WHERE Key_name LIKE "idx_%" AND Key_name NOT IN ("idx_endpoint_method_status", "idx_id")'
     )
     for (const index of indexes) {
       await this.pool.query(
