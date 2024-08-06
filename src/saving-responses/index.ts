@@ -137,6 +137,7 @@ export class ResponseDatabase {
       'CREATE TABLE `' +
       tableName +
       '` (' +
+      "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID'," +
       "  `endpoint_type` varchar(10) NOT NULL COMMENT 'エンドポイントの種別'," +
       "  `method` varchar(10) NOT NULL COMMENT 'エンドポイントのメソッド'," +
       "  `endpoint` varchar(255) NOT NULL COMMENT 'エンドポイントの名前'," +
@@ -149,10 +150,9 @@ export class ResponseDatabase {
       "  `response_headers` longtext DEFAULT NULL COMMENT 'レスポンスヘッダー'," +
       "  `response_body` longtext NOT NULL COMMENT 'レスポンスボディ'," +
       "  `created_at` datetime(3) NOT NULL COMMENT 'データ登録日時' DEFAULT CURRENT_TIMESTAMP(3)," +
-      '  PRIMARY KEY (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`),' +
-      '  KEY `idx_created_at` (`created_at`),' +
-      '  KEY `idx_endpoint_method_status` (`endpoint_type`,`method`,`endpoint`,`status_code`),' +
-      '  KEY `idx_response_type` (`response_type`)' +
+      '  PRIMARY KEY (`id`, `created_at`),' +
+      '  UNIQUE KEY `unique_response` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`),' +
+      '  KEY `idx_endpoint_method_status` (`endpoint_type`,`method`,`endpoint`,`status_code`)' +
       ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci'
 
     // テーブルが存在しない場合はテーブルを作成する
@@ -160,9 +160,9 @@ export class ResponseDatabase {
       'SELECT table_name FROM information_schema.tables WHERE table_name = :tableName',
       { tableName }
     )
-    if (tables.length === 0) {
-      await this.pool.query(createTableSql)
-    }
+    await (tables.length === 0
+      ? this.pool.query(createTableSql)
+      : this.migrateTable())
 
     this.initialized = true
 
@@ -175,6 +175,67 @@ export class ResponseDatabase {
     }
 
     return true
+  }
+
+  /**
+   * テーブルをマイグレーションする
+   */
+  private async migrateTable(): Promise<void> {
+    // プライマリキーがid, created_atではない場合は削除する
+    const [columns] = await this.pool.query<RowDataPacket[]>(
+      'SHOW COLUMNS FROM responses'
+    )
+    const isPrimaryKeyId = columns.some(
+      (column) =>
+        column.Field === 'id' && column.Key === 'PRI' && column.Extra === ''
+    )
+    const isPrimaryKeyCreatedAt = columns.some(
+      (column) =>
+        column.Field === 'created_at' &&
+        column.Key === 'PRI' &&
+        column.Extra === ''
+    )
+
+    if (!isPrimaryKeyId || !isPrimaryKeyCreatedAt) {
+      await this.pool.query('ALTER TABLE responses DROP PRIMARY KEY')
+    }
+
+    // id列がない場合は追加する
+    const [idColumn] = await this.pool.query<RowDataPacket[]>(
+      'SHOW COLUMNS FROM responses WHERE Field = "id"'
+    )
+    if (idColumn.length === 0) {
+      await this.pool.query(
+        'ALTER TABLE responses ADD COLUMN id INT PRIMARY KEY AUTO_INCREMENT FIRST'
+      )
+    }
+
+    // プライマリキーを付けなおす
+    if (!isPrimaryKeyId || !isPrimaryKeyCreatedAt) {
+      await this.pool.query(
+        'ALTER TABLE responses ADD PRIMARY KEY (`id`, `created_at`)'
+      )
+    }
+
+    // ユニークキーがない場合は追加する
+    const [uniqueKey] = await this.pool.query<RowDataPacket[]>(
+      'SHOW INDEX FROM responses WHERE Key_name = "unique_response"'
+    )
+    if (uniqueKey.length === 0) {
+      await this.pool.query(
+        'ALTER TABLE responses ADD UNIQUE KEY `unique_response` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`)'
+      )
+    }
+
+    // idx_から始まるインデックスは、idx_endpoint_method_statusのみとする。それ以外は削除する
+    const [indexes] = await this.pool.query<RowDataPacket[]>(
+      'SHOW INDEX FROM responses WHERE Key_name LIKE "idx_%" AND Key_name != "idx_endpoint_method_status"'
+    )
+    for (const index of indexes) {
+      await this.pool.query(
+        `ALTER TABLE responses DROP INDEX ${index.Key_name}`
+      )
+    }
   }
 
   /**
@@ -315,7 +376,7 @@ export class ResponseDatabase {
     }
 
     const [results] = await this.pool.query<CountResponse[]>(
-      'SELECT COUNT(*) AS count FROM responses WHERE endpoint_type = :endpointType AND method = :method AND endpoint = :endpoint AND status_code = :statusCode',
+      'SELECT COUNT(id) AS count FROM responses WHERE endpoint_type = :endpointType AND method = :method AND endpoint = :endpoint AND status_code = :statusCode',
       endpointValue
     )
 
@@ -332,7 +393,7 @@ export class ResponseDatabase {
     // endpointType, endpointの組み合わせを取得する
 
     const [results] = await this.pool.query<ResponseEndPointWithCount[]>(
-      'SELECT endpoint_type, method, endpoint, status_code, COUNT(*) AS count FROM responses GROUP BY endpoint_type, method, endpoint, status_code'
+      'SELECT endpoint_type, method, endpoint, status_code, COUNT(id) AS count FROM responses GROUP BY endpoint_type, method, endpoint, status_code'
     )
 
     return results
