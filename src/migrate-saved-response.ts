@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { Logger } from '@book000/node-utils'
 import { ResponseDatabase } from './saving-responses'
 import { HttpMethod, RequestType } from './scraper'
-import { DBResponse } from './saving-responses/response-entity'
+import mysql2 from 'mysql2/promise'
 
 interface EndPointFolder {
   /**
@@ -134,10 +134,6 @@ class MigrateSavedResponse {
     if (!result) {
       return
     }
-    logger.info('🚀 Migrate responses database')
-    await responseDatabase.migrate()
-    logger.info('🚀 Sync responses database')
-    await responseDatabase.sync()
 
     logger.info('🔍 Loading debug output folders')
     const startTime = Date.now()
@@ -256,19 +252,34 @@ class MigrateSavedResponse {
     bulkInsertData: ResponseType[]
   ): Promise<void> {
     const logger = Logger.configure('MigrateSavedResponse:bulkInsert')
-    const dataSource = responseDatabase.getDataSource()
+    const pool = responseDatabase.getPool()
     const bulkInsertStartTime = Date.now()
-    await dataSource.transaction(async (transaction) => {
-      await transaction
-        .createQueryBuilder()
-        .insert()
-        .into(DBResponse)
-        .values(bulkInsertData)
-        .orIgnore()
-        .execute()
-        .catch((error: unknown) => {
-          logger.error('Failed to insert responses', error as Error)
-        })
+
+    await pool.beginTransaction()
+    const sql = mysql2.format(
+      `INSERT IGNORE INTO responses (endpointType, method, endpoint, url, urlHash, requestHeaders, requestBody, responseType, statusCode, responseHeaders, responseBody, createdAt) VALUES ?`,
+      [
+        bulkInsertData.map((data) => {
+          return [
+            data.endpointType,
+            data.method,
+            data.endpoint,
+            data.url,
+            data.urlHash,
+            data.requestHeaders,
+            data.requestBody,
+            data.responseType,
+            data.statusCode,
+            data.responseHeaders,
+            data.responseBody,
+            data.createdAt,
+          ]
+        }),
+      ]
+    )
+
+    await pool.query(sql).catch((error: unknown) => {
+      logger.error('Failed to insert responses', error as Error)
     })
     const bulkInsertEndTime = Date.now()
     const bulkInsertTime = bulkInsertEndTime - bulkInsertStartTime

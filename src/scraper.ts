@@ -1119,16 +1119,7 @@ export class TwitterScraper {
       return
     }
     ResponseDatabase.printDebug('Initialize responses database')
-    const result = await this.responseDatabase.init()
-    if (!result) {
-      return
-    }
-
-    ResponseDatabase.printDebug('Migrate responses database')
-    await this.responseDatabase.migrate()
-
-    ResponseDatabase.printDebug('Sync responses database')
-    await this.responseDatabase.sync()
+    await this.responseDatabase.init()
   }
 
   /**

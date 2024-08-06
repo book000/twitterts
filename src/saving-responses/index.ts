@@ -1,10 +1,8 @@
-import { DataSource, EntityManager } from 'typeorm'
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
-import { DBResponse } from './response-entity'
 import { TwitterTsError } from '../models/exceptions'
 import { HttpMethod, RequestType } from '../scraper'
 import { GraphQLEndpoint } from '../models/responses/endpoints'
 import crypto from 'node:crypto'
+import { createPool, Pool, RowDataPacket } from 'mysql2/promise'
 
 export interface AddResponseOptions {
   endpointType: RequestType
@@ -55,19 +53,54 @@ export interface ResponseEndPoint {
   endpoint: GraphQLEndpoint
   statusCode: number
 }
-export type ResponseEndPointWithCount = ResponseEndPoint & { count: number }
 
 interface GetResponseRangeOptions {
   page?: number
   limit?: number
 }
 
+interface InformationSchemaTable extends RowDataPacket {
+  table_name: string
+}
+
+interface DBResponse extends RowDataPacket {
+  endpointType: RequestType
+  method: HttpMethod
+  endpoint: string
+  url: string | null
+  urlHash: string
+  requestHeaders: string | null
+  requestBody: string | null
+  responseType: string
+  statusCode: number
+  responseHeaders: string | null
+  responseBody: string
+  createdAt: Date
+}
+
+interface CountResponse extends RowDataPacket {
+  count: number
+}
+
+export interface ResponseEndPointWithCount extends RowDataPacket {
+  endpointType: RequestType
+  method: HttpMethod
+  endpoint: GraphQLEndpoint
+  statusCode: number
+  count: number
+}
+
+interface partitionNameRow extends RowDataPacket {
+  PARTITION_NAME: string | null
+}
+
 /**
  * レスポンスを保存するデータベース
  */
 export class ResponseDatabase {
-  private dataSource: DataSource
+  private pool: Pool
   private partitions: string[] = []
+  private initialized = false
 
   constructor(options: ResponseDatabaseOptions = {}) {
     const configuration = {
@@ -82,22 +115,14 @@ export class ResponseDatabase {
     // DB_PORTがundefinedの場合はデフォルトポートを使用する
     const port = this.parsePort(configuration.DB_PORT)
 
-    this.dataSource = new DataSource({
-      type: 'mysql',
+    this.pool = createPool({
       host: configuration.DB_HOSTNAME,
       port,
-      username: configuration.DB_USERNAME,
+      user: configuration.DB_USERNAME,
       password: configuration.DB_PASSWORD,
       database: configuration.DB_DATABASE,
-      synchronize: true,
-      logging: process.env.PRINT_DB_LOGS === 'true',
-      namingStrategy: new SnakeNamingStrategy(),
-      entities: [DBResponse],
-      subscribers: [],
-      migrations: [],
-      timezone: '+09:00',
-      supportBigNumbers: true,
-      bigNumberStrings: true,
+      connectionLimit: 1,
+      namedPlaceholders: true,
     })
   }
 
@@ -107,49 +132,37 @@ export class ResponseDatabase {
    * @returns 初期化に成功したかどうか
    */
   public async init(): Promise<boolean> {
-    if (this.dataSource.isInitialized) {
-      return true
-    }
-    try {
-      await this.dataSource.initialize()
-      ResponseDatabase.printDebug('Responses database initialized')
-      return true
-    } catch (error) {
-      ResponseDatabase.printDebug(
-        'Responses database initialization failed',
-        error as Error
-      )
-      return false
-    }
-  }
+    const tableName = 'responses'
+    const createTableSql =
+      'CREATE TABLE `' +
+      tableName +
+      '` (' +
+      "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID'," +
+      "  `endpoint_type` varchar(10) NOT NULL COMMENT 'エンドポイントの種別'," +
+      "  `method` varchar(10) NOT NULL COMMENT 'エンドポイントのメソッド'," +
+      "  `endpoint` varchar(255) NOT NULL COMMENT 'エンドポイントの名前'," +
+      "  `url` text DEFAULT NULL COMMENT 'リクエストURL'," +
+      "  `url_hash` varchar(255) NOT NULL COMMENT 'リクエストURLのハッシュ値'," +
+      "  `request_headers` longtext DEFAULT NULL COMMENT 'リクエストヘッダー'," +
+      "  `request_body` longtext DEFAULT NULL COMMENT 'リクエストボディ'," +
+      "  `response_type` varchar(10) NOT NULL COMMENT 'レスポンスの種別'," +
+      "  `status_code` int(11) NOT NULL COMMENT 'レスポンスのステータスコード'," +
+      "  `response_headers` longtext DEFAULT NULL COMMENT 'レスポンスヘッダー'," +
+      "  `response_body` longtext NOT NULL COMMENT 'レスポンスボディ'," +
+      "  `created_at` datetime(3) NOT NULL COMMENT 'データ登録日時' DEFAULT CURRENT_TIMESTAMP(3)," +
+      '  PRIMARY KEY (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`),' +
+      '  KEY `idx_created_at` (`created_at`),' +
+      '  KEY `idx_endpoint_method_status` (`endpoint_type`,`method`,`endpoint`,`status_code`),' +
+      '  KEY `idx_response_type` (`response_type`)' +
+      ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci'
 
-  /**
-   * データソースをマイグレーションする
-   */
-  public async migrate(): Promise<void> {
-    if (!this.dataSource.isInitialized) {
-      throw new TwitterTsError('Responses database is not initialized')
-    }
-    if (this.dataSource.migrations.length === 0) {
-      return
-    }
-    await this.dataSource.runMigrations()
-  }
-
-  /**
-   * データソーススキーマを同期する
-   */
-  public async sync(): Promise<void> {
-    if (!this.dataSource.isInitialized) {
-      throw new TwitterTsError('Responses database is not initialized')
-    }
-
-    // 運用環境の場合、FORCE_SYNCHRONIZEがtrueの場合のみ同期する
-    if (
-      process.env.NODE_ENV === 'production' &&
-      process.env.FORCE_SYNCHRONIZE === 'true'
-    ) {
-      await this.dataSource.synchronize()
+    // テーブルが存在しない場合はテーブルを作成する
+    const [tables] = await this.pool.query<InformationSchemaTable[]>(
+      'SELECT table_name FROM information_schema.tables WHERE table_name = :tableName',
+      { tableName }
+    )
+    if (tables.length === 0) {
+      await this.pool.query(createTableSql)
     }
 
     // 現在のパーティションを取得する
@@ -159,6 +172,10 @@ export class ResponseDatabase {
     if (this.partitions.length === 0) {
       await this.initPartition()
     }
+
+    this.initialized = true
+
+    return true
   }
 
   /**
@@ -167,36 +184,43 @@ export class ResponseDatabase {
    * @param options レスポンスの追加オプション
    * @returns 追加されたレスポンス
    */
-  public async addResponse(
-    options: AddResponseOptions
-  ): Promise<DBResponse | undefined> {
-    if (!this.dataSource.isInitialized) {
+  public async addResponse(options: AddResponseOptions): Promise<void> {
+    if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
     const now = new Date()
     await this.addPartition(now)
 
-    const response = new DBResponse()
-    response.endpointType = options.endpointType
-    response.method = options.method
-    response.endpoint = options.endpoint
-    response.url = options.url
-    response.urlHash = crypto
-      .createHash('sha256')
-      .update(options.url ?? '')
-      .digest('hex')
-    response.requestHeaders = options.requestHeaders
-    response.requestBody = options.requestBody
-    response.responseType = options.responseType
-    response.statusCode = options.statusCode
-    response.responseHeaders = options.responseHeaders
-    response.responseBody = options.responseBody
-    response.createdAt = now
-    return response.save().catch((error: unknown) => {
-      if ((error as { code: string }).code === 'ER_DUP_ENTRY') {
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        return undefined
-      }
+    const insertSql =
+      'INSERT IGNORE INTO responses SET ' +
+      'endpoint_type = :endpointType, ' +
+      'method = :method, ' +
+      'endpoint = :endpoint, ' +
+      'url = :url, ' +
+      'url_hash = :urlHash, ' +
+      'request_headers = :requestHeaders, ' +
+      'request_body = :requestBody, ' +
+      'response_type = :responseType, ' +
+      'status_code = :statusCode, ' +
+      'response_headers = :responseHeaders, ' +
+      'response_body = :responseBody, ' +
+      'created_at = :createdAt'
+    await this.pool.query(insertSql, {
+      endpointType: options.endpointType,
+      method: options.method,
+      endpoint: options.endpoint,
+      url: options.url,
+      urlHash: crypto
+        .createHash('sha256')
+        .update(options.url ?? '')
+        .digest('hex'),
+      requestHeaders: options.requestHeaders,
+      requestBody: options.requestBody,
+      responseType: options.responseType,
+      statusCode: options.statusCode,
+      responseHeaders: options.responseHeaders,
+      responseBody: options.responseBody,
+      createdAt: now,
     })
   }
 
@@ -209,10 +233,10 @@ export class ResponseDatabase {
    * @returns レスポンスの配列
    */
   public async getResponses(
-    endpoint?: ResponseEndPoint | ResponseEndPoint[],
+    endpoint: ResponseEndPoint,
     rangeOptions?: GetResponseRangeOptions
   ): Promise<DBResponse[]> {
-    if (!this.dataSource.isInitialized) {
+    if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
     const options = rangeOptions ?? {}
@@ -220,26 +244,40 @@ export class ResponseDatabase {
     const limit = options.limit
 
     // ResponseEndPointWithCountで来る場合があるので、ResponseEndPointに変換する
-    // 配列でない場合は配列に変換する
-    const endpoints = endpoint
-      ? Array.isArray(endpoint)
-        ? endpoint.map((v) => ({
-            endpointType: v.endpointType,
-            method: v.method,
-            endpoint: v.endpoint,
-            statusCode: v.statusCode,
-          }))
-        : [
-            {
-              endpointType: endpoint.endpointType,
-              method: endpoint.method,
-              endpoint: endpoint.endpoint,
-              statusCode: endpoint.statusCode,
-            },
-          ]
-      : {}
+    const endpointValue = {
+      endpointType: endpoint.endpointType,
+      method: endpoint.method,
+      endpoint: endpoint.endpoint,
+      statusCode: endpoint.statusCode,
+    }
     if (page === undefined || limit === undefined) {
-      return DBResponse.find({ where: endpoints, order: { createdAt: 'DESC' } })
+      const [results] = await this.pool.query<DBResponse[]>(
+        `SELECT
+            endpoint_type AS endpointType,
+            method,
+            endpoint,
+            url,
+            url_hash AS urlHash,
+            request_headers AS requestHeaders,
+            request_body AS requestBody,
+            response_type AS responseType,
+            status_code AS statusCode,
+            response_headers AS responseHeaders,
+            response_body AS responseBody,
+            created_at AS createdAt
+        FROM
+            responses
+        WHERE
+            endpoint_type = :endpointType
+            AND method = :method
+            AND endpoint = :endpoint
+            AND status_code = :statusCode
+        ORDER BY
+            created_at DESC`,
+        endpointValue
+      )
+
+      return results
     }
 
     if (page <= 0 || limit <= 0) {
@@ -248,18 +286,16 @@ export class ResponseDatabase {
       )
     }
 
-    return await this.dataSource.transaction(
-      'READ COMMITTED',
-      async (manager: EntityManager) => {
-        // eslint-disable-next-line unicorn/no-array-method-this-argument
-        return await manager.find(DBResponse, {
-          where: endpoints,
-          order: { createdAt: 'DESC' },
-          skip: (page - 1) * limit,
-          take: limit,
-        })
+    const [results] = await this.pool.query<DBResponse[]>(
+      'SELECT * FROM responses WHERE endpoint_type = :endpointType AND method = :method AND endpoint = :endpoint AND status_code = :statusCode ORDER BY created_at DESC LIMIT :offset, :limit',
+      {
+        ...endpointValue,
+        offset: (page - 1) * limit,
+        limit,
       }
     )
+
+    return results
   }
 
   /**
@@ -268,66 +304,39 @@ export class ResponseDatabase {
    * @param endpoint エンドポイントの情報。指定しない場合はすべてのレスポンスを取得する
    * @returns レスポンスの数
    */
-  public async getResponseCount(
-    endpoint?: ResponseEndPoint | ResponseEndPoint[]
-  ): Promise<number> {
-    if (!this.dataSource.isInitialized) {
+  public async getResponseCount(endpoint: ResponseEndPoint): Promise<number> {
+    if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
-    const endpoints = endpoint
-      ? Array.isArray(endpoint)
-        ? endpoint.map((v) => ({
-            endpointType: v.endpointType,
-            method: v.method,
-            endpoint: v.endpoint,
-            statusCode: v.statusCode,
-          }))
-        : [
-            {
-              endpointType: endpoint.endpointType,
-              method: endpoint.method,
-              endpoint: endpoint.endpoint,
-              statusCode: endpoint.statusCode,
-            },
-          ]
-      : {}
+    const endpointValue = {
+      endpointType: endpoint.endpointType,
+      method: endpoint.method,
+      endpoint: endpoint.endpoint,
+      statusCode: endpoint.statusCode,
+    }
 
-    return await this.dataSource.transaction(
-      'READ COMMITTED',
-      async (manager: EntityManager) => {
-        return await manager.count(DBResponse, { where: endpoints })
-      }
+    const [results] = await this.pool.query<CountResponse[]>(
+      'SELECT COUNT(*) AS count FROM responses WHERE endpoint_type = :endpointType AND method = :method AND endpoint = :endpoint AND status_code = :statusCode',
+      endpointValue
     )
+
+    return results[0].count
   }
 
   /**
    * エンドポイントを取得する
    */
   public async getEndpoints(): Promise<ResponseEndPointWithCount[]> {
-    if (!this.dataSource.isInitialized) {
+    if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
     // endpointType, endpointの組み合わせを取得する
 
-    return await this.dataSource.transaction(
-      'READ COMMITTED',
-      async (manager: EntityManager) => {
-        return await manager
-          .createQueryBuilder(DBResponse, 'response')
-          .where({
-            responseType: 'JSON',
-          })
-          .groupBy('endpoint_type, method, endpoint, status_code')
-          .select([
-            'endpoint_type AS endpointType',
-            'method',
-            'endpoint',
-            'status_code AS statusCode',
-            'COUNT(*) AS count',
-          ])
-          .getRawMany<ResponseEndPointWithCount>()
-      }
+    const [results] = await this.pool.query<ResponseEndPointWithCount[]>(
+      'SELECT endpoint_type, method, endpoint, status_code, COUNT(id) AS count FROM responses GROUP BY endpoint_type, method, endpoint, status_code'
     )
+
+    return results
   }
 
   /**
@@ -336,21 +345,19 @@ export class ResponseDatabase {
    * @returns パーティションの配列
    */
   private async fetchPartitions(): Promise<string[]> {
-    if (!this.dataSource.isInitialized) {
+    if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
-    const results: {
-      PARTITION_NAME: string | null
-    }[] = await this.dataSource.query(
+
+    const [results] = await this.pool.query<partitionNameRow[]>(
       'SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS WHERE TABLE_NAME = "responses"'
     )
 
-    const partitions = results
+    return results
       .map((v) => {
         return v.PARTITION_NAME
       })
       .filter((v: string | null): v is string => v !== null)
-    return partitions
   }
 
   /**
@@ -359,7 +366,7 @@ export class ResponseDatabase {
    * @param date 日付
    */
   public async addPartition(date: Date): Promise<void> {
-    if (!this.dataSource.isInitialized) {
+    if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
     // pYYYYMMの形式でパーティションを作成する
@@ -369,7 +376,7 @@ export class ResponseDatabase {
     }
     // 翌月の1日の日付を取得する
     const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1)
-    await this.dataSource
+    await this.pool
       .query(
         `ALTER TABLE responses REORGANIZE PARTITION pmax INTO (PARTITION ${partitionName} VALUES LESS THAN (` +
           `TO_DAYS('${nextMonth.toISOString().slice(0, 10)}')` +
@@ -388,14 +395,14 @@ export class ResponseDatabase {
    * 日付パーティションを初期化する
    */
   public async initPartition(): Promise<void> {
-    if (!this.dataSource.isInitialized) {
+    if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
     const partitionName = 'pmax'
     if (this.partitions.includes(partitionName)) {
       return
     }
-    await this.dataSource.query(
+    await this.pool.query(
       `ALTER TABLE responses PARTITION BY RANGE (TO_DAYS(created_at)) (PARTITION ${partitionName} VALUES LESS THAN MAXVALUE)`
     )
     this.partitions.push(partitionName)
@@ -407,13 +414,13 @@ export class ResponseDatabase {
    * @param partitionName パーティション名
    */
   public async dropPartition(partitionName: string): Promise<void> {
-    if (!this.dataSource.isInitialized) {
+    if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
     if (!this.partitions.includes(partitionName)) {
       return
     }
-    await this.dataSource.query(
+    await this.pool.query(
       `ALTER TABLE responses DROP PARTITION ${partitionName}`
     )
     this.partitions = this.partitions.filter((v) => v !== partitionName)
@@ -423,14 +430,14 @@ export class ResponseDatabase {
    * データソースをクローズする
    */
   public async close(): Promise<void> {
-    if (!this.dataSource.isInitialized) {
+    if (!this.initialized) {
       return
     }
-    await this.dataSource.destroy()
+    await this.pool.end()
   }
 
   public isInitialized(): boolean {
-    return this.dataSource.isInitialized
+    return this.initialized
   }
 
   public getPartitions(): string[] {
@@ -444,12 +451,12 @@ export class ResponseDatabase {
   }
 
   /**
-   * データソースを取得する
+   * プールを取得する
    *
-   * @returns データソース
+   * @returns プール
    */
-  public getDataSource(): DataSource {
-    return this.dataSource
+  public getPool(): Pool {
+    return this.pool
   }
 
   /**
