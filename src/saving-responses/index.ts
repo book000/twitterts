@@ -152,7 +152,7 @@ export class ResponseDatabase {
       "  `created_at` datetime(3) NOT NULL COMMENT 'データ登録日時' DEFAULT CURRENT_TIMESTAMP(3)," +
       '  PRIMARY KEY (`id`),' +
       '  UNIQUE KEY `unique_response` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`),' +
-      '  KEY `idx_endpoint_method_status` (`endpoint_type`,`method`,`endpoint`,`status_code`),' +
+      '  KEY `idx_endpoint_method_status` (`endpoint_type`,`method`,`endpoint`,`status_code`)' +
       ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci'
 
     // テーブルが存在しない場合はテーブルを作成する
