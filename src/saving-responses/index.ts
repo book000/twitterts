@@ -137,7 +137,6 @@ export class ResponseDatabase {
       'CREATE TABLE `' +
       tableName +
       '` (' +
-      "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID'," +
       "  `endpoint_type` varchar(10) NOT NULL COMMENT 'エンドポイントの種別'," +
       "  `method` varchar(10) NOT NULL COMMENT 'エンドポイントのメソッド'," +
       "  `endpoint` varchar(255) NOT NULL COMMENT 'エンドポイントの名前'," +
@@ -333,7 +332,7 @@ export class ResponseDatabase {
     // endpointType, endpointの組み合わせを取得する
 
     const [results] = await this.pool.query<ResponseEndPointWithCount[]>(
-      'SELECT endpoint_type, method, endpoint, status_code, COUNT(id) AS count FROM responses GROUP BY endpoint_type, method, endpoint, status_code'
+      'SELECT endpoint_type, method, endpoint, status_code, COUNT(*) AS count FROM responses GROUP BY endpoint_type, method, endpoint, status_code'
     )
 
     return results
