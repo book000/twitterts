@@ -151,6 +151,7 @@ export class ResponseDatabase {
       "  `response_body` longtext NOT NULL COMMENT 'レスポンスボディ'," +
       "  `created_at` datetime(3) NOT NULL COMMENT 'データ登録日時' DEFAULT CURRENT_TIMESTAMP(3)," +
       '  PRIMARY KEY (`id`, `created_at`),' +
+      '  UNIQUE KEY `unique_id` (`id`),' +
       '  UNIQUE KEY `unique_response` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`),' +
       '  KEY `idx_endpoint_method_status` (`endpoint_type`,`method`,`endpoint`,`status_code`)' +
       ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci'
@@ -218,12 +219,21 @@ export class ResponseDatabase {
     }
 
     // ユニークキーがない場合は追加する
-    const [uniqueKey] = await this.pool.query<RowDataPacket[]>(
+    const [uniqueKeyResponse] = await this.pool.query<RowDataPacket[]>(
       'SHOW INDEX FROM responses WHERE Key_name = "unique_response"'
     )
-    if (uniqueKey.length === 0) {
+    if (uniqueKeyResponse.length === 0) {
       await this.pool.query(
         'ALTER TABLE responses ADD UNIQUE KEY `unique_response` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`)'
+      )
+    }
+
+    const [uniqueKeyID] = await this.pool.query<RowDataPacket[]>(
+      'SHOW INDEX FROM responses WHERE Key_name = "unique_id"'
+    )
+    if (uniqueKeyID.length === 0) {
+      await this.pool.query(
+        'ALTER TABLE responses ADD UNIQUE KEY `unique_id` (`id`)'
       )
     }
 
