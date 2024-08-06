@@ -103,12 +103,6 @@ class GenerateTypes {
         return
       }
 
-      logger.info('🚀 Migrate responses database')
-      await responseDatabase.migrate()
-
-      logger.info('🚀 Sync responses database')
-      await responseDatabase.sync()
-
       // remove old partition data
       logger.info('🚀 Remove old partition data')
       const partitions = responseDatabase.getPartitions()
