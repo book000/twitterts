@@ -63,7 +63,8 @@
     "ts-jest": "29.2.4",
     "tsx": "4.16.5",
     "typedoc": "0.26.5",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "ulid": "2.3.0"
   },
   "jest": {
     "moduleFileExtensions": [

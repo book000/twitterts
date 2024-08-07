@@ -3,6 +3,7 @@ import { HttpMethod, RequestType } from '../scraper'
 import { GraphQLEndpoint } from '../models/responses/endpoints'
 import crypto from 'node:crypto'
 import { createPool, Pool, RowDataPacket } from 'mysql2/promise'
+import { ulid } from 'ulid'
 
 export interface AddResponseOptions {
   endpointType: RequestType
@@ -137,7 +138,7 @@ export class ResponseDatabase {
       'CREATE TABLE `' +
       tableName +
       '` (' +
-      "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID'," +
+      "  `id` char(36) NOT NULL COMMENT 'ID'," +
       "  `endpoint_type` varchar(10) NOT NULL COMMENT 'エンドポイントの種別'," +
       "  `method` varchar(10) NOT NULL COMMENT 'エンドポイントのメソッド'," +
       "  `endpoint` varchar(255) NOT NULL COMMENT 'エンドポイントの名前'," +
@@ -150,9 +151,9 @@ export class ResponseDatabase {
       "  `response_headers` longtext DEFAULT NULL COMMENT 'レスポンスヘッダー'," +
       "  `response_body` longtext NOT NULL COMMENT 'レスポンスボディ'," +
       "  `created_at` datetime(3) NOT NULL COMMENT 'データ登録日時' DEFAULT CURRENT_TIMESTAMP(3)," +
-      '  PRIMARY KEY (`id`, `created_at`),' +
+      '  PRIMARY KEY (`created_at`),' +
       '  UNIQUE KEY `unique_response` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`),' +
-      '  KEY `idx_id` (`id`),' +
+      '  KEY `idx_id_createdat` (`id`,`created_at`),' +
       '  KEY `idx_endpoint_method_status` (`endpoint_type`,`method`,`endpoint`,`status_code`)' +
       ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci'
 
@@ -186,10 +187,6 @@ export class ResponseDatabase {
     const [columns] = await this.pool.query<RowDataPacket[]>(
       'SHOW COLUMNS FROM responses'
     )
-    const isPrimaryKeyId = columns.some(
-      (column) =>
-        column.Field === 'id' && column.Key === 'PRI' && column.Extra === ''
-    )
     const isPrimaryKeyCreatedAt = columns.some(
       (column) =>
         column.Field === 'created_at' &&
@@ -197,7 +194,7 @@ export class ResponseDatabase {
         column.Extra === ''
     )
 
-    if (!isPrimaryKeyId || !isPrimaryKeyCreatedAt) {
+    if (!isPrimaryKeyCreatedAt) {
       await this.pool.query('ALTER TABLE responses DROP PRIMARY KEY')
     }
 
@@ -207,14 +204,30 @@ export class ResponseDatabase {
     )
     if (idColumn.length === 0) {
       await this.pool.query(
-        'ALTER TABLE responses ADD COLUMN id INT PRIMARY KEY AUTO_INCREMENT FIRST'
+        'ALTER TABLE responses ADD COLUMN `id` CHAR(36) NULL'
+      )
+      // すべてのレコードにレコードごとで一意のIDを付与する
+      const [rows] = await this.pool.query<DBResponse[]>(
+        'SELECT * FROM responses'
+      )
+      for (const row of rows) {
+        await this.pool.query(
+          'UPDATE responses SET id = :id WHERE created_at = :createdAt',
+          {
+            id: ulid(),
+            createdAt: row.createdAt,
+          }
+        )
+      }
+      await this.pool.query(
+        'ALTER TABLE responses MODIFY COLUMN `id` CHAR(36) NOT NULL'
       )
     }
 
     // プライマリキーを付けなおす
-    if (!isPrimaryKeyId || !isPrimaryKeyCreatedAt) {
+    if (!isPrimaryKeyCreatedAt) {
       await this.pool.query(
-        'ALTER TABLE responses ADD PRIMARY KEY (`id`, `created_at`)'
+        'ALTER TABLE responses ADD PRIMARY KEY (`created_at`)'
       )
     }
 
@@ -228,18 +241,18 @@ export class ResponseDatabase {
       )
     }
 
-    const [uniqueKeyID] = await this.pool.query<RowDataPacket[]>(
-      'SHOW INDEX FROM responses WHERE Key_name = "unique_id"'
+    const [uniqueKeyidCreatedAt] = await this.pool.query<RowDataPacket[]>(
+      'SHOW INDEX FROM responses WHERE Key_name = "idx_id_createdat"'
     )
-    if (uniqueKeyID.length === 0) {
+    if (uniqueKeyidCreatedAt.length === 0) {
       await this.pool.query(
-        'ALTER TABLE responses ADD UNIQUE KEY `unique_id` (`id`)'
+        'ALTER TABLE responses ADD UNIQUE KEY `idx_id_createdat` (`id`,`created_at`)'
       )
     }
 
-    // idx_から始まるインデックスは、idx_endpoint_method_statusかidx_idのみとする。それ以外は削除する
+    // idx_から始まるインデックスは、idx_endpoint_method_statusかidx_id_createdatのみとする。それ以外は削除する
     const [indexes] = await this.pool.query<RowDataPacket[]>(
-      'SHOW INDEX FROM responses WHERE Key_name LIKE "idx_%" AND Key_name NOT IN ("idx_endpoint_method_status", "idx_id")'
+      'SHOW INDEX FROM responses WHERE Key_name LIKE "idx_%" AND Key_name NOT IN ("idx_endpoint_method_status", "idx_id_createdat")'
     )
     for (const index of indexes) {
       await this.pool.query(
@@ -263,6 +276,7 @@ export class ResponseDatabase {
 
     const insertSql =
       'INSERT IGNORE INTO responses SET ' +
+      'id = :id, ' +
       'endpoint_type = :endpointType, ' +
       'method = :method, ' +
       'endpoint = :endpoint, ' +
@@ -276,6 +290,7 @@ export class ResponseDatabase {
       'response_body = :responseBody, ' +
       'created_at = :createdAt'
     await this.pool.query(insertSql, {
+      id: ulid(),
       endpointType: options.endpointType,
       method: options.method,
       endpoint: options.endpoint,
