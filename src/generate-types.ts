@@ -121,7 +121,7 @@ class GenerateTypes {
 
       logger.info('🔍 Getting endpoints...')
       const rawEndpoints = await this.calculateTime('GetEndpoints', () =>
-        responseDatabase.getEndpoints()
+        responseDatabase.getEndpoints('GRAPHQL')
       )
       const endpoints = rawEndpoints.filter(
         (endpoint) => endpoint.count > 0 && endpoint.endpointType === 'GRAPHQL'

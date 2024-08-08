@@ -48,13 +48,6 @@ export interface ResponseDatabaseOptions {
   database?: string
 }
 
-export interface ResponseEndPoint {
-  endpointType: RequestType
-  method: HttpMethod
-  endpoint: GraphQLEndpoint
-  statusCode: number
-}
-
 interface GetResponseRangeOptions {
   page?: number
   limit?: number
@@ -83,7 +76,21 @@ interface CountResponse extends RowDataPacket {
   count: number
 }
 
-export interface ResponseEndPointWithCount extends RowDataPacket {
+export interface ResponseEndPoint {
+  endpointType: RequestType
+  method: HttpMethod
+  endpoint: GraphQLEndpoint
+  statusCode: number
+}
+
+interface ResponseEndPointResponse extends RowDataPacket {
+  endpointType: RequestType
+  method: HttpMethod
+  endpoint: GraphQLEndpoint
+  statusCode: number
+}
+
+export interface ResponseEndPointWithCount {
   endpointType: RequestType
   method: HttpMethod
   endpoint: GraphQLEndpoint
@@ -411,17 +418,35 @@ export class ResponseDatabase {
   /**
    * エンドポイントを取得する
    */
-  public async getEndpoints(): Promise<ResponseEndPointWithCount[]> {
+  public async getEndpoints(
+    filterEndpointType: RequestType | null = null
+  ): Promise<ResponseEndPointWithCount[]> {
     if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
-    // endpointType, endpointの組み合わせを取得する
 
-    const [results] = await this.pool.query<ResponseEndPointWithCount[]>(
-      'SELECT endpoint_type, method, endpoint, status_code, COUNT(id) AS count FROM responses GROUP BY endpoint_type, method, endpoint, status_code'
+    // エンドポイント一覧を取得する
+    let sql =
+      'SELECT DISTINCT endpoint_type, method, endpoint, status_code FROM responses'
+    if (filterEndpointType !== null) {
+      sql += ' WHERE endpoint_type = :endpointType'
+    }
+    const [results] = await this.pool.query<ResponseEndPointResponse[]>(
+      sql,
+      filterEndpointType === null ? {} : { endpointType: filterEndpointType }
     )
 
-    return results
+    const responseEndpoints: ResponseEndPointWithCount[] = await Promise.all(
+      results.map(async (result) => {
+        const count = await this.getResponseCount(result)
+        return {
+          ...result,
+          count,
+        }
+      })
+    )
+
+    return responseEndpoints
   }
 
   /**
