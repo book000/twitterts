@@ -418,14 +418,22 @@ export class ResponseDatabase {
   /**
    * エンドポイントを取得する
    */
-  public async getEndpoints(): Promise<ResponseEndPointWithCount[]> {
+  public async getEndpoints(
+    filterEndpointType: RequestType | null = null
+  ): Promise<ResponseEndPointWithCount[]> {
     if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
 
     // エンドポイント一覧を取得する
-    const [results] = await this.pool.query<ResponseEndPointResponse[]>(
+    let sql =
       'SELECT DISTINCT endpoint_type, method, endpoint, status_code FROM responses'
+    if (filterEndpointType !== null) {
+      sql += ' WHERE endpoint_type = :endpointType'
+    }
+    const [results] = await this.pool.query<ResponseEndPointResponse[]>(
+      sql,
+      filterEndpointType === null ? {} : { endpointType: filterEndpointType }
     )
 
     const responseEndpoints: ResponseEndPointWithCount[] = await Promise.all(
