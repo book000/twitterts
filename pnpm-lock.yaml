@@ -43,8 +43,8 @@ importers:
         specifier: 20.14.15
         version: 20.14.15
       ctix:
-        specifier: 2.6.0
-        version: 2.6.0(prettier-plugin-organize-imports@3.2.4(prettier@3.3.3)(typescript@5.5.4))(prettier@3.3.3)(typescript@5.5.4)
+        specifier: 2.6.1
+        version: 2.6.1(prettier-plugin-organize-imports@3.2.4(prettier@3.3.3)(typescript@5.5.4))(prettier@3.3.3)(typescript@5.5.4)
       eslint:
         specifier: 9.9.0
         version: 9.9.0
@@ -1103,14 +1103,14 @@ packages:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
 
-  ctix@2.6.0:
-    resolution: {integrity: sha512-dLhaFUJkVQL9NyQvuE2UGt0rsQGnAFy5OJRBEgVGbbhH9LLqScG9Sa3jO9TNny16CJuOfbqyU93KU9VDxia64g==}
+  ctix@2.6.1:
+    resolution: {integrity: sha512-qcM6kYKMBwJt29orH/bjgwQ1WNShk3XhR4S7scSGrNSm8DwmW8ye7UjKr8rYQCiZ3uBp/6dPY7nf9L4KcF3FpA==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
-      prettier: ^3
-      prettier-plugin-organize-imports: ^3
-      typescript: ^5
+      prettier: '>=3'
+      prettier-plugin-organize-imports: '>=3'
+      typescript: '>=5'
 
   cycle@1.0.3:
     resolution: {integrity: sha512-TVF6svNzeQCOpjCqsy0/CSy8VgObG3wXusJ73xW2GbG5rGx7lC8zxDSURicsXI2UsGdi2L0QNRCi745/wUDvsA==}
@@ -4526,7 +4526,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  ctix@2.6.0(prettier-plugin-organize-imports@3.2.4(prettier@3.3.3)(typescript@5.5.4))(prettier@3.3.3)(typescript@5.5.4):
+  ctix@2.6.1(prettier-plugin-organize-imports@3.2.4(prettier@3.3.3)(typescript@5.5.4))(prettier@3.3.3)(typescript@5.5.4):
     dependencies:
       chalk: 4.1.2
       change-case: 4.1.2
