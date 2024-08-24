@@ -85,8 +85,8 @@ importers:
         specifier: 29.2.5
         version: 29.2.5(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.16.1))(typescript@5.5.4)
       tsx:
-        specifier: 4.17.1
-        version: 4.17.1
+        specifier: 4.18.0
+        version: 4.18.0
       typedoc:
         specifier: 0.26.6
         version: 0.26.6(typescript@5.5.4)
@@ -3093,8 +3093,8 @@ packages:
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
-  tsx@4.17.1:
-    resolution: {integrity: sha512-s+poJ84lg23SPBvxQbPmyJd/tlpeBKbOnOYmhKO54L6CR/NyCF8Sw7dqLUWLuscDnKkD31h1qqX0A4FIa9ysaA==}
+  tsx@4.18.0:
+    resolution: {integrity: sha512-a1jaKBSVQkd6yEc1/NI7G6yHFfefIcuf3QJST7ZEyn4oQnxLYrZR5uZAM8UrwUa3Ge8suiZHcNS1gNrEvmobqg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -6905,7 +6905,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  tsx@4.17.1:
+  tsx@4.18.0:
     dependencies:
       esbuild: 0.23.1
       get-tsconfig: 4.7.6
