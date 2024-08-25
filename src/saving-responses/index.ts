@@ -379,7 +379,31 @@ export class ResponseDatabase {
     }
 
     const [results] = await this.pool.query<DBResponse[]>(
-      'SELECT * FROM responses WHERE endpoint_type = :endpointType AND method = :method AND endpoint = :endpoint AND status_code = :statusCode ORDER BY created_at DESC LIMIT :offset, :limit',
+        `SELECT
+            endpoint_type AS endpointType,
+            method,
+            endpoint,
+            url,
+            url_hash AS urlHash,
+            request_headers AS requestHeaders,
+            request_body AS requestBody,
+            response_type AS responseType,
+            status_code AS statusCode,
+            response_headers AS responseHeaders,
+            response_body AS responseBody,
+            created_at AS createdAt
+        FROM
+            responses
+        WHERE
+            endpoint_type = :endpointType
+            AND method = :method
+            AND endpoint = :endpoint
+            AND status_code = :statusCode
+        LIMIT
+          :offset,
+          :limit
+        ORDER BY
+            created_at DESC`,
       {
         ...endpointValue,
         offset: (page - 1) * limit,
