@@ -427,7 +427,7 @@ export class ResponseDatabase {
 
     // エンドポイント一覧を取得する
     let sql =
-      'SELECT DISTINCT endpoint_type, method, endpoint, status_code FROM responses'
+      'SELECT DISTINCT endpoint_type AS endpointType, method, endpoint, status_code AS statusCode FROM responses'
     if (filterEndpointType !== null) {
       sql += ' WHERE endpoint_type = :endpointType'
     }
