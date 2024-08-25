@@ -399,11 +399,11 @@ export class ResponseDatabase {
             AND method = :method
             AND endpoint = :endpoint
             AND status_code = :statusCode
+        ORDER BY
+            created_at DESC
         LIMIT
           :offset,
-          :limit
-        ORDER BY
-            created_at DESC`,
+          :limit`,
       {
         ...endpointValue,
         offset: (page - 1) * limit,
