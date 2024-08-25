@@ -432,7 +432,7 @@ export class ResponseDatabase {
     }
 
     const [results] = await this.pool.query<CountResponse[]>(
-      'SELECT COUNT(id) AS count FROM responses WHERE endpoint_type = :endpointType AND method = :method AND endpoint = :endpoint AND status_code = :statusCode',
+      'SELECT COUNT(*) AS count FROM responses WHERE endpoint_type = :endpointType AND method = :method AND endpoint = :endpoint AND status_code = :statusCode',
       endpointValue
     )
 
