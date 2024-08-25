@@ -379,7 +379,7 @@ export class ResponseDatabase {
     }
 
     const [results] = await this.pool.query<DBResponse[]>(
-        `SELECT
+      `SELECT
             endpoint_type AS endpointType,
             method,
             endpoint,
