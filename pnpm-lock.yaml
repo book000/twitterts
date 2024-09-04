@@ -24,8 +24,8 @@ importers:
         specifier: 12.0.1
         version: 12.0.1
       puppeteer-core:
-        specifier: 23.2.2
-        version: 23.2.2
+        specifier: 23.3.0
+        version: 23.3.0
       twitter-d:
         specifier: 0.6.0
         version: 0.6.0
@@ -601,8 +601,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@puppeteer/browsers@2.3.1':
-    resolution: {integrity: sha512-uK7o3hHkK+naEobMSJ+2ySYyXtQkBxIH8Gn4MK9ciePjNV+Pf+PgY/W7iPzn2MTjl3stcYB5AlcTmPYw7AXDwA==}
+  '@puppeteer/browsers@2.4.0':
+    resolution: {integrity: sha512-x8J1csfIygOwf6D6qUAZ0ASk3z63zPb7wkNeHRerCMh82qWKUrOgkuP005AJC8lDL6/evtXETGEJVcwykKT4/g==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -2604,8 +2604,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  puppeteer-core@23.2.2:
-    resolution: {integrity: sha512-MK2Kbdmro+nX9/pfGKm8TiU5G3CuS6BbcNfkcz42GWnHp7KYsJHrP6lPDepiyvwjti5Bt/4a8U3w+DoFpIcBHQ==}
+  puppeteer-core@23.3.0:
+    resolution: {integrity: sha512-sB2SsVMFs4gKad5OCdv6w5vocvtEUrRl0zQqSyRPbo/cj1Ktbarmhxy02Zyb9R9HrssBcJDZbkrvBnbaesPyYg==}
     engines: {node: '>=18'}
 
   pure-rand@6.1.0:
@@ -3851,7 +3851,7 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@puppeteer/browsers@2.3.1':
+  '@puppeteer/browsers@2.4.0':
     dependencies:
       debug: 4.3.6
       extract-zip: 2.0.1
@@ -6294,9 +6294,9 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-core@23.2.2:
+  puppeteer-core@23.3.0:
     dependencies:
-      '@puppeteer/browsers': 2.3.1
+      '@puppeteer/browsers': 2.4.0
       chromium-bidi: 0.6.5(devtools-protocol@0.0.1330662)
       debug: 4.3.6
       devtools-protocol: 0.0.1330662
