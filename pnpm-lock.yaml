@@ -43,8 +43,8 @@ importers:
         specifier: 20.16.5
         version: 20.16.5
       ctix:
-        specifier: 2.6.3
-        version: 2.6.3(prettier-plugin-organize-imports@4.0.0(prettier@3.3.3)(typescript@5.5.4))(prettier@3.3.3)(typescript@5.5.4)
+        specifier: 2.6.4
+        version: 2.6.4(prettier-plugin-organize-imports@4.0.0(prettier@3.3.3)(typescript@5.5.4))(prettier@3.3.3)(typescript@5.5.4)
       eslint:
         specifier: 9.9.1
         version: 9.9.1
@@ -1123,8 +1123,8 @@ packages:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
 
-  ctix@2.6.3:
-    resolution: {integrity: sha512-GhJx7lJCa2k9Gbsvwd3huFZ19eW4c3yhsAYh9C6o8hEX60pdnoZiGSmI6RZrLF6ClxFm1Zv2mcGK+B8UUB10SA==}
+  ctix@2.6.4:
+    resolution: {integrity: sha512-byyRemYT2HAeHS1mIN/jhxKG7OOO96XPuPMcHg+E+Lad+oWwxpPBjRLm9f6oyYpkhVBqGPIaeQGw7kuNY9FGgw==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -4492,7 +4492,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  ctix@2.6.3(prettier-plugin-organize-imports@4.0.0(prettier@3.3.3)(typescript@5.5.4))(prettier@3.3.3)(typescript@5.5.4):
+  ctix@2.6.4(prettier-plugin-organize-imports@4.0.0(prettier@3.3.3)(typescript@5.5.4))(prettier@3.3.3)(typescript@5.5.4):
     dependencies:
       chalk: 4.1.2
       change-case: 4.1.2
