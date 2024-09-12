@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@book000/eslint-config": "1.7.28",
-    "@types/jest": "29.5.12",
+    "@types/jest": "29.5.13",
     "@types/node": "20.16.5",
     "ctix": "2.6.4",
     "eslint": "9.10.0",
