@@ -87,7 +87,8 @@ export const Utils = {
    */
   getCompileOptions(tsDocument?: string): Partial<Options> {
     const compileOptions: Partial<Options> = {
-      bannerComment: '/* eslint-disable @typescript-eslint/ban-types */',
+      bannerComment:
+        '/* eslint-disable @typescript-eslint/no-empty-object-type */',
       additionalProperties: false,
       enableConstEnums: true,
       strictIndexSignatures: true,

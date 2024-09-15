@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 
 /** GraphQL GET UsersVerifiedAvatars 成功レスポンスモデル */
 
