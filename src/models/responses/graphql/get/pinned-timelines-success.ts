@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 
 /** GraphQL GET PinnedTimelines 成功レスポンスモデル */
 
