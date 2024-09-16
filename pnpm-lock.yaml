@@ -24,8 +24,8 @@ importers:
         specifier: 12.0.1
         version: 12.0.1
       puppeteer-core:
-        specifier: 23.3.0
-        version: 23.3.0
+        specifier: 23.3.1
+        version: 23.3.1
       twitter-d:
         specifier: 0.6.0
         version: 0.6.0
@@ -2651,8 +2651,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  puppeteer-core@23.3.0:
-    resolution: {integrity: sha512-sB2SsVMFs4gKad5OCdv6w5vocvtEUrRl0zQqSyRPbo/cj1Ktbarmhxy02Zyb9R9HrssBcJDZbkrvBnbaesPyYg==}
+  puppeteer-core@23.3.1:
+    resolution: {integrity: sha512-m5gTpITEqqpSgAvPUI/Ch9igh5sNJV+BVVbqQMzqirRDVHDCkLGHaydEQZx2NZvSXdwCFrIV///cpSlX/uD0Sg==}
     engines: {node: '>=18'}
 
   pure-rand@6.1.0:
@@ -6455,7 +6455,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-core@23.3.0:
+  puppeteer-core@23.3.1:
     dependencies:
       '@puppeteer/browsers': 2.4.0
       chromium-bidi: 0.6.5(devtools-protocol@0.0.1330662)
