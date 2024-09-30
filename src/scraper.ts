@@ -719,9 +719,14 @@ export class TwitterScraper {
   constructor(options: TwitterScraperOptions) {
     this.options = options
 
+    if (!options.debugOptions?.outputResponse?.enable) {
+      this.responseDatabase = null
+      return
+    }
+
     try {
       this.responseDatabase = new ResponseDatabase(
-        options.debugOptions?.outputResponse?.db
+        options.debugOptions.outputResponse.db
       )
     } catch (error) {
       ResponseDatabase.printDebug(
