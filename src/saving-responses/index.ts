@@ -358,14 +358,12 @@ export class ResponseDatabase {
             response_body AS responseBody,
             created_at AS createdAt
         FROM
-            responses
+            responses USE INDEX (idx_endpoint_method_status)
         WHERE
             endpoint_type = :endpointType
             AND method = :method
             AND endpoint = :endpoint
-            AND status_code = :statusCode
-        ORDER BY
-            created_at DESC`,
+            AND status_code = :statusCode`,
         endpointValue
       )
 
@@ -393,14 +391,12 @@ export class ResponseDatabase {
             response_body AS responseBody,
             created_at AS createdAt
         FROM
-            responses
+            responses USE INDEX (idx_endpoint_method_status)
         WHERE
             endpoint_type = :endpointType
             AND method = :method
             AND endpoint = :endpoint
             AND status_code = :statusCode
-        ORDER BY
-            created_at DESC
         LIMIT
           :offset,
           :limit`,
