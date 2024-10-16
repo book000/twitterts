@@ -88,8 +88,8 @@ importers:
         specifier: 4.19.1
         version: 4.19.1
       typedoc:
-        specifier: 0.26.9
-        version: 0.26.9(typescript@5.6.3)
+        specifier: 0.26.10
+        version: 0.26.10(typescript@5.6.3)
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -3182,8 +3182,8 @@ packages:
   typed-query-selector@2.12.0:
     resolution: {integrity: sha512-SbklCd1F0EiZOyPiW192rrHZzZ5sBijB6xM+cpmrwDqObvdtunOHHIk9fCGsoK5JVIYXoyEp4iEdE3upFH3PAg==}
 
-  typedoc@0.26.9:
-    resolution: {integrity: sha512-Rc7QpWL7EtmrT8yxV0GmhOR6xHgFnnhphbD9Suti3fz3um7ZOrou6q/g9d6+zC5PssTLZmjaW4Upmzv8T1rCcQ==}
+  typedoc@0.26.10:
+    resolution: {integrity: sha512-xLmVKJ8S21t+JeuQLNueebEuTVphx6IrP06CdV7+0WVflUSW3SPmR+h1fnWVdAR/FQePEgsSWCUHXqKKjzuUAw==}
     engines: {node: '>= 18'}
     hasBin: true
     peerDependencies:
@@ -7061,7 +7061,7 @@ snapshots:
 
   typed-query-selector@2.12.0: {}
 
-  typedoc@0.26.9(typescript@5.6.3):
+  typedoc@0.26.10(typescript@5.6.3):
     dependencies:
       lunr: 2.3.9
       markdown-it: 14.1.0
