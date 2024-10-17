@@ -24,8 +24,8 @@ importers:
         specifier: 12.0.1
         version: 12.0.1
       puppeteer-core:
-        specifier: 23.5.3
-        version: 23.5.3
+        specifier: 23.6.0
+        version: 23.6.0
       twitter-d:
         specifier: 0.6.0
         version: 0.6.0
@@ -1276,8 +1276,8 @@ packages:
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
 
-  devtools-protocol@0.0.1342118:
-    resolution: {integrity: sha512-75fMas7PkYNDTmDyb6PRJCH7ILmHLp+BhrZGeMsa4bCh40DTxgCz2NRy5UDzII4C5KuD0oBMZ9vXKhEl6UD/3w==}
+  devtools-protocol@0.0.1354347:
+    resolution: {integrity: sha512-BlmkSqV0V84E2WnEnoPnwyix57rQxAM5SKJjf4TbYOCGLAWtz8CDH8RIaGOjPgPCXo2Mce3kxSY497OySidY3Q==}
 
   diff-sequences@29.6.3:
     resolution: {integrity: sha512-EjePK1srD3P08o2j4f0ExnylqRs5B9tJjcp9t1krH2qRi8CCdsYfwe9JgSLurFBWwq4uOlipzfk5fHNvwFKr8Q==}
@@ -2685,8 +2685,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  puppeteer-core@23.5.3:
-    resolution: {integrity: sha512-V58MZD/B3CwkYsqSEQlHKbavMJptF04fzhMdUpiCRCmUVhwZNwSGEPhaiZ1f8I3ABQUirg3VNhXVB6Z1ubHXtQ==}
+  puppeteer-core@23.6.0:
+    resolution: {integrity: sha512-se1bhgUpR9C529SgHGr/eyT92mYyQPAhA2S9pGtGrVG2xob9qE6Pbp7TlqiSPlnnY1lINqhn6/67EwkdzOmKqQ==}
     engines: {node: '>=18'}
 
   pure-rand@6.1.0:
@@ -4547,9 +4547,9 @@ snapshots:
 
   chardet@0.7.0: {}
 
-  chromium-bidi@0.8.0(devtools-protocol@0.0.1342118):
+  chromium-bidi@0.8.0(devtools-protocol@0.0.1354347):
     dependencies:
-      devtools-protocol: 0.0.1342118
+      devtools-protocol: 0.0.1354347
       mitt: 3.0.1
       urlpattern-polyfill: 10.0.0
       zod: 3.23.8
@@ -4792,7 +4792,7 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
-  devtools-protocol@0.0.1342118: {}
+  devtools-protocol@0.0.1354347: {}
 
   diff-sequences@29.6.3: {}
 
@@ -6532,12 +6532,12 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-core@23.5.3:
+  puppeteer-core@23.6.0:
     dependencies:
       '@puppeteer/browsers': 2.4.0
-      chromium-bidi: 0.8.0(devtools-protocol@0.0.1342118)
+      chromium-bidi: 0.8.0(devtools-protocol@0.0.1354347)
       debug: 4.3.7
-      devtools-protocol: 0.0.1342118
+      devtools-protocol: 0.0.1354347
       typed-query-selector: 2.12.0
       ws: 8.18.0
     transitivePeerDependencies:
