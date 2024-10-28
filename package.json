@@ -45,7 +45,7 @@
     "ulid": "2.3.0"
   },
   "devDependencies": {
-    "@book000/eslint-config": "1.7.77",
+    "@book000/eslint-config": "1.7.78",
     "@types/jest": "29.5.14",
     "@types/node": "22.8.1",
     "ctix": "2.7.0",
