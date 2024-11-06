@@ -177,7 +177,7 @@ export class ResponseDatabase {
       "  `method` varchar(10) NOT NULL COMMENT 'エンドポイントのメソッド'," +
       "  `endpoint` varchar(255) NOT NULL COMMENT 'エンドポイントの名前'," +
       "  `url` text DEFAULT NULL COMMENT 'リクエストURL'," +
-      "  `url_hash` varchar(255) NOT NULL COMMENT 'リクエストURLのハッシュ値'," +
+      "  `url_hash` varchar(64) NOT NULL COMMENT 'リクエストURLのハッシュ値'," +
       "  `request_headers` longtext DEFAULT NULL COMMENT 'リクエストヘッダー'," +
       "  `request_body` longtext DEFAULT NULL COMMENT 'リクエストボディ'," +
       "  `response_type` varchar(10) NOT NULL COMMENT 'レスポンスの種別'," +
@@ -215,10 +215,10 @@ export class ResponseDatabase {
       "  `method` varchar(10) NOT NULL COMMENT 'エンドポイントのメソッド'," +
       "  `endpoint` varchar(255) NOT NULL COMMENT 'エンドポイントの名前'," +
       "  `url` text DEFAULT NULL COMMENT 'リクエストURL'," +
-      "  `url_hash` varchar(255) NOT NULL COMMENT 'リクエストURLのハッシュ値'," +
+      "  `url_hash` varchar(64) NOT NULL COMMENT 'リクエストURLのハッシュ値'," +
       "  `status_code` int(11) NOT NULL COMMENT 'レスポンスのステータスコード'," +
       "  `schema` longtext NOT NULL COMMENT '生成された型データ'," +
-      "  `schema_hash` varchar(255) NOT NULL COMMENT '生成された型データのハッシュ値'," +
+      "  `schema_hash` varchar(64) NOT NULL COMMENT '生成された型データのハッシュ値'," +
       "  `is_error` tinyint(1) NOT NULL COMMENT 'エラーレスポンスかどうか'," +
       '  PRIMARY KEY (`id`),' +
       '  UNIQUE KEY `unique_schema` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`status_code`,`schema_hash`),' +
