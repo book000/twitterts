@@ -4,7 +4,7 @@ import { compile } from 'json-schema-to-typescript'
 import path from 'node:path'
 import fs from 'node:fs'
 import { Utils } from './utils'
-import { ResponseDatabase, ResponseEndPoint } from '../saving-responses'
+import { ResponseDatabase, EndPoint } from '../saving-responses'
 import { EndPointResponseType } from '../models/responses/endpoints'
 
 /**
@@ -194,7 +194,7 @@ export class CustomTypesGenerator {
    */
   private async runGraphQLTimeline(): Promise<void> {
     const logger = Logger.configure('CustomTypesGenerator:runGraphQLTimeline')
-    const endpoints: ResponseEndPoint[] = [
+    const endpoints: EndPoint[] = [
       {
         endpointType: 'GRAPHQL',
         endpoint: 'HomeTimeline',
@@ -816,7 +816,7 @@ export class CustomTypesGenerator {
    * @param customizer レスポンスをカスタマイズする関数
    * @returns スキーマ
    */
-  private async createSchemaFromResponse<E extends ResponseEndPoint>(
+  private async createSchemaFromResponse<E extends EndPoint>(
     endpoint: E,
     customizer?: (
       response: EndPointResponseType<
@@ -829,6 +829,7 @@ export class CustomTypesGenerator {
     const logger = Logger.configure(
       'CustomTypesGenerator.createSchemaFromResponse'
     )
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     const count = await this.responseDatabase.getResponseCount(endpoint)
     if (count === 0) {
       logger.info(`⏭️ Skip ${endpoint.method} ${endpoint.endpoint}`)
@@ -842,18 +843,19 @@ export class CustomTypesGenerator {
       logger.info(
         `📖 Reading: ${endpoint.method} ${endpoint.endpoint} (page: ${page}/${maxPage})`
       )
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       const responses = await this.responseDatabase.getResponses(endpoint, {
         page,
         limit,
       })
-      let responseBodys: any[] = responses
+      let responseBodies: any[] = responses
         .filter((response) => response.responseType === 'JSON')
         .map((response) => response.responseBody)
         .filter((body) => body.length > 0)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         .map((body) => JSON.parse(body))
       if (customizer) {
-        responseBodys = responseBodys
+        responseBodies = responseBodies
           .map((body) => {
             try {
               return customizer(body)
@@ -869,7 +871,7 @@ export class CustomTypesGenerator {
           .flat()
       }
 
-      const pageSchema = createCompoundSchema(responseBodys)
+      const pageSchema = createCompoundSchema(responseBodies)
       schema = schema ? mergeSchemas([schema, pageSchema]) : pageSchema
     }
 

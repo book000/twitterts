@@ -1,7 +1,7 @@
 import { Logger } from '@book000/node-utils'
 import { Utils } from './utils'
 import fs from 'node:fs'
-import { ResponseEndPointWithCount } from '../saving-responses'
+import { EndPointWithCount } from '../saving-responses'
 
 /**
  * レスポンス種別
@@ -28,7 +28,7 @@ export class EndPointTypeGenerator {
    * @param endpoints エンドポイントの配列
    * @returns インポート文群
    */
-  generateImport(endpoints: ResponseEndPointWithCount[]): string {
+  generateImport(endpoints: EndPointWithCount[]): string {
     // import { GraphQLGetUserTweetsResponse } from './graphql/get/user-tweets'
     return endpoints
       .map((endpoint) => {
@@ -59,10 +59,7 @@ export class EndPointTypeGenerator {
    * @param type エンドポイントの種類
    * @returns メソッド名の配列
    */
-  getMethods(
-    endpoints: ResponseEndPointWithCount[],
-    type: RequestType
-  ): string[] {
+  getMethods(endpoints: EndPointWithCount[], type: RequestType): string[] {
     return endpoints
       .filter(
         (endpoint) => endpoint.endpointType.toLowerCase() === type.toLowerCase()
@@ -90,7 +87,7 @@ export class EndPointTypeGenerator {
    * @returns エンドポイント名群の定義
    */
   generateEndPointType(
-    endpoints: ResponseEndPointWithCount[],
+    endpoints: EndPointWithCount[],
     type: RequestType,
     method: string
   ): string | null {
@@ -123,7 +120,7 @@ export class EndPointTypeGenerator {
    * @param method メソッド名
    */
   generateResponseMergeType(
-    endpoints: ResponseEndPointWithCount[],
+    endpoints: EndPointWithCount[],
     type: RequestType,
     method: string
   ): string {
@@ -178,7 +175,7 @@ export class EndPointTypeGenerator {
    * @returns レスポンス型定義を紐づけるような型定義
    */
   generateResponseType(
-    endpoints: ResponseEndPointWithCount[],
+    endpoints: EndPointWithCount[],
     type: RequestType,
     method: string
   ): string {
@@ -214,7 +211,7 @@ export class EndPointTypeGenerator {
    * @returns レスポンス型定義を紐づけるような型定義
    */
   generateEndpointResponseType(
-    endpoints: ResponseEndPointWithCount[],
+    endpoints: EndPointWithCount[],
     types: readonly RequestType[]
   ): string {
     const head =
@@ -256,7 +253,7 @@ export class EndPointTypeGenerator {
   /**
    * エンドポイントのまとめ型定義（src/models/responses/endpoints.ts）を生成する
    */
-  generate(inputEndpoints: ResponseEndPointWithCount[]): void {
+  generate(inputEndpoints: EndPointWithCount[]): void {
     const logger = Logger.configure('EndPointTypeGenerator.generate')
 
     const types = ['GraphQL'] as const
