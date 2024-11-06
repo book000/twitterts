@@ -848,14 +848,14 @@ export class CustomTypesGenerator {
         page,
         limit,
       })
-      let responseBodys: any[] = responses
+      let responseBodies: any[] = responses
         .filter((response) => response.responseType === 'JSON')
         .map((response) => response.responseBody)
         .filter((body) => body.length > 0)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         .map((body) => JSON.parse(body))
       if (customizer) {
-        responseBodys = responseBodys
+        responseBodies = responseBodies
           .map((body) => {
             try {
               return customizer(body)
@@ -871,7 +871,7 @@ export class CustomTypesGenerator {
           .flat()
       }
 
-      const pageSchema = createCompoundSchema(responseBodys)
+      const pageSchema = createCompoundSchema(responseBodies)
       schema = schema ? mergeSchemas([schema, pageSchema]) : pageSchema
     }
 
