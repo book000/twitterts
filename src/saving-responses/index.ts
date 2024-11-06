@@ -2,8 +2,16 @@ import { TwitterTsError } from '../models/exceptions'
 import { HttpMethod, RequestType } from '../scraper'
 import { GraphQLEndpoint } from '../models/responses/endpoints'
 import crypto from 'node:crypto'
-import { createPool, Pool, RowDataPacket } from 'mysql2/promise'
+import {
+  createPool,
+  format,
+  Pool,
+  ResultSetHeader,
+  RowDataPacket,
+} from 'mysql2/promise'
 import { ulid } from 'ulid'
+import { Schema } from 'genson-js/dist'
+import stringify from 'json-stable-stringify'
 
 export interface AddResponseOptions {
   endpointType: RequestType
@@ -58,6 +66,7 @@ interface InformationSchemaTable extends RowDataPacket {
 }
 
 interface DBResponse extends RowDataPacket {
+  id: string
   endpointType: RequestType
   method: HttpMethod
   endpoint: string
@@ -72,25 +81,37 @@ interface DBResponse extends RowDataPacket {
   createdAt: Date
 }
 
+interface DBSchema extends RowDataPacket {
+  endpointType: RequestType
+  method: HttpMethod
+  endpoint: string
+  url: string | null
+  urlHash: string
+  statusCode: number
+  schema: string
+  schema_hash: string
+  isError: 0 | 1
+}
+
 interface CountResponse extends RowDataPacket {
   count: number
 }
 
-export interface ResponseEndPoint {
+export interface EndPoint {
   endpointType: RequestType
   method: HttpMethod
   endpoint: GraphQLEndpoint
   statusCode: number
 }
 
-interface ResponseEndPointResponse extends RowDataPacket {
+interface EndPointResponse extends RowDataPacket {
   endpointType: RequestType
   method: HttpMethod
   endpoint: GraphQLEndpoint
   statusCode: number
 }
 
-export interface ResponseEndPointWithCount {
+export interface EndPointWithCount {
   endpointType: RequestType
   method: HttpMethod
   endpoint: GraphQLEndpoint
@@ -100,6 +121,12 @@ export interface ResponseEndPointWithCount {
 
 interface partitionNameRow extends RowDataPacket {
   PARTITION_NAME: string | null
+}
+
+export interface BulkAddTypeRecord {
+  response: DBResponse
+  schema: Schema
+  isErrorResponse: boolean
 }
 
 /**
@@ -140,10 +167,10 @@ export class ResponseDatabase {
    * @returns 初期化に成功したかどうか
    */
   public async init(): Promise<boolean> {
-    const tableName = 'responses'
-    const createTableSql =
+    const responsesTableName = 'responses'
+    const createResponsesTableSql =
       'CREATE TABLE `' +
-      tableName +
+      responsesTableName +
       '` (' +
       "  `id` char(36) NOT NULL COMMENT 'ID'," +
       "  `endpoint_type` varchar(10) NOT NULL COMMENT 'エンドポイントの種別'," +
@@ -160,18 +187,87 @@ export class ResponseDatabase {
       "  `created_at` datetime(3) NOT NULL COMMENT 'データ登録日時' DEFAULT CURRENT_TIMESTAMP(3)," +
       '  PRIMARY KEY (`created_at`),' +
       '  UNIQUE KEY `unique_response` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`),' +
+      '  KEY `idx_id` (`id`),' +
       '  KEY `idx_id_createdat` (`id`,`created_at`),' +
       '  KEY `idx_endpoint_method_status` (`endpoint_type`,`method`,`endpoint`,`status_code`)' +
       ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci'
 
-    // テーブルが存在しない場合はテーブルを作成する
+    // responsesテーブルが存在しない場合はテーブルを作成する
     const [tables] = await this.pool.query<InformationSchemaTable[]>(
-      'SELECT table_name FROM information_schema.tables WHERE table_name = :tableName',
-      { tableName }
+      'SELECT table_name FROM information_schema.tables WHERE table_schema = :database AND table_name = :tableName',
+      {
+        database: process.env.RESPONSE_DB_DATABASE,
+        tableName: responsesTableName,
+      }
     )
     await (tables.length === 0
-      ? this.pool.query(createTableSql)
-      : this.migrateTable())
+      ? this.pool.query(createResponsesTableSql)
+      : Promise.resolve())
+
+    // schemataテーブルが存在しない場合はテーブルを作成する
+    const schemataTableName = 'schemata'
+    const createSchemataTableSql =
+      'CREATE TABLE `' +
+      schemataTableName +
+      '` (' +
+      "  `id` char(36) NOT NULL COMMENT 'ID'," +
+      "  `endpoint_type` varchar(10) NOT NULL COMMENT 'エンドポイントの種別'," +
+      "  `method` varchar(10) NOT NULL COMMENT 'エンドポイントのメソッド'," +
+      "  `endpoint` varchar(255) NOT NULL COMMENT 'エンドポイントの名前'," +
+      "  `url` text DEFAULT NULL COMMENT 'リクエストURL'," +
+      "  `url_hash` varchar(255) NOT NULL COMMENT 'リクエストURLのハッシュ値'," +
+      "  `status_code` int(11) NOT NULL COMMENT 'レスポンスのステータスコード'," +
+      "  `schema` longtext NOT NULL COMMENT '生成された型データ'," +
+      "  `schema_hash` varchar(255) NOT NULL COMMENT '生成された型データのハッシュ値'," +
+      "  `is_error` tinyint(1) NOT NULL COMMENT 'エラーレスポンスかどうか'," +
+      '  PRIMARY KEY (`id`),' +
+      '  UNIQUE KEY `unique_schema` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`status_code`,`schema_hash`),' +
+      '  KEY `idx_endpoint_method_status_schemata` (`endpoint_type`,`method`,`endpoint`,`status_code`)' +
+      ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci'
+
+    const [schemataTables] = await this.pool.query<InformationSchemaTable[]>(
+      'SELECT table_name FROM information_schema.tables WHERE table_schema = :database AND table_name = :tableName',
+      {
+        database: process.env.RESPONSE_DB_DATABASE,
+        tableName: schemataTableName,
+      }
+    )
+
+    await (schemataTables.length === 0
+      ? this.pool.query(createSchemataTableSql)
+      : Promise.resolve())
+
+    // schema_mappingテーブルが存在しない場合はテーブルを作成する
+    // schema_id は schemata テーブルの id に対応する。schemata テーブルの当該レコードが削除された場合は schema_mapping テーブルの当該レコードも削除する
+    // responses テーブルと response_id の間にはリレーションシップを作れない（パーティションのため）。
+    const schemaMappingTableName = 'schema_mapping'
+    const createSchemaMappingTableSql =
+      'CREATE TABLE `' +
+      schemaMappingTableName +
+      '` (' +
+      "  `response_id` char(36) NOT NULL COMMENT 'responses テーブルの該当レコード ID'," +
+      "  `schema_id` char(36) NOT NULL COMMENT 'schemata テーブルの該当レコード ID'," +
+      '  FOREIGN KEY (`schema_id`) REFERENCES schemata(`id`) ON DELETE CASCADE,' +
+      '  PRIMARY KEY (`response_id`,`schema_id`),' +
+      '  KEY `idx_response_id` (`response_id`),' +
+      '  KEY `idx_schema_id` (`schema_id`)' +
+      ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci'
+
+    const [schemataMappingTables] = await this.pool.query<
+      InformationSchemaTable[]
+    >(
+      'SELECT table_name FROM information_schema.tables WHERE table_schema = :database AND table_name = :tableName',
+      {
+        database: process.env.RESPONSE_DB_DATABASE,
+        tableName: schemaMappingTableName,
+      }
+    )
+
+    await (schemataMappingTables.length === 0
+      ? this.pool.query(createSchemaMappingTableSql)
+      : Promise.resolve())
+
+    await this.migrateTable()
 
     this.initialized = true
 
@@ -189,83 +285,193 @@ export class ResponseDatabase {
   /**
    * テーブルをマイグレーションする
    */
-  private async migrateTable(): Promise<void> {
-    // プライマリキーがid, created_atではない場合は削除する
-    const [columns] = await this.pool.query<RowDataPacket[]>(
-      'SHOW COLUMNS FROM responses'
-    )
-    const isPrimaryKeyCreatedAt = columns.some(
-      (column) =>
-        column.Field === 'created_at' &&
-        column.Key === 'PRI' &&
-        column.Extra === ''
-    )
-
-    if (!isPrimaryKeyCreatedAt) {
-      await this.pool.query('ALTER TABLE responses DROP PRIMARY KEY')
-    }
-
-    // id列がない場合は追加する
-    const [idColumn] = await this.pool.query<RowDataPacket[]>(
-      'SHOW COLUMNS FROM responses WHERE Field = "id"'
-    )
-    if (idColumn.length === 0) {
-      await this.pool.query(
-        'ALTER TABLE responses ADD COLUMN `id` CHAR(36) NULL'
-      )
-      // すべてのレコードにレコードごとで一意のIDを付与する
-      const [rows] = await this.pool.query<DBResponse[]>(
-        'SELECT * FROM responses'
-      )
-      for (const row of rows) {
-        await this.pool.query(
-          'UPDATE responses SET id = :id WHERE created_at = :createdAt',
-          {
-            id: ulid(),
-            createdAt: row.createdAt,
-          }
-        )
+  private async migrateTable(): Promise<Record<string, string>> {
+    const migrationProcesses = [
+      'Table:responses, Check PRIMARY KEY',
+      'Table:responses, Check UNIQUE KEY',
+      'Table:responses, Check INDEX',
+      'Table:schemata, Check PRIMARY KEY',
+      'Table:schemata, Check UNIQUE KEY',
+      'Table:schema_mapping, Check PRIMARY KEY',
+      'Table:schema_mapping, Check INDEX',
+    ] as const
+    const migrationResults: {
+      [key in (typeof migrationProcesses)[number]]: string
+    } = (() => {
+      const acc: { [key in (typeof migrationProcesses)[number]]: string } =
+        {} as any
+      for (const process of migrationProcesses) {
+        acc[process] = 'UNKNOWN'
       }
-      await this.pool.query(
-        'ALTER TABLE responses MODIFY COLUMN `id` CHAR(36) NOT NULL'
-      )
-    }
+      return acc
+    })()
 
-    // プライマリキーを付けなおす
-    if (!isPrimaryKeyCreatedAt) {
-      await this.pool.query(
-        'ALTER TABLE responses ADD PRIMARY KEY (`created_at`)'
-      )
-    }
-
-    // ユニークキーがない場合は追加する
-    const [uniqueKeyResponse] = await this.pool.query<RowDataPacket[]>(
-      'SHOW INDEX FROM responses WHERE Key_name = "unique_response"'
+    // --- responses テーブル ---
+    // PRIMARY KEY の確認。存在し、created_at が PRIMARY KEY になっていることを確認する
+    // PRIMARY KEY が存在しない場合は作成する
+    // PRIMARY KEY が created_at ではない場合は created_at に変更する
+    const [primaryKeyResults] = await this.pool.query<InformationSchemaTable[]>(
+      'SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_NAME = "responses" AND CONSTRAINT_NAME = "PRIMARY"'
     )
-    if (uniqueKeyResponse.length === 0) {
+    if (primaryKeyResults.length === 0) {
       await this.pool.query(
-        'ALTER TABLE responses ADD UNIQUE KEY `unique_response` (`endpoint_type`,`method`,`endpoint`,`url_hash`,`created_at`)'
+        'ALTER TABLE responses ADD PRIMARY KEY (id), DROP PRIMARY KEY created_at'
       )
+      migrationResults['Table:responses, Check PRIMARY KEY'] = 'ALTERED'
+    }
+    if (
+      primaryKeyResults.length === 1 &&
+      primaryKeyResults[0].COLUMN_NAME !== 'created_at'
+    ) {
+      await this.pool.query(
+        'ALTER TABLE responses DROP PRIMARY KEY, ADD PRIMARY KEY (created_at)'
+      )
+      migrationResults['Table:responses, Check PRIMARY KEY'] =
+        'DROP_AND_ALTERED'
     }
 
-    const [uniqueKeyidCreatedAt] = await this.pool.query<RowDataPacket[]>(
-      'SHOW INDEX FROM responses WHERE Key_name = "idx_id_createdat"'
+    // UNIQUE KEY の確認。存在し、unique_response が UNIQUE KEY になっていることを確認する
+    // UNIQUE KEY が存在しない場合は作成する
+    const [uniqueKeyResults] = await this.pool.query<InformationSchemaTable[]>(
+      'SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_NAME = "responses" AND CONSTRAINT_NAME = "unique_response"'
     )
-    if (uniqueKeyidCreatedAt.length === 0) {
+    if (uniqueKeyResults.length === 0) {
       await this.pool.query(
-        'ALTER TABLE responses ADD UNIQUE KEY `idx_id_createdat` (`id`,`created_at`)'
+        'ALTER TABLE responses ADD UNIQUE KEY unique_response (endpoint_type, method, endpoint, url_hash, created_at)'
       )
+      migrationResults['Table:responses, Check UNIQUE KEY'] = 'ALTERED'
     }
 
-    // idx_から始まるインデックスは、idx_endpoint_method_statusかidx_id_createdatのみとする。それ以外は削除する
-    const [indexes] = await this.pool.query<RowDataPacket[]>(
-      'SHOW INDEX FROM responses WHERE Key_name LIKE "idx_%" AND Key_name NOT IN ("idx_endpoint_method_status", "idx_id_createdat")'
+    // INDEX の確認
+    // idx_id が存在することを確認する。存在しない場合は作成する
+    // 生成に時間がかかりすぎるためコメントアウト
+    /*
+    const [idxIdResults] = await this.pool.query<InformationSchemaTable[]>(
+      'SELECT * FROM information_schema.STATISTICS WHERE TABLE_NAME = "responses" AND INDEX_NAME = "idx_id"'
     )
-    for (const index of indexes) {
-      await this.pool.query(
-        `ALTER TABLE responses DROP INDEX ${index.Key_name}`
-      )
+    if (idxIdResults.length === 0) {
+      await this.pool.query('CREATE INDEX idx_id ON responses (id)')
+      migrationResults['Table:responses, Check INDEX'] = 'CREATED'
     }
+    */
+
+    // idx_id_createdat が存在することを確認する。存在しない場合は作成する
+    const [idxIdCreatedAtResults] = await this.pool.query<
+      InformationSchemaTable[]
+    >(
+      'SELECT * FROM information_schema.STATISTICS WHERE TABLE_NAME = "responses" AND INDEX_NAME = "idx_id_createdat"'
+    )
+    if (idxIdCreatedAtResults.length === 0) {
+      await this.pool.query(
+        'CREATE INDEX idx_id_createdat ON responses (id, created_at)'
+      )
+      migrationResults['Table:responses, Check INDEX'] = 'CREATED'
+    }
+
+    // idx_endpoint_method_status が存在することを確認する。存在しない場合は作成する
+    const [idxEndpointMethodStatusResults] = await this.pool.query<
+      InformationSchemaTable[]
+    >(
+      'SELECT * FROM information_schema.STATISTICS WHERE TABLE_NAME = "responses" AND INDEX_NAME = "idx_endpoint_method_status"'
+    )
+    if (idxEndpointMethodStatusResults.length === 0) {
+      await this.pool.query(
+        'CREATE INDEX idx_endpoint_method_status ON responses (endpoint_type, method, endpoint, status_code)'
+      )
+      migrationResults['Table:responses, Check INDEX'] = 'CREATED'
+    }
+
+    // --- schemata テーブル ---
+    // PRIMARY KEY の確認。存在し、id が PRIMARY KEY になっていることを確認する
+    // PRIMARY KEY が存在しない場合は作成する
+    // PRIMARY KEY が id ではない場合は id に変更する
+    const [schemataPrimaryKeyResults] = await this.pool.query<
+      InformationSchemaTable[]
+    >(
+      'SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_NAME = "schemata" AND CONSTRAINT_NAME = "PRIMARY"'
+    )
+    if (schemataPrimaryKeyResults.length === 0) {
+      await this.pool.query('ALTER TABLE schemata ADD PRIMARY KEY (id)')
+      migrationResults['Table:schemata, Check PRIMARY KEY'] = 'ALTERED'
+    }
+    if (
+      schemataPrimaryKeyResults.length === 1 &&
+      schemataPrimaryKeyResults[0].COLUMN_NAME !== 'id'
+    ) {
+      await this.pool.query(
+        'ALTER TABLE schemata DROP PRIMARY KEY, ADD PRIMARY KEY (id)'
+      )
+      migrationResults['Table:schemata, Check PRIMARY KEY'] = 'DROP_AND_ALTERED'
+    }
+
+    // UNIQUE KEY の確認。存在し、unique_schema が UNIQUE KEY になっていることを確認する
+    // UNIQUE KEY が存在しない場合は作成する
+    const [schemataUniqueKeyResults] = await this.pool.query<
+      InformationSchemaTable[]
+    >(
+      'SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_NAME = "schemata" AND CONSTRAINT_NAME = "unique_schema"'
+    )
+    if (schemataUniqueKeyResults.length === 0) {
+      await this.pool.query(
+        'ALTER TABLE schemata ADD UNIQUE KEY unique_schema (endpoint_type, method, endpoint, url_hash, status_code, schema_hash)'
+      )
+      migrationResults['Table:schemata, Check UNIQUE KEY'] = 'ALTERED'
+    }
+
+    // --- schema_mapping テーブル ---
+    // PRIMARY KEY の確認。存在し、response_id が PRIMARY KEY になっていることを確認する
+    // PRIMARY KEY が存在しない場合は作成する
+    // PRIMARY KEY が response_id ではない場合は response_id に変更する
+    const [schemaMappingPrimaryKeyResults] = await this.pool.query<
+      InformationSchemaTable[]
+    >(
+      'SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_NAME = "schema_mapping" AND CONSTRAINT_NAME = "PRIMARY"'
+    )
+    if (schemaMappingPrimaryKeyResults.length === 0) {
+      await this.pool.query(
+        'ALTER TABLE schema_mapping ADD PRIMARY KEY (response_id, schema_id)'
+      )
+      migrationResults['Table:schema_mapping, Check PRIMARY KEY'] = 'ALTERED'
+    }
+    if (
+      schemaMappingPrimaryKeyResults.length === 1 &&
+      schemaMappingPrimaryKeyResults[0].COLUMN_NAME !== 'response_id'
+    ) {
+      await this.pool.query(
+        'ALTER TABLE schema_mapping DROP PRIMARY KEY, ADD PRIMARY KEY (response_id, schema_id)'
+      )
+      migrationResults['Table:schema_mapping, Check PRIMARY KEY'] =
+        'DROP_AND_ALTERED'
+    }
+
+    // INDEX の確認
+    // idx_response_id が存在することを確認する。存在しない場合は作成する
+    const [schemaMappingIdxResponseIdResults] = await this.pool.query<
+      InformationSchemaTable[]
+    >(
+      'SELECT * FROM information_schema.STATISTICS WHERE TABLE_NAME = "schema_mapping" AND INDEX_NAME = "idx_response_id"'
+    )
+    if (schemaMappingIdxResponseIdResults.length === 0) {
+      await this.pool.query(
+        'CREATE INDEX idx_response_id ON schema_mapping (response_id)'
+      )
+      migrationResults['Table:schema_mapping, Check INDEX'] = 'CREATED'
+    }
+
+    // idx_schema_id が存在することを確認する。存在しない場合は作成する
+    const [schemaMappingIdxSchemaIdResults] = await this.pool.query<
+      InformationSchemaTable[]
+    >(
+      'SELECT * FROM information_schema.STATISTICS WHERE TABLE_NAME = "schema_mapping" AND INDEX_NAME = "idx_schema_id"'
+    )
+    if (schemaMappingIdxSchemaIdResults.length === 0) {
+      await this.pool.query(
+        'CREATE INDEX idx_schema_id ON schema_mapping (schema_id)'
+      )
+      migrationResults['Table:schema_mapping, Check INDEX'] = 'CREATED'
+    }
+
+    return migrationResults
   }
 
   /**
@@ -281,21 +487,22 @@ export class ResponseDatabase {
     const now = new Date()
     await this.addPartition(now)
 
-    const insertSql =
-      'INSERT IGNORE INTO responses SET ' +
-      'id = :id, ' +
-      'endpoint_type = :endpointType, ' +
-      'method = :method, ' +
-      'endpoint = :endpoint, ' +
-      'url = :url, ' +
-      'url_hash = :urlHash, ' +
-      'request_headers = :requestHeaders, ' +
-      'request_body = :requestBody, ' +
-      'response_type = :responseType, ' +
-      'status_code = :statusCode, ' +
-      'response_headers = :responseHeaders, ' +
-      'response_body = :responseBody, ' +
-      'created_at = :createdAt'
+    const insertSql = `INSERT
+        IGNORE INTO responses
+      SET
+        id = :id,
+        endpoint_type = :endpointType,
+        method = :method,
+        endpoint = :endpoint,
+        url = :url,
+        url_hash = :urlHash,
+        request_headers = :requestHeaders,
+        request_body = :requestBody,
+        response_type = :responseType,
+        status_code = :statusCode,
+        response_headers = :responseHeaders,
+        response_body = :responseBody,
+        created_at = :createdAt`
     await this.pool.query(insertSql, {
       id: ulid(),
       endpointType: options.endpointType,
@@ -323,9 +530,10 @@ export class ResponseDatabase {
    * @param rangeOptions 取得するレスポンスの範囲
    *
    * @returns レスポンスの配列
+   * @deprecated 単一エンドポイントのスキーマを生成する場合にはこのメソッドは推奨されません。代わりに getSchemata を使用してください。
    */
   public async getResponses(
-    endpoint: ResponseEndPoint,
+    endpoint: EndPoint,
     rangeOptions?: GetResponseRangeOptions
   ): Promise<DBResponse[]> {
     if (!this.initialized) {
@@ -345,6 +553,7 @@ export class ResponseDatabase {
     if (page === undefined || limit === undefined) {
       const [results] = await this.pool.query<DBResponse[]>(
         `SELECT
+            id,
             endpoint_type AS endpointType,
             method,
             endpoint,
@@ -378,6 +587,7 @@ export class ResponseDatabase {
 
     const [results] = await this.pool.query<DBResponse[]>(
       `SELECT
+            id,
             endpoint_type AS endpointType,
             method,
             endpoint,
@@ -415,8 +625,9 @@ export class ResponseDatabase {
    *
    * @param endpoint エンドポイントの情報。指定しない場合はすべてのレスポンスを取得する
    * @returns レスポンスの数
+   * @deprecated 単一エンドポイントのスキーマを生成する場合にはこのメソッドは推奨されません。代わりに getSchemata を使用してください。
    */
-  public async getResponseCount(endpoint: ResponseEndPoint): Promise<number> {
+  public async getResponseCount(endpoint: EndPoint): Promise<number> {
     if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
@@ -436,29 +647,142 @@ export class ResponseDatabase {
   }
 
   /**
+   * スキーマを取得する
+   *
+   * @param endpoint エンドポイントの情報。指定しない場合はすべてのスキーマを取得する
+   * @param rangeOptions 取得するスキーマの範囲
+   *
+   * @returns スキーマの配列
+   */
+  public async getSchemata(
+    endpoint: EndPoint,
+    rangeOptions?: GetResponseRangeOptions
+  ): Promise<DBSchema[]> {
+    if (!this.initialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    const options = rangeOptions ?? {}
+    const page = options.page
+    const limit = options.limit
+
+    // SchemaEndPointWithCountで来る場合があるので、SchemaEndPointに変換する
+    const endpointValue = {
+      endpointType: endpoint.endpointType,
+      method: endpoint.method,
+      endpoint: endpoint.endpoint,
+      statusCode: endpoint.statusCode,
+    }
+    if (page === undefined || limit === undefined) {
+      const [results] = await this.pool.query<DBSchema[]>(
+        `SELECT
+            endpoint_type AS endpointType,
+            method,
+            endpoint,
+            url,
+            url_hash AS urlHash,
+            status_code AS statusCode,
+            \`schema\`,
+            schema_hash AS schemaHash,
+            is_error AS isError
+        FROM
+            schemata USE INDEX (idx_endpoint_method_status_schemata)
+        WHERE
+            endpoint_type = :endpointType
+            AND method = :method
+            AND endpoint = :endpoint
+            AND status_code = :statusCode`,
+        endpointValue
+      )
+
+      return results
+    }
+
+    if (page <= 0 || limit <= 0) {
+      throw new TwitterTsError(
+        `Responses database range is invalid (page: ${page}, limit: ${limit})`
+      )
+    }
+
+    const [results] = await this.pool.query<DBSchema[]>(
+      `SELECT
+            endpoint_type AS endpointType,
+            method,
+            endpoint,
+            url,
+            url_hash AS urlHash,
+            status_code AS statusCode,
+            \`schema\`,
+            schema_hash AS schemaHash,
+            is_error AS isError
+        FROM
+            schemata USE INDEX (idx_endpoint_method_status_schemata)
+        WHERE
+            endpoint_type = :endpointType
+            AND method = :method
+            AND endpoint = :endpoint
+            AND status_code = :statusCode
+        LIMIT
+          :offset,
+          :limit`,
+      {
+        ...endpointValue,
+        offset: (page - 1) * limit,
+        limit,
+      }
+    )
+
+    return results
+  }
+
+  /**
+   * スキーマの数を取得する
+   *
+   * @param endpoint エンドポイントの情報。指定しない場合はすべてのスキーマを取得する
+   * @returns スキーマの数
+   */
+  public async getSchemaCount(endpoint: EndPoint): Promise<number> {
+    if (!this.initialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    const endpointValue = {
+      endpointType: endpoint.endpointType,
+      method: endpoint.method,
+      endpoint: endpoint.endpoint,
+      statusCode: endpoint.statusCode,
+    }
+
+    const [results] = await this.pool.query<CountResponse[]>(
+      'SELECT COUNT(*) AS count FROM schemata WHERE endpoint_type = :endpointType AND method = :method AND endpoint = :endpoint AND status_code = :statusCode',
+      endpointValue
+    )
+
+    return results[0].count
+  }
+
+  /**
    * エンドポイントを取得する
    */
   public async getEndpoints(
     filterEndpointType: RequestType | null = null
-  ): Promise<ResponseEndPointWithCount[]> {
+  ): Promise<EndPointWithCount[]> {
     if (!this.initialized) {
       throw new TwitterTsError('Responses database is not initialized')
     }
 
     // エンドポイント一覧を取得する
     let sql =
-      'SELECT DISTINCT endpoint_type AS endpointType, method, endpoint, status_code AS statusCode FROM responses'
+      'SELECT DISTINCT endpoint_type AS endpointType, method, endpoint, status_code AS statusCode FROM schemata'
     if (filterEndpointType !== null) {
       sql += ' WHERE endpoint_type = :endpointType'
     }
-    const [results] = await this.pool.query<ResponseEndPointResponse[]>(
+    const [results] = await this.pool.query<EndPointResponse[]>(
       sql,
       filterEndpointType === null ? {} : { endpointType: filterEndpointType }
     )
 
-    const responseEndpoints: ResponseEndPointWithCount[] = await Promise.all(
+    const schemaEndpoints: EndPointWithCount[] = await Promise.all(
       results.map(async (result) => {
-        const count = await this.getResponseCount(result)
+        const count = await this.getSchemaCount(result)
         return {
           ...result,
           count,
@@ -466,7 +790,148 @@ export class ResponseDatabase {
       })
     )
 
-    return responseEndpoints
+    return schemaEndpoints
+  }
+
+  /**
+   * 型が生成されていないレスポンスを取得する。responseTypeがJSONのもののみ取得する
+   */
+  public async getNotGeneratedSchemaResponses(
+    limit: number
+  ): Promise<DBResponse[]> {
+    if (!this.initialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+
+    const [results] = await this.pool.query<DBResponse[]>(
+      `SELECT
+        r.id,
+        r.endpoint_type AS endpointType,
+        r.method,
+        r.endpoint,
+        r.url,
+        r.url_hash AS urlHash,
+        r.request_headers AS requestHeaders,
+        r.request_body AS requestBody,
+        r.response_type AS responseType,
+        r.status_code AS statusCode,
+        r.response_headers AS responseHeaders,
+        r.response_body AS responseBody,
+        r.created_at AS createdAt
+      FROM
+        responses r
+      LEFT JOIN
+        schema_mapping tm
+      ON
+        r.id = tm.response_id
+      WHERE
+        tm.response_id IS NULL
+        AND r.response_type = 'JSON'
+        AND r.response_body IS NOT NULL
+        AND r.response_body != ''
+      LIMIT
+        :limit`,
+      { limit }
+    )
+
+    return results
+  }
+
+  /**
+   * 型が生成されていないレスポンスの数を取得する。responseTypeがJSONのもののみ取得する
+   *
+   * @returns レスポンスの数
+   */
+  public async getNotGeneratedSchemaResponseCount(): Promise<number> {
+    if (!this.initialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+
+    const [results] = await this.pool.query<CountResponse[]>(
+      `SELECT
+        COUNT(*) AS count
+      FROM
+        responses r
+      LEFT JOIN
+        schema_mapping tm
+      ON
+        r.id = tm.response_id
+      WHERE
+        tm.response_id IS NULL
+        AND r.response_type = 'JSON'
+        AND r.response_body IS NOT NULL
+        AND r.response_body != ''`
+    )
+
+    return results[0].count
+  }
+
+  /**
+   * 型を追加する処理を一括実行する
+   */
+  public async bulkAddSchema(records: BulkAddTypeRecord[]): Promise<void> {
+    if (!this.initialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+
+    // schemataテーブルに追加する。すでに存在する場合は無視する
+    const insertSchemataSql =
+      'INSERT IGNORE INTO schemata (`id`, `endpoint_type`, `method`, `endpoint`, `url`, `url_hash`, `status_code`, `schema`, `schema_hash`, `is_error`) VALUES ?'
+    const schemataRecords = records.map((record) => {
+      const schemaJson = stringify(record.schema)
+      return [
+        ulid(),
+        record.response.endpointType,
+        record.response.method,
+        record.response.endpoint,
+        record.response.url,
+        record.response.urlHash,
+        record.response.statusCode,
+        schemaJson,
+        crypto.createHash('sha256').update(schemaJson).digest('hex'),
+        record.isErrorResponse ? 1 : 0,
+      ]
+    })
+    const insertSchemataFormattedSql = format(insertSchemataSql, [
+      schemataRecords,
+    ])
+    await this.pool.execute({
+      sql: insertSchemataFormattedSql,
+      namedPlaceholders: false,
+    })
+
+    // schema_mappingテーブルに追加する。すでに存在する場合は無視する
+    const insertSchemaMappingSql = `INSERT
+        IGNORE INTO schema_mapping
+      SET
+        response_id = :responseId,
+        schema_id = (
+          SELECT
+            id
+          FROM
+            schemata
+          WHERE
+            endpoint_type = :endpointType
+            AND method = :method
+            AND endpoint = :endpoint
+            AND url_hash = :urlHash
+            AND status_code = :statusCode
+            AND schema_hash = :schemaHash
+        )`
+    for (const record of records) {
+      await this.pool.query(insertSchemaMappingSql, {
+        responseId: record.response.id,
+        endpointType: record.response.endpointType,
+        method: record.response.method,
+        endpoint: record.response.endpoint,
+        urlHash: record.response.urlHash,
+        statusCode: record.response.statusCode,
+        schemaHash: crypto
+          .createHash('sha256')
+          .update(stringify(record.schema))
+          .digest('hex'),
+      })
+    }
   }
 
   /**
@@ -554,6 +1019,37 @@ export class ResponseDatabase {
       `ALTER TABLE responses DROP PARTITION ${partitionName}`
     )
     this.partitions = this.partitions.filter((v) => v !== partitionName)
+  }
+
+  /**
+   * テーブルのレコードを最適化する。以下の処理を行う
+   * - schema_mapping テーブルのレコードのうち、responses テーブルに存在しない response_id を持つレコードを削除する
+   * - schemata テーブルのレコードのうち、schema_mapping テーブルに存在しない schema_id を持つレコードを削除する
+   */
+  public async optimizeTableRecords(): Promise<{
+    deletedTypeMappingCount: number
+    deletedSchemataCount: number
+  }> {
+    if (!this.initialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+    // schema_mapping テーブルのレコードのうち、responses テーブルに存在しない response_id を持つレコードを削除する
+    const [deletedTypeMappingRows] = await this.pool.query<ResultSetHeader>(
+      `DELETE tm FROM schema_mapping tm LEFT JOIN responses r ON tm.response_id = r.id WHERE r.id IS NULL`
+    )
+
+    // schemata テーブルのレコードのうち、schema_mapping テーブルに存在しない schema_id を持つレコードを削除する
+    const [deletedSchemataRows] = await this.pool.query<ResultSetHeader>(
+      `DELETE s FROM schemata s LEFT JOIN schema_mapping tm ON s.id = tm.schema_id WHERE tm.schema_id IS NULL`
+    )
+
+    const deletedTypeMappingCount = deletedTypeMappingRows.affectedRows
+    const deletedSchemataCount = deletedSchemataRows.affectedRows
+
+    return {
+      deletedTypeMappingCount,
+      deletedSchemataCount,
+    }
   }
 
   /**

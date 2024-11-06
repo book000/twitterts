@@ -119,6 +119,12 @@ class GenerateTypes {
         await responseDatabase.dropPartition(targetPartition)
       }
 
+      logger.info('🚀 Optimize table records...')
+      const { deletedTypeMappingCount, deletedSchemataCount } =
+        await responseDatabase.optimizeTableRecords()
+      logger.info(`⚡ Delete from type_mapping: ${deletedTypeMappingCount}`)
+      logger.info(`⚡ Delete from schemata: ${deletedSchemataCount}`)
+
       logger.info('🔍 Getting endpoints...')
       const rawEndpoints = await this.calculateTime('GetEndpoints', () =>
         responseDatabase.getEndpoints('GRAPHQL')

@@ -1,13 +1,10 @@
 import { Logger } from '@book000/node-utils'
-import { createCompoundSchema, mergeSchemas } from 'genson-js/dist'
+import { mergeSchemas } from 'genson-js/dist'
 import { compile } from 'json-schema-to-typescript'
 import path from 'node:path'
 import fs from 'node:fs'
 import { Utils } from './utils'
-import {
-  ResponseDatabase,
-  ResponseEndPointWithCount,
-} from '../saving-responses'
+import { ResponseDatabase, EndPointWithCount } from '../saving-responses'
 
 /**
  * 単一の型定義生成オプション（TwitterGenerateTypes.generateType）
@@ -78,7 +75,7 @@ interface GenerateTypesOptions {
   /**
    * エンドポイントの配列
    */
-  endpoints: ResponseEndPointWithCount[]
+  endpoints: EndPointWithCount[]
 }
 
 /**
@@ -105,7 +102,7 @@ export class TwitterTypesGenerator {
    */
   private async generateType(
     options: GenerateTypeOptions,
-    endpoint: ResponseEndPointWithCount
+    endpoint: EndPointWithCount
   ): Promise<void> {
     const logger = Logger.configure('TwitterGenerateTypes.generateType')
 
@@ -115,60 +112,34 @@ export class TwitterTypesGenerator {
     const count = endpoint.count
     const maxPage = Math.ceil(count / limit) + 1
 
-    let schema
+    let mergedSchema
     for (let page = 1; page <= maxPage; page++) {
       logger.info(
         `📖  Reading: ${endpoint.method} ${endpoint.endpoint} (page: ${page}/${maxPage})`
       )
-      const responses = await this.responseDatabase.getResponses(endpoint, {
+      const schemata = await this.responseDatabase.getSchemata(endpoint, {
         page,
         limit,
       })
 
-      let responseBodys = responses
-        .filter((response) => response.responseType === 'JSON')
-        .map((response) => response.responseBody)
-        .filter((body) => body.length > 0)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        .map((body) => JSON.parse(body))
-
-      const responseBodyErrors = responseBodys
-        .filter(
-          (responseBody) =>
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            'errors' in responseBody && responseBody.errors.length > 0
-        )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-        .map((responseBody) => responseBody.errors[0].message)
-      if (!options.ignoreError && responseBodyErrors.length > 0) {
-        const uniqueErrors = responseBodyErrors.filter(
-          (error, index, self) => self.indexOf(error) === index
-        )
-        for (const error of uniqueErrors) {
-          logger.error(`⚠️ ${options.name}: ${error}`)
-        }
-
-        responseBodys = responseBodys.filter(
-          (responseBody) =>
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            !('errors' in responseBody && responseBody.errors.length > 0)
-        )
+      for (const { schema } of schemata) {
+        const parsedSchema = JSON.parse(schema)
+        mergedSchema = mergedSchema
+          ? mergeSchemas([mergedSchema, parsedSchema])
+          : parsedSchema
       }
-
-      const pageSchema = createCompoundSchema(responseBodys)
-      schema = schema ? mergeSchemas([schema, pageSchema]) : pageSchema
     }
-    if (!schema) {
+    if (!mergedSchema) {
       logger.warn(`⚠️ ${options.name}: No responses`)
       return
     }
 
     fs.mkdirSync(path.dirname(options.path.schema), { recursive: true })
-    fs.writeFileSync(options.path.schema, JSON.stringify(schema, null, 2))
+    fs.writeFileSync(options.path.schema, JSON.stringify(mergedSchema, null, 2))
 
     fs.mkdirSync(path.dirname(options.path.types), { recursive: true })
     const types = await compile(
-      schema,
+      mergedSchema,
       options.name,
       Utils.getCompileOptions(options.tsDocument)
     )
