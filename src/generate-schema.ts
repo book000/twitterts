@@ -43,19 +43,29 @@ class GenerateSchema {
       logger.info(`⚡ Delete from type_mapping: ${deletedTypeMappingCount}`)
       logger.info(`⚡ Delete from schemata: ${deletedSchemataCount}`)
 
-      logger.info('🔍 Getting not generated schema count...')
-      const count = await responseDatabase.getNotGeneratedSchemaResponseCount()
-      logger.info(`🔍 Found ${count} responses`)
-
-      let remaining = count
+      let processedCount = 0
+      let page = 0
       while (true) {
-        logger.info(`🚀 Generate schema...: ${pageLimit}`)
+        page++
+        logger.info(
+          `🚀 Generating #${page} : Loading not generated schema responses`
+        )
+        const loadStartTimestamp = Date.now()
         const responses =
           await responseDatabase.getNotGeneratedSchemaResponses(pageLimit)
-        if (responses.length === 0) {
+        const loadEndTimestamp = Date.now()
+
+        const filteredResponses = responses.filter(
+          (response) =>
+            response.responseBody.trim().length > 0 &&
+            response.responseType === 'JSON'
+        )
+        if (filteredResponses.length === 0) {
           break
         }
 
+        logger.info(`🚀 Generating #${page} : Generating schema`)
+        const generateStartTimestamp = Date.now()
         const records: BulkAddTypeRecord[] = []
         for (const response of responses) {
           const { responseBody } = response
@@ -71,19 +81,55 @@ class GenerateSchema {
             isErrorResponse,
             schema,
           })
+
+          processedCount++
         }
+        const generateEndTimestamp = Date.now()
 
+        logger.info(`🚀 Generating #${page} : Bulk add schema`)
+        const addStartTimestamp = Date.now()
         await responseDatabase.bulkAddSchema(records)
+        const addEndTimestamp = Date.now()
 
-        remaining -= responses.length
+        const loadTime = loadEndTimestamp - loadStartTimestamp
+        const formattedLoadTime = this.formatTime(loadTime)
+        const generateTime = generateEndTimestamp - generateStartTimestamp
+        const formattedGenerateTime = this.formatTime(generateTime)
+        const addTime = addEndTimestamp - addStartTimestamp
+        const formattedAddTime = this.formatTime(addTime)
 
-        logger.info(`Remaining: ${remaining}`)
+        logger.info(
+          `🆗 Generated #${page} : Processed: ${processedCount} / Load: ${formattedLoadTime} / Generate: ${formattedGenerateTime} / Add: ${formattedAddTime}`
+        )
       }
     } catch (error) {
       logger.error('🚨 Failed to generate schema', error as Error)
     } finally {
       await responseDatabase.close()
     }
+  }
+
+  formatTime(time: number): string {
+    const millisecond = time % 1000
+    const second = Math.floor(time / 1000) % 60
+    const minute = Math.floor(time / 1000 / 60) % 60
+    const hour = Math.floor(time / 1000 / 60 / 60)
+
+    const millisecondString = millisecond.toString().padStart(3, '0')
+    const secondString = second.toString().padStart(2, '0')
+    const minuteString = minute.toString().padStart(2, '0')
+    const hourString = hour.toString().padStart(2, '0')
+
+    if (hour > 0) {
+      return `${hourString}:${minuteString}:${secondString}.${millisecondString}`
+    }
+    if (minute > 0) {
+      return `${minuteString}:${secondString}.${millisecondString}`
+    }
+    if (second > 0) {
+      return `${secondString}.${millisecondString}`
+    }
+    return `0.${millisecondString}`
   }
 }
 
