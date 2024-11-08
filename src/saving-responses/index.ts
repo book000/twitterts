@@ -838,35 +838,6 @@ export class ResponseDatabase {
   }
 
   /**
-   * 型が生成されていないレスポンスの数を取得する。responseTypeがJSONのもののみ取得する
-   *
-   * @returns レスポンスの数
-   */
-  public async getNotGeneratedSchemaResponseCount(): Promise<number> {
-    if (!this.initialized) {
-      throw new TwitterTsError('Responses database is not initialized')
-    }
-
-    const [results] = await this.pool.query<CountResponse[]>(
-      `SELECT
-        COUNT(*) AS count
-      FROM
-        responses r
-      LEFT JOIN
-        schema_mapping tm
-      ON
-        r.id = tm.response_id
-      WHERE
-        tm.response_id IS NULL
-        AND r.response_type = 'JSON'
-        AND r.response_body IS NOT NULL
-        AND r.response_body != ''`
-    )
-
-    return results[0].count
-  }
-
-  /**
    * 型を追加する処理を一括実行する
    */
   public async bulkAddSchema(records: BulkAddTypeRecord[]): Promise<void> {
