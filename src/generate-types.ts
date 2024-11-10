@@ -121,7 +121,15 @@ class GenerateTypes {
 
       logger.info('🚀 Optimize table records...')
       const { deletedTypeMappingCount, deletedSchemataCount } =
-        await responseDatabase.optimizeTableRecords()
+        await responseDatabase
+          .optimizeTableRecords()
+          .catch((error: unknown) => {
+            logger.error('🚨 Failed to optimize table records', error as Error)
+            return {
+              deletedTypeMappingCount: 0,
+              deletedSchemataCount: 0,
+            }
+          })
       logger.info(`⚡ Delete from type_mapping: ${deletedTypeMappingCount}`)
       logger.info(`⚡ Delete from schemata: ${deletedSchemataCount}`)
 
