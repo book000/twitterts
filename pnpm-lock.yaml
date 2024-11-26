@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@book000/node-utils':
-        specifier: 1.13.364
-        version: 1.13.364
+        specifier: 1.13.367
+        version: 1.13.367
       genson-js:
         specifier: 0.0.8
         version: 0.0.8
@@ -281,8 +281,8 @@ packages:
       eslint: 9.13.0
       eslint-config-standard: 17.1.0
 
-  '@book000/node-utils@1.13.364':
-    resolution: {integrity: sha512-w3hwbHnWO7X7vo0eBxA1lFJW2tfcQ2vREclLOEHkM0QxLIi551yDJGbEZN6x+4SUI3QSRLbri1eKup9ONsrvYg==}
+  '@book000/node-utils@1.13.367':
+    resolution: {integrity: sha512-+n10dinLggQqmGfoOeFALWACNk2Au72MswlTJ28cW07bd8xpea4RCV0mNrj2aK03BZVH6tw027R/QWi8DgcGvg==}
 
   '@colors/colors@1.6.0':
     resolution: {integrity: sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA==}
@@ -893,8 +893,8 @@ packages:
     resolution: {integrity: sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g==}
     engines: {node: '>= 6.0.0'}
 
-  axios@1.7.7:
-    resolution: {integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==}
+  axios@1.7.8:
+    resolution: {integrity: sha512-Uu0wb7KNqK2t5K+YQyVCLM76prD5sRFjKHbJYCP1J7JFGEQ6nN7HWn9+04LAeiJ3ji54lgS/gZCH1oxyrf1SPw==}
 
   b4a@1.6.7:
     resolution: {integrity: sha512-OnAYlL5b7LEkALw87fUVafQw5rVR9RjwGd4KUwNQ6DrrNmaVaUCgLipfVlzrPQ4tWOR9P0IXGNOx50jYCCdSJg==}
@@ -3640,9 +3640,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@book000/node-utils@1.13.364':
+  '@book000/node-utils@1.13.367':
     dependencies:
-      axios: 1.7.7
+      axios: 1.7.8
       cycle: 1.0.3
       form-data: 4.0.1
       jsonc-parser: 3.3.1
@@ -4375,7 +4375,7 @@ snapshots:
 
   aws-ssl-profiles@1.1.2: {}
 
-  axios@1.7.7:
+  axios@1.7.8:
     dependencies:
       follow-redirects: 1.15.9
       form-data: 4.0.1
