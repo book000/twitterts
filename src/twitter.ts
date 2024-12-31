@@ -206,11 +206,10 @@ export class Twitter {
       throw new IllegalArgumentError('timelineType is required')
     }
 
-    const endpointNames: {
-      [key in (typeof TimelineType)[keyof typeof TimelineType]]:
-        | 'HomeTimeline'
-        | 'HomeLatestTimeline'
-    } = {
+    const endpointNames: Record<
+      (typeof TimelineType)[keyof typeof TimelineType],
+      'HomeTimeline' | 'HomeLatestTimeline'
+    > = {
       [TimelineType.RECOMMEND]: 'HomeTimeline',
       [TimelineType.FOLLOWING]: 'HomeLatestTimeline',
     }
