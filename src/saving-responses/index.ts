@@ -295,11 +295,11 @@ export class ResponseDatabase {
       'Table:schema_mapping, Check PRIMARY KEY',
       'Table:schema_mapping, Check INDEX',
     ] as const
-    const migrationResults: {
-      [key in (typeof migrationProcesses)[number]]: string
-    } = (() => {
-      const acc: { [key in (typeof migrationProcesses)[number]]: string } =
-        {} as any
+    const migrationResults: Record<
+      (typeof migrationProcesses)[number],
+      string
+    > = (() => {
+      const acc: Record<(typeof migrationProcesses)[number], string> = {} as any
       for (const process of migrationProcesses) {
         acc[process] = 'UNKNOWN'
       }
@@ -848,21 +848,26 @@ export class ResponseDatabase {
     // schemataテーブルに追加する。すでに存在する場合は無視する
     const insertSchemataSql =
       'INSERT IGNORE INTO schemata (`id`, `endpoint_type`, `method`, `endpoint`, `url`, `url_hash`, `status_code`, `schema`, `schema_hash`, `is_error`) VALUES ?'
-    const schemataRecords = records.map((record) => {
-      const schemaJson = stringify(record.schema)
-      return [
-        ulid(),
-        record.response.endpointType,
-        record.response.method,
-        record.response.endpoint,
-        record.response.url,
-        record.response.urlHash,
-        record.response.statusCode,
-        schemaJson,
-        crypto.createHash('sha256').update(schemaJson).digest('hex'),
-        record.isErrorResponse ? 1 : 0,
-      ]
-    })
+    const schemataRecords = records
+      .map((record) => {
+        const schemaJson = stringify(record.schema)
+        if (!schemaJson) {
+          return null
+        }
+        return [
+          ulid(),
+          record.response.endpointType,
+          record.response.method,
+          record.response.endpoint,
+          record.response.url,
+          record.response.urlHash,
+          record.response.statusCode,
+          schemaJson,
+          crypto.createHash('sha256').update(schemaJson).digest('hex'),
+          record.isErrorResponse ? 1 : 0,
+        ]
+      })
+      .filter((v) => v !== null)
     const insertSchemataFormattedSql = format(insertSchemataSql, [
       schemataRecords,
     ])
@@ -890,6 +895,10 @@ export class ResponseDatabase {
             AND schema_hash = :schemaHash
         )`
     for (const record of records) {
+      const schemaJson = stringify(record.schema)
+      if (!schemaJson) {
+        continue
+      }
       await this.pool.query(insertSchemaMappingSql, {
         responseId: record.response.id,
         endpointType: record.response.endpointType,
@@ -899,7 +908,7 @@ export class ResponseDatabase {
         statusCode: record.response.statusCode,
         schemaHash: crypto
           .createHash('sha256')
-          .update(stringify(record.schema))
+          .update(schemaJson)
           .digest('hex'),
       })
     }
