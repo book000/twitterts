@@ -27,8 +27,8 @@ importers:
         specifier: 12.0.1
         version: 12.0.1
       puppeteer-core:
-        specifier: 24.1.0
-        version: 24.1.0
+        specifier: 24.1.1
+        version: 24.1.1
       twitter-d:
         specifier: 0.6.0
         version: 0.6.0
@@ -1025,8 +1025,8 @@ packages:
   chardet@0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
 
-  chromium-bidi@0.11.0:
-    resolution: {integrity: sha512-6CJWHkNRoyZyjV9Rwv2lYONZf1Xm0IuDyNq97nwSsxxP3wf5Bwy15K5rOvVKMtJ127jJBmxFUanSAOjgFRxgrA==}
+  chromium-bidi@1.1.0:
+    resolution: {integrity: sha512-HislCEczCuamWm3+55Lig9XKmMF13K+BGKum9rwtDAzgUAHT4h5jNwhDmD4U20VoVUG8ujnv9UZ89qiIf5uF8w==}
     peerDependencies:
       devtools-protocol: '*'
 
@@ -2662,8 +2662,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  puppeteer-core@24.1.0:
-    resolution: {integrity: sha512-ReefWoQgqdyl67uWEBy/TMZ4mAB7hP0JB5HIxSE8B1ot/4ningX1gmzHCOSNfMbTiS/VJHCvaZAe3oJTXph7yw==}
+  puppeteer-core@24.1.1:
+    resolution: {integrity: sha512-7FF3gq6bpIsbq3I8mfbodXh3DCzXagoz3l2eGv1cXooYU4g0P4mcHQVHuBD4iSZPXNg8WjzlP5kmRwK9UvwF0A==}
     engines: {node: '>=18'}
 
   pure-rand@6.1.0:
@@ -3332,8 +3332,8 @@ packages:
     resolution: {integrity: sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==}
     engines: {node: '>=18'}
 
-  zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+  zod@3.24.1:
+    resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
 
 snapshots:
 
@@ -4459,11 +4459,11 @@ snapshots:
 
   chardet@0.7.0: {}
 
-  chromium-bidi@0.11.0(devtools-protocol@0.0.1380148):
+  chromium-bidi@1.1.0(devtools-protocol@0.0.1380148):
     dependencies:
       devtools-protocol: 0.0.1380148
       mitt: 3.0.1
-      zod: 3.23.8
+      zod: 3.24.1
 
   ci-info@3.9.0: {}
 
@@ -6445,10 +6445,10 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-core@24.1.0:
+  puppeteer-core@24.1.1:
     dependencies:
       '@puppeteer/browsers': 2.7.0
-      chromium-bidi: 0.11.0(devtools-protocol@0.0.1380148)
+      chromium-bidi: 1.1.0(devtools-protocol@0.0.1380148)
       debug: 4.4.0
       devtools-protocol: 0.0.1380148
       typed-query-selector: 2.12.0
@@ -7205,4 +7205,4 @@ snapshots:
 
   yoctocolors@2.1.1: {}
 
-  zod@3.23.8: {}
+  zod@3.24.1: {}
