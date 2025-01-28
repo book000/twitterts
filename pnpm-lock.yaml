@@ -43,8 +43,8 @@ importers:
         specifier: 29.5.14
         version: 29.5.14
       '@types/json-stable-stringify':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.2.0
+        version: 1.2.0
       '@types/node':
         specifier: 22.10.10
         version: 22.10.10
@@ -690,8 +690,9 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/json-stable-stringify@1.1.0':
-    resolution: {integrity: sha512-ESTsHWB72QQq+pjUFIbEz9uSCZppD31YrVkbt2rnUciTYEvcwN6uZIhX5JZeBHqRlFJ41x/7MewCs7E2Qux6Cg==}
+  '@types/json-stable-stringify@1.2.0':
+    resolution: {integrity: sha512-PEHY3ohqolHqAzDyB1+31tFaAMnoLN7x/JgdcGmNZ2uvtEJ6rlFCUYNQc0Xe754xxCYLNGZbLUGydSE6tS4S9A==}
+    deprecated: This is a stub types definition. json-stable-stringify provides its own type definitions, so you do not need this installed.
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
@@ -4044,7 +4045,9 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/json-stable-stringify@1.1.0': {}
+  '@types/json-stable-stringify@1.2.0':
+    dependencies:
+      json-stable-stringify: 1.2.1
 
   '@types/json5@0.0.29': {}
 
