@@ -50,7 +50,7 @@ importers:
         version: 22.13.1
       ctix:
         specifier: 2.7.0
-        version: 2.7.0(prettier-plugin-organize-imports@4.1.0(prettier@3.5.0)(typescript@5.7.3))(prettier@3.5.0)(typescript@5.7.3)
+        version: 2.7.0(prettier-plugin-organize-imports@4.1.0(prettier@3.5.1)(typescript@5.7.3))(prettier@3.5.1)(typescript@5.7.3)
       eslint:
         specifier: 9.20.1
         version: 9.20.1
@@ -79,8 +79,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       prettier:
-        specifier: 3.5.0
-        version: 3.5.0
+        specifier: 3.5.1
+        version: 3.5.1
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -2644,8 +2644,8 @@ packages:
       vue-tsc:
         optional: true
 
-  prettier@3.5.0:
-    resolution: {integrity: sha512-quyMrVt6svPS7CjQ9gKb3GLEX/rl3BCL2oa/QkNcXv4YNVBC9olt3s+H7ukto06q7B1Qz46PbrKLO34PR6vXcA==}
+  prettier@3.5.1:
+    resolution: {integrity: sha512-hPpFQvHwL3Qv5AdRvBFMhnKo4tYxp0ReXiPn2bxkiohEX6mBeBwEpBSQTkD458RaaDKQMYSp4hX4UtfUTA5wDw==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -4611,7 +4611,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  ctix@2.7.0(prettier-plugin-organize-imports@4.1.0(prettier@3.5.0)(typescript@5.7.3))(prettier@3.5.0)(typescript@5.7.3):
+  ctix@2.7.0(prettier-plugin-organize-imports@4.1.0(prettier@3.5.1)(typescript@5.7.3))(prettier@3.5.1)(typescript@5.7.3):
     dependencies:
       chalk: 4.1.2
       change-case: 4.1.2
@@ -4636,8 +4636,8 @@ snapshots:
       my-only-either: 1.3.0
       ora: 5.4.1
       pathe: 1.1.2
-      prettier: 3.5.0
-      prettier-plugin-organize-imports: 4.1.0(prettier@3.5.0)(typescript@5.7.3)
+      prettier: 3.5.1
+      prettier-plugin-organize-imports: 4.1.0(prettier@3.5.1)(typescript@5.7.3)
       source-map-support: 0.5.21
       ts-morph: 23.0.0
       ts-pattern: 5.6.2
@@ -5993,7 +5993,7 @@ snapshots:
       js-yaml: 4.1.0
       lodash: 4.17.21
       minimist: 1.2.8
-      prettier: 3.5.0
+      prettier: 3.5.1
       tinyglobby: 0.2.10
 
   json-schema-traverse@0.4.1: {}
@@ -6425,12 +6425,12 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-organize-imports@4.1.0(prettier@3.5.0)(typescript@5.7.3):
+  prettier-plugin-organize-imports@4.1.0(prettier@3.5.1)(typescript@5.7.3):
     dependencies:
-      prettier: 3.5.0
+      prettier: 3.5.1
       typescript: 5.7.3
 
-  prettier@3.5.0: {}
+  prettier@3.5.1: {}
 
   pretty-format@29.7.0:
     dependencies:
