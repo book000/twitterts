@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@book000/node-utils':
-        specifier: 1.13.459
-        version: 1.13.459
+        specifier: 1.13.463
+        version: 1.13.463
       genson-js:
         specifier: 0.0.8
         version: 0.0.8
@@ -281,8 +281,8 @@ packages:
       eslint: 9.20.1
       eslint-config-standard: 17.1.0
 
-  '@book000/node-utils@1.13.459':
-    resolution: {integrity: sha512-37S6m/RAsXqhJSZtRmK7FmksLT/7XSkFQ99oqwFq9z4wJ+o/rn+TJpvKzMipQWtPM87S/adP5heVRh4GBSSfPA==}
+  '@book000/node-utils@1.13.463':
+    resolution: {integrity: sha512-AnDCsSHqbnieT1Gu0wqp+iVjbtwLAWu489ki6UvBSvLrR30NPUsOMbAwj8RyQrf9tbRzsdIFkMg7bmltXq6dHQ==}
 
   '@colors/colors@1.6.0':
     resolution: {integrity: sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA==}
@@ -3273,8 +3273,8 @@ packages:
     resolution: {integrity: sha512-8drMJ4rkgaPo1Me4zD/3WLfI/zPdA9o2IipKODunnGDcuqbHwjsbB79ylv04LCGGzU0xQ6vTznOMpQGaLhhm6A==}
     engines: {node: '>= 12.0.0'}
 
-  winston@3.16.0:
-    resolution: {integrity: sha512-xz7+cyGN5M+4CmmD4Npq1/4T+UZaz7HaeTlAruFUTjk79CNMq+P6H30vlE4z0qfqJ01VHYQwd7OZo03nYm/+lg==}
+  winston@3.17.0:
+    resolution: {integrity: sha512-DLiFIXYC5fMPxaRg832S6F5mJYvePtmO5G9v9IgUFPhXm9/GkXarH/TUrBAVzhTCzAj9anE/+GjrgXp/54nOgw==}
     engines: {node: '>= 12.0.0'}
 
   word-wrap@1.2.5:
@@ -3565,15 +3565,15 @@ snapshots:
       - supports-color
       - typescript
 
-  '@book000/node-utils@1.13.459':
+  '@book000/node-utils@1.13.463':
     dependencies:
       axios: 1.7.9
       cycle: 1.0.3
       form-data: 4.0.1
       jsonc-parser: 3.3.1
       moment-timezone: 0.5.47
-      winston: 3.16.0
-      winston-daily-rotate-file: 5.0.0(winston@3.16.0)
+      winston: 3.17.0
+      winston-daily-rotate-file: 5.0.0(winston@3.17.0)
     transitivePeerDependencies:
       - debug
 
@@ -7137,12 +7137,12 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  winston-daily-rotate-file@5.0.0(winston@3.16.0):
+  winston-daily-rotate-file@5.0.0(winston@3.17.0):
     dependencies:
       file-stream-rotator: 0.6.1
       object-hash: 3.0.0
       triple-beam: 1.4.1
-      winston: 3.16.0
+      winston: 3.17.0
       winston-transport: 4.9.0
 
   winston-transport@4.9.0:
@@ -7151,7 +7151,7 @@ snapshots:
       readable-stream: 3.6.2
       triple-beam: 1.4.1
 
-  winston@3.16.0:
+  winston@3.17.0:
     dependencies:
       '@colors/colors': 1.6.0
       '@dabh/diagnostics': 2.0.3
