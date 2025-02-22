@@ -94,8 +94,8 @@ importers:
         specifier: 4.19.3
         version: 4.19.3
       typedoc:
-        specifier: 0.27.7
-        version: 0.27.7(typescript@5.7.3)
+        specifier: 0.27.8
+        version: 0.27.8(typescript@5.7.3)
       typescript:
         specifier: 5.7.3
         version: 5.7.3
@@ -3174,8 +3174,8 @@ packages:
   typed-query-selector@2.12.0:
     resolution: {integrity: sha512-SbklCd1F0EiZOyPiW192rrHZzZ5sBijB6xM+cpmrwDqObvdtunOHHIk9fCGsoK5JVIYXoyEp4iEdE3upFH3PAg==}
 
-  typedoc@0.27.7:
-    resolution: {integrity: sha512-K/JaUPX18+61W3VXek1cWC5gwmuLvYTOXJzBvD9W7jFvbPnefRnCHQCEPw7MSNrP/Hj7JJrhZtDDLKdcYm6ucg==}
+  typedoc@0.27.8:
+    resolution: {integrity: sha512-q0/2TUunNEDmWkn23ULKGXieK8cgGuAmBUXC/HcZ/rgzMI9Yr4Nq3in1K1vT1NZ9zx6M78yTk3kmIPbwJgK5KA==}
     engines: {node: '>= 18'}
     hasBin: true
     peerDependencies:
@@ -7018,7 +7018,7 @@ snapshots:
 
   typed-query-selector@2.12.0: {}
 
-  typedoc@0.27.7(typescript@5.7.3):
+  typedoc@0.27.8(typescript@5.7.3):
     dependencies:
       '@gerrit0/mini-shiki': 1.27.2
       lunr: 2.3.9
