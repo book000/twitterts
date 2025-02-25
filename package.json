@@ -89,5 +89,5 @@
       "jest-expect-message"
     ]
   },
-  "packageManager": "pnpm@10.4.1"
+  "packageManager": "pnpm@10.5.0"
 }
