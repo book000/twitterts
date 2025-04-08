@@ -118,7 +118,7 @@ class GenerateSchema {
         logger.info(
           `🆗 Generated #${page} : Processed: ${processedCount} / Load: ${formattedLoadTime} / Generate: ${formattedGenerateTime} / Add: ${formattedAddTime}`
         )
-        if (this.notGeneratedSchemaResponsesCount && this.lastFetchedDate) {
+        if (this.notGeneratedSchemaResponsesCount !== undefined && this.lastFetchedDate) {
           logger.info(
             `⏳ Remaining: ${this.notGeneratedSchemaResponsesCount} (Fetched at ${this.formatDateTime(this.lastFetchedDate)})`
           )
