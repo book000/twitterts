@@ -3,6 +3,10 @@ import { BulkAddTypeRecord, ResponseDatabase } from './saving-responses'
 import { createSchema } from 'genson-js/dist'
 
 class GenerateSchema {
+  private notGeneratedSchemaResponsesCount: number | undefined = undefined
+  private lastFetchedDate: Date | undefined = undefined
+  private isFetching = false
+
   public async run() {
     const logger = Logger.configure('GenerateSchema:run')
 
@@ -55,6 +59,11 @@ class GenerateSchema {
       let page = 0
       while (true) {
         page++
+
+        // 未生成のスキーマレスポンスの件数を非同期で取得
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        this.fetchNotGeneratedSchemaResponsesCount(responseDatabase)
+
         logger.info(
           `🚀 Generating #${page} : Loading not generated schema responses`
         )
@@ -109,12 +118,70 @@ class GenerateSchema {
         logger.info(
           `🆗 Generated #${page} : Processed: ${processedCount} / Load: ${formattedLoadTime} / Generate: ${formattedGenerateTime} / Add: ${formattedAddTime}`
         )
+        if (this.notGeneratedSchemaResponsesCount && this.lastFetchedDate) {
+          logger.info(
+            `⏳ Remaining: ${this.notGeneratedSchemaResponsesCount} (Fetched at ${this.formatDateTime(this.lastFetchedDate)})`
+          )
+        }
       }
     } catch (error) {
       logger.error('🚨 Failed to generate schema', error as Error)
     } finally {
       await responseDatabase.close()
     }
+  }
+
+  async fetchNotGeneratedSchemaResponsesCount(
+    responseDatabase: ResponseDatabase
+  ): Promise<void> {
+    const logger = Logger.configure(
+      'GenerateSchema:fetchNotGeneratedSchemaResponsesCount'
+    )
+    if (this.isFetching) {
+      return
+    }
+
+    try {
+      this.isFetching = true
+      const countResponses = await responseDatabase.getResponsesCount()
+      const countGeneratedSchmemaResponsesCount =
+        await responseDatabase.getResponsesCountFromMapping()
+
+      this.notGeneratedSchemaResponsesCount =
+        countResponses - countGeneratedSchmemaResponsesCount
+      this.lastFetchedDate = new Date()
+    } catch (error) {
+      logger.error(
+        '🚨 Failed to fetch not generated schema responses count',
+        error as Error
+      )
+    } finally {
+      this.isFetching = false
+    }
+  }
+
+  formatDateTime(date: Date): string {
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    const hour = date.getHours()
+    const minute = date.getMinutes()
+    const second = date.getSeconds()
+
+    // yyyy/MM/dd hh:mm:ss形式でフォーマット
+    return (
+      [
+        year.toString().padStart(4, '0'),
+        month.toString().padStart(2, '0'),
+        day.toString().padStart(2, '0'),
+      ].join('/') +
+      ' ' +
+      [
+        hour.toString().padStart(2, '0'),
+        minute.toString().padStart(2, '0'),
+        second.toString().padStart(2, '0'),
+      ].join(':')
+    )
   }
 
   formatTime(time: number): string {

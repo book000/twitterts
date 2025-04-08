@@ -838,6 +838,36 @@ export class ResponseDatabase {
   }
 
   /**
+   * レスポンスの総件数を取得する
+   */
+  public async getResponsesCount(): Promise<number> {
+    if (!this.initialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+
+    const [results] = await this.pool.query<CountResponse[]>(
+      'SELECT COUNT(id) AS count FROM responses'
+    )
+
+    return results[0].count
+  }
+
+  /**
+   * レスポンスとスキーマのマッピングから、レスポンスのユニーク件数を取得する
+   */
+  public async getResponsesCountFromMapping(): Promise<number> {
+    if (!this.initialized) {
+      throw new TwitterTsError('Responses database is not initialized')
+    }
+
+    const [results] = await this.pool.query<CountResponse[]>(
+      'SELECT COUNT(DISTINCT response_id) AS count FROM schema_mapping'
+    )
+
+    return results[0].count
+  }
+
+  /**
    * 型を追加する処理を一括実行する
    */
   public async bulkAddSchema(records: BulkAddTypeRecord[]): Promise<void> {
