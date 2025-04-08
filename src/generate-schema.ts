@@ -144,11 +144,11 @@ class GenerateSchema {
     try {
       this.isFetching = true
       const countResponses = await responseDatabase.getResponsesCount()
-      const countGeneratedSchmemaResponsesCount =
+      const countGeneratedSchemaResponsesCount =
         await responseDatabase.getResponsesCountFromMapping()
 
       this.notGeneratedSchemaResponsesCount =
-        countResponses - countGeneratedSchmemaResponsesCount
+        countResponses - countGeneratedSchemaResponsesCount
       this.lastFetchedDate = new Date()
     } catch (error) {
       logger.error(
