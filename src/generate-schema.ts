@@ -1,11 +1,47 @@
 import { Logger } from '@book000/node-utils'
 import { BulkAddTypeRecord, ResponseDatabase } from './saving-responses'
 import { createSchema } from 'genson-js/dist'
+import { Awaitable } from 'puppeteer-core'
 
 class GenerateSchema {
-  private notGeneratedSchemaResponsesCount: number | undefined = undefined
-  private lastFetchedDate: Date | undefined = undefined
-  private isFetching = false
+  async runRemoveOldPartitions(
+    responseDatabase: ResponseDatabase
+  ): Promise<void> {
+    const logger = Logger.configure('GenerateTypes:runRemoveOldPartitions')
+
+    logger.info('🚀 Remove old partition data')
+    const partitions = responseDatabase.getPartitions()
+    // 3か月よりも前のパーティションを削除
+    const date = new Date()
+    date.setMonth(date.getMonth() - 3)
+    const targetPartitions = partitions.filter(
+      (partition) =>
+        responseDatabase.convertPartitonNameToDate(partition) < date
+    )
+
+    for (const targetPartition of targetPartitions) {
+      logger.info(`🚮 Dropping partition...: ${targetPartition}`)
+      await responseDatabase.dropPartition(targetPartition)
+    }
+  }
+
+  async runOptimizeTableRecords(
+    responseDatabase: ResponseDatabase
+  ): Promise<void> {
+    const logger = Logger.configure('GenerateTypes:runOptimizeTableRecords')
+
+    logger.info('🚀 Optimize table records...')
+    const { deletedTypeMappingCount, deletedSchemataCount } =
+      await responseDatabase.optimizeTableRecords().catch((error: unknown) => {
+        logger.error('🚨 Failed to optimize table records', error as Error)
+        return {
+          deletedTypeMappingCount: 0,
+          deletedSchemataCount: 0,
+        }
+      })
+    logger.info(`⚡ Delete from type_mapping: ${deletedTypeMappingCount}`)
+    logger.info(`⚡ Delete from schemata: ${deletedSchemataCount}`)
+  }
 
   public async run() {
     const logger = Logger.configure('GenerateSchema:run')
@@ -14,8 +50,16 @@ class GenerateSchema {
       ? Number(process.env.PAGE_LIMIT)
       : 100
 
+    const skipRemoveOldPartitions =
+      process.env.SKIP_REMOVE_OLD_PARTITIONS === 'true'
+    const skipOptimizeTableRecords =
+      process.env.SKIP_OPTIMIZE_TABLE_RECORDS === 'true'
+
     logger.info('🔧 Options')
     logger.info(`  📌 Page limit: ${pageLimit}`)
+    logger.info('⏭️ Skip functions')
+    logger.info(`  🚀 Remove old partitions: ${skipRemoveOldPartitions}`)
+    logger.info(`  🚀 Optimize table records: ${skipOptimizeTableRecords}`)
 
     const responseDatabase = new ResponseDatabase()
     try {
@@ -25,44 +69,34 @@ class GenerateSchema {
         return
       }
 
-      // remove old partition data
-      logger.info('🚀 Remove old partition data')
-      const partitions = responseDatabase.getPartitions()
-      // 3か月よりも前のパーティションを削除
-      const date = new Date()
-      date.setMonth(date.getMonth() - 3)
-      const targetPartitions = partitions.filter(
-        (partition) =>
-          responseDatabase.convertPartitonNameToDate(partition) < date
-      )
-
-      for (const targetPartition of targetPartitions) {
-        logger.info(`🚀 Dropping partition...: ${targetPartition}`)
-        await responseDatabase.dropPartition(targetPartition)
+      if (!skipRemoveOldPartitions) {
+        await this.calculateTime('RemoveOldPartitions', () =>
+          this.runRemoveOldPartitions(responseDatabase)
+        )
       }
 
-      logger.info('🚀 Optimize table records...')
-      const { deletedTypeMappingCount, deletedSchemataCount } =
-        await responseDatabase
-          .optimizeTableRecords()
-          .catch((error: unknown) => {
-            logger.error('🚨 Failed to optimize table records', error as Error)
-            return {
-              deletedTypeMappingCount: 0,
-              deletedSchemataCount: 0,
-            }
-          })
-      logger.info(`⚡ Delete from type_mapping: ${deletedTypeMappingCount}`)
-      logger.info(`⚡ Delete from schemata: ${deletedSchemataCount}`)
+      if (!skipOptimizeTableRecords) {
+        await this.calculateTime('OptimizeTableRecords', () =>
+          this.runOptimizeTableRecords(responseDatabase)
+        )
+      }
 
       let processedCount = 0
       let page = 0
       while (true) {
         page++
-
-        // 未生成のスキーマレスポンスの件数を非同期で取得
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        this.fetchNotGeneratedSchemaResponsesCount(responseDatabase)
+        logger.info(
+          `🚀 Generating #${page} : Loading not generated schema count`
+        )
+        const getStartTimestamp = Date.now()
+        const notGeneratedSchemaResponsesCount =
+          await this.getNotGeneratedSchemaResponsesCount(responseDatabase)
+        const getEndTimestamp = Date.now()
+        const getTime = getEndTimestamp - getStartTimestamp
+        const formattedGetTime = this.formatTime(getTime)
+        logger.info(
+          `⏳ Remaining #${page} : ${notGeneratedSchemaResponsesCount} (${formattedGetTime})`
+        )
 
         logger.info(
           `🚀 Generating #${page} : Loading not generated schema responses`
@@ -118,14 +152,6 @@ class GenerateSchema {
         logger.info(
           `🆗 Generated #${page} : Processed: ${processedCount} / Load: ${formattedLoadTime} / Generate: ${formattedGenerateTime} / Add: ${formattedAddTime}`
         )
-        if (
-          this.notGeneratedSchemaResponsesCount !== undefined &&
-          this.lastFetchedDate
-        ) {
-          logger.info(
-            `⏳ Remaining: ${this.notGeneratedSchemaResponsesCount} (Fetched at ${this.formatDateTime(this.lastFetchedDate)})`
-          )
-        }
       }
     } catch (error) {
       logger.error('🚨 Failed to generate schema', error as Error)
@@ -134,33 +160,46 @@ class GenerateSchema {
     }
   }
 
-  async fetchNotGeneratedSchemaResponsesCount(
+  async getNotGeneratedSchemaResponsesCount(
     responseDatabase: ResponseDatabase
-  ): Promise<void> {
+  ): Promise<number> {
     const logger = Logger.configure(
-      'GenerateSchema:fetchNotGeneratedSchemaResponsesCount'
+      'GenerateSchema:getNotGeneratedSchemaResponsesCount'
     )
-    if (this.isFetching) {
-      return
-    }
-
     try {
-      this.isFetching = true
       const countResponses = await responseDatabase.getResponsesCount()
       const countGeneratedSchemaResponsesCount =
         await responseDatabase.getResponsesCountFromMapping()
 
-      this.notGeneratedSchemaResponsesCount =
+      const notGeneratedSchemaResponsesCount =
         countResponses - countGeneratedSchemaResponsesCount
       this.lastFetchedDate = new Date()
+
+      return notGeneratedSchemaResponsesCount
     } catch (error) {
       logger.error(
         '🚨 Failed to fetch not generated schema responses count',
         error as Error
       )
-    } finally {
-      this.isFetching = false
+      return -1
     }
+  }
+
+  async calculateTime<T>(
+    name: string,
+    runner: () => Awaitable<T>
+  ): Promise<Awaitable<T>> {
+    const logger = Logger.configure('GenerateTypes:calculateTime')
+
+    const startTime = Date.now()
+    const result = await runner()
+    const endTime = Date.now()
+
+    const time = endTime - startTime
+    const timeString = this.formatTime(time)
+    logger.info(`🕐 ${name}: ${timeString}ms`)
+
+    return result
   }
 
   formatDateTime(date: Date): string {

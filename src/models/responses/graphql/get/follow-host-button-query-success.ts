@@ -3,17 +3,17 @@
 export interface GraphQLGetFollowHostButtonQuerySuccessResponse {
   data: {
     user: {
+      id: string
       result: {
         __typename: string
-        rest_id: string
-        legacy: {
-          screen_name: string
-          name: string
-          following: boolean
-        }
         id: string
+        legacy: {
+          following: boolean
+          name: string
+          screen_name: string
+        }
+        rest_id: string
       }
-      id: string
     }
   }
 }

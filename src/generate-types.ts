@@ -69,6 +69,45 @@ class GenerateTypes {
     return `${kiloByteString}B`
   }
 
+  async runRemoveOldPartitions(
+    responseDatabase: ResponseDatabase
+  ): Promise<void> {
+    const logger = Logger.configure('GenerateTypes:runRemoveOldPartitions')
+
+    logger.info('🚀 Remove old partition data')
+    const partitions = responseDatabase.getPartitions()
+    // 3か月よりも前のパーティションを削除
+    const date = new Date()
+    date.setMonth(date.getMonth() - 3)
+    const targetPartitions = partitions.filter(
+      (partition) =>
+        responseDatabase.convertPartitonNameToDate(partition) < date
+    )
+
+    for (const targetPartition of targetPartitions) {
+      logger.info(`🚮 Dropping partition...: ${targetPartition}`)
+      await responseDatabase.dropPartition(targetPartition)
+    }
+  }
+
+  async runOptimizeTableRecords(
+    responseDatabase: ResponseDatabase
+  ): Promise<void> {
+    const logger = Logger.configure('GenerateTypes:runOptimizeTableRecords')
+
+    logger.info('🚀 Optimize table records...')
+    const { deletedTypeMappingCount, deletedSchemataCount } =
+      await responseDatabase.optimizeTableRecords().catch((error: unknown) => {
+        logger.error('🚨 Failed to optimize table records', error as Error)
+        return {
+          deletedTypeMappingCount: 0,
+          deletedSchemataCount: 0,
+        }
+      })
+    logger.info(`⚡ Delete from type_mapping: ${deletedTypeMappingCount}`)
+    logger.info(`⚡ Delete from schemata: ${deletedSchemataCount}`)
+  }
+
   async run(): Promise<void> {
     const logger = Logger.configure('GenerateTypes:run')
 
@@ -84,6 +123,17 @@ class GenerateTypes {
       ? Number(process.env.PAGE_LIMIT)
       : 100
 
+    const skipRemoveOldPartitions =
+      process.env.SKIP_REMOVE_OLD_PARTITIONS === 'true'
+    const skipOptimizeTableRecords =
+      process.env.SKIP_OPTIMIZE_TABLE_RECORDS === 'true'
+    const skipTwitterTypesGenerator =
+      process.env.SKIP_TWITTER_TYPES_GENERATOR === 'true'
+    const skipCustomTypesGenerator =
+      process.env.SKIP_CUSTOM_TYPES_GENERATOR === 'true'
+    const skipEndPointTypeGenerator =
+      process.env.SKIP_ENDPOINT_TYPE_GENERATOR === 'true'
+
     logger.info('📁 Directories')
     logger.info(`  📂 Schema: ${schemaDirectory}`)
     logger.info(`  📂 Types: ${typesDirectory}`)
@@ -94,6 +144,12 @@ class GenerateTypes {
       `  📌 Custom type generate parallel: ${isCustomTypeGenerateParallel}`
     )
     logger.info(`  📌 Page limit: ${pageLimit}`)
+    logger.info('⏭️ Skip functions')
+    logger.info(`  🚀 Remove old partitions: ${skipRemoveOldPartitions}`)
+    logger.info(`  🚀 Optimize table records: ${skipOptimizeTableRecords}`)
+    logger.info(`  🚀 Twitter types generator: ${skipTwitterTypesGenerator}`)
+    logger.info(`  🚀 Custom types generator: ${skipCustomTypesGenerator}`)
+    logger.info(`  🚀 EndPoint type generator: ${skipEndPointTypeGenerator}`)
 
     const responseDatabase = new ResponseDatabase()
     try {
@@ -103,35 +159,17 @@ class GenerateTypes {
         return
       }
 
-      // remove old partition data
-      logger.info('🚀 Remove old partition data')
-      const partitions = responseDatabase.getPartitions()
-      // 3か月よりも前のパーティションを削除
-      const date = new Date()
-      date.setMonth(date.getMonth() - 3)
-      const targetPartitions = partitions.filter(
-        (partition) =>
-          responseDatabase.convertPartitonNameToDate(partition) < date
-      )
-
-      for (const targetPartition of targetPartitions) {
-        logger.info(`🚀 Dropping partition...: ${targetPartition}`)
-        await responseDatabase.dropPartition(targetPartition)
+      if (!skipRemoveOldPartitions) {
+        await this.calculateTime('RemoveOldPartitions', () =>
+          this.runRemoveOldPartitions(responseDatabase)
+        )
       }
 
-      logger.info('🚀 Optimize table records...')
-      const { deletedTypeMappingCount, deletedSchemataCount } =
-        await responseDatabase
-          .optimizeTableRecords()
-          .catch((error: unknown) => {
-            logger.error('🚨 Failed to optimize table records', error as Error)
-            return {
-              deletedTypeMappingCount: 0,
-              deletedSchemataCount: 0,
-            }
-          })
-      logger.info(`⚡ Delete from type_mapping: ${deletedTypeMappingCount}`)
-      logger.info(`⚡ Delete from schemata: ${deletedSchemataCount}`)
+      if (!skipOptimizeTableRecords) {
+        await this.calculateTime('OptimizeTableRecords', () =>
+          this.runOptimizeTableRecords(responseDatabase)
+        )
+      }
 
       logger.info('🔍 Getting endpoints...')
       const rawEndpoints = await this.calculateTime('GetEndpoints', () =>
@@ -143,30 +181,36 @@ class GenerateTypes {
       logger.info(`🔍 Found ${endpoints.length} endpoints`)
 
       // msで計測
-      await this.calculateTime('TwitterTypesGenerator', async () => {
-        await new TwitterTypesGenerator(responseDatabase).generateTypes({
-          directory: {
-            schema: schemaDirectory,
-            types: typesDirectory,
-          },
-          parallel: isTypesGenerateParallel,
-          limit: pageLimit,
-          endpoints,
+      if (!skipTwitterTypesGenerator) {
+        await this.calculateTime('TwitterTypesGenerator', async () => {
+          await new TwitterTypesGenerator(responseDatabase).generateTypes({
+            directory: {
+              schema: schemaDirectory,
+              types: typesDirectory,
+            },
+            parallel: isTypesGenerateParallel,
+            limit: pageLimit,
+            endpoints,
+          })
         })
-      })
+      }
 
-      await this.calculateTime('CustomTypesGenerator', async () => {
-        await new CustomTypesGenerator(
-          responseDatabase,
-          schemaDirectory,
-          typesDirectory,
-          pageLimit
-        ).generate(isCustomTypeGenerateParallel)
-      })
+      if (!skipCustomTypesGenerator) {
+        await this.calculateTime('CustomTypesGenerator', async () => {
+          await new CustomTypesGenerator(
+            responseDatabase,
+            schemaDirectory,
+            typesDirectory,
+            pageLimit
+          ).generate(isCustomTypeGenerateParallel)
+        })
+      }
 
-      await this.calculateTime('EndPointTypeGenerator', () => {
-        new EndPointTypeGenerator(typesDirectory).generate(endpoints)
-      })
+      if (!skipEndPointTypeGenerator) {
+        await this.calculateTime('EndPointTypeGenerator', () => {
+          new EndPointTypeGenerator(typesDirectory).generate(endpoints)
+        })
+      }
 
       await responseDatabase.close()
       logger.info('🎉 All done!')

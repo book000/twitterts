@@ -9,35 +9,26 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
         __typename: string
         list: {
           created_at: number
-          custom_banner_media?: {
+          custom_banner_media: {
             media_info: {
+              original_img_height: number
               original_img_url: string
               original_img_width: number
-              original_img_height: number
               salient_rect: {
+                height: number
                 left: number
                 top: number
                 width: number
-                height: number
               }
             }
           }
-          custom_banner_media_results?: {
+          custom_banner_media_results: {
             result: {
+              __typename: string
               id: string
-              media_key: string
               media_id: string
               media_info: {
                 __typename: string
-                original_img_height: number
-                original_img_width: number
-                original_img_url: string
-                salient_rect: {
-                  height: number
-                  left: number
-                  top: number
-                  width: number
-                }
                 color_info: {
                   palette: {
                     percentage: number
@@ -48,33 +39,9 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
                     }
                   }[]
                 }
-              }
-              __typename: string
-            }
-          }
-          default_banner_media: {
-            media_info: {
-              original_img_url: string
-              original_img_width: number
-              original_img_height: number
-              salient_rect: {
-                left: number
-                top: number
-                width: number
-                height: number
-              }
-            }
-          }
-          default_banner_media_results: {
-            result: {
-              id: string
-              media_key: string
-              media_id: string
-              media_info: {
-                __typename: string
                 original_img_height: number
-                original_img_width: number
                 original_img_url: string
+                original_img_width: number
                 salient_rect: {
                   height: number
                   left: number
@@ -82,12 +49,45 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
                   width: number
                 }
               }
+              media_key: string
+            }
+          }
+          default_banner_media: {
+            media_info: {
+              original_img_height: number
+              original_img_url: string
+              original_img_width: number
+              salient_rect: {
+                height: number
+                left: number
+                top: number
+                width: number
+              }
+            }
+          }
+          default_banner_media_results: {
+            result: {
               __typename: string
+              id: string
+              media_id: string
+              media_info: {
+                __typename: string
+                original_img_height: number
+                original_img_url: string
+                original_img_width: number
+                salient_rect: {
+                  height: number
+                  left: number
+                  top: number
+                  width: number
+                }
+              }
+              media_key: string
             }
           }
           description: string
           facepile_urls: string[]
-          followers_context?: string
+          followers_context: string
           following: boolean
           id: string
           id_str: string
@@ -102,16 +102,11 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
           user_results: {
             result: {
               __typename: string
-              id: string
-              rest_id: string
               affiliates_highlighted_label: {}
               has_graduated_access: boolean
+              id: string
               is_blue_verified: boolean
-              profile_image_shape: string
               legacy: {
-                followed_by?: boolean
-                following?: boolean
-                muting?: boolean
                 can_dm: boolean
                 can_media_tag: boolean
                 created_at: string
@@ -120,25 +115,21 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
                 description: string
                 entities: {
                   description: {
-                    urls: {
-                      display_url: string
-                      expanded_url: string
-                      url: string
-                      indices: number[]
-                    }[]
+                    urls: unknown[]
                   }
-                  url?: {
+                  url: {
                     urls: {
                       display_url: string
                       expanded_url: string
-                      url: string
                       indices: number[]
+                      url: string
                     }[]
                   }
                 }
                 fast_followers_count: number
                 favourites_count: number
                 followers_count: number
+                following: boolean
                 friends_count: number
                 has_custom_timelines: boolean
                 is_translator: boolean
@@ -146,6 +137,7 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
                 location: string
                 media_count: number
                 name: string
+                needs_phone_verification: boolean
                 normal_followers_count: number
                 pinned_tweet_ids_str: string[]
                 possibly_sensitive: boolean
@@ -155,12 +147,15 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
                 screen_name: string
                 statuses_count: number
                 translator_type: string
-                url?: string
+                url: string
                 verified: boolean
                 want_retweets: boolean
                 withheld_in_countries: unknown[]
-                needs_phone_verification?: boolean
               }
+              parody_commentary_fan_label: string
+              profile_image_shape: string
+              rest_id: string
+              tipjar_settings: {}
             }
           }
         }
