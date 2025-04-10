@@ -1,4 +1,3 @@
 {
-    "editor.tabSize": 2,
-    "jest.jestCommandLine": ".\\scripts\\test.ps1"
+    "editor.tabSize": 2
 }
