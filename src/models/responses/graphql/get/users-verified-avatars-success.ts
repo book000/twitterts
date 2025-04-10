@@ -7,12 +7,11 @@ export interface GraphQLGetUsersVerifiedAvatarsSuccessResponse {
     usersResults: {
       result: {
         __typename: string
-        is_blue_verified: boolean
-        profile_image_shape: string
-        affiliates_highlighted_label: {}
-        rest_id: string
-        legacy: {}
-        has_nft_avatar?: boolean
+        affiliates_highlighted_label?: {}
+        is_blue_verified?: boolean
+        legacy?: {}
+        profile_image_shape?: string
+        rest_id?: string
       }
     }[]
   }

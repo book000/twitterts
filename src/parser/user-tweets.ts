@@ -26,25 +26,35 @@ export class UserTweetsParser extends BaseParser<'UserTweets'> {
       throw new TwitterOperationError(this.response.errors[0].message)
     }
 
-    const entries =
-      this.response.data.user.result.timeline_v2.timeline.instructions
-        .filter(
-          (instruction) =>
-            instruction.type === 'TimelineAddEntries' && instruction.entries
+    const timelineV1Instructions =
+      this.response.data.user.result.timeline?.timeline.instructions
+    const timelineV2Instructions =
+      this.response.data.user.result.timeline_v2?.timeline?.instructions
+    const instructions = timelineV1Instructions ?? timelineV2Instructions
+    if (!instructions) {
+      throw new TwitterOperationError(
+        'User tweets timeline instructions not found'
+      )
+    }
+    const entries = instructions
+      .filter(
+        (instruction) =>
+          instruction.type === 'TimelineAddEntries' && instruction.entries
+      )
+      .flatMap((instruction) =>
+        instruction.entries?.filter(
+          (entry) =>
+            entry.entryId.startsWith('tweet-') ||
+            (isIncludingPromotedTweets
+              ? entry.entryId.startsWith('promoted-tweet') ||
+                entry.entryId.startsWith('promotedTweet')
+              : false)
         )
-        .flatMap((instruction) =>
-          instruction.entries?.filter(
-            (entry) =>
-              entry.entryId.startsWith('tweet-') ||
-              (isIncludingPromotedTweets
-                ? entry.entryId.startsWith('promoted-tweet') ||
-                  entry.entryId.startsWith('promotedTweet')
-                : false)
-          )
-        ) as CustomUserTweetEntry[]
+      ) as CustomUserTweetEntry[]
 
     const rawTweets = entries
       .map((entry) => entry.content.itemContent.tweet_results.result)
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       .filter((tweet) => !!tweet)
     this.tweets = rawTweets.map((tweet) =>
       ObjectConverter.convertToStatus(tweet as CustomTweetObject)
@@ -63,7 +73,8 @@ export class UserTweetsParser extends BaseParser<'UserTweets'> {
   private isErrorResponse(
     response: GraphQLGetUserTweetsResponse
   ): response is GraphQLGetUserTweetsErrorResponse {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    return 'errors' in response && response.errors && response.errors.length > 0
+    return (
+      'errors' in response && !!response.errors && response.errors.length > 0
+    )
   }
 }

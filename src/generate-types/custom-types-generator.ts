@@ -101,14 +101,17 @@ export class CustomTypesGenerator {
         if (!('data' in response)) {
           return []
         }
-        if (
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          response.data.user.result.timeline_v2.timeline.instructions ===
-          undefined
-        ) {
+
+        const timelineV1Instructions =
+          response.data.user.result.timeline?.timeline.instructions
+        const timelineV2Instructions =
+          response.data.user.result.timeline_v2?.timeline?.instructions
+        const instructions = timelineV1Instructions ?? timelineV2Instructions
+        if (!instructions) {
           return []
         }
-        return response.data.user.result.timeline_v2.timeline.instructions
+
+        return instructions
           .filter(
             (instruction) =>
               instruction.type === 'TimelineAddEntries' && instruction.entries
@@ -154,14 +157,20 @@ export class CustomTypesGenerator {
         if (!('data' in response)) {
           return []
         }
-        if (
+        const timelineV1Instructions =
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          response.data.user.result.timeline_v2.timeline.instructions ===
-          undefined
-        ) {
+          response.data.user.result.timeline?.timeline.instructions
+        const timelineV2Instructions =
+          // @ts-expect-error timeline_v2 が以前は存在していた
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          response.data.user.result.timeline_v2?.timeline?.instructions
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        const instructions = timelineV1Instructions ?? timelineV2Instructions
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!instructions) {
           return []
         }
-        return response.data.user.result.timeline_v2.timeline.instructions
+        return instructions
           .filter(
             (instruction) =>
               // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -350,8 +359,9 @@ export class CustomTypesGenerator {
           statusCode: 200,
         },
         (response) => {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          if (response.data.home.home_timeline_urt.instructions === undefined) {
+          if (
+            response.data.home.home_timeline_urt?.instructions === undefined
+          ) {
             return []
           }
           return this.getTweetObjectsFromInstructions(
@@ -372,6 +382,7 @@ export class CustomTypesGenerator {
             return []
           }
           if (
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             response.data.home.home_timeline_urt?.instructions === undefined
           ) {
             return []
@@ -419,17 +430,17 @@ export class CustomTypesGenerator {
           if (!('data' in response)) {
             return []
           }
-          if (
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            response.data.user.result.timeline_v2.timeline.instructions ===
-            undefined
-          ) {
+
+          const timelineV1Instructions =
+            response.data.user.result.timeline?.timeline.instructions
+          const timelineV2Instructions =
+            response.data.user.result.timeline_v2?.timeline?.instructions
+          const instructions = timelineV1Instructions ?? timelineV2Instructions
+          if (!instructions) {
             return []
           }
 
-          return this.getTweetObjectsFromInstructions(
-            response.data.user.result.timeline_v2.timeline.instructions
-          ).flat()
+          return this.getTweetObjectsFromInstructions(instructions).flat()
         }
       ),
       // Likes
@@ -445,9 +456,20 @@ export class CustomTypesGenerator {
             return []
           }
 
-          return this.getTweetObjectsFromInstructions(
-            response.data.user.result.timeline_v2.timeline.instructions
-          ).flat()
+          const timelineV1Instructions =
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            response.data.user.result.timeline?.timeline.instructions
+          const timelineV2Instructions =
+            // @ts-expect-error timeline_v2 が以前は存在していた
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            response.data.user.result.timeline_v2?.timeline?.instructions
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          const instructions = timelineV1Instructions ?? timelineV2Instructions
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (!instructions) {
+            return []
+          }
+          return this.getTweetObjectsFromInstructions(instructions).flat()
         }
       ),
       // TweetDetail
@@ -568,9 +590,16 @@ export class CustomTypesGenerator {
             return []
           }
 
-          return this.getTweetLegacyObjectsFromInstructions(
-            response.data.user.result.timeline_v2.timeline.instructions
-          ).flat()
+          const timelineV1Instructions =
+            response.data.user.result.timeline?.timeline.instructions
+          const timelineV2Instructions =
+            response.data.user.result.timeline_v2?.timeline?.instructions
+          const instructions = timelineV1Instructions ?? timelineV2Instructions
+          if (!instructions) {
+            return []
+          }
+
+          return this.getTweetLegacyObjectsFromInstructions(instructions).flat()
         }
       ),
     ].flat()
@@ -734,9 +763,16 @@ export class CustomTypesGenerator {
             return []
           }
 
-          return this.getVideoInfoFromInstructions(
-            response.data.user.result.timeline_v2.timeline.instructions
-          ).flat()
+          const timelineV1Instructions =
+            response.data.user.result.timeline?.timeline.instructions
+          const timelineV2Instructions =
+            response.data.user.result.timeline_v2?.timeline?.instructions
+          const instructions = timelineV1Instructions ?? timelineV2Instructions
+          if (!instructions) {
+            return []
+          }
+
+          return this.getVideoInfoFromInstructions(instructions).flat()
         }
       ),
     ].flat()

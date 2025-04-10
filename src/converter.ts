@@ -185,9 +185,14 @@ export const ObjectConverter = {
     for (const url of urls) {
       entities.description.urls = entities.description.urls ?? []
       entities.description.urls.push({
+        // @ts-expect-error url.display_url は string | undefined
         display_url: url.display_url,
+        // @ts-expect-error url.expanded_url は string | undefined
         expanded_url: url.expanded_url,
+        // @ts-expect-error url.indices は number[] | undefined
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         indices: [url.indices[0], url.indices[1]],
+        // @ts-expect-error url.url は string
         url: url.url,
       })
     }
@@ -222,7 +227,10 @@ export const ObjectConverter = {
     const geo = legacy.geo
 
     return {
+      // @ts-expect-error geo.coordinates は number[] | undefined
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       coordinates: [geo.coordinates[1], geo.coordinates[0]],
+      // @ts-expect-error geo.type は string
       type: geo.type,
     }
   },
@@ -301,11 +309,13 @@ export const ObjectConverter = {
     }
     const userResult =
       tweet.core?.user_results.result ??
-      tweet.tweet?.core?.user_results.result ??
+      tweet.tweet?.core.user_results.result ??
       undefined
     if (!userResult) {
       throw new ResponseParseError('Failed to get userResult')
     }
+    // userResult.rest_id は null である可能性もある
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const userId = userResult.rest_id ?? userResult.id
     if (!userId) {
       throw new ResponseParseError('Failed to get user id')
@@ -374,6 +384,7 @@ export const ObjectConverter = {
       statuses_count: user.legacy.statuses_count,
       url: user.legacy.url,
       verified: user.legacy.verified,
+      // @ts-expect-error withheld_in_countries は string[] | undefined
       withheld_in_countries: user.legacy.withheld_in_countries,
       // @ts-expect-error withheld_scopeがunknownのため
       withheld_scope:

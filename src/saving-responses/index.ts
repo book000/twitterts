@@ -156,7 +156,6 @@ export class ResponseDatabase {
       user: configuration.DB_USERNAME,
       password: configuration.DB_PASSWORD,
       database: configuration.DB_DATABASE,
-      connectionLimit: 1,
       namedPlaceholders: true,
     })
   }
@@ -846,7 +845,13 @@ export class ResponseDatabase {
     }
 
     const [results] = await this.pool.query<CountResponse[]>(
-      'SELECT COUNT(id) AS count FROM responses'
+      `SELECT
+        COUNT(id) AS count
+      FROM responses
+      WHERE
+        response_type = 'JSON'
+        AND response_body IS NOT NULL
+        AND response_body != ''`
     )
 
     return results[0].count

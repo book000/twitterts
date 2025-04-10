@@ -2,8 +2,8 @@ $env:NODE_ENV = "development"
 
 get-content .env | ForEach-Object {
   $name, $value = $_.split('=', 2)
-  if ([string]::IsNullOrWhiteSpace($name) || $name.Contains('#')) {
-    continue
+  if ([string]::IsNullOrWhiteSpace($name) -or $name.Contains('#')) {
+    return
   }
   set-content env:\$name $value
 }

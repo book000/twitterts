@@ -95,6 +95,7 @@ export class Twitter {
       await page.close()
     }
     if (this.isErrorResponse(response)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       throw new TwitterOperationError(response.errors[0].message)
     }
     return response
@@ -168,6 +169,7 @@ export class Twitter {
       await page.close()
     }
     if (this.isErrorResponse(response)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       throw new TwitterOperationError(response.errors[0].message)
     }
 
@@ -450,6 +452,7 @@ export class Twitter {
       )
 
       if (this.isErrorResponse(responseDetail)) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         throw new TwitterOperationError(responseDetail.errors[0].message)
       }
 
@@ -687,6 +690,7 @@ export class Twitter {
         'UserByScreenName'
       )
       if (this.isErrorResponse(response)) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         throw new TwitterOperationError(response.errors[0].message)
       }
 
