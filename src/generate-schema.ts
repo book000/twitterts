@@ -173,7 +173,6 @@ class GenerateSchema {
 
       const notGeneratedSchemaResponsesCount =
         countResponses - countGeneratedSchemaResponsesCount
-      this.lastFetchedDate = new Date()
 
       return notGeneratedSchemaResponsesCount
     } catch (error) {
