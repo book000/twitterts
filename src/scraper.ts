@@ -340,6 +340,22 @@ function getEndpoint(url: string): {
 }
 
 /**
+ * レスポンスのキーを作成・取得します。
+ *
+ * @param input レスポンスのキーを作成・取得したいレスポンス
+ * @param input.method レスポンスの HTTP メソッド
+ * @param input.type レスポンスの種別
+ * @param input.name リクエストの名前
+ */
+function getResponseKey(input: {
+  method: HttpMethod
+  type: RequestType
+  name: string
+}): string {
+  return `${input.type}_${input.method}_${input.name}`.toLocaleUpperCase()
+}
+
+/**
  * 取得したレスポンスのチェックを行い、詳細を返します。
  * レスポンスのチェックに失敗した場合は null を返します。
  *
@@ -396,22 +412,6 @@ async function getResponseDetails(
     name,
     text,
   }
-}
-
-/**
- * レスポンスのキーを作成・取得します。
- *
- * @param input レスポンスのキーを作成・取得したいレスポンス
- * @param input.method レスポンスの HTTP メソッド
- * @param input.type レスポンスの種別
- * @param input.name リクエストの名前
- */
-function getResponseKey(input: {
-  method: HttpMethod
-  type: RequestType
-  name: string
-}): string {
-  return `${input.type}_${input.method}_${input.name}`.toLocaleUpperCase()
 }
 
 /**
@@ -612,6 +612,8 @@ export class TwitterScraperPage {
     sourceUrl: string,
     timeout = 30_000
   ): Promise<string> {
+    let intervalId: NodeJS.Timeout
+
     return new Promise<string>((resolve, reject) => {
       const abortController = new AbortController()
       setTimeout(timeout || 30_000, null, {
@@ -629,7 +631,7 @@ export class TwitterScraperPage {
           throw error
         })
 
-      const intervalId = setInterval(() => {
+      intervalId = setInterval(() => {
         this.page
           .evaluate(() => document.location.href)
           .then((url) => {
