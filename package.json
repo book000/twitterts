@@ -27,7 +27,7 @@
     "fix": "run-z fix:prettier fix:eslint ctix",
     "fix:eslint": "eslint . -c eslint.config.mjs --fix",
     "fix:prettier": "prettier --write src",
-    "test": "jest --runInBand --passWithNoTests --detectOpenHandles --forceExit",
+    "test": "jest --runInBand --passWithNoTests --detectOpenHandles --forceExit --coverage",
     "lint": "run-z lint:prettier,lint:eslint,lint:tsc",
     "lint:eslint": "eslint . -c eslint.config.mjs",
     "lint:prettier": "prettier --check src",
@@ -87,6 +87,18 @@
     ],
     "setupFilesAfterEnv": [
       "jest-expect-message"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.test.ts",
+      "!src/generate-*.ts",
+      "!src/save-responses.ts",
+      "!src/migrate-saved-response.ts"
+    ],
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
     ]
   },
   "packageManager": "pnpm@10.10.0"
