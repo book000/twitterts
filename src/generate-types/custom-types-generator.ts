@@ -103,7 +103,7 @@ export class CustomTypesGenerator {
         }
 
         const timelineV1Instructions =
-          response.data.user.result.timeline?.timeline.instructions
+          response.data.user.result.timeline?.timeline?.instructions
         const timelineV2Instructions =
           response.data.user.result.timeline_v2?.timeline?.instructions
         const instructions = timelineV1Instructions ?? timelineV2Instructions
@@ -432,7 +432,7 @@ export class CustomTypesGenerator {
           }
 
           const timelineV1Instructions =
-            response.data.user.result.timeline?.timeline.instructions
+            response.data.user.result.timeline?.timeline?.instructions
           const timelineV2Instructions =
             response.data.user.result.timeline_v2?.timeline?.instructions
           const instructions = timelineV1Instructions ?? timelineV2Instructions
@@ -485,7 +485,6 @@ export class CustomTypesGenerator {
             return []
           }
 
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (!response.data.threaded_conversation_with_injections_v2) {
             return []
           }
@@ -591,7 +590,7 @@ export class CustomTypesGenerator {
           }
 
           const timelineV1Instructions =
-            response.data.user.result.timeline?.timeline.instructions
+            response.data.user.result.timeline?.timeline?.instructions
           const timelineV2Instructions =
             response.data.user.result.timeline_v2?.timeline?.instructions
           const instructions = timelineV1Instructions ?? timelineV2Instructions
@@ -693,7 +692,7 @@ export class CustomTypesGenerator {
             return null
           }
 
-          if (!response.data.user.result.legacy) {
+          if (!response.data.user?.result.legacy) {
             return null
           }
 
@@ -764,7 +763,7 @@ export class CustomTypesGenerator {
           }
 
           const timelineV1Instructions =
-            response.data.user.result.timeline?.timeline.instructions
+            response.data.user.result.timeline?.timeline?.instructions
           const timelineV2Instructions =
             response.data.user.result.timeline_v2?.timeline?.instructions
           const instructions = timelineV1Instructions ?? timelineV2Instructions

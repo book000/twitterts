@@ -115,7 +115,17 @@ export class Twitter {
     }
 
     const user = await this.getRawUserByUserId(options)
-    return user.data.user.result.legacy.screen_name
+    const legacyOrCore =
+      user.data.user?.result.legacy.screen_name === undefined
+        ? user.data.user?.result.core
+        : user.data.user.result.legacy
+
+    const screenName = legacyOrCore?.screen_name
+    if (!screenName) {
+      throw new TwitterOperationError('Failed to get screen name')
+    }
+
+    return screenName
   }
 
   /**
@@ -452,7 +462,6 @@ export class Twitter {
       )
 
       if (this.isErrorResponse(responseDetail)) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         throw new TwitterOperationError(responseDetail.errors[0].message)
       }
 
@@ -460,7 +469,7 @@ export class Twitter {
 
       const tweetEntries =
         responseDetail.data.threaded_conversation_with_injections_v2
-          .instructions[0].entries
+          ?.instructions[0].entries
       if (!tweetEntries) {
         throw new TwitterOperationError('Failed to get tweet entries')
       }

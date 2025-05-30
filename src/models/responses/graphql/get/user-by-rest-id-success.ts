@@ -5,50 +5,55 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
     user: {
       result: {
         __typename: string
-        id?: string
-        rest_id?: string
-        affiliates_highlighted_label?: {
+        affiliates_highlighted_label: {
           label?: {
-            url?: {
-              url: string
-              urlType: string
-            }
             badge: {
               url: string
             }
             description: string
-            userLabelType: string
+            url?: {
+              url: string
+              urlType: string
+            }
             userLabelDisplayType?: string
+            userLabelType: string
             longDescription?: {
-              text: string
               entities: {
                 fromIndex: number
-                toIndex: number
                 ref: {
-                  type: string
-                  screen_name: string
                   mention_results: {
                     result: {
                       __typename: string
-                      legacy?: {
+                      legacy: {
                         screen_name: string
                       }
-                      rest_id?: string
-                      reason?: string
-                      message?: string
+                      rest_id: string
                     }
                   }
+                  screen_name: string
+                  type: string
                 }
+                toIndex: number
               }[]
+              text: string
             }
           }
         }
+        business_account: {
+          affiliates_count?: number
+        }
+        creator_subscriptions_count: number
         has_graduated_access?: boolean
-        is_blue_verified?: boolean
-        profile_image_shape?: string
-        legacy?: {
-          can_dm: boolean
-          can_media_tag: boolean
+        has_hidden_subscriptions_on_profile: boolean
+        highlights_info: {
+          can_highlight_tweets: boolean
+          highlighted_tweets: string
+        }
+        id: string
+        is_blue_verified: boolean
+        legacy: {
+          can_dm?: boolean
+          can_media_tag?: boolean
           created_at: string
           default_profile: boolean
           default_profile_image: boolean
@@ -58,22 +63,23 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
               urls: {
                 display_url: string
                 expanded_url: string
-                url: string
                 indices: number[]
+                url: string
               }[]
             }
             url?: {
               urls: {
-                display_url?: string
-                expanded_url?: string
-                url: string
+                display_url: string
+                expanded_url: string
                 indices: number[]
+                url: string
               }[]
             }
           }
           fast_followers_count: number
           favourites_count: number
           followers_count: number
+          following?: boolean
           friends_count: number
           has_custom_timelines: boolean
           is_translator: boolean
@@ -92,42 +98,65 @@ export interface GraphQLGetUserByRestIdSuccessResponse {
           translator_type: string
           url?: string
           verified: boolean
-          want_retweets: boolean
+          want_retweets?: boolean
           withheld_in_countries: string[]
-          following?: boolean
           verified_type?: string
           followed_by?: boolean
-          blocking?: boolean
-          protected?: boolean
-          muting?: boolean
+          notifications?: boolean
         }
-        smart_blocked_by?: boolean
-        smart_blocking?: boolean
-        business_account?: {
-          affiliates_count?: number
-        }
-        highlights_info?: {
-          can_highlight_tweets: boolean
-          highlighted_tweets: string
-        }
-        user_seed_tweet_count?: number
-        creator_subscriptions_count?: number
-        has_hidden_likes_on_profile?: boolean
-        has_hidden_subscriptions_on_profile?: boolean
+        parody_commentary_fan_label: string
+        premium_gifting_eligible?: boolean
         professional?: {
-          rest_id: string
-          professional_type: string
           category: {
+            icon_name: string
             id: number
             name: string
-            icon_name: string
           }[]
+          professional_type: string
+          rest_id: string
         }
+        profile_image_shape: string
+        rest_id: string
+        tipjar_settings?: {
+          is_enabled?: boolean
+          bitcoin_handle?: string
+          ethereum_handle?: string
+          venmo_handle?: string
+          patreon_handle?: string
+          cash_app_handle?: string
+          bandcamp_handle?: string
+          gofundme_handle?: string
+          pay_pal_handle?: string
+        }
+        user_seed_tweet_count: number
         super_follow_eligible?: boolean
-        has_nft_avatar?: boolean
-        message?: string
-        reason?: string
       }
     }
   }
+  errors?: {
+    code: number
+    extensions: {
+      code: number
+      kind: string
+      name: string
+      source: string
+      tracing: {
+        trace_id: string
+      }
+      retry_after?: number
+    }
+    kind: string
+    locations: {
+      column: number
+      line: number
+    }[]
+    message: string
+    name: string
+    path: string[]
+    source: string
+    tracing: {
+      trace_id: string
+    }
+    retry_after?: number
+  }[]
 }

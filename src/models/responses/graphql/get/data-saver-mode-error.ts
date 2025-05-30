@@ -2,7 +2,7 @@
 
 export interface GraphQLGetDataSaverModeErrorResponse {
   errors: {
-    message: string
     code: number
+    message: string
   }[]
 }

@@ -10,6 +10,7 @@ import { GraphQLGetCommunitiesExploreTimelineSuccessResponse } from './graphql/g
 import { GraphQLGetCommunitiesFetchOneQuerySuccessResponse } from './graphql/get/communities-fetch-one-query-success'
 import { GraphQLGetCommunitiesRankedTimelineSuccessResponse } from './graphql/get/communities-ranked-timeline-success'
 import { GraphQLGetDataSaverModeSuccessResponse } from './graphql/get/data-saver-mode-success'
+import { GraphQLGetDataSaverModeErrorResponse } from './graphql/get/data-saver-mode-error'
 import { GraphQLGetDelegatedAccountListQuerySuccessResponse } from './graphql/get/delegated-account-list-query-success'
 import { GraphQLGetDMPinnedInboxQuerySuccessResponse } from './graphql/get/dmpinned-inbox-query-success'
 import { GraphQLGetExplorePageSuccessResponse } from './graphql/get/explore-page-success'
@@ -20,8 +21,10 @@ import { GraphQLGetGetAltTextPromptPreferenceSuccessResponse } from './graphql/g
 import { GraphQLGetGetUserClaimsSuccessResponse } from './graphql/get/get-user-claims-success'
 import { GraphQLGetGrokHomeSuccessResponse } from './graphql/get/grok-home-success'
 import { GraphQLGetHomeLatestTimelineSuccessResponse } from './graphql/get/home-latest-timeline-success'
+import { GraphQLGetHomeLatestTimelineErrorResponse } from './graphql/get/home-latest-timeline-error'
 import { GraphQLGetHomeTimelineSuccessResponse } from './graphql/get/home-timeline-success'
 import { GraphQLGetIsEligibleForAnalyticsUpsellQuerySuccessResponse } from './graphql/get/is-eligible-for-analytics-upsell-query-success'
+import { GraphQLGetIsEligibleForAnalyticsUpsellQueryErrorResponse } from './graphql/get/is-eligible-for-analytics-upsell-query-error'
 import { GraphQLGetIsEligibleForVoButtonUpsellQuerySuccessResponse } from './graphql/get/is-eligible-for-vo-button-upsell-query-success'
 import { GraphQLGetLikesSuccessResponse } from './graphql/get/likes-success'
 import { GraphQLGetListLatestTweetsTimelineSuccessResponse } from './graphql/get/list-latest-tweets-timeline-success'
@@ -31,8 +34,10 @@ import { GraphQLGetPinnedTimelinesSuccessResponse } from './graphql/get/pinned-t
 import { GraphQLGetPremiumContentQuerySuccessResponse } from './graphql/get/premium-content-query-success'
 import { GraphQLGetProfileSpotlightsQuerySuccessResponse } from './graphql/get/profile-spotlights-query-success'
 import { GraphQLGetSearchTimelineSuccessResponse } from './graphql/get/search-timeline-success'
+import { GraphQLGetSearchTimelineErrorResponse } from './graphql/get/search-timeline-error'
 import { GraphQLGetTopicCarouselQuerySuccessResponse } from './graphql/get/topic-carousel-query-success'
 import { GraphQLGetTweetDetailSuccessResponse } from './graphql/get/tweet-detail-success'
+import { GraphQLGetTweetDetailErrorResponse } from './graphql/get/tweet-detail-error'
 import { GraphQLGetTweetResultByRestIdSuccessResponse } from './graphql/get/tweet-result-by-rest-id-success'
 import { GraphQLGetUseFetchProductSubscriptionsQuerySuccessResponse } from './graphql/get/use-fetch-product-subscriptions-query-success'
 import { GraphQLGetUseFetchProfileSectionsCanViewExpandedProfileQuerySuccessResponse } from './graphql/get/use-fetch-profile-sections-can-view-expanded-profile-query-success'
@@ -48,6 +53,7 @@ import { GraphQLGetUserTweetsSuccessResponse } from './graphql/get/user-tweets-s
 import { GraphQLGetUserTweetsErrorResponse } from './graphql/get/user-tweets-error'
 import { GraphQLGetUseSubscriptionProductDetailsQuerySuccessResponse } from './graphql/get/use-subscription-product-details-query-success'
 import { GraphQLGetUseVerifiedOrgFeatureHelperQuerySuccessResponse } from './graphql/get/use-verified-org-feature-helper-query-success'
+import { GraphQLGetViewerSuccessResponse } from './graphql/get/viewer-success'
 import { GraphQLGetViewerErrorResponse } from './graphql/get/viewer-error'
 import { GraphQLGetViewerUserQuerySuccessResponse } from './graphql/get/viewer-user-query-success'
 import { GraphQLGetVOCardsQuerySuccessResponse } from './graphql/get/vocards-query-success'
@@ -93,7 +99,8 @@ export type GraphQLGetCommunitiesRankedTimelineResponse =
   GraphQLGetCommunitiesRankedTimelineSuccessResponse
 /** GraphQL DataSaverMode GET レスポンスモデル */
 export type GraphQLGetDataSaverModeResponse =
-  GraphQLGetDataSaverModeSuccessResponse
+  | GraphQLGetDataSaverModeSuccessResponse
+  | GraphQLGetDataSaverModeErrorResponse
 /** GraphQL DelegatedAccountListQuery GET レスポンスモデル */
 export type GraphQLGetDelegatedAccountListQueryResponse =
   GraphQLGetDelegatedAccountListQuerySuccessResponse
@@ -121,13 +128,15 @@ export type GraphQLGetGetUserClaimsResponse =
 export type GraphQLGetGrokHomeResponse = GraphQLGetGrokHomeSuccessResponse
 /** GraphQL HomeLatestTimeline GET レスポンスモデル */
 export type GraphQLGetHomeLatestTimelineResponse =
-  GraphQLGetHomeLatestTimelineSuccessResponse
+  | GraphQLGetHomeLatestTimelineSuccessResponse
+  | GraphQLGetHomeLatestTimelineErrorResponse
 /** GraphQL HomeTimeline GET レスポンスモデル */
 export type GraphQLGetHomeTimelineResponse =
   GraphQLGetHomeTimelineSuccessResponse
 /** GraphQL isEligibleForAnalyticsUpsellQuery GET レスポンスモデル */
 export type GraphQLGetIsEligibleForAnalyticsUpsellQueryResponse =
-  GraphQLGetIsEligibleForAnalyticsUpsellQuerySuccessResponse
+  | GraphQLGetIsEligibleForAnalyticsUpsellQuerySuccessResponse
+  | GraphQLGetIsEligibleForAnalyticsUpsellQueryErrorResponse
 /** GraphQL isEligibleForVoButtonUpsellQuery GET レスポンスモデル */
 export type GraphQLGetIsEligibleForVoButtonUpsellQueryResponse =
   GraphQLGetIsEligibleForVoButtonUpsellQuerySuccessResponse
@@ -153,12 +162,15 @@ export type GraphQLGetProfileSpotlightsQueryResponse =
   GraphQLGetProfileSpotlightsQuerySuccessResponse
 /** GraphQL SearchTimeline GET レスポンスモデル */
 export type GraphQLGetSearchTimelineResponse =
-  GraphQLGetSearchTimelineSuccessResponse
+  | GraphQLGetSearchTimelineSuccessResponse
+  | GraphQLGetSearchTimelineErrorResponse
 /** GraphQL TopicCarouselQuery GET レスポンスモデル */
 export type GraphQLGetTopicCarouselQueryResponse =
   GraphQLGetTopicCarouselQuerySuccessResponse
 /** GraphQL TweetDetail GET レスポンスモデル */
-export type GraphQLGetTweetDetailResponse = GraphQLGetTweetDetailSuccessResponse
+export type GraphQLGetTweetDetailResponse =
+  | GraphQLGetTweetDetailSuccessResponse
+  | GraphQLGetTweetDetailErrorResponse
 /** GraphQL TweetResultByRestId GET レスポンスモデル */
 export type GraphQLGetTweetResultByRestIdResponse =
   GraphQLGetTweetResultByRestIdSuccessResponse
@@ -201,7 +213,9 @@ export type GraphQLGetUseSubscriptionProductDetailsQueryResponse =
 export type GraphQLGetUseVerifiedOrgFeatureHelperQueryResponse =
   GraphQLGetUseVerifiedOrgFeatureHelperQuerySuccessResponse
 /** GraphQL Viewer GET レスポンスモデル */
-export type GraphQLGetViewerResponse = GraphQLGetViewerErrorResponse
+export type GraphQLGetViewerResponse =
+  | GraphQLGetViewerSuccessResponse
+  | GraphQLGetViewerErrorResponse
 /** GraphQL viewerUserQuery GET レスポンスモデル */
 export type GraphQLGetViewerUserQueryResponse =
   GraphQLGetViewerUserQuerySuccessResponse

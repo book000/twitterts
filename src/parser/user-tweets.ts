@@ -27,7 +27,7 @@ export class UserTweetsParser extends BaseParser<'UserTweets'> {
     }
 
     const timelineV1Instructions =
-      this.response.data.user.result.timeline?.timeline.instructions
+      this.response.data.user.result.timeline?.timeline?.instructions
     const timelineV2Instructions =
       this.response.data.user.result.timeline_v2?.timeline?.instructions
     const instructions = timelineV1Instructions ?? timelineV2Instructions

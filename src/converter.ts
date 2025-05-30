@@ -185,14 +185,9 @@ export const ObjectConverter = {
     for (const url of urls) {
       entities.description.urls = entities.description.urls ?? []
       entities.description.urls.push({
-        // @ts-expect-error url.display_url は string | undefined
         display_url: url.display_url,
-        // @ts-expect-error url.expanded_url は string | undefined
         expanded_url: url.expanded_url,
-        // @ts-expect-error url.indices は number[] | undefined
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         indices: [url.indices[0], url.indices[1]],
-        // @ts-expect-error url.url は string
         url: url.url,
       })
     }
@@ -356,6 +351,9 @@ export const ObjectConverter = {
   convertToFullUser(
     response: GraphQLGetUserByScreenNameSuccessResponse
   ): FullUser {
+    if (!response.data.user) {
+      throw new ResponseParseError('Failed to get user data')
+    }
     const user = response.data.user.result
 
     return {
@@ -371,20 +369,19 @@ export const ObjectConverter = {
       id: Number(user.rest_id),
       listed_count: user.legacy.listed_count,
       location: user.legacy.location,
-      name: user.legacy.name,
+      name: user.legacy.name ?? user.core.name,
       profile_banner_url: user.legacy.profile_banner_url,
       profile_image_url_https: user.legacy.profile_image_url_https,
       protected:
         'protected' in user.legacy && user.legacy.protected
           ? user.legacy.protected
           : false,
-      screen_name: user.legacy.screen_name,
+      screen_name: user.legacy.screen_name ?? user.core.screen_name,
       // @ts-expect-error statusの型が異なるため
       status: 'status' in user && user.status ? user.status : undefined,
       statuses_count: user.legacy.statuses_count,
       url: user.legacy.url,
       verified: user.legacy.verified,
-      // @ts-expect-error withheld_in_countries は string[] | undefined
       withheld_in_countries: user.legacy.withheld_in_countries,
       // @ts-expect-error withheld_scopeがunknownのため
       withheld_scope:

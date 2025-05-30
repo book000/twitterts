@@ -2,7 +2,7 @@
 
 export interface GraphQLGetUserByRestIdErrorResponse {
   errors: {
-    message: string
     code: number
+    message: string
   }[]
 }

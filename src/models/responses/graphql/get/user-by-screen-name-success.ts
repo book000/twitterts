@@ -1,16 +1,49 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL GET UserByScreenName 成功レスポンスモデル */
 
 export interface GraphQLGetUserByScreenNameSuccessResponse {
   data: {
-    user: {
+    user?: {
       result: {
         __typename: string
-        affiliates_highlighted_label: {}
-        business_account: {}
+        affiliates_highlighted_label: {
+          label?: {
+            badge: {
+              url: string
+            }
+            description: string
+            url?: {
+              url: string
+              urlType: string
+            }
+            userLabelDisplayType?: string
+            userLabelType: string
+            longDescription?: {
+              entities: {
+                fromIndex: number
+                ref: {
+                  mention_results: {
+                    result: {
+                      __typename: string
+                      legacy: {
+                        screen_name: string
+                      }
+                      rest_id: string
+                    }
+                  }
+                  screen_name: string
+                  type: string
+                }
+                toIndex: number
+              }[]
+              text: string
+            }
+          }
+        }
+        business_account: {
+          affiliates_count?: number
+        }
         creator_subscriptions_count: number
-        has_graduated_access: boolean
+        has_graduated_access?: boolean
         has_hidden_subscriptions_on_profile: boolean
         highlights_info: {
           can_highlight_tweets: boolean
@@ -19,16 +52,26 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
         id: string
         is_blue_verified: boolean
         is_profile_translatable: boolean
+        core: {
+          created_at: string
+          name: string
+          screen_name: string
+        }
         legacy: {
-          can_dm: boolean
-          can_media_tag: boolean
+          can_dm?: boolean
+          can_media_tag?: boolean
           created_at: string
           default_profile: boolean
           default_profile_image: boolean
           description: string
           entities: {
             description: {
-              urls: unknown[]
+              urls: {
+                display_url: string
+                expanded_url: string
+                indices: number[]
+                url: string
+              }[]
             }
             url?: {
               urls: {
@@ -42,45 +85,57 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           fast_followers_count: number
           favourites_count: number
           followers_count: number
-          following: boolean
+          following?: boolean
           friends_count: number
           has_custom_timelines: boolean
           is_translator: boolean
           listed_count: number
           location: string
           media_count: number
-          name: string
+          name?: string
           normal_followers_count: number
           pinned_tweet_ids_str: string[]
           possibly_sensitive: boolean
-          profile_banner_url: string
+          profile_banner_url?: string
           profile_image_url_https: string
           profile_interstitial_type: string
-          screen_name: string
+          screen_name?: string
           statuses_count: number
           translator_type: string
           url?: string
           verified: boolean
-          want_retweets: boolean
-          withheld_in_countries: unknown[]
+          want_retweets?: boolean
+          withheld_in_countries: string[]
           followed_by?: boolean
           protected?: boolean
           needs_phone_verification?: boolean
+          verified_type?: string
+          notifications?: boolean
         }
-        legacy_extended_profile: {
+        legacy_extended_profile?: {
           birthdate?: {
-            day: number
-            month: number
+            day?: number
+            month?: number
             visibility: string
-            year: number
+            year?: number
             year_visibility: string
           }
         }
         parody_commentary_fan_label: string
-        premium_gifting_eligible: boolean
+        premium_gifting_eligible?: boolean
         profile_image_shape: string
         rest_id: string
-        tipjar_settings: {}
+        tipjar_settings?: {
+          is_enabled?: boolean
+          bitcoin_handle?: string
+          ethereum_handle?: string
+          venmo_handle?: string
+          patreon_handle?: string
+          cash_app_handle?: string
+          bandcamp_handle?: string
+          gofundme_handle?: string
+          pay_pal_handle?: string
+        }
         user_seed_tweet_count: number
         verification_info: {
           is_identity_verified: boolean
@@ -96,10 +151,46 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
               }[]
               text: string
             }
-            verified_since_msec: string
+            verified_since_msec?: string
           }
         }
+        professional?: {
+          category: {
+            icon_name: string
+            id: number
+            name: string
+          }[]
+          professional_type: string
+          rest_id: string
+        }
+        super_follow_eligible?: boolean
       }
     }
   }
+  errors?: {
+    code: number
+    extensions: {
+      code: number
+      kind: string
+      name: string
+      source: string
+      tracing: {
+        trace_id: string
+      }
+      retry_after?: number
+    }
+    kind: string
+    locations: {
+      column: number
+      line: number
+    }[]
+    message: string
+    name: string
+    path: string[]
+    source: string
+    tracing: {
+      trace_id: string
+    }
+    retry_after?: number
+  }[]
 }

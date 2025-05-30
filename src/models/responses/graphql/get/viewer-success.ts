@@ -4,26 +4,35 @@
 
 export interface GraphQLGetViewerSuccessResponse {
   data: {
+    is_super_follow_subscriber: boolean
     viewer: {
-      has_community_memberships: boolean
       create_community_action_result: {
         __typename: string
-        reason: string
         message: string
+        reason: string
       }
+      educationFlags: {
+        flag: string
+        timestamp: number
+      }[]
+      has_community_memberships: boolean
+      is_active_creator: boolean
+      is_tfe_restricted_session: boolean
+      super_followers_count: number
       user_features: {
-        feature: string
         enabled: boolean
+        feature: string
       }[]
       user_results: {
         result: {
           __typename: string
-          id: string
-          rest_id: string
           affiliates_highlighted_label: {}
+          creator_subscriptions_count: number
           has_graduated_access: boolean
+          has_passkey_authentication: boolean
+          id: string
           is_blue_verified: boolean
-          profile_image_shape: string
+          is_profile_translatable: boolean
           legacy: {
             can_dm: boolean
             can_media_tag: boolean
@@ -39,14 +48,15 @@ export interface GraphQLGetViewerSuccessResponse {
                 urls: {
                   display_url: string
                   expanded_url: string
-                  url: string
                   indices: number[]
+                  url: string
                 }[]
               }
             }
             fast_followers_count: number
             favourites_count: number
             followers_count: number
+            following: boolean
             friends_count: number
             has_custom_timelines: boolean
             is_translator: boolean
@@ -73,24 +83,59 @@ export interface GraphQLGetViewerSuccessResponse {
             birthdate?: {
               day: number
               month: number
-              year: number
               visibility: string
+              year: number
               year_visibility: string
             }
           }
-          is_profile_translatable: boolean
+          parody_commentary_fan_label: string
+          profile_image_shape: string
+          rest_id: string
           super_follows_application_status: string
-          creator_subscriptions_count: number
+          tipjar_settings: {}
+          upsell_config_for_surfaces: {
+            configs: {
+              key: string
+              value: {
+                attribution_params: {
+                  referrer: string
+                }
+                default_content: {
+                  destination: {
+                    charge_interval: string
+                    product_category: string
+                  }
+                  key: string
+                  render_properties: {
+                    __typename: string
+                    action_label?: string
+                    cta?: {
+                      __typename: string
+                      action_label: string
+                    }
+                    primary_label?: string
+                    secondary_label?: string
+                  }
+                }
+                variant_config?: {
+                  ddg_experiment_gate: string
+                  variants: {
+                    destination: {
+                      charge_interval: string
+                      product_category: string
+                    }
+                    key: string
+                    render_properties: {
+                      __typename: string
+                      action_label: string
+                    }
+                  }[]
+                }
+              }
+            }[]
+          }
         }
       }
-      educationFlags: {
-        flag: string
-        timestamp: number
-      }[]
-      is_tfe_restricted_session: boolean
-      is_active_creator: boolean
-      super_followers_count: number
     }
-    is_super_follow_subscriber: boolean
   }
 }

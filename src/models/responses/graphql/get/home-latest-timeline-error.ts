@@ -2,7 +2,7 @@
 
 export interface GraphQLGetHomeLatestTimelineErrorResponse {
   errors: {
-    message: string
     code: number
+    message: string
   }[]
 }
