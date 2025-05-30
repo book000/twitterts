@@ -51,7 +51,7 @@ describe('Twitter', () => {
     })
     expect(response).toBeTruthy()
     expect(response.data).toBeTruthy()
-    expect(response.data.user.result.rest_id).toBe('286048624')
+    expect(response.data.user?.result.rest_id).toBe('286048624')
   })
 
   test('getScreenNameByUserId', async () => {
@@ -76,7 +76,9 @@ describe('Twitter', () => {
     })
     expect(response).toBeTruthy()
     expect(response.data).toBeTruthy()
-    expect(response.data.user.result.legacy.screen_name).toBe('book000')
+    const user = response.data.user?.result
+    const legacyOrCore = user?.legacy.name === undefined ? user?.core : user.legacy
+    expect(legacyOrCore?.screen_name).toBe('book000')
   })
 
   test('getHomeTimelineRawTweets', async () => {

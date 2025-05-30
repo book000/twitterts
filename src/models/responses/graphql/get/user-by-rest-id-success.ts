@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET UserByRestId 成功レスポンスモデル */
 
 export interface GraphQLGetUserByRestIdSuccessResponse {

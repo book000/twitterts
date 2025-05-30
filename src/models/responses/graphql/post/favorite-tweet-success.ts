@@ -1,5 +1,3 @@
- 
-
 /** GraphQL POST FavoriteTweet 成功レスポンスモデル */
 
 export interface GraphQLPostFavoriteTweetSuccessResponse {

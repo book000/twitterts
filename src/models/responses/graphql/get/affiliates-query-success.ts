@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET affiliatesQuery 成功レスポンスモデル */
 
 export interface GraphQLGetAffiliatesQuerySuccessResponse {

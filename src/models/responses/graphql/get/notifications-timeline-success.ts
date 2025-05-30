@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET NotificationsTimeline 成功レスポンスモデル */
 
 export interface GraphQLGetNotificationsTimelineSuccessResponse {

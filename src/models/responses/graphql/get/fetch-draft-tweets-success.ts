@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET FetchDraftTweets 成功レスポンスモデル */
 
 export interface GraphQLGetFetchDraftTweetsSuccessResponse {

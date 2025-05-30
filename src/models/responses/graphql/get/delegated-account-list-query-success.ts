@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET DelegatedAccountListQuery 成功レスポンスモデル */
 
 export interface GraphQLGetDelegatedAccountListQuerySuccessResponse {

@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET Viewer 失敗レスポンスモデル */
 
 export interface GraphQLGetViewerErrorResponse {

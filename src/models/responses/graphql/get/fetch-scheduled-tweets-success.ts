@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET FetchScheduledTweets 成功レスポンスモデル */
 
 export interface GraphQLGetFetchScheduledTweetsSuccessResponse {

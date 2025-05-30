@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET articleNudgeDomains 成功レスポンスモデル */
 
 export interface GraphQLGetArticleNudgeDomainsSuccessResponse {

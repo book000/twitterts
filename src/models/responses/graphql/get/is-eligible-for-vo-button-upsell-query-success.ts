@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET isEligibleForVoButtonUpsellQuery 成功レスポンスモデル */
 
 export interface GraphQLGetIsEligibleForVoButtonUpsellQuerySuccessResponse {

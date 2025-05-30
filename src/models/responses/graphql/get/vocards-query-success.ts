@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET VOCardsQuery 成功レスポンスモデル */
 
 export interface GraphQLGetVOCardsQuerySuccessResponse {

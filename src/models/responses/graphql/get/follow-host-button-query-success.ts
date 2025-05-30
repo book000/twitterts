@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET FollowHostButtonQuery 成功レスポンスモデル */
 
 export interface GraphQLGetFollowHostButtonQuerySuccessResponse {

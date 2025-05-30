@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET ProfileSpotlightsQuery 成功レスポンスモデル */
 
 export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {

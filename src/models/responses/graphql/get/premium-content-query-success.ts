@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET PremiumContentQuery 成功レスポンスモデル */
 
 export interface GraphQLGetPremiumContentQuerySuccessResponse {

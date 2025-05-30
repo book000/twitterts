@@ -1,5 +1,3 @@
- 
-
 /** GraphQL GET UserByScreenName 成功レスポンスモデル */
 
 export interface GraphQLGetUserByScreenNameSuccessResponse {
@@ -54,6 +52,11 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
         id: string
         is_blue_verified: boolean
         is_profile_translatable: boolean
+        core: {
+          created_at: string
+          name: string
+          screen_name: string
+        }
         legacy: {
           can_dm?: boolean
           can_media_tag?: boolean
@@ -89,14 +92,14 @@ export interface GraphQLGetUserByScreenNameSuccessResponse {
           listed_count: number
           location: string
           media_count: number
-          name: string
+          name?: string
           normal_followers_count: number
           pinned_tweet_ids_str: string[]
           possibly_sensitive: boolean
           profile_banner_url?: string
           profile_image_url_https: string
           profile_interstitial_type: string
-          screen_name: string
+          screen_name?: string
           statuses_count: number
           translator_type: string
           url?: string
