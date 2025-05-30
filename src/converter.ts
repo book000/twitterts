@@ -190,7 +190,7 @@ export const ObjectConverter = {
         // @ts-expect-error url.expanded_url は string | undefined
         expanded_url: url.expanded_url,
         // @ts-expect-error url.indices は number[] | undefined
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         indices: [url.indices[0], url.indices[1]],
         // @ts-expect-error url.url は string
         url: url.url,

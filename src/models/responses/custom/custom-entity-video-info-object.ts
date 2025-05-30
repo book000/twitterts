@@ -1,3 +1,5 @@
+ 
+
 /** エンティティ動画情報オブジェクト */
 
 export type CustomEntityVideoInfoObject = null | {

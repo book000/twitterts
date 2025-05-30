@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL POST UnfavoriteTweet 成功レスポンスモデル */
 
 export interface GraphQLPostUnfavoriteTweetSuccessResponse {

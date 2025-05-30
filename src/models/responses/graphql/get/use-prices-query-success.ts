@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET usePricesQuery 成功レスポンスモデル */
 
 export interface GraphQLGetUsePricesQuerySuccessResponse {

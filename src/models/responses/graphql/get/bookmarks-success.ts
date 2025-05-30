@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET Bookmarks 成功レスポンスモデル */
 
 export interface GraphQLGetBookmarksSuccessResponse {

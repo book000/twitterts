@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET viewerUserQuery 成功レスポンスモデル */
 
 export interface GraphQLGetViewerUserQuerySuccessResponse {

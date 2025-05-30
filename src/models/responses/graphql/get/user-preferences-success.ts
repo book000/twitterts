@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET UserPreferences 成功レスポンスモデル */
 
 export interface GraphQLGetUserPreferencesSuccessResponse {

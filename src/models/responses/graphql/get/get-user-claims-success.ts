@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET GetUserClaims 成功レスポンスモデル */
 
 export interface GraphQLGetGetUserClaimsSuccessResponse {

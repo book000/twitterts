@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 /** GraphQL GET CommunitiesFetchOneQuery 成功レスポンスモデル */
 
 export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
@@ -22,8 +24,8 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
           leave_action_result: {
             __isCommunityLeaveActionResult: string
             __typename: string
-            message: string
-            reason: string
+            message?: string
+            reason?: string
           }
           pin_action_result: {
             __isCommunityTweetPinActionResult: string
@@ -90,7 +92,7 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               normal_followers_count: number
               pinned_tweet_ids_str: string[]
               possibly_sensitive: boolean
-              profile_banner_url: string
+              profile_banner_url?: string
               profile_image_url_https: string
               profile_interstitial_type: string
               screen_name: string
@@ -99,8 +101,9 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               url?: string
               verified: boolean
               want_retweets: boolean
-              withheld_in_countries: unknown[]
+              withheld_in_countries: string[]
               protected?: boolean
+              verified_type?: string
             }
             parody_commentary_fan_label?: string
             professional?: {
@@ -116,12 +119,12 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
             profile_image_shape?: string
             rest_id?: string
             tipjar_settings?: {
-              is_enabled?: boolean
-              venmo_handle?: string
               ethereum_handle?: string
+              is_enabled?: boolean
               patreon_handle?: string
-              bitcoin_handle?: string
               cash_app_handle?: string
+              venmo_handle?: string
+              bitcoin_handle?: string
               gofundme_handle?: string
             }
             message?: string
@@ -190,7 +193,7 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               normal_followers_count: number
               pinned_tweet_ids_str: string[]
               possibly_sensitive: boolean
-              profile_banner_url: string
+              profile_banner_url?: string
               profile_image_url_https: string
               profile_interstitial_type: string
               screen_name: string
@@ -199,8 +202,9 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               url?: string
               verified: boolean
               want_retweets: boolean
-              withheld_in_countries: unknown[]
+              withheld_in_countries: string[]
               protected?: boolean
+              verified_type?: string
             }
             parody_commentary_fan_label?: string
             professional?: {
@@ -216,12 +220,12 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
             profile_image_shape?: string
             rest_id?: string
             tipjar_settings?: {
-              is_enabled?: boolean
-              venmo_handle?: string
               ethereum_handle?: string
+              is_enabled?: boolean
               patreon_handle?: string
-              bitcoin_handle?: string
               cash_app_handle?: string
+              venmo_handle?: string
+              bitcoin_handle?: string
               gofundme_handle?: string
             }
             message?: string
@@ -273,15 +277,21 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
             original_img_width: number
           }
         }
-        description: string
+        description?: string
         id: string
         id_str: string
         invites_policy: string
         invites_result: {
           __isCommunityInvitesResult: string
           __typename: string
-          message: string
-          reason: string
+          message?: string
+          reason?: string
+          id?: string
+          remaining_invite_count?: number
+          users_to_invite_slice?: {
+            items: unknown[]
+            slice_info: {}
+          }
         }
         is_nsfw: boolean
         is_pinned: boolean
@@ -360,7 +370,8 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               url?: string
               verified: boolean
               want_retweets: boolean
-              withheld_in_countries: unknown[]
+              withheld_in_countries: string[]
+              verified_type?: string
             }
             parody_commentary_fan_label: string
             professional?: {
@@ -376,12 +387,12 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
             profile_image_shape: string
             rest_id: string
             tipjar_settings: {
-              cash_app_handle?: string
-              is_enabled?: boolean
-              venmo_handle?: string
               ethereum_handle?: string
+              is_enabled?: boolean
               patreon_handle?: string
               bitcoin_handle?: string
+              cash_app_handle?: string
+              venmo_handle?: string
               gofundme_handle?: string
             }
             super_follow_eligible?: boolean
@@ -430,7 +441,7 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
     }[]
     message: string
     name: string
-    path: string[]
+    path: (number | string)[]
     retry_after: number
     source: string
     tracing: {

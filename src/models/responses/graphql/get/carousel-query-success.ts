@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET CarouselQuery 成功レスポンスモデル */
 
 export interface GraphQLGetCarouselQuerySuccessResponse {

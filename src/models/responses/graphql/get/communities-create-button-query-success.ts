@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET CommunitiesCreateButtonQuery 成功レスポンスモデル */
 
 export interface GraphQLGetCommunitiesCreateButtonQuerySuccessResponse {

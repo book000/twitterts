@@ -485,7 +485,7 @@ export class CustomTypesGenerator {
             return []
           }
 
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+           
           if (!response.data.threaded_conversation_with_injections_v2) {
             return []
           }

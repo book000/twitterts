@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET UserTweets 失敗レスポンスモデル */
 
 export interface GraphQLGetUserTweetsErrorResponse {

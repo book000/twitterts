@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET useRelayDelegateDataPendingQuery 成功レスポンスモデル */
 
 export interface GraphQLGetUseRelayDelegateDataPendingQuerySuccessResponse {

@@ -452,7 +452,7 @@ export class Twitter {
       )
 
       if (this.isErrorResponse(responseDetail)) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+         
         throw new TwitterOperationError(responseDetail.errors[0].message)
       }
 

@@ -1,3 +1,5 @@
+ 
+
 /** GraphQL GET useProductSkuQuery 成功レスポンスモデル */
 
 export interface GraphQLGetUseProductSkuQuerySuccessResponse {
