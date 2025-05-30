@@ -77,7 +77,8 @@ describe('Twitter', () => {
     expect(response).toBeTruthy()
     expect(response.data).toBeTruthy()
     const user = response.data.user?.result
-    const legacyOrCore = user?.legacy.name === undefined ? user?.core : user.legacy
+    const legacyOrCore =
+      user?.legacy.name === undefined ? user?.core : user.legacy
     expect(legacyOrCore?.screen_name).toBe('book000')
   })
 
