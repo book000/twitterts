@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@book000/node-utils':
-        specifier: 1.16.3
-        version: 1.16.3
+        specifier: 1.16.9
+        version: 1.16.9
       genson-js:
         specifier: 0.0.8
         version: 0.0.8
@@ -281,8 +281,8 @@ packages:
       eslint: 9.27.0
       eslint-config-standard: 17.1.0
 
-  '@book000/node-utils@1.16.3':
-    resolution: {integrity: sha512-jnAVhJkQ+HD+48u0fSLszxyXLiE1Tyg4IhYoLB4G25YklWtHK1IkadbB7Zem7mVS36Lfs4f+qOSS3SBQ7ygTmA==}
+  '@book000/node-utils@1.16.9':
+    resolution: {integrity: sha512-oTE1EMwN4FlEEzrs56Y8gUZCKgmLSkF+qMdb4okxwrTB9++jQzs1bdffBiSBTh3QNN2Bx1oS4uYBf5r3K+TRXA==}
 
   '@colors/colors@1.6.0':
     resolution: {integrity: sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA==}
@@ -2427,8 +2427,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  moment-timezone@0.5.48:
-    resolution: {integrity: sha512-f22b8LV1gbTO2ms2j2z13MuPogNoh5UzxL3nzNAYKGraILnbGc9NEE6dyiiiLv46DGRb8A4kg8UKWLjPthxBHw==}
+  moment-timezone@0.6.0:
+    resolution: {integrity: sha512-ldA5lRNm3iJCWZcBCab4pnNL3HSZYXVb/3TYr75/1WCTWYuTqYUb5f/S384pncYjJ88lbO8Z4uPDvmoluHJc8Q==}
 
   moment@2.30.1:
     resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
@@ -3552,13 +3552,13 @@ snapshots:
       - supports-color
       - typescript
 
-  '@book000/node-utils@1.16.3':
+  '@book000/node-utils@1.16.9':
     dependencies:
       axios: 1.9.0
       cycle: 1.0.3
       form-data: 4.0.2
       jsonc-parser: 3.3.1
-      moment-timezone: 0.5.48
+      moment-timezone: 0.6.0
       winston: 3.17.0
       winston-daily-rotate-file: 5.0.0(winston@3.17.0)
     transitivePeerDependencies:
@@ -6178,7 +6178,7 @@ snapshots:
 
   mkdirp@3.0.1: {}
 
-  moment-timezone@0.5.48:
+  moment-timezone@0.6.0:
     dependencies:
       moment: 2.30.1
 
