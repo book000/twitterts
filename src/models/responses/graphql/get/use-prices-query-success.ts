@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 /** GraphQL GET usePricesQuery 成功レスポンスモデル */
 
 export interface GraphQLGetUsePricesQuerySuccessResponse {

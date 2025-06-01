@@ -172,9 +172,9 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                         id: string
                         is_blue_verified: boolean
                         legacy: {
-                          can_dm: boolean
-                          can_media_tag: boolean
-                          created_at: string
+                          can_dm?: boolean
+                          can_media_tag?: boolean
+                          created_at?: string
                           default_profile: boolean
                           default_profile_image: boolean
                           description: string
@@ -199,24 +199,24 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                           fast_followers_count: number
                           favourites_count: number
                           followers_count: number
-                          following: boolean
+                          following?: boolean
                           friends_count: number
                           has_custom_timelines: boolean
                           is_translator: boolean
                           listed_count: number
-                          location: string
+                          location?: string
                           media_count: number
-                          name: string
+                          name?: string
                           normal_followers_count: number
                           pinned_tweet_ids_str: string[]
                           possibly_sensitive: boolean
                           profile_banner_url?: string
-                          profile_image_url_https: string
+                          profile_image_url_https?: string
                           profile_interstitial_type: string
-                          screen_name: string
+                          screen_name?: string
                           statuses_count: number
                           translator_type: string
-                          verified: boolean
+                          verified?: boolean
                           want_retweets: boolean
                           withheld_in_countries: unknown[]
                           followed_by?: boolean
@@ -242,6 +242,32 @@ export interface GraphQLGetTweetDetailSuccessResponse {
                           }[]
                           professional_type: string
                           rest_id: string
+                        }
+                        avatar?: {
+                          image_url: string
+                        }
+                        core?: {
+                          created_at: string
+                          name: string
+                          screen_name: string
+                        }
+                        dm_permissions?: {
+                          can_dm: boolean
+                        }
+                        location?: {
+                          location: string
+                        }
+                        media_permissions?: {
+                          can_media_tag: boolean
+                        }
+                        privacy?: {
+                          protected: boolean
+                        }
+                        relationship_perspectives?: {
+                          following: boolean
+                        }
+                        verification?: {
+                          verified: boolean
                         }
                       }
                     }

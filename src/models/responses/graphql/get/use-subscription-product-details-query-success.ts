@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 /** GraphQL GET useSubscriptionProductDetailsQuery 成功レスポンスモデル */
 
 export interface GraphQLGetUseSubscriptionProductDetailsQuerySuccessResponse {

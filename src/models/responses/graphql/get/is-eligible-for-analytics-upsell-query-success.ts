@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 /** GraphQL GET isEligibleForAnalyticsUpsellQuery 成功レスポンスモデル */
 
 export interface GraphQLGetIsEligibleForAnalyticsUpsellQuerySuccessResponse {
@@ -14,6 +16,7 @@ export interface GraphQLGetIsEligibleForAnalyticsUpsellQuerySuccessResponse {
       tracing: {
         trace_id: string
       }
+      retry_after?: number
     }
     kind: string
     locations: {
@@ -27,5 +30,6 @@ export interface GraphQLGetIsEligibleForAnalyticsUpsellQuerySuccessResponse {
     tracing: {
       trace_id: string
     }
+    retry_after?: number
   }[]
 }

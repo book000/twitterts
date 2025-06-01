@@ -31,6 +31,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                   adMetadataContainer: {
                     renderLegacyWebsiteCard: boolean
                     unifiedCardOverride?: string
+                    isQuickPromote?: boolean
                   }
                   advertiser_results: {
                     result: {
@@ -53,9 +54,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                       id: string
                       is_blue_verified: boolean
                       legacy: {
-                        can_dm: boolean
-                        can_media_tag: boolean
-                        created_at: string
+                        can_dm?: boolean
+                        can_media_tag?: boolean
+                        created_at?: string
                         default_profile: boolean
                         default_profile_image: boolean
                         description: string
@@ -80,25 +81,25 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                         fast_followers_count: number
                         favourites_count: number
                         followers_count: number
-                        following: boolean
+                        following?: boolean
                         friends_count: number
                         has_custom_timelines: boolean
                         is_translator: boolean
                         listed_count: number
-                        location: string
+                        location?: string
                         media_count: number
-                        name: string
+                        name?: string
                         normal_followers_count: number
                         pinned_tweet_ids_str: string[]
                         possibly_sensitive: boolean
                         profile_banner_url?: string
-                        profile_image_url_https: string
+                        profile_image_url_https?: string
                         profile_interstitial_type: string
-                        screen_name: string
+                        screen_name?: string
                         statuses_count: number
                         translator_type: string
                         url?: string
-                        verified: boolean
+                        verified?: boolean
                         verified_type?: string
                         want_retweets: boolean
                         withheld_in_countries: unknown[]
@@ -120,6 +121,33 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                         is_enabled?: boolean
                         bitcoin_handle?: string
                         ethereum_handle?: string
+                      }
+                      avatar?: {
+                        image_url: string
+                      }
+                      core?: {
+                        created_at: string
+                        name: string
+                        screen_name: string
+                      }
+                      dm_permissions?: {
+                        can_dm: boolean
+                      }
+                      location?: {
+                        location: string
+                      }
+                      media_permissions?: {
+                        can_media_tag: boolean
+                      }
+                      privacy?: {
+                        protected: boolean
+                      }
+                      relationship_perspectives?: {
+                        following: boolean
+                      }
+                      verification?: {
+                        verified: boolean
+                        verified_type?: string
                       }
                     }
                   }
@@ -206,9 +234,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             id: string
                             is_blue_verified: boolean
                             legacy: {
-                              can_dm: boolean
-                              can_media_tag: boolean
-                              created_at: string
+                              can_dm?: boolean
+                              can_media_tag?: boolean
+                              created_at?: string
                               default_profile: boolean
                               default_profile_image: boolean
                               description: string
@@ -233,25 +261,25 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               fast_followers_count: number
                               favourites_count: number
                               followers_count: number
-                              following: boolean
+                              following?: boolean
                               friends_count: number
                               has_custom_timelines: boolean
                               is_translator: boolean
                               listed_count: number
-                              location: string
+                              location?: string
                               media_count: number
-                              name: string
+                              name?: string
                               normal_followers_count: number
                               pinned_tweet_ids_str: string[]
                               possibly_sensitive: boolean
                               profile_banner_url?: string
-                              profile_image_url_https: string
+                              profile_image_url_https?: string
                               profile_interstitial_type: string
-                              screen_name: string
+                              screen_name?: string
                               statuses_count: number
                               translator_type: string
                               url?: string
-                              verified: boolean
+                              verified?: boolean
                               verified_type?: string
                               want_retweets: boolean
                               withheld_in_countries: unknown[]
@@ -275,6 +303,33 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               is_enabled?: boolean
                               patreon_handle?: string
                               bitcoin_handle?: string
+                            }
+                            avatar?: {
+                              image_url: string
+                            }
+                            core?: {
+                              created_at: string
+                              name: string
+                              screen_name: string
+                            }
+                            dm_permissions?: {
+                              can_dm: boolean
+                            }
+                            location?: {
+                              location: string
+                            }
+                            media_permissions?: {
+                              can_media_tag: boolean
+                            }
+                            privacy?: {
+                              protected: boolean
+                            }
+                            relationship_perspectives?: {
+                              following: boolean
+                            }
+                            verification?: {
+                              verified: boolean
+                              verified_type?: string
                             }
                           }
                         }[]
@@ -323,9 +378,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                           id: string
                           is_blue_verified: boolean
                           legacy: {
-                            can_dm: boolean
-                            can_media_tag: boolean
-                            created_at: string
+                            can_dm?: boolean
+                            can_media_tag?: boolean
+                            created_at?: string
                             default_profile: boolean
                             default_profile_image: boolean
                             description: string
@@ -351,26 +406,26 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             favourites_count: number
                             followed_by?: boolean
                             followers_count: number
-                            following: boolean
+                            following?: boolean
                             friends_count: number
                             has_custom_timelines: boolean
                             is_translator: boolean
                             listed_count: number
-                            location: string
+                            location?: string
                             media_count: number
-                            name: string
+                            name?: string
                             normal_followers_count: number
                             pinned_tweet_ids_str: string[]
                             possibly_sensitive: boolean
                             profile_banner_url?: string
-                            profile_image_url_https: string
+                            profile_image_url_https?: string
                             profile_interstitial_type: string
                             protected?: boolean
-                            screen_name: string
+                            screen_name?: string
                             statuses_count: number
                             translator_type: string
                             url?: string
-                            verified: boolean
+                            verified?: boolean
                             verified_type?: string
                             want_retweets: boolean
                             withheld_in_countries: unknown[]
@@ -395,6 +450,34 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             ethereum_handle?: string
                           }
                           super_follow_eligible?: boolean
+                          avatar?: {
+                            image_url: string
+                          }
+                          core?: {
+                            created_at: string
+                            name: string
+                            screen_name: string
+                          }
+                          dm_permissions?: {
+                            can_dm: boolean
+                          }
+                          location?: {
+                            location: string
+                          }
+                          media_permissions?: {
+                            can_media_tag: boolean
+                          }
+                          privacy?: {
+                            protected: boolean
+                          }
+                          relationship_perspectives?: {
+                            followed_by?: boolean
+                            following: boolean
+                          }
+                          verification?: {
+                            verified: boolean
+                            verified_type?: string
+                          }
                         }
                       }
                     }
@@ -441,14 +524,27 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               user_results: {
                                 result: {
                                   __typename: string
-                                  affiliates_highlighted_label: {}
+                                  affiliates_highlighted_label: {
+                                    label?: {
+                                      badge: {
+                                        url: string
+                                      }
+                                      description: string
+                                      url: {
+                                        url: string
+                                        urlType: string
+                                      }
+                                      userLabelDisplayType: string
+                                      userLabelType: string
+                                    }
+                                  }
                                   has_graduated_access: boolean
                                   id: string
                                   is_blue_verified: boolean
                                   legacy: {
-                                    can_dm: boolean
-                                    can_media_tag: boolean
-                                    created_at: string
+                                    can_dm?: boolean
+                                    can_media_tag?: boolean
+                                    created_at?: string
                                     default_profile: boolean
                                     default_profile_image: boolean
                                     description: string
@@ -473,25 +569,25 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     fast_followers_count: number
                                     favourites_count: number
                                     followers_count: number
-                                    following: boolean
+                                    following?: boolean
                                     friends_count: number
                                     has_custom_timelines: boolean
                                     is_translator: boolean
                                     listed_count: number
-                                    location: string
+                                    location?: string
                                     media_count: number
-                                    name: string
+                                    name?: string
                                     normal_followers_count: number
                                     pinned_tweet_ids_str: string[]
                                     possibly_sensitive: boolean
                                     profile_banner_url?: string
-                                    profile_image_url_https: string
+                                    profile_image_url_https?: string
                                     profile_interstitial_type: string
-                                    screen_name: string
+                                    screen_name?: string
                                     statuses_count: number
                                     translator_type: string
                                     url?: string
-                                    verified: boolean
+                                    verified?: boolean
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
                                     followed_by?: boolean
@@ -512,6 +608,33 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     }[]
                                     professional_type: string
                                     rest_id: string
+                                  }
+                                  avatar?: {
+                                    image_url: string
+                                  }
+                                  core?: {
+                                    created_at: string
+                                    name: string
+                                    screen_name: string
+                                  }
+                                  dm_permissions?: {
+                                    can_dm: boolean
+                                  }
+                                  location?: {
+                                    location: string
+                                  }
+                                  media_permissions?: {
+                                    can_media_tag: boolean
+                                  }
+                                  privacy?: {
+                                    protected: boolean
+                                  }
+                                  relationship_perspectives?: {
+                                    following: boolean
+                                  }
+                                  verification?: {
+                                    verified: boolean
+                                    verified_type?: string
                                   }
                                 }
                               }
@@ -653,14 +776,27 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               user_results: {
                                 result: {
                                   __typename: string
-                                  affiliates_highlighted_label: {}
+                                  affiliates_highlighted_label: {
+                                    label?: {
+                                      badge: {
+                                        url: string
+                                      }
+                                      description: string
+                                      url: {
+                                        url: string
+                                        urlType: string
+                                      }
+                                      userLabelDisplayType: string
+                                      userLabelType: string
+                                    }
+                                  }
                                   has_graduated_access: boolean
                                   id: string
                                   is_blue_verified: boolean
                                   legacy: {
-                                    can_dm: boolean
-                                    can_media_tag: boolean
-                                    created_at: string
+                                    can_dm?: boolean
+                                    can_media_tag?: boolean
+                                    created_at?: string
                                     default_profile: boolean
                                     default_profile_image: boolean
                                     description: string
@@ -685,25 +821,25 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     fast_followers_count: number
                                     favourites_count: number
                                     followers_count: number
-                                    following: boolean
+                                    following?: boolean
                                     friends_count: number
                                     has_custom_timelines: boolean
                                     is_translator: boolean
                                     listed_count: number
-                                    location: string
+                                    location?: string
                                     media_count: number
-                                    name: string
+                                    name?: string
                                     normal_followers_count: number
                                     pinned_tweet_ids_str: string[]
                                     possibly_sensitive: boolean
                                     profile_banner_url?: string
-                                    profile_image_url_https: string
+                                    profile_image_url_https?: string
                                     profile_interstitial_type: string
-                                    screen_name: string
+                                    screen_name?: string
                                     statuses_count: number
                                     translator_type: string
                                     url?: string
-                                    verified: boolean
+                                    verified?: boolean
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
                                     followed_by?: boolean
@@ -724,6 +860,33 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     }[]
                                     professional_type: string
                                     rest_id: string
+                                  }
+                                  avatar?: {
+                                    image_url: string
+                                  }
+                                  core?: {
+                                    created_at: string
+                                    name: string
+                                    screen_name: string
+                                  }
+                                  dm_permissions?: {
+                                    can_dm: boolean
+                                  }
+                                  location?: {
+                                    location: string
+                                  }
+                                  media_permissions?: {
+                                    can_media_tag: boolean
+                                  }
+                                  privacy?: {
+                                    protected: boolean
+                                  }
+                                  relationship_perspectives?: {
+                                    following: boolean
+                                  }
+                                  verification?: {
+                                    verified: boolean
+                                    verified_type?: string
                                   }
                                 }
                               }
@@ -929,9 +1092,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   id: string
                                   is_blue_verified: boolean
                                   legacy: {
-                                    can_dm: boolean
-                                    can_media_tag: boolean
-                                    created_at: string
+                                    can_dm?: boolean
+                                    can_media_tag?: boolean
+                                    created_at?: string
                                     default_profile: boolean
                                     default_profile_image: boolean
                                     description: string
@@ -956,25 +1119,25 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     fast_followers_count: number
                                     favourites_count: number
                                     followers_count: number
-                                    following: boolean
+                                    following?: boolean
                                     friends_count: number
                                     has_custom_timelines: boolean
                                     is_translator: boolean
                                     listed_count: number
-                                    location: string
+                                    location?: string
                                     media_count: number
-                                    name: string
+                                    name?: string
                                     normal_followers_count: number
                                     pinned_tweet_ids_str: string[]
                                     possibly_sensitive: boolean
                                     profile_banner_url?: string
-                                    profile_image_url_https: string
+                                    profile_image_url_https?: string
                                     profile_interstitial_type: string
-                                    screen_name: string
+                                    screen_name?: string
                                     statuses_count: number
                                     translator_type: string
                                     url?: string
-                                    verified: boolean
+                                    verified?: boolean
                                     verified_type?: string
                                     want_retweets: boolean
                                     withheld_in_countries: unknown[]
@@ -997,6 +1160,33 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     is_enabled?: boolean
                                     patreon_handle?: string
                                     bitcoin_handle?: string
+                                  }
+                                  avatar?: {
+                                    image_url: string
+                                  }
+                                  core?: {
+                                    created_at: string
+                                    name: string
+                                    screen_name: string
+                                  }
+                                  dm_permissions?: {
+                                    can_dm: boolean
+                                  }
+                                  location?: {
+                                    location: string
+                                  }
+                                  media_permissions?: {
+                                    can_media_tag: boolean
+                                  }
+                                  privacy?: {
+                                    protected: boolean
+                                  }
+                                  relationship_perspectives?: {
+                                    following: boolean
+                                  }
+                                  verification?: {
+                                    verified: boolean
+                                    verified_type?: string
                                   }
                                 }
                               }[]
@@ -1045,9 +1235,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                 id: string
                                 is_blue_verified?: boolean
                                 legacy?: {
-                                  can_dm: boolean
-                                  can_media_tag: boolean
-                                  created_at: string
+                                  can_dm?: boolean
+                                  can_media_tag?: boolean
+                                  created_at?: string
                                   default_profile: boolean
                                   default_profile_image: boolean
                                   description: string
@@ -1072,25 +1262,25 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   fast_followers_count: number
                                   favourites_count: number
                                   followers_count: number
-                                  following: boolean
+                                  following?: boolean
                                   friends_count: number
                                   has_custom_timelines: boolean
                                   is_translator: boolean
                                   listed_count: number
-                                  location: string
+                                  location?: string
                                   media_count: number
-                                  name: string
+                                  name?: string
                                   normal_followers_count: number
                                   pinned_tweet_ids_str: string[]
                                   possibly_sensitive: boolean
                                   profile_banner_url?: string
-                                  profile_image_url_https: string
+                                  profile_image_url_https?: string
                                   profile_interstitial_type: string
-                                  screen_name: string
+                                  screen_name?: string
                                   statuses_count: number
                                   translator_type: string
                                   url?: string
-                                  verified: boolean
+                                  verified?: boolean
                                   verified_type?: string
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
@@ -1114,6 +1304,33 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   is_enabled?: boolean
                                   patreon_handle?: string
                                   ethereum_handle?: string
+                                }
+                                avatar?: {
+                                  image_url: string
+                                }
+                                core?: {
+                                  created_at: string
+                                  name: string
+                                  screen_name: string
+                                }
+                                dm_permissions?: {
+                                  can_dm: boolean
+                                }
+                                location?: {
+                                  location: string
+                                }
+                                media_permissions?: {
+                                  can_media_tag: boolean
+                                }
+                                privacy?: {
+                                  protected: boolean
+                                }
+                                relationship_perspectives?: {
+                                  following: boolean
+                                }
+                                verification?: {
+                                  verified: boolean
+                                  verified_type?: string
                                 }
                               }
                             }
@@ -1569,6 +1786,19 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             retweet_count: number
                             retweeted: boolean
                             user_id_str: string
+                            place?: {
+                              bounding_box: {
+                                coordinates: number[][][]
+                                type: string
+                              }
+                              country: string
+                              country_code: string
+                              full_name: string
+                              id: string
+                              name: string
+                              place_type: string
+                              url: string
+                            }
                           }
                           note_tweet?: {
                             is_expandable: boolean
@@ -1641,9 +1871,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     id: string
                                     is_blue_verified: boolean
                                     legacy: {
-                                      can_dm: boolean
-                                      can_media_tag: boolean
-                                      created_at: string
+                                      can_dm?: boolean
+                                      can_media_tag?: boolean
+                                      created_at?: string
                                       default_profile: boolean
                                       default_profile_image: boolean
                                       description: string
@@ -1668,25 +1898,25 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                       fast_followers_count: number
                                       favourites_count: number
                                       followers_count: number
-                                      following: boolean
+                                      following?: boolean
                                       friends_count: number
                                       has_custom_timelines: boolean
                                       is_translator: boolean
                                       listed_count: number
-                                      location: string
+                                      location?: string
                                       media_count: number
-                                      name: string
+                                      name?: string
                                       normal_followers_count: number
                                       pinned_tweet_ids_str: string[]
                                       possibly_sensitive: boolean
                                       profile_banner_url?: string
-                                      profile_image_url_https: string
+                                      profile_image_url_https?: string
                                       profile_interstitial_type: string
-                                      screen_name: string
+                                      screen_name?: string
                                       statuses_count: number
                                       translator_type: string
                                       url?: string
-                                      verified: boolean
+                                      verified?: boolean
                                       want_retweets: boolean
                                       withheld_in_countries: unknown[]
                                       verified_type?: string
@@ -1711,6 +1941,33 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                       is_enabled?: boolean
                                       patreon_handle?: string
                                       venmo_handle?: string
+                                    }
+                                    avatar?: {
+                                      image_url: string
+                                    }
+                                    core?: {
+                                      created_at: string
+                                      name: string
+                                      screen_name: string
+                                    }
+                                    dm_permissions?: {
+                                      can_dm: boolean
+                                    }
+                                    location?: {
+                                      location: string
+                                    }
+                                    media_permissions?: {
+                                      can_media_tag: boolean
+                                    }
+                                    privacy?: {
+                                      protected: boolean
+                                    }
+                                    relationship_perspectives?: {
+                                      following: boolean
+                                      followed_by?: boolean
+                                    }
+                                    verification?: {
+                                      verified: boolean
                                     }
                                   }
                                 }
@@ -1752,9 +2009,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                             id: string
                                             is_blue_verified: boolean
                                             legacy: {
-                                              can_dm: boolean
-                                              can_media_tag: boolean
-                                              created_at: string
+                                              can_dm?: boolean
+                                              can_media_tag?: boolean
+                                              created_at?: string
                                               default_profile: boolean
                                               default_profile_image: boolean
                                               description: string
@@ -1767,7 +2024,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                                     url: string
                                                   }[]
                                                 }
-                                                url: {
+                                                url?: {
                                                   urls: {
                                                     display_url: string
                                                     expanded_url: string
@@ -1779,41 +2036,67 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                               fast_followers_count: number
                                               favourites_count: number
                                               followers_count: number
-                                              following: boolean
+                                              following?: boolean
                                               friends_count: number
                                               has_custom_timelines: boolean
                                               is_translator: boolean
                                               listed_count: number
-                                              location: string
+                                              location?: string
                                               media_count: number
-                                              name: string
+                                              name?: string
                                               normal_followers_count: number
                                               pinned_tweet_ids_str: string[]
                                               possibly_sensitive: boolean
-                                              profile_banner_url: string
-                                              profile_image_url_https: string
+                                              profile_banner_url?: string
+                                              profile_image_url_https?: string
                                               profile_interstitial_type: string
-                                              screen_name: string
+                                              screen_name?: string
                                               statuses_count: number
                                               translator_type: string
-                                              url: string
-                                              verified: boolean
+                                              url?: string
+                                              verified?: boolean
                                               want_retweets: boolean
                                               withheld_in_countries: unknown[]
                                             }
                                             parody_commentary_fan_label: string
-                                            professional: {
+                                            professional?: {
                                               category: unknown[]
                                               professional_type: string
                                               rest_id: string
                                             }
                                             profile_image_shape: string
                                             rest_id: string
-                                            super_follow_eligible: boolean
+                                            super_follow_eligible?: boolean
                                             tipjar_settings: {
-                                              bitcoin_handle: string
-                                              ethereum_handle: string
+                                              bitcoin_handle?: string
+                                              ethereum_handle?: string
                                               is_enabled: boolean
+                                            }
+                                            avatar?: {
+                                              image_url: string
+                                            }
+                                            core?: {
+                                              created_at: string
+                                              name: string
+                                              screen_name: string
+                                            }
+                                            dm_permissions?: {
+                                              can_dm: boolean
+                                            }
+                                            location?: {
+                                              location: string
+                                            }
+                                            media_permissions?: {
+                                              can_media_tag: boolean
+                                            }
+                                            privacy?: {
+                                              protected: boolean
+                                            }
+                                            relationship_perspectives?: {
+                                              following: boolean
+                                            }
+                                            verification?: {
+                                              verified: boolean
                                             }
                                           }
                                         }
@@ -1953,9 +2236,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                             id: string
                                             is_blue_verified: boolean
                                             legacy: {
-                                              can_dm: boolean
-                                              can_media_tag: boolean
-                                              created_at: string
+                                              can_dm?: boolean
+                                              can_media_tag?: boolean
+                                              created_at?: string
                                               default_profile: boolean
                                               default_profile_image: boolean
                                               description: string
@@ -1968,7 +2251,7 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                                     url: string
                                                   }[]
                                                 }
-                                                url: {
+                                                url?: {
                                                   urls: {
                                                     display_url: string
                                                     expanded_url: string
@@ -1980,41 +2263,67 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                               fast_followers_count: number
                                               favourites_count: number
                                               followers_count: number
-                                              following: boolean
+                                              following?: boolean
                                               friends_count: number
                                               has_custom_timelines: boolean
                                               is_translator: boolean
                                               listed_count: number
-                                              location: string
+                                              location?: string
                                               media_count: number
-                                              name: string
+                                              name?: string
                                               normal_followers_count: number
                                               pinned_tweet_ids_str: string[]
                                               possibly_sensitive: boolean
-                                              profile_banner_url: string
-                                              profile_image_url_https: string
+                                              profile_banner_url?: string
+                                              profile_image_url_https?: string
                                               profile_interstitial_type: string
-                                              screen_name: string
+                                              screen_name?: string
                                               statuses_count: number
                                               translator_type: string
-                                              url: string
-                                              verified: boolean
+                                              url?: string
+                                              verified?: boolean
                                               want_retweets: boolean
                                               withheld_in_countries: unknown[]
                                             }
                                             parody_commentary_fan_label: string
-                                            professional: {
+                                            professional?: {
                                               category: unknown[]
                                               professional_type: string
                                               rest_id: string
                                             }
                                             profile_image_shape: string
                                             rest_id: string
-                                            super_follow_eligible: boolean
+                                            super_follow_eligible?: boolean
                                             tipjar_settings: {
-                                              bitcoin_handle: string
-                                              ethereum_handle: string
+                                              bitcoin_handle?: string
+                                              ethereum_handle?: string
                                               is_enabled: boolean
+                                            }
+                                            avatar?: {
+                                              image_url: string
+                                            }
+                                            core?: {
+                                              created_at: string
+                                              name: string
+                                              screen_name: string
+                                            }
+                                            dm_permissions?: {
+                                              can_dm: boolean
+                                            }
+                                            location?: {
+                                              location: string
+                                            }
+                                            media_permissions?: {
+                                              can_media_tag: boolean
+                                            }
+                                            privacy?: {
+                                              protected: boolean
+                                            }
+                                            relationship_perspectives?: {
+                                              following: boolean
+                                            }
+                                            verification?: {
+                                              verified: boolean
                                             }
                                           }
                                         }
@@ -2188,9 +2497,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                       id: string
                                       is_blue_verified: boolean
                                       legacy: {
-                                        can_dm: boolean
-                                        can_media_tag: boolean
-                                        created_at: string
+                                        can_dm?: boolean
+                                        can_media_tag?: boolean
+                                        created_at?: string
                                         default_profile: boolean
                                         default_profile_image: boolean
                                         description: string
@@ -2215,24 +2524,24 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                         fast_followers_count: number
                                         favourites_count: number
                                         followers_count: number
-                                        following: boolean
+                                        following?: boolean
                                         friends_count: number
                                         has_custom_timelines: boolean
                                         is_translator: boolean
                                         listed_count: number
-                                        location: string
+                                        location?: string
                                         media_count: number
-                                        name: string
+                                        name?: string
                                         normal_followers_count: number
                                         pinned_tweet_ids_str: string[]
                                         possibly_sensitive: boolean
                                         profile_banner_url?: string
-                                        profile_image_url_https: string
+                                        profile_image_url_https?: string
                                         profile_interstitial_type: string
-                                        screen_name: string
+                                        screen_name?: string
                                         statuses_count: number
                                         translator_type: string
-                                        verified: boolean
+                                        verified?: boolean
                                         want_retweets: boolean
                                         withheld_in_countries: unknown[]
                                         url?: string
@@ -2249,6 +2558,32 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                         }[]
                                         professional_type: string
                                         rest_id: string
+                                      }
+                                      avatar?: {
+                                        image_url: string
+                                      }
+                                      core?: {
+                                        created_at: string
+                                        name: string
+                                        screen_name: string
+                                      }
+                                      dm_permissions?: {
+                                        can_dm: boolean
+                                      }
+                                      location?: {
+                                        location: string
+                                      }
+                                      media_permissions?: {
+                                        can_media_tag: boolean
+                                      }
+                                      privacy?: {
+                                        protected: boolean
+                                      }
+                                      relationship_perspectives?: {
+                                        following: boolean
+                                      }
+                                      verification?: {
+                                        verified: boolean
                                       }
                                     }
                                   }
@@ -2267,7 +2602,10 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     conversation_owner_results: {
                                       result: {
                                         __typename: string
-                                        legacy: {
+                                        legacy?: {
+                                          screen_name: string
+                                        }
+                                        core?: {
                                           screen_name: string
                                         }
                                       }
@@ -2778,9 +3116,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                             id: string
                             is_blue_verified: boolean
                             legacy: {
-                              can_dm: boolean
-                              can_media_tag: boolean
-                              created_at: string
+                              can_dm?: boolean
+                              can_media_tag?: boolean
+                              created_at?: string
                               default_profile: boolean
                               default_profile_image: boolean
                               description: string
@@ -2805,24 +3143,24 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               fast_followers_count: number
                               favourites_count: number
                               followers_count: number
-                              following: boolean
+                              following?: boolean
                               friends_count: number
                               has_custom_timelines: boolean
                               is_translator: boolean
                               listed_count: number
-                              location: string
+                              location?: string
                               media_count: number
-                              name: string
+                              name?: string
                               normal_followers_count: number
                               pinned_tweet_ids_str: string[]
                               possibly_sensitive: boolean
-                              profile_image_url_https: string
+                              profile_image_url_https?: string
                               profile_interstitial_type: string
-                              screen_name: string
+                              screen_name?: string
                               statuses_count: number
                               translator_type: string
                               url?: string
-                              verified: boolean
+                              verified?: boolean
                               want_retweets: boolean
                               withheld_in_countries: unknown[]
                               profile_banner_url?: string
@@ -2843,6 +3181,34 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               }[]
                               professional_type: string
                               rest_id: string
+                            }
+                            avatar?: {
+                              image_url: string
+                            }
+                            core?: {
+                              created_at: string
+                              name: string
+                              screen_name: string
+                            }
+                            dm_permissions?: {
+                              can_dm: boolean
+                            }
+                            location?: {
+                              location: string
+                            }
+                            media_permissions?: {
+                              can_media_tag: boolean
+                            }
+                            privacy?: {
+                              protected: boolean
+                            }
+                            relationship_perspectives?: {
+                              followed_by?: boolean
+                              following: boolean
+                            }
+                            verification?: {
+                              verified: boolean
+                              verified_type?: string
                             }
                           }
                         }
@@ -2868,7 +3234,10 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                           conversation_owner_results: {
                             result: {
                               __typename: string
-                              legacy: {
+                              legacy?: {
+                                screen_name: string
+                              }
+                              core?: {
                                 screen_name: string
                               }
                             }
@@ -3095,9 +3464,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     id: string
                                     is_blue_verified?: boolean
                                     legacy: {
-                                      can_dm: boolean
-                                      can_media_tag: boolean
-                                      created_at: string
+                                      can_dm?: boolean
+                                      can_media_tag?: boolean
+                                      created_at?: string
                                       default_profile: boolean
                                       default_profile_image: boolean
                                       description: string
@@ -3122,25 +3491,25 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                       fast_followers_count: number
                                       favourites_count: number
                                       followers_count: number
-                                      following: boolean
+                                      following?: boolean
                                       friends_count: number
                                       has_custom_timelines: boolean
                                       is_translator: boolean
                                       listed_count: number
-                                      location: string
+                                      location?: string
                                       media_count: number
-                                      name: string
+                                      name?: string
                                       normal_followers_count: number
                                       pinned_tweet_ids_str: string[]
                                       possibly_sensitive: boolean
                                       profile_banner_url?: string
-                                      profile_image_url_https: string
+                                      profile_image_url_https?: string
                                       profile_interstitial_type: string
-                                      screen_name: string
+                                      screen_name?: string
                                       statuses_count: number
                                       translator_type: string
                                       url?: string
-                                      verified: boolean
+                                      verified?: boolean
                                       want_retweets: boolean
                                       withheld_in_countries: unknown[]
                                     }
@@ -3157,6 +3526,32 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                     profile_image_shape: string
                                     rest_id: string
                                     tipjar_settings: {}
+                                    avatar?: {
+                                      image_url: string
+                                    }
+                                    core?: {
+                                      created_at: string
+                                      name: string
+                                      screen_name: string
+                                    }
+                                    dm_permissions?: {
+                                      can_dm: boolean
+                                    }
+                                    location?: {
+                                      location: string
+                                    }
+                                    media_permissions?: {
+                                      can_media_tag: boolean
+                                    }
+                                    privacy?: {
+                                      protected: boolean
+                                    }
+                                    relationship_perspectives?: {
+                                      following: boolean
+                                    }
+                                    verification?: {
+                                      verified: boolean
+                                    }
                                   }
                                 }
                               }
@@ -3181,7 +3576,10 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                   conversation_owner_results: {
                                     result: {
                                       __typename: string
-                                      legacy: {
+                                      legacy?: {
+                                        screen_name: string
+                                      }
+                                      core?: {
                                         screen_name: string
                                       }
                                     }
@@ -5027,9 +5425,9 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                               id: string
                               is_blue_verified: boolean
                               legacy: {
-                                can_dm: boolean
-                                can_media_tag: boolean
-                                created_at: string
+                                can_dm?: boolean
+                                can_media_tag?: boolean
+                                created_at?: string
                                 default_profile: boolean
                                 default_profile_image: boolean
                                 description: string
@@ -5054,25 +5452,25 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                 fast_followers_count: number
                                 favourites_count: number
                                 followers_count: number
-                                following: boolean
+                                following?: boolean
                                 friends_count: number
                                 has_custom_timelines: boolean
                                 is_translator: boolean
                                 listed_count: number
-                                location: string
+                                location?: string
                                 media_count: number
-                                name: string
+                                name?: string
                                 normal_followers_count: number
                                 pinned_tweet_ids_str: string[]
                                 possibly_sensitive: boolean
                                 profile_banner_url?: string
-                                profile_image_url_https: string
+                                profile_image_url_https?: string
                                 profile_interstitial_type: string
-                                screen_name: string
+                                screen_name?: string
                                 statuses_count: number
                                 translator_type: string
                                 url?: string
-                                verified: boolean
+                                verified?: boolean
                                 want_retweets: boolean
                                 withheld_in_countries: unknown[]
                                 followed_by?: boolean
@@ -5095,6 +5493,32 @@ export interface GraphQLGetHomeLatestTimelineSuccessResponse {
                                 rest_id: string
                               }
                               super_follow_eligible?: boolean
+                              avatar?: {
+                                image_url: string
+                              }
+                              core?: {
+                                created_at: string
+                                name: string
+                                screen_name: string
+                              }
+                              dm_permissions?: {
+                                can_dm: boolean
+                              }
+                              location?: {
+                                location: string
+                              }
+                              media_permissions?: {
+                                can_media_tag: boolean
+                              }
+                              privacy?: {
+                                protected: boolean
+                              }
+                              relationship_perspectives?: {
+                                following: boolean
+                              }
+                              verification?: {
+                                verified: boolean
+                              }
                             }
                           }
                         }

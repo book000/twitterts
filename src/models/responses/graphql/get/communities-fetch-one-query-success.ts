@@ -54,9 +54,9 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
             id?: string
             is_blue_verified?: boolean
             legacy?: {
-              can_dm: boolean
-              can_media_tag: boolean
-              created_at: string
+              can_dm?: boolean
+              can_media_tag?: boolean
+              created_at?: string
               default_profile: boolean
               default_profile_image: boolean
               description: string
@@ -81,25 +81,25 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               fast_followers_count: number
               favourites_count: number
               followers_count: number
-              following: boolean
+              following?: boolean
               friends_count: number
               has_custom_timelines: boolean
               is_translator: boolean
               listed_count: number
-              location: string
+              location?: string
               media_count: number
-              name: string
+              name?: string
               normal_followers_count: number
               pinned_tweet_ids_str: string[]
               possibly_sensitive: boolean
               profile_banner_url?: string
-              profile_image_url_https: string
+              profile_image_url_https?: string
               profile_interstitial_type: string
-              screen_name: string
+              screen_name?: string
               statuses_count: number
               translator_type: string
               url?: string
-              verified: boolean
+              verified?: boolean
               want_retweets: boolean
               withheld_in_countries: string[]
               protected?: boolean
@@ -122,14 +122,42 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               ethereum_handle?: string
               is_enabled?: boolean
               patreon_handle?: string
-              cash_app_handle?: string
-              venmo_handle?: string
               bitcoin_handle?: string
               gofundme_handle?: string
+              venmo_handle?: string
+              cash_app_handle?: string
             }
+            super_follow_eligible?: boolean
             message?: string
             reason?: string
-            super_follow_eligible?: boolean
+            verification?: {
+              verified: boolean
+              verified_type?: string
+            }
+            location?: {
+              location: string
+            }
+            privacy?: {
+              protected: boolean
+            }
+            avatar?: {
+              image_url: string
+            }
+            dm_permissions?: {
+              can_dm: boolean
+            }
+            media_permissions?: {
+              can_media_tag: boolean
+            }
+            relationship_perspectives?: {
+              following: boolean
+              followed_by?: boolean
+            }
+            core?: {
+              created_at: string
+              name: string
+              screen_name: string
+            }
           }
         }
         created_at: number
@@ -155,9 +183,9 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
             id?: string
             is_blue_verified?: boolean
             legacy?: {
-              can_dm: boolean
-              can_media_tag: boolean
-              created_at: string
+              can_dm?: boolean
+              can_media_tag?: boolean
+              created_at?: string
               default_profile: boolean
               default_profile_image: boolean
               description: string
@@ -182,25 +210,25 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               fast_followers_count: number
               favourites_count: number
               followers_count: number
-              following: boolean
+              following?: boolean
               friends_count: number
               has_custom_timelines: boolean
               is_translator: boolean
               listed_count: number
-              location: string
+              location?: string
               media_count: number
-              name: string
+              name?: string
               normal_followers_count: number
               pinned_tweet_ids_str: string[]
               possibly_sensitive: boolean
               profile_banner_url?: string
-              profile_image_url_https: string
+              profile_image_url_https?: string
               profile_interstitial_type: string
-              screen_name: string
+              screen_name?: string
               statuses_count: number
               translator_type: string
               url?: string
-              verified: boolean
+              verified?: boolean
               want_retweets: boolean
               withheld_in_countries: string[]
               protected?: boolean
@@ -223,14 +251,42 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               ethereum_handle?: string
               is_enabled?: boolean
               patreon_handle?: string
-              cash_app_handle?: string
-              venmo_handle?: string
               bitcoin_handle?: string
               gofundme_handle?: string
+              venmo_handle?: string
+              cash_app_handle?: string
             }
+            super_follow_eligible?: boolean
             message?: string
             reason?: string
-            super_follow_eligible?: boolean
+            verification?: {
+              verified: boolean
+              verified_type?: string
+            }
+            location?: {
+              location: string
+            }
+            privacy?: {
+              protected: boolean
+            }
+            avatar?: {
+              image_url: string
+            }
+            dm_permissions?: {
+              can_dm: boolean
+            }
+            media_permissions?: {
+              can_media_tag: boolean
+            }
+            relationship_perspectives?: {
+              following: boolean
+              followed_by?: boolean
+            }
+            core?: {
+              created_at: string
+              name: string
+              screen_name: string
+            }
           }
         }
         custom_banner_media?: {
@@ -322,9 +378,9 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
             id: string
             is_blue_verified: boolean
             legacy: {
-              can_dm: boolean
-              can_media_tag: boolean
-              created_at: string
+              can_dm?: boolean
+              can_media_tag?: boolean
+              created_at?: string
               default_profile: boolean
               default_profile_image: boolean
               description: string
@@ -349,26 +405,26 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               fast_followers_count: number
               favourites_count: number
               followers_count: number
-              following: boolean
+              following?: boolean
               friends_count: number
               has_custom_timelines: boolean
               is_translator: boolean
               listed_count: number
-              location: string
+              location?: string
               media_count: number
-              name: string
+              name?: string
               normal_followers_count: number
               pinned_tweet_ids_str: string[]
               possibly_sensitive: boolean
               profile_banner_url?: string
-              profile_image_url_https: string
+              profile_image_url_https?: string
               profile_interstitial_type: string
               protected?: boolean
-              screen_name: string
+              screen_name?: string
               statuses_count: number
               translator_type: string
               url?: string
-              verified: boolean
+              verified?: boolean
               want_retweets: boolean
               withheld_in_countries: string[]
               verified_type?: string
@@ -392,10 +448,38 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
               patreon_handle?: string
               bitcoin_handle?: string
               cash_app_handle?: string
-              venmo_handle?: string
               gofundme_handle?: string
+              venmo_handle?: string
             }
             super_follow_eligible?: boolean
+            verification?: {
+              verified: boolean
+              verified_type?: string
+            }
+            location?: {
+              location: string
+            }
+            privacy?: {
+              protected: boolean
+            }
+            avatar?: {
+              image_url: string
+            }
+            dm_permissions?: {
+              can_dm: boolean
+            }
+            media_permissions?: {
+              can_media_tag: boolean
+            }
+            relationship_perspectives?: {
+              following: boolean
+              followed_by?: boolean
+            }
+            core?: {
+              created_at: string
+              name: string
+              screen_name: string
+            }
           }
         }[]
         moderator_count: number
@@ -414,11 +498,11 @@ export interface GraphQLGetCommunitiesFetchOneQuerySuccessResponse {
             __typename: string
           }
         }
+        question?: string
         primary_community_topic?: {
           topic_id: string
           topic_name: string
         }
-        question?: string
       }
     }
   }

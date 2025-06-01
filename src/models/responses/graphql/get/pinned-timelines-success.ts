@@ -69,7 +69,7 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
             result: {
               __typename: string
               id: string
-              media_id: string
+              media_id?: string
               media_info: {
                 __typename: string
                 original_img_height: number
@@ -86,8 +86,8 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
             }
           }
           description: string
-          facepile_urls: string[]
-          followers_context: string
+          facepile_urls?: string[]
+          followers_context?: string
           following: boolean
           id: string
           id_str: string
@@ -107,9 +107,9 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
               id: string
               is_blue_verified: boolean
               legacy: {
-                can_dm: boolean
-                can_media_tag: boolean
-                created_at: string
+                can_dm?: boolean
+                can_media_tag?: boolean
+                created_at?: string
                 default_profile: boolean
                 default_profile_image: boolean
                 description: string
@@ -129,33 +129,63 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
                 fast_followers_count: number
                 favourites_count: number
                 followers_count: number
-                following: boolean
+                following?: boolean
                 friends_count: number
                 has_custom_timelines: boolean
                 is_translator: boolean
                 listed_count: number
-                location: string
+                location?: string
                 media_count: number
-                name: string
-                needs_phone_verification: boolean
+                name?: string
+                needs_phone_verification?: boolean
                 normal_followers_count: number
                 pinned_tweet_ids_str: string[]
                 possibly_sensitive: boolean
                 profile_banner_url: string
-                profile_image_url_https: string
+                profile_image_url_https?: string
                 profile_interstitial_type: string
-                screen_name: string
+                screen_name?: string
                 statuses_count: number
                 translator_type: string
                 url: string
-                verified: boolean
+                verified?: boolean
                 want_retweets: boolean
                 withheld_in_countries: unknown[]
+                followed_by?: boolean
+                muting?: boolean
               }
               parody_commentary_fan_label: string
               profile_image_shape: string
               rest_id: string
               tipjar_settings: {}
+              location?: {
+                location: string
+              }
+              privacy?: {
+                protected: boolean
+              }
+              verification?: {
+                verified: boolean
+              }
+              avatar?: {
+                image_url: string
+              }
+              dm_permissions?: {
+                can_dm: boolean
+              }
+              media_permissions?: {
+                can_media_tag: boolean
+              }
+              relationship_perspectives?: {
+                followed_by?: boolean
+                following: boolean
+                muting?: boolean
+              }
+              core?: {
+                created_at: string
+                name: string
+                screen_name: string
+              }
             }
           }
         }
@@ -181,7 +211,7 @@ export interface GraphQLGetPinnedTimelinesSuccessResponse {
     }[]
     message: string
     name: string
-    path: string[]
+    path: (number | string)[]
     retry_after: number
     source: string
     tracing: {

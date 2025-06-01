@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 /** GraphQL GET PremiumContentQuery 成功レスポンスモデル */
 
 export interface GraphQLGetPremiumContentQuerySuccessResponse {

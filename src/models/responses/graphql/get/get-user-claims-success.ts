@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 /** GraphQL GET GetUserClaims 成功レスポンスモデル */
 
 export interface GraphQLGetGetUserClaimsSuccessResponse {

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 /** GraphQL GET ProfileSpotlightsQuery 成功レスポンスモデル */
 
 export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
@@ -9,13 +11,13 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
         id: string
         is_verified_organization?: boolean
         legacy: {
-          blocked_by: boolean
-          blocking: boolean
-          followed_by: boolean
-          following: boolean
-          name: string
-          protected: boolean
-          screen_name: string
+          blocked_by?: boolean
+          blocking?: boolean
+          followed_by?: boolean
+          following?: boolean
+          name?: string
+          protected?: boolean
+          screen_name?: string
         }
         profilemodules?: {
           v1: {
@@ -192,6 +194,19 @@ export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {
           }[]
         }
         rest_id: string
+        privacy?: {
+          protected: boolean
+        }
+        relationship_perspectives?: {
+          blocked_by?: boolean
+          blocking?: boolean
+          followed_by?: boolean
+          following?: boolean
+        }
+        core?: {
+          name: string
+          screen_name: string
+        }
       }
     }
   }

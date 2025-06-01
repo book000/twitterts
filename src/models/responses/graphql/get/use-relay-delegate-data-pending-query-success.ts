@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 /** GraphQL GET useRelayDelegateDataPendingQuery 成功レスポンスモデル */
 
 export interface GraphQLGetUseRelayDelegateDataPendingQuerySuccessResponse {

@@ -12,6 +12,7 @@ export interface GraphQLGetUsersVerifiedAvatarsSuccessResponse {
         legacy?: {}
         profile_image_shape?: string
         rest_id?: string
+        verification?: {}
       }
     }[]
   }
