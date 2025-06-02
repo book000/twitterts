@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL POST UnfavoriteTweet 成功レスポンスモデル */
 
 export interface GraphQLPostUnfavoriteTweetSuccessResponse {

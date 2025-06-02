@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL GET CarouselQuery 成功レスポンスモデル */
 
 export interface GraphQLGetCarouselQuerySuccessResponse {

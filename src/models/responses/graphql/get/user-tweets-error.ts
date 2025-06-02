@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL GET UserTweets 失敗レスポンスモデル */
 
 export interface GraphQLGetUserTweetsErrorResponse {

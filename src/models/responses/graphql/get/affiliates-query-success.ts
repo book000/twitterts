@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL GET affiliatesQuery 成功レスポンスモデル */
 
 export interface GraphQLGetAffiliatesQuerySuccessResponse {

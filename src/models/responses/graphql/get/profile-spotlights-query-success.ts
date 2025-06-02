@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL GET ProfileSpotlightsQuery 成功レスポンスモデル */
 
 export interface GraphQLGetProfileSpotlightsQuerySuccessResponse {

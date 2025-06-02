@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL GET UserPreferences 成功レスポンスモデル */
 
 export interface GraphQLGetUserPreferencesSuccessResponse {

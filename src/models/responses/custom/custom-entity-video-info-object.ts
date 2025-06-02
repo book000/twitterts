@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** エンティティ動画情報オブジェクト */
 
 export type CustomEntityVideoInfoObject = null | {

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL GET FetchScheduledTweets 成功レスポンスモデル */
 
 export interface GraphQLGetFetchScheduledTweetsSuccessResponse {

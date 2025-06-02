@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL GET useFetchProfileSectionsCanViewExpandedProfileQuery 成功レスポンスモデル */
 
 export interface GraphQLGetUseFetchProfileSectionsCanViewExpandedProfileQuerySuccessResponse {

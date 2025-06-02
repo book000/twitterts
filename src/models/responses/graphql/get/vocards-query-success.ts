@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 /** GraphQL GET VOCardsQuery 成功レスポンスモデル */
 
 export interface GraphQLGetVOCardsQuerySuccessResponse {

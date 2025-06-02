@@ -304,7 +304,7 @@ export const ObjectConverter = {
     }
     const userResult =
       tweet.core?.user_results.result ??
-      tweet.tweet?.core.user_results.result ??
+      tweet.tweet?.core?.user_results.result ??
       undefined
     if (!userResult) {
       throw new ResponseParseError('Failed to get userResult')
@@ -356,8 +356,28 @@ export const ObjectConverter = {
     }
     const user = response.data.user.result
 
+    const createdAt = user.legacy.created_at ?? user.core?.created_at
+    if (!createdAt) {
+      throw new ResponseParseError('Failed to get user created_at')
+    }
+
+    const name = user.legacy.name ?? user.core?.name
+    if (!name) {
+      throw new ResponseParseError('Failed to get user name')
+    }
+
+    const screenName = user.legacy.screen_name ?? user.core?.screen_name
+    if (!screenName) {
+      throw new ResponseParseError('Failed to get user screen_name')
+    }
+
+    const verified = user.legacy.verified ?? user.verification?.verified
+    if (verified === undefined) {
+      throw new ResponseParseError('Failed to get user verified status')
+    }
+
     return {
-      created_at: user.legacy.created_at,
+      created_at: createdAt,
       default_profile_image: user.legacy.default_profile_image,
       default_profile: user.legacy.default_profile,
       description: user.legacy.description,
@@ -369,19 +389,19 @@ export const ObjectConverter = {
       id: Number(user.rest_id),
       listed_count: user.legacy.listed_count,
       location: user.legacy.location,
-      name: user.legacy.name ?? user.core.name,
+      name,
       profile_banner_url: user.legacy.profile_banner_url,
-      profile_image_url_https: user.legacy.profile_image_url_https,
+      profile_image_url_https: user.legacy.profile_image_url_https ?? '',
       protected:
         'protected' in user.legacy && user.legacy.protected
           ? user.legacy.protected
           : false,
-      screen_name: user.legacy.screen_name ?? user.core.screen_name,
+      screen_name: screenName,
       // @ts-expect-error statusの型が異なるため
       status: 'status' in user && user.status ? user.status : undefined,
       statuses_count: user.legacy.statuses_count,
       url: user.legacy.url,
-      verified: user.legacy.verified,
+      verified,
       withheld_in_countries: user.legacy.withheld_in_countries,
       // @ts-expect-error withheld_scopeがunknownのため
       withheld_scope:
