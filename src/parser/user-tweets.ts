@@ -54,7 +54,7 @@ export class UserTweetsParser extends BaseParser<'UserTweets'> {
 
     const rawTweets = entries
       .map((entry) => entry.content.itemContent.tweet_results.result)
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
       .filter((tweet) => !!tweet)
     this.tweets = rawTweets.map((tweet) =>
       ObjectConverter.convertToStatus(tweet as CustomTweetObject)

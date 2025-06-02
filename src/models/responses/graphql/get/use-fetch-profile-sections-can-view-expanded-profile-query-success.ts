@@ -6,7 +6,7 @@ export interface GraphQLGetUseFetchProfileSectionsCanViewExpandedProfileQuerySuc
       id: string
       result: {
         __typename: string
-        can_view_expanded_profile: boolean
+        can_view_expanded_profile?: boolean
         id: string
       }
     }

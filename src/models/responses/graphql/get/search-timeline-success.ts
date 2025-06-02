@@ -198,9 +198,9 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                             id: string
                             is_blue_verified: boolean
                             legacy: {
-                              can_dm: boolean
-                              can_media_tag: boolean
-                              created_at: string
+                              can_dm?: boolean
+                              can_media_tag?: boolean
+                              created_at?: string
                               default_profile: boolean
                               default_profile_image: boolean
                               description: string
@@ -226,27 +226,27 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                               favourites_count: number
                               followed_by?: boolean
                               followers_count: number
-                              following: boolean
+                              following?: boolean
                               friends_count: number
                               has_custom_timelines: boolean
                               is_translator: boolean
                               listed_count: number
-                              location: string
+                              location?: string
                               media_count: number
-                              name: string
+                              name?: string
                               needs_phone_verification?: boolean
                               normal_followers_count: number
                               pinned_tweet_ids_str: string[]
                               possibly_sensitive: boolean
                               profile_banner_url?: string
-                              profile_image_url_https: string
+                              profile_image_url_https?: string
                               profile_interstitial_type: string
                               protected?: boolean
-                              screen_name: string
+                              screen_name?: string
                               statuses_count: number
                               translator_type: string
                               url?: string
-                              verified: boolean
+                              verified?: boolean
                               verified_type?: string
                               want_retweets: boolean
                               withheld_in_countries: string[]
@@ -275,6 +275,32 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                               cash_app_handle?: string
                               bandcamp_handle?: string
                               pay_pal_handle?: string
+                            }
+                            avatar?: {
+                              image_url: string
+                            }
+                            core?: {
+                              created_at: string
+                              name: string
+                              screen_name: string
+                            }
+                            dm_permissions?: {
+                              can_dm: boolean
+                            }
+                            location?: {
+                              location: string
+                            }
+                            media_permissions?: {
+                              can_media_tag: boolean
+                            }
+                            privacy?: {
+                              protected: boolean
+                            }
+                            relationship_perspectives?: {
+                              following: boolean
+                            }
+                            verification?: {
+                              verified: boolean
                             }
                           }
                         }
@@ -991,9 +1017,9 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                                 id: string
                                 is_blue_verified: boolean
                                 legacy: {
-                                  can_dm: boolean
-                                  can_media_tag: boolean
-                                  created_at: string
+                                  can_dm?: boolean
+                                  can_media_tag?: boolean
+                                  created_at?: string
                                   default_profile: boolean
                                   default_profile_image: boolean
                                   description: string
@@ -1018,25 +1044,25 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                                   fast_followers_count: number
                                   favourites_count: number
                                   followers_count: number
-                                  following: boolean
+                                  following?: boolean
                                   friends_count: number
                                   has_custom_timelines: boolean
                                   is_translator: boolean
                                   listed_count: number
-                                  location: string
+                                  location?: string
                                   media_count: number
-                                  name: string
+                                  name?: string
                                   normal_followers_count: number
                                   pinned_tweet_ids_str: string[]
                                   possibly_sensitive: boolean
                                   profile_banner_url?: string
-                                  profile_image_url_https: string
+                                  profile_image_url_https?: string
                                   profile_interstitial_type: string
-                                  screen_name: string
+                                  screen_name?: string
                                   statuses_count: number
                                   translator_type: string
                                   url?: string
-                                  verified: boolean
+                                  verified?: boolean
                                   verified_type?: string
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
@@ -1060,6 +1086,32 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                                   patreon_handle?: string
                                 }
                                 super_follow_eligible?: boolean
+                                avatar?: {
+                                  image_url: string
+                                }
+                                core?: {
+                                  created_at: string
+                                  name: string
+                                  screen_name: string
+                                }
+                                dm_permissions?: {
+                                  can_dm: boolean
+                                }
+                                location?: {
+                                  location: string
+                                }
+                                media_permissions?: {
+                                  can_media_tag: boolean
+                                }
+                                privacy?: {
+                                  protected: boolean
+                                }
+                                relationship_perspectives?: {
+                                  following: boolean
+                                }
+                                verification?: {
+                                  verified: boolean
+                                }
                               }
                             }
                           }
@@ -2030,9 +2082,9 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                               id?: string
                               is_blue_verified?: boolean
                               legacy?: {
-                                can_dm: boolean
-                                can_media_tag: boolean
-                                created_at: string
+                                can_dm?: boolean
+                                can_media_tag?: boolean
+                                created_at?: string
                                 default_profile: boolean
                                 default_profile_image: boolean
                                 description: string
@@ -2057,25 +2109,25 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                                 fast_followers_count: number
                                 favourites_count: number
                                 followers_count: number
-                                following: boolean
+                                following?: boolean
                                 friends_count: number
                                 has_custom_timelines: boolean
                                 is_translator: boolean
                                 listed_count: number
-                                location: string
+                                location?: string
                                 media_count: number
-                                name: string
+                                name?: string
                                 normal_followers_count: number
                                 pinned_tweet_ids_str: string[]
                                 possibly_sensitive: boolean
                                 profile_banner_url?: string
-                                profile_image_url_https: string
+                                profile_image_url_https?: string
                                 profile_interstitial_type: string
-                                screen_name: string
+                                screen_name?: string
                                 statuses_count: number
                                 translator_type: string
                                 url?: string
-                                verified: boolean
+                                verified?: boolean
                                 verified_type?: string
                                 want_retweets: boolean
                                 withheld_in_countries: unknown[]
@@ -2099,6 +2151,34 @@ export interface GraphQLGetSearchTimelineSuccessResponse {
                               }
                               message?: string
                               reason?: string
+                              avatar?: {
+                                image_url: string
+                              }
+                              core?: {
+                                created_at: string
+                                name: string
+                                screen_name: string
+                              }
+                              dm_permissions?: {
+                                can_dm: boolean
+                              }
+                              location?: {
+                                location: string
+                              }
+                              media_permissions?: {
+                                can_media_tag: boolean
+                              }
+                              privacy?: {
+                                protected: boolean
+                              }
+                              relationship_perspectives?: {
+                                blocking?: boolean
+                                following: boolean
+                              }
+                              verification?: {
+                                verified: boolean
+                                verified_type?: string
+                              }
                             }
                           }[]
                         }

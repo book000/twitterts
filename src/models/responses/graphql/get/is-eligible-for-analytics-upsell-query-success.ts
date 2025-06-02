@@ -14,6 +14,7 @@ export interface GraphQLGetIsEligibleForAnalyticsUpsellQuerySuccessResponse {
       tracing: {
         trace_id: string
       }
+      retry_after?: number
     }
     kind: string
     locations: {
@@ -27,5 +28,6 @@ export interface GraphQLGetIsEligibleForAnalyticsUpsellQuerySuccessResponse {
     tracing: {
       trace_id: string
     }
+    retry_after?: number
   }[]
 }

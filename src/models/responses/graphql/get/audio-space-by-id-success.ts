@@ -46,9 +46,9 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
             id: string
             is_blue_verified: boolean
             legacy: {
-              can_dm: boolean
-              can_media_tag: boolean
-              created_at: string
+              can_dm?: boolean
+              can_media_tag?: boolean
+              created_at?: string
               default_profile: boolean
               default_profile_image: boolean
               description: string
@@ -73,31 +73,36 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
               fast_followers_count: number
               favourites_count: number
               followers_count: number
-              following: boolean
+              following?: boolean
               friends_count: number
               has_custom_timelines: boolean
               is_translator: boolean
               listed_count: number
-              location: string
+              location?: string
               media_count: number
-              name: string
+              name?: string
               normal_followers_count: number
               pinned_tweet_ids_str: string[]
               possibly_sensitive: boolean
-              profile_banner_url: string
-              profile_image_url_https: string
+              profile_banner_url?: string
+              profile_image_url_https?: string
               profile_interstitial_type: string
-              screen_name: string
+              screen_name?: string
               statuses_count: number
               translator_type: string
               url?: string
-              verified: boolean
+              verified?: boolean
               verified_type?: string
               want_retweets: boolean
               withheld_in_countries: unknown[]
-              followed_by?: boolean
             }
             parody_commentary_fan_label: string
+            profile_image_shape: string
+            rest_id: string
+            tipjar_settings: {
+              is_enabled?: boolean
+              ethereum_handle?: string
+            }
             professional?: {
               category: {
                 icon_name: string
@@ -107,13 +112,33 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
               professional_type: string
               rest_id: string
             }
-            profile_image_shape: string
-            rest_id: string
-            tipjar_settings: {
-              is_enabled?: boolean
-              ethereum_handle?: string
-            }
             super_follow_eligible?: boolean
+            verification?: {
+              verified: boolean
+            }
+            location?: {
+              location: string
+            }
+            avatar?: {
+              image_url: string
+            }
+            dm_permissions?: {
+              can_dm: boolean
+            }
+            media_permissions?: {
+              can_media_tag: boolean
+            }
+            privacy?: {
+              protected: boolean
+            }
+            relationship_perspectives?: {
+              following: boolean
+            }
+            core?: {
+              created_at: string
+              name: string
+              screen_name: string
+            }
           }
         }
         disallow_join: boolean
@@ -126,13 +151,9 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
         max_admin_capacity: number
         max_guest_sessions: number
         media_key: string
-        mentioned_users?: {
-          rest_id: string
-        }[]
         narrow_cast_space_type: number
         no_incognito: boolean
         rest_id: string
-        scheduled_start?: number
         started_at?: number
         state: string
         title?: string
@@ -205,9 +226,9 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                   id: string
                   is_blue_verified: boolean
                   legacy: {
-                    can_dm: boolean
-                    can_media_tag: boolean
-                    created_at: string
+                    can_dm?: boolean
+                    can_media_tag?: boolean
+                    created_at?: string
                     default_profile: boolean
                     default_profile_image: boolean
                     description: string
@@ -232,31 +253,35 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                     fast_followers_count: number
                     favourites_count: number
                     followers_count: number
-                    following: boolean
+                    following?: boolean
                     friends_count: number
                     has_custom_timelines: boolean
                     is_translator: boolean
                     listed_count: number
-                    location: string
+                    location?: string
                     media_count: number
-                    name: string
+                    name?: string
                     normal_followers_count: number
                     pinned_tweet_ids_str: string[]
                     possibly_sensitive: boolean
-                    profile_banner_url: string
-                    profile_image_url_https: string
+                    profile_banner_url?: string
+                    profile_image_url_https?: string
                     profile_interstitial_type: string
-                    screen_name: string
+                    screen_name?: string
                     statuses_count: number
                     translator_type: string
                     url?: string
-                    verified: boolean
+                    verified?: boolean
+                    verified_type?: string
                     want_retweets: boolean
                     withheld_in_countries: unknown[]
-                    verified_type?: string
-                    followed_by?: boolean
                   }
                   parody_commentary_fan_label: string
+                  profile_image_shape: string
+                  rest_id: string
+                  tipjar_settings: {
+                    is_enabled?: boolean
+                  }
                   professional?: {
                     category: {
                       icon_name: string
@@ -266,11 +291,31 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                     professional_type: string
                     rest_id: string
                   }
-                  profile_image_shape: string
-                  rest_id: string
-                  super_follow_eligible?: boolean
-                  tipjar_settings: {
-                    is_enabled?: boolean
+                  verification?: {
+                    verified: boolean
+                  }
+                  location?: {
+                    location: string
+                  }
+                  avatar?: {
+                    image_url: string
+                  }
+                  dm_permissions?: {
+                    can_dm: boolean
+                  }
+                  media_permissions?: {
+                    can_media_tag: boolean
+                  }
+                  privacy?: {
+                    protected: boolean
+                  }
+                  relationship_perspectives?: {
+                    following: boolean
+                  }
+                  core?: {
+                    created_at: string
+                    name: string
+                    screen_name: string
                   }
                 }
               }
@@ -325,6 +370,10 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
           }
         }
         updated_at: number
+        scheduled_start?: number
+        mentioned_users?: {
+          rest_id: string
+        }[]
         replay_start_time?: number
         topics?: {
           topic: {
@@ -382,9 +431,10 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                 }
               }
               is_blue_verified: boolean
-              legacy: {
+              legacy?: {
                 verified_type?: string
               }
+              verification?: {}
             }
           }
         }[]
@@ -403,7 +453,10 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
               __typename: string
               identity_profile_labels_highlighted_label: {}
               is_blue_verified: boolean
-              legacy: {}
+              legacy?: {}
+              verification?: {
+                verified_type?: string
+              }
             }
           }
         }[]
@@ -439,12 +492,12 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                         mention_results: {
                           result: {
                             __typename: string
+                            message?: string
+                            reason?: string
                             legacy?: {
                               screen_name: string
                             }
                             rest_id?: string
-                            message?: string
-                            reason?: string
                           }
                         }
                         screen_name: string
@@ -460,6 +513,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
               legacy?: {
                 verified_type?: string
               }
+              verification?: {}
             }
           }
         }[]
@@ -483,7 +537,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                             url: string
                           }
                           description: string
-                          longDescription?: {
+                          longDescription: {
                             entities: {
                               fromIndex: number
                               ref: {
@@ -503,11 +557,6 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                             }[]
                             text: string
                           }
-                          url?: {
-                            url: string
-                            urlType: string
-                          }
-                          userLabelDisplayType?: string
                           userLabelType: string
                         }
                       }
@@ -567,6 +616,14 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                         blocking?: boolean
                       }
                       parody_commentary_fan_label: string
+                      profile_image_shape: string
+                      rest_id: string
+                      tipjar_settings: {
+                        bitcoin_handle?: string
+                        ethereum_handle?: string
+                        is_enabled?: boolean
+                        patreon_handle?: string
+                      }
                       professional?: {
                         category: {
                           icon_name: string
@@ -576,13 +633,8 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                         professional_type: string
                         rest_id: string
                       }
-                      profile_image_shape: string
-                      rest_id: string
-                      tipjar_settings: {
-                        bitcoin_handle?: string
-                        ethereum_handle?: string
-                        is_enabled?: boolean
-                        patreon_handle?: string
+                      verification?: {
+                        verified: boolean
                       }
                     }
                   }
@@ -708,10 +760,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                         }[]
                       }
                     }[]
-                    symbols: {
-                      indices: number[]
-                      text: string
-                    }[]
+                    symbols: unknown[]
                     timestamps: unknown[]
                     urls: {
                       display_url: string
@@ -835,24 +884,24 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                   favorited: boolean
                   full_text: string
                   id_str: string
-                  in_reply_to_screen_name?: string
-                  in_reply_to_status_id_str?: string
-                  in_reply_to_user_id_str?: string
                   is_quote_status: boolean
                   lang: string
                   possibly_sensitive?: boolean
                   possibly_sensitive_editable?: boolean
                   quote_count: number
+                  reply_count: number
+                  retweet_count: number
+                  retweeted: boolean
+                  user_id_str: string
+                  in_reply_to_screen_name?: string
+                  in_reply_to_status_id_str?: string
+                  in_reply_to_user_id_str?: string
                   quoted_status_id_str?: string
                   quoted_status_permalink?: {
                     display: string
                     expanded: string
                     url: string
                   }
-                  reply_count: number
-                  retweet_count: number
-                  retweeted: boolean
-                  user_id_str: string
                   retweeted_status_result?: {
                     result: {
                       __typename: string
@@ -1182,16 +1231,16 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                         possibly_sensitive: boolean
                         possibly_sensitive_editable: boolean
                         quote_count: number
+                        reply_count: number
+                        retweet_count: number
+                        retweeted: boolean
+                        user_id_str: string
                         quoted_status_id_str?: string
                         quoted_status_permalink?: {
                           display: string
                           expanded: string
                           url: string
                         }
-                        reply_count: number
-                        retweet_count: number
-                        retweeted: boolean
-                        user_id_str: string
                       }
                       note_tweet: {
                         is_expandable: boolean
@@ -1237,6 +1286,20 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                           }
                         }
                       }
+                      rest_id: string
+                      source: string
+                      unmention_data: {}
+                      views: {
+                        count: string
+                        state: string
+                      }
+                      previous_counts?: {
+                        bookmark_count: number
+                        favorite_count: number
+                        quote_count: number
+                        reply_count: number
+                        retweet_count: number
+                      }
                       quoted_status_result?: {
                         result: {
                           __typename: string
@@ -1244,35 +1307,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                             user_results: {
                               result: {
                                 __typename: string
-                                affiliates_highlighted_label: {
-                                  label?: {
-                                    badge: {
-                                      url: string
-                                    }
-                                    description: string
-                                    longDescription: {
-                                      entities: {
-                                        fromIndex: number
-                                        ref: {
-                                          mention_results: {
-                                            result: {
-                                              __typename: string
-                                              legacy: {
-                                                screen_name: string
-                                              }
-                                              rest_id: string
-                                            }
-                                          }
-                                          screen_name: string
-                                          type: string
-                                        }
-                                        toIndex: number
-                                      }[]
-                                      text: string
-                                    }
-                                    userLabelType: string
-                                  }
-                                }
+                                affiliates_highlighted_label: {}
                                 has_graduated_access: boolean
                                 id: string
                                 is_blue_verified: boolean
@@ -1323,7 +1358,6 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                                   translator_type: string
                                   url: string
                                   verified: boolean
-                                  verified_type?: string
                                   want_retweets: boolean
                                   withheld_in_countries: unknown[]
                                 }
@@ -1359,9 +1393,6 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                             entities: {
                               hashtags: unknown[]
                               media: {
-                                additional_media_info?: {
-                                  monetizable: boolean
-                                }
                                 allow_download_status: {
                                   allow_download: boolean
                                 }
@@ -1369,6 +1400,40 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                                 expanded_url: string
                                 ext_media_availability: {
                                   status: string
+                                }
+                                features: {
+                                  large: {
+                                    faces: {
+                                      h: number
+                                      w: number
+                                      x: number
+                                      y: number
+                                    }[]
+                                  }
+                                  medium: {
+                                    faces: {
+                                      h: number
+                                      w: number
+                                      x: number
+                                      y: number
+                                    }[]
+                                  }
+                                  orig: {
+                                    faces: {
+                                      h: number
+                                      w: number
+                                      x: number
+                                      y: number
+                                    }[]
+                                  }
+                                  small: {
+                                    faces: {
+                                      h: number
+                                      w: number
+                                      x: number
+                                      y: number
+                                    }[]
+                                  }
                                 }
                                 id_str: string
                                 indices: number[]
@@ -1413,61 +1478,13 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                                 }
                                 type: string
                                 url: string
-                                video_info?: {
-                                  aspect_ratio: number[]
-                                  duration_millis: number
-                                  variants: {
-                                    bitrate?: number
-                                    content_type: string
-                                    url: string
-                                  }[]
-                                }
-                                features?: {
-                                  large: {
-                                    faces: {
-                                      h: number
-                                      w: number
-                                      x: number
-                                      y: number
-                                    }[]
-                                  }
-                                  medium: {
-                                    faces: {
-                                      h: number
-                                      w: number
-                                      x: number
-                                      y: number
-                                    }[]
-                                  }
-                                  orig: {
-                                    faces: {
-                                      h: number
-                                      w: number
-                                      x: number
-                                      y: number
-                                    }[]
-                                  }
-                                  small: {
-                                    faces: {
-                                      h: number
-                                      w: number
-                                      x: number
-                                      y: number
-                                    }[]
-                                  }
-                                }
                               }[]
                               symbols: {
                                 indices: number[]
                                 text: string
                               }[]
                               timestamps: unknown[]
-                              urls: {
-                                display_url: string
-                                expanded_url: string
-                                indices: number[]
-                                url: string
-                              }[]
+                              urls: unknown[]
                               user_mentions: {
                                 id_str: string
                                 indices: number[]
@@ -1477,9 +1494,6 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                             }
                             extended_entities: {
                               media: {
-                                additional_media_info?: {
-                                  monetizable: boolean
-                                }
                                 allow_download_status: {
                                   allow_download: boolean
                                 }
@@ -1487,6 +1501,40 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                                 expanded_url: string
                                 ext_media_availability: {
                                   status: string
+                                }
+                                features: {
+                                  large: {
+                                    faces: {
+                                      h: number
+                                      w: number
+                                      x: number
+                                      y: number
+                                    }[]
+                                  }
+                                  medium: {
+                                    faces: {
+                                      h: number
+                                      w: number
+                                      x: number
+                                      y: number
+                                    }[]
+                                  }
+                                  orig: {
+                                    faces: {
+                                      h: number
+                                      w: number
+                                      x: number
+                                      y: number
+                                    }[]
+                                  }
+                                  small: {
+                                    faces: {
+                                      h: number
+                                      w: number
+                                      x: number
+                                      y: number
+                                    }[]
+                                  }
                                 }
                                 id_str: string
                                 indices: number[]
@@ -1531,49 +1579,6 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                                 }
                                 type: string
                                 url: string
-                                video_info?: {
-                                  aspect_ratio: number[]
-                                  duration_millis: number
-                                  variants: {
-                                    bitrate?: number
-                                    content_type: string
-                                    url: string
-                                  }[]
-                                }
-                                features?: {
-                                  large: {
-                                    faces: {
-                                      h: number
-                                      w: number
-                                      x: number
-                                      y: number
-                                    }[]
-                                  }
-                                  medium: {
-                                    faces: {
-                                      h: number
-                                      w: number
-                                      x: number
-                                      y: number
-                                    }[]
-                                  }
-                                  orig: {
-                                    faces: {
-                                      h: number
-                                      w: number
-                                      x: number
-                                      y: number
-                                    }[]
-                                  }
-                                  small: {
-                                    faces: {
-                                      h: number
-                                      w: number
-                                      x: number
-                                      y: number
-                                    }[]
-                                  }
-                                }
                               }[]
                             }
                             favorite_count: number
@@ -1585,12 +1590,6 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                             possibly_sensitive: boolean
                             possibly_sensitive_editable: boolean
                             quote_count: number
-                            quoted_status_id_str?: string
-                            quoted_status_permalink?: {
-                              display: string
-                              expanded: string
-                              url: string
-                            }
                             reply_count: number
                             retweet_count: number
                             retweeted: boolean
@@ -1609,13 +1608,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                                     indices: number[]
                                     text: string
                                   }[]
-                                  timestamps?: unknown[]
-                                  urls: {
-                                    display_url: string
-                                    expanded_url: string
-                                    indices: number[]
-                                    url: string
-                                  }[]
+                                  urls: unknown[]
                                   user_mentions: {
                                     id_str: string
                                     indices: number[]
@@ -1624,24 +1617,8 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                                   }[]
                                 }
                                 id: string
-                                media?: {
-                                  inline_media: unknown[]
-                                }
-                                richtext?: {
-                                  richtext_tags: {
-                                    from_index: number
-                                    richtext_types: string[]
-                                    to_index: number
-                                  }[]
-                                }
                                 text: string
                               }
-                            }
-                          }
-                          quotedRefResult?: {
-                            result: {
-                              __typename: string
-                              rest_id: string
                             }
                           }
                           rest_id: string
@@ -1652,20 +1629,6 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                             state: string
                           }
                         }
-                      }
-                      rest_id: string
-                      source: string
-                      unmention_data: {}
-                      views: {
-                        count: string
-                        state: string
-                      }
-                      previous_counts?: {
-                        bookmark_count: number
-                        favorite_count: number
-                        quote_count: number
-                        reply_count: number
-                        retweet_count: number
                       }
                     }
                   }
@@ -1690,10 +1653,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                           indices: number[]
                           text: string
                         }[]
-                        symbols: {
-                          indices: number[]
-                          text: string
-                        }[]
+                        symbols: unknown[]
                         timestamps?: unknown[]
                         urls: {
                           display_url: string
@@ -1711,10 +1671,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                       id: string
                       text: string
                       media?: {
-                        inline_media: {
-                          index: number
-                          media_id: string
-                        }[]
+                        inline_media: unknown[]
                       }
                       richtext?: {
                         richtext_tags: {
@@ -1726,6 +1683,40 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                     }
                   }
                 }
+                rest_id?: string
+                source?: string
+                unmention_data?: {}
+                views?: {
+                  count?: string
+                  state: string
+                }
+                card?: {
+                  legacy: {
+                    binding_values: {
+                      key: string
+                      value: {
+                        scribe_key?: string
+                        string_value: string
+                        type: string
+                      }
+                    }[]
+                    card_platform: {
+                      platform: {
+                        audience: {
+                          name: string
+                        }
+                        device: {
+                          name: string
+                          version: string
+                        }
+                      }
+                    }
+                    name: string
+                    url: string
+                    user_refs_results: unknown[]
+                  }
+                  rest_id: string
+                }
                 quoted_status_result?: {
                   result?: {
                     __typename: string
@@ -1734,9 +1725,6 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                         binding_values: {
                           key: string
                           value: {
-                            scribe_key?: string
-                            string_value?: string
-                            type: string
                             image_color_value?: {
                               palette: {
                                 percentage: number
@@ -1752,6 +1740,9 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                               url: string
                               width: number
                             }
+                            scribe_key?: string
+                            string_value?: string
+                            type: string
                             user_value?: {
                               id_str: string
                               path: unknown[]
@@ -1931,9 +1922,9 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                             translator_type: string
                             url?: string
                             verified: boolean
-                            verified_type?: string
                             want_retweets: boolean
                             withheld_in_countries: unknown[]
+                            verified_type?: string
                           }
                           parody_commentary_fan_label: string
                           professional?: {
@@ -1953,21 +1944,24 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                             is_enabled?: boolean
                             patreon_handle?: string
                           }
+                          verification?: {
+                            verified: boolean
+                          }
                         }
                       }
                     }
                     edit_control: {
-                      edit_tweet_ids?: string[]
-                      editable_until_msecs?: string
-                      edits_remaining?: string
-                      is_edit_eligible?: boolean
                       edit_control_initial?: {
                         edit_tweet_ids: string[]
                         editable_until_msecs: string
                         edits_remaining: string
                         is_edit_eligible: boolean
                       }
+                      edit_tweet_ids?: string[]
+                      editable_until_msecs?: string
+                      edits_remaining?: string
                       initial_tweet_id?: string
+                      is_edit_eligible?: boolean
                     }
                     is_translatable: boolean
                     legacy: {
@@ -1980,6 +1974,169 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                         hashtags: {
                           indices: number[]
                           text: string
+                        }[]
+                        media?: {
+                          additional_media_info?: {
+                            monetizable: boolean
+                            source_user?: {
+                              user_results: {
+                                result: {
+                                  __typename: string
+                                  affiliates_highlighted_label: {}
+                                  has_graduated_access: boolean
+                                  id: string
+                                  is_blue_verified: boolean
+                                  legacy: {
+                                    blocking: boolean
+                                    can_dm: boolean
+                                    can_media_tag: boolean
+                                    created_at: string
+                                    default_profile: boolean
+                                    default_profile_image: boolean
+                                    description: string
+                                    entities: {
+                                      description: {
+                                        urls: unknown[]
+                                      }
+                                      url: {
+                                        urls: {
+                                          display_url: string
+                                          expanded_url: string
+                                          indices: number[]
+                                          url: string
+                                        }[]
+                                      }
+                                    }
+                                    fast_followers_count: number
+                                    favourites_count: number
+                                    followers_count: number
+                                    following: boolean
+                                    friends_count: number
+                                    has_custom_timelines: boolean
+                                    is_translator: boolean
+                                    listed_count: number
+                                    location: string
+                                    media_count: number
+                                    name: string
+                                    normal_followers_count: number
+                                    pinned_tweet_ids_str: string[]
+                                    possibly_sensitive: boolean
+                                    profile_banner_url: string
+                                    profile_image_url_https: string
+                                    profile_interstitial_type: string
+                                    screen_name: string
+                                    statuses_count: number
+                                    translator_type: string
+                                    url: string
+                                    verified: boolean
+                                    verified_type: string
+                                    want_retweets: boolean
+                                    withheld_in_countries: unknown[]
+                                  }
+                                  parody_commentary_fan_label: string
+                                  profile_image_shape: string
+                                  rest_id: string
+                                  tipjar_settings: {}
+                                }
+                              }
+                            }
+                          }
+                          allow_download_status?: {
+                            allow_download: boolean
+                          }
+                          display_url: string
+                          expanded_url: string
+                          ext_media_availability: {
+                            status: string
+                          }
+                          features?: {
+                            large: {
+                              faces: {
+                                h: number
+                                w: number
+                                x: number
+                                y: number
+                              }[]
+                            }
+                            medium: {
+                              faces: {
+                                h: number
+                                w: number
+                                x: number
+                                y: number
+                              }[]
+                            }
+                            orig: {
+                              faces: {
+                                h: number
+                                w: number
+                                x: number
+                                y: number
+                              }[]
+                            }
+                            small: {
+                              faces: {
+                                h: number
+                                w: number
+                                x: number
+                                y: number
+                              }[]
+                            }
+                          }
+                          id_str: string
+                          indices: number[]
+                          media_key: string
+                          media_results: {
+                            result: {
+                              media_key: string
+                            }
+                          }
+                          media_url_https: string
+                          original_info: {
+                            focus_rects: {
+                              h: number
+                              w: number
+                              x: number
+                              y: number
+                            }[]
+                            height: number
+                            width: number
+                          }
+                          sizes: {
+                            large: {
+                              h: number
+                              resize: string
+                              w: number
+                            }
+                            medium: {
+                              h: number
+                              resize: string
+                              w: number
+                            }
+                            small: {
+                              h: number
+                              resize: string
+                              w: number
+                            }
+                            thumb: {
+                              h: number
+                              resize: string
+                              w: number
+                            }
+                          }
+                          source_status_id_str?: string
+                          source_user_id_str?: string
+                          type: string
+                          url: string
+                          video_info?: {
+                            aspect_ratio: number[]
+                            duration_millis: number
+                            variants: {
+                              bitrate?: number
+                              content_type: string
+                              url: string
+                            }[]
+                          }
                         }[]
                         symbols: unknown[]
                         timestamps: unknown[]
@@ -1995,7 +2152,9 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                           name: string
                           screen_name: string
                         }[]
-                        media?: {
+                      }
+                      extended_entities?: {
+                        media: {
                           additional_media_info?: {
                             monetizable: boolean
                             source_user?: {
@@ -2163,183 +2322,11 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                       favorited: boolean
                       full_text: string
                       id_str: string
-                      is_quote_status: boolean
-                      lang: string
-                      possibly_sensitive?: boolean
-                      possibly_sensitive_editable?: boolean
-                      quote_count: number
-                      reply_count: number
-                      retweet_count: number
-                      retweeted: boolean
-                      user_id_str: string
-                      extended_entities?: {
-                        media: {
-                          additional_media_info?: {
-                            monetizable: boolean
-                            source_user?: {
-                              user_results: {
-                                result: {
-                                  __typename: string
-                                  affiliates_highlighted_label: {}
-                                  has_graduated_access: boolean
-                                  id: string
-                                  is_blue_verified: boolean
-                                  legacy: {
-                                    blocking: boolean
-                                    can_dm: boolean
-                                    can_media_tag: boolean
-                                    created_at: string
-                                    default_profile: boolean
-                                    default_profile_image: boolean
-                                    description: string
-                                    entities: {
-                                      description: {
-                                        urls: unknown[]
-                                      }
-                                      url: {
-                                        urls: {
-                                          display_url: string
-                                          expanded_url: string
-                                          indices: number[]
-                                          url: string
-                                        }[]
-                                      }
-                                    }
-                                    fast_followers_count: number
-                                    favourites_count: number
-                                    followers_count: number
-                                    following: boolean
-                                    friends_count: number
-                                    has_custom_timelines: boolean
-                                    is_translator: boolean
-                                    listed_count: number
-                                    location: string
-                                    media_count: number
-                                    name: string
-                                    normal_followers_count: number
-                                    pinned_tweet_ids_str: string[]
-                                    possibly_sensitive: boolean
-                                    profile_banner_url: string
-                                    profile_image_url_https: string
-                                    profile_interstitial_type: string
-                                    screen_name: string
-                                    statuses_count: number
-                                    translator_type: string
-                                    url: string
-                                    verified: boolean
-                                    verified_type: string
-                                    want_retweets: boolean
-                                    withheld_in_countries: unknown[]
-                                  }
-                                  parody_commentary_fan_label: string
-                                  profile_image_shape: string
-                                  rest_id: string
-                                  tipjar_settings: {}
-                                }
-                              }
-                            }
-                          }
-                          allow_download_status?: {
-                            allow_download: boolean
-                          }
-                          display_url: string
-                          expanded_url: string
-                          ext_media_availability: {
-                            status: string
-                          }
-                          features?: {
-                            large: {
-                              faces: {
-                                h: number
-                                w: number
-                                x: number
-                                y: number
-                              }[]
-                            }
-                            medium: {
-                              faces: {
-                                h: number
-                                w: number
-                                x: number
-                                y: number
-                              }[]
-                            }
-                            orig: {
-                              faces: {
-                                h: number
-                                w: number
-                                x: number
-                                y: number
-                              }[]
-                            }
-                            small: {
-                              faces: {
-                                h: number
-                                w: number
-                                x: number
-                                y: number
-                              }[]
-                            }
-                          }
-                          id_str: string
-                          indices: number[]
-                          media_key: string
-                          media_results: {
-                            result: {
-                              media_key: string
-                            }
-                          }
-                          media_url_https: string
-                          original_info: {
-                            focus_rects: {
-                              h: number
-                              w: number
-                              x: number
-                              y: number
-                            }[]
-                            height: number
-                            width: number
-                          }
-                          sizes: {
-                            large: {
-                              h: number
-                              resize: string
-                              w: number
-                            }
-                            medium: {
-                              h: number
-                              resize: string
-                              w: number
-                            }
-                            small: {
-                              h: number
-                              resize: string
-                              w: number
-                            }
-                            thumb: {
-                              h: number
-                              resize: string
-                              w: number
-                            }
-                          }
-                          source_status_id_str?: string
-                          source_user_id_str?: string
-                          type: string
-                          url: string
-                          video_info?: {
-                            aspect_ratio: number[]
-                            duration_millis: number
-                            variants: {
-                              bitrate?: number
-                              content_type: string
-                              url: string
-                            }[]
-                          }
-                        }[]
-                      }
                       in_reply_to_screen_name?: string
                       in_reply_to_status_id_str?: string
                       in_reply_to_user_id_str?: string
+                      is_quote_status: boolean
+                      lang: string
                       place?: {
                         bounding_box: {
                           coordinates: number[][][]
@@ -2353,15 +2340,14 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                         place_type: string
                         url: string
                       }
+                      possibly_sensitive?: boolean
+                      possibly_sensitive_editable?: boolean
+                      quote_count: number
+                      reply_count: number
+                      retweet_count: number
+                      retweeted: boolean
+                      user_id_str: string
                     }
-                    rest_id: string
-                    source: string
-                    unmention_data: {}
-                    views: {
-                      count: string
-                      state: string
-                    }
-                    voiceInfo?: {}
                     note_tweet?: {
                       is_expandable: boolean
                       note_tweet_results: {
@@ -2399,43 +2385,17 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                       reply_count: number
                       retweet_count: number
                     }
+                    rest_id: string
+                    source: string
+                    unmention_data: {}
+                    views: {
+                      count: string
+                      state: string
+                    }
+                    voiceInfo?: {}
                   }
-                }
-                rest_id?: string
-                source?: string
-                unmention_data?: {}
-                views?: {
-                  count?: string
-                  state: string
                 }
                 voiceInfo?: {}
-                card?: {
-                  legacy: {
-                    binding_values: {
-                      key: string
-                      value: {
-                        scribe_key?: string
-                        string_value: string
-                        type: string
-                      }
-                    }[]
-                    card_platform: {
-                      platform: {
-                        audience: {
-                          name: string
-                        }
-                        device: {
-                          name: string
-                          version: string
-                        }
-                      }
-                    }
-                    name: string
-                    url: string
-                    user_refs_results: unknown[]
-                  }
-                  rest_id: string
-                }
                 author_community_relationship?: {
                   community_results: {
                     result: {
@@ -2840,12 +2800,7 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                 description: string
                 entities: {
                   description: {
-                    urls: {
-                      display_url: string
-                      expanded_url: string
-                      indices: number[]
-                      url: string
-                    }[]
+                    urls: unknown[]
                   }
                   url?: {
                     urls: {
@@ -2885,19 +2840,18 @@ export interface GraphQLGetAudioSpaceByIdSuccessResponse {
                 blocking?: boolean
               }
               parody_commentary_fan_label: string
-              professional?: {
-                category: {
-                  icon_name: string
-                  id: number
-                  name: string
-                }[]
-                professional_type: string
-                rest_id: string
-              }
               profile_image_shape: string
               rest_id: string
               tipjar_settings: {
                 is_enabled?: boolean
+              }
+              professional?: {
+                category: unknown[]
+                professional_type: string
+                rest_id: string
+              }
+              verification?: {
+                verified: boolean
               }
             }
           }
