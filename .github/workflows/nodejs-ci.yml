@@ -137,6 +137,7 @@ jobs:
         run: pnpm run compile
 
       - name: 🧪 Run tests
+        id: run-tests
         uses: coactions/setup-xvfb@v1
         if: steps.package-json.outputs.test == 'true'
         with:
@@ -155,6 +156,36 @@ jobs:
           RESPONSE_DB_PASSWORD: twitter-ts-test
           RESPONSE_DB_DATABASE: twitter-ts
           RESPONSE_DB_PORT: 3306
+
+      - name: 📝 Capture test output on failure
+        if: ${{ failure() && steps.run-tests.conclusion == 'failure' && github.event_name == 'schedule' }}
+        run: |
+          echo "Capturing test output for scheduled CI failure..."
+          # Re-run tests to capture output (they should fail again)
+          pnpm run test > test-output.log 2>&1 || true
+          echo "Test output captured to test-output.log"
+        env:
+          TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
+          TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
+          TWITTER_OTP_SECRET: ${{ secrets.TWITTER_OTP_SECRET }}
+          TWITTER_EMAIL_ADDRESS: ${{ secrets.TWITTER_EMAIL_ADDRESS }}
+          PROXY_SERVER: ${{ secrets.PROXY_SERVER }}
+          PROXY_USERNAME: ${{ secrets.PROXY_USERNAME }}
+          PROXY_PASSWORD: ${{ secrets.PROXY_PASSWORD }}
+          NODE_ENV: test
+          RESPONSE_DB_HOSTNAME: localhost
+          RESPONSE_DB_USERNAME: twitter-ts
+          RESPONSE_DB_PASSWORD: twitter-ts-test
+          RESPONSE_DB_DATABASE: twitter-ts
+          RESPONSE_DB_PORT: 3306
+
+      - name: 📤 Upload test output artifact
+        if: ${{ failure() && steps.run-tests.conclusion == 'failure' && github.event_name == 'schedule' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-failure-output
+          path: test-output.log
+          retention-days: 7
 
       - name: ☑️ Check Dependencies
         if: steps.package-json.outputs.disabled-depcheck == 'false'
@@ -235,22 +266,44 @@ jobs:
       - name: Workflow conclusion
         uses: technote-space/workflow-conclusion-action@v3
 
+      - name: 📥 Download test output artifact
+        if: ${{ github.event_name == 'schedule' && env.WORKFLOW_CONCLUSION != 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: test-failure-output
+          path: ./artifacts
+        continue-on-error: true
+
       - name: Create issue on scheduled CI failure
         if: ${{ github.event_name == 'schedule' && env.WORKFLOW_CONCLUSION != 'success' }}
         run: |
-          # Get test output from workflow logs
-          TEST_OUTPUT=$(gh run view ${{ github.run_id }} --log | grep -A 50 -B 5 "pnpm run test" | tail -n 100 || echo "テスト出力の取得に失敗しました")
+          # Get test output from artifact or fallback to workflow logs
+          if [ -f "./artifacts/test-output.log" ]; then
+            TEST_OUTPUT=$(cat ./artifacts/test-output.log)
+            echo "Test output loaded from artifact"
+          else
+            TEST_OUTPUT=$(gh run view ${{ github.run_id }} --log | grep -A 50 -B 5 "pnpm run test" | tail -n 100 || echo "テスト出力の取得に失敗しました")
+            echo "Test output loaded from workflow logs (fallback)"
+          fi
           
-          # Check for existing issues with same date to prevent duplicates
-          TODAY=$(date '+%Y-%m-%d')
-          EXISTING_ISSUE=$(gh issue list --state open --search "定期CI実行でテストが失敗しました ($TODAY)" --json number --jq '.[0].number' || echo "")
+          # Extract error location/identifier for duplicate detection
+          ERROR_SIGNATURE=$(echo "$TEST_OUTPUT" | grep -E "(FAIL|Error|✕)" | head -5 | sed 's/[[:space:]]*$//' | sort | uniq | head -3 | tr '\n' '|' | sed 's/|$//')
+          
+          if [ -z "$ERROR_SIGNATURE" ]; then
+            ERROR_SIGNATURE="unknown-error"
+          fi
+          
+          # Check for existing issues with same error signature to prevent duplicates
+          EXISTING_ISSUE=$(gh issue list --state open --search "定期CI実行でテストが失敗しました" --json number,title,body --jq --arg sig "$ERROR_SIGNATURE" '.[] | select(.body | contains($sig)) | .number' | head -1 || echo "")
           
           if [ -n "$EXISTING_ISSUE" ]; then
-            echo "Issue already exists for today: #$EXISTING_ISSUE"
+            echo "Issue already exists for this error signature: #$EXISTING_ISSUE"
+            echo "Error signature: $ERROR_SIGNATURE"
             exit 0
           fi
           
           # Create an issue when scheduled CI fails
+          TODAY=$(date '+%Y-%m-%d')
           ISSUE_TITLE="定期CI実行でテストが失敗しました ($TODAY)"
           ISSUE_BODY="**実行詳細:**
           - ワークフロー: ${{ github.workflow }}
@@ -262,7 +315,9 @@ jobs:
           **テスト実行結果:**
           \`\`\`
           $TEST_OUTPUT
-          \`\`\`"
+          \`\`\`
+
+          **エラー識別子:** $ERROR_SIGNATURE"
 
           gh issue create \
             --title "$ISSUE_TITLE" \
