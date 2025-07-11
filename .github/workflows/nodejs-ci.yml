@@ -238,29 +238,36 @@ jobs:
       - name: Create issue on scheduled CI failure
         if: ${{ github.event_name == 'schedule' && env.WORKFLOW_CONCLUSION != 'success' }}
         run: |
+          # Get test output from workflow logs
+          TEST_OUTPUT=$(gh run view ${{ github.run_id }} --log | grep -A 50 -B 5 "pnpm run test" | tail -n 100 || echo "テスト出力の取得に失敗しました")
+          
+          # Check for existing issues with same date to prevent duplicates
+          TODAY=$(date '+%Y-%m-%d')
+          EXISTING_ISSUE=$(gh issue list --state open --search "定期CI実行でテストが失敗しました ($TODAY)" --json number --jq '.[0].number' || echo "")
+          
+          if [ -n "$EXISTING_ISSUE" ]; then
+            echo "Issue already exists for today: #$EXISTING_ISSUE"
+            exit 0
+          fi
+          
           # Create an issue when scheduled CI fails
-          ISSUE_TITLE="定期CI実行でテストが失敗しました ($(date '+%Y-%m-%d'))"
-          ISSUE_BODY="定期実行されたCIでテストが失敗しました。
-
-          **実行詳細:**
+          ISSUE_TITLE="定期CI実行でテストが失敗しました ($TODAY)"
+          ISSUE_BODY="**実行詳細:**
           - ワークフロー: ${{ github.workflow }}
           - 実行ID: ${{ github.run_id }}
           - 実行URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           - 実行時刻: $(date '+%Y-%m-%d %H:%M:%S UTC')
           - 結果: ${{ env.WORKFLOW_CONCLUSION }}
 
-          **確認事項:**
-          - 外部APIの仕様変更がないか確認してください
-          - テストの実行環境に問題がないか確認してください
-          - 必要に応じてテストコードの修正を行ってください
-
-          このissueは自動的に作成されました。"
+          **テスト実行結果:**
+          \`\`\`
+          $TEST_OUTPUT
+          \`\`\`"
 
           gh issue create \
             --title "$ISSUE_TITLE" \
             --body "$ISSUE_BODY" \
-            --assignee book000 \
-            --label "bug,automated"
+            --assignee book000
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
