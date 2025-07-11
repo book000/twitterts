@@ -235,13 +235,6 @@ jobs:
       - name: Workflow conclusion
         uses: technote-space/workflow-conclusion-action@v3
 
-      - name: Check finished Node CI
-        run: |
-          if [ "${{ env.WORKFLOW_CONCLUSION }}" != "success" ]; then
-            echo "Build failed"
-            exit 1
-          fi
-
       - name: Create issue on scheduled CI failure
         if: ${{ github.event_name == 'schedule' && env.WORKFLOW_CONCLUSION != 'success' }}
         run: |
@@ -270,6 +263,13 @@ jobs:
             --label "bug,automated"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check finished Node CI
+        run: |
+          if [ "${{ env.WORKFLOW_CONCLUSION }}" != "success" ]; then
+            echo "Build failed"
+            exit 1
+          fi
 
       - name: Remove label
         if: ${{ github.event_name == 'pull_request_target' && contains(github.event.label.name, '🚀request-ci') }}
