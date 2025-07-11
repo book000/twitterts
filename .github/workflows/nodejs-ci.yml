@@ -228,6 +228,10 @@ jobs:
       - node-ci
 
     steps:
+      - name: Checkout
+        if: ${{ github.event_name == 'schedule' }}
+        uses: actions/checkout@v4
+
       - name: Workflow conclusion
         uses: technote-space/workflow-conclusion-action@v3
 
@@ -237,6 +241,35 @@ jobs:
             echo "Build failed"
             exit 1
           fi
+
+      - name: Create issue on scheduled CI failure
+        if: ${{ github.event_name == 'schedule' && env.WORKFLOW_CONCLUSION != 'success' }}
+        run: |
+          # Create an issue when scheduled CI fails
+          ISSUE_TITLE="定期CI実行でテストが失敗しました ($(date '+%Y-%m-%d'))"
+          ISSUE_BODY="定期実行されたCIでテストが失敗しました。
+
+          **実行詳細:**
+          - ワークフロー: ${{ github.workflow }}
+          - 実行ID: ${{ github.run_id }}
+          - 実行URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          - 実行時刻: $(date '+%Y-%m-%d %H:%M:%S UTC')
+          - 結果: ${{ env.WORKFLOW_CONCLUSION }}
+
+          **確認事項:**
+          - 外部APIの仕様変更がないか確認してください
+          - テストの実行環境に問題がないか確認してください
+          - 必要に応じてテストコードの修正を行ってください
+
+          このissueは自動的に作成されました。"
+
+          gh issue create \
+            --title "$ISSUE_TITLE" \
+            --body "$ISSUE_BODY" \
+            --assignee book000 \
+            --label "bug,automated"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Remove label
         if: ${{ github.event_name == 'pull_request_target' && contains(github.event.label.name, '🚀request-ci') }}
