@@ -158,7 +158,7 @@ jobs:
           RESPONSE_DB_PORT: 3306
 
       - name: 📝 Capture test output on failure
-        if: ${{ failure() && steps.run-tests.conclusion == 'failure' && github.event_name == 'schedule' }}
+        if: ${{ failure() && steps.run-tests.conclusion == 'failure' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
         run: |
           echo "Capturing test output for scheduled CI failure..."
           # Re-run tests to capture output (they should fail again)
@@ -180,7 +180,7 @@ jobs:
           RESPONSE_DB_PORT: 3306
 
       - name: 📤 Upload test output artifact
-        if: ${{ failure() && steps.run-tests.conclusion == 'failure' && github.event_name == 'schedule' }}
+        if: ${{ failure() && steps.run-tests.conclusion == 'failure' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
         uses: actions/upload-artifact@v4
         with:
           name: test-failure-output
@@ -260,22 +260,22 @@ jobs:
 
     steps:
       - name: Checkout
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         uses: actions/checkout@v4
 
       - name: Workflow conclusion
         uses: technote-space/workflow-conclusion-action@v3
 
       - name: 📥 Download test output artifact
-        if: ${{ github.event_name == 'schedule' && env.WORKFLOW_CONCLUSION != 'success' }}
+        if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && env.WORKFLOW_CONCLUSION != 'success' }}
         uses: actions/download-artifact@v4
         with:
           name: test-failure-output
           path: ./artifacts
         continue-on-error: true
 
-      - name: Create issue on scheduled CI failure
-        if: ${{ github.event_name == 'schedule' && env.WORKFLOW_CONCLUSION != 'success' }}
+      - name: Create issue on CI failure
+        if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && env.WORKFLOW_CONCLUSION != 'success' }}
         run: |
           # Get test output from artifact or fallback to workflow logs
           if [ -f "./artifacts/test-output.log" ]; then
@@ -294,7 +294,7 @@ jobs:
           fi
           
           # Check for existing issues with same error signature to prevent duplicates
-          EXISTING_ISSUE=$(gh issue list --state open --search "定期CI実行でテストが失敗しました" --json number,title,body --jq --arg sig "$ERROR_SIGNATURE" '.[] | select(.body | contains($sig)) | .number' | head -1 || echo "")
+          EXISTING_ISSUE=$(gh issue list --state open --search "テストが失敗しました" --json number,title,body --jq --arg sig "$ERROR_SIGNATURE" '.[] | select(.body | contains($sig)) | .number' | head -1 || echo "")
           
           if [ -n "$EXISTING_ISSUE" ]; then
             echo "Issue already exists for this error signature: #$EXISTING_ISSUE"
@@ -302,9 +302,13 @@ jobs:
             exit 0
           fi
           
-          # Create an issue when scheduled CI fails
+          # Create an issue when CI fails
           TODAY=$(date '+%Y-%m-%d')
-          ISSUE_TITLE="定期CI実行でテストが失敗しました ($TODAY)"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            ISSUE_TITLE="定期CI実行でテストが失敗しました ($TODAY)"
+          else
+            ISSUE_TITLE="CI実行でテストが失敗しました ($TODAY)"
+          fi
           ISSUE_BODY="**実行詳細:**
           - ワークフロー: ${{ github.workflow }}
           - 実行ID: ${{ github.run_id }}
