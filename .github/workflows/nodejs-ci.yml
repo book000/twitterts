@@ -164,8 +164,8 @@ jobs:
           # Re-run tests to capture output (they should fail again)
           pnpm run test > test-output-raw.log 2>&1 || true
           # Strip ANSI escape sequences to prevent character encoding issues
-          # Handle both actual escape sequences (\x1b[) and literal representations (\u001b[, [)
-          sed 's/\x1b\[[0-9;]*m//g' test-output-raw.log | sed 's/\\u001b\[[0-9;]*m//g' | sed 's/\[[0-9;]*m//g' > test-output.log
+          # Handle actual escape sequences and Unicode representations more precisely
+          sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' test-output-raw.log | sed 's/\\u001b\[[0-9;]*[a-zA-Z]//g' > test-output.log
           echo "Test output captured to test-output.log"
         env:
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
@@ -290,8 +290,8 @@ jobs:
           fi
           
           # Strip ANSI escape sequences to prevent character encoding issues  
-          # Handle both actual escape sequences (\x1b[) and literal representations (\u001b[, [)
-          TEST_OUTPUT=$(echo "$TEST_OUTPUT" | sed 's/\x1b\[[0-9;]*m//g' | sed 's/\\u001b\[[0-9;]*m//g' | sed 's/\[[0-9;]*m//g')
+          # Handle actual escape sequences and Unicode representations more precisely
+          TEST_OUTPUT=$(echo "$TEST_OUTPUT" | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' | sed 's/\\u001b\[[0-9;]*[a-zA-Z]//g')
           
           # Extract error location/identifier for duplicate detection
           ERROR_SIGNATURE=$(echo "$TEST_OUTPUT" | grep -E "(FAIL|Error|✕)" | head -5 | sed 's/[[:space:]]*$//' | sort | uniq | head -3 | tr '\n' '|' | sed 's/|$//')
