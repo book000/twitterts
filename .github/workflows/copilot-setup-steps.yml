@@ -25,6 +25,7 @@ jobs:
         uses: pnpm/action-setup@v4
         id: pnpm-install
         with:
+          package_json_file: package.json
           run_install: false
 
       - name: 📂 Get pnpm store directory
