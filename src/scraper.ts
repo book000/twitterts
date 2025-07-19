@@ -973,12 +973,8 @@ export class TwitterScraper {
 
     const userDataDirectory =
       this.options.puppeteerOptions?.userDataDirectory ?? '/data/userdata'
-
-    // CI環境では headless モードを使用する
-    const isCI = process.env.CI === 'true' || process.env.NODE_ENV === 'test'
-
     const browser = await puppeteer.launch({
-      headless: isCI,
+      headless: false,
       executablePath: this.options.puppeteerOptions?.executablePath,
       channel: 'chrome',
       args: puppeteerArguments,
