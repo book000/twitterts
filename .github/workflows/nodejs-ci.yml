@@ -138,10 +138,8 @@ jobs:
 
       - name: 🧪 Run tests
         id: run-tests
-        uses: coactions/setup-xvfb@v1
         if: steps.package-json.outputs.test == 'true'
-        with:
-          run: pnpm run test
+        run: xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' pnpm run test 2>&1 | tee test-output-raw.log
         env:
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
@@ -160,9 +158,6 @@ jobs:
       - name: 📝 Capture test output on failure
         if: ${{ failure() && steps.run-tests.conclusion == 'failure' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
         run: |
-          echo "Capturing test output for scheduled CI failure..."
-          # Re-run tests to capture output (they should fail again)
-          pnpm run test > test-output-raw.log 2>&1 || true
           # Strip ANSI escape sequences to prevent character encoding issues
           # Handle actual escape sequences and Unicode representations more precisely
           sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' test-output-raw.log | sed 's/\\u001b\[[0-9;]*[a-zA-Z]//g' > test-output.log
