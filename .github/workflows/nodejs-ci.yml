@@ -139,7 +139,7 @@ jobs:
       - name: 🧪 Run tests
         id: run-tests
         if: steps.package-json.outputs.test == 'true'
-        run: xvfb-run pnpm run test
+        run: xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' pnpm run test
         env:
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
