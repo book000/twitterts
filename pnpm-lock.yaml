@@ -27,8 +27,8 @@ importers:
         specifier: 12.0.1
         version: 12.0.1
       puppeteer-core:
-        specifier: 24.14.0
-        version: 24.14.0
+        specifier: 24.15.0
+        version: 24.15.0
       twitter-d:
         specifier: 0.6.0
         version: 0.6.0
@@ -1206,8 +1206,8 @@ packages:
   chardet@0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
 
-  chromium-bidi@7.1.1:
-    resolution: {integrity: sha512-L2BKQ0rSLADgbPMIdDh3wnYHs3EiUiMay2Sq0CTolheaADmWIf6Pe+T9LJRcnh5rcMz0U7MVk0cQVvKsGRMa1g==}
+  chromium-bidi@7.2.0:
+    resolution: {integrity: sha512-gREyhyBstermK+0RbcJLbFhcQctg92AGgDe/h/taMJEOLRdtSswBAO9KmvltFSQWgM2LrwWu5SIuEUbdm3JsyQ==}
     peerDependencies:
       devtools-protocol: '*'
 
@@ -2831,8 +2831,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  puppeteer-core@24.14.0:
-    resolution: {integrity: sha512-NO9XpCl+i8oB0zJp81iPhzMo2QK8/JTj4ramSvTpGCo9CPCNo4AZ8qVOGpSgXzlcOfOT3VHOkzTfPo08GOE5jA==}
+  puppeteer-core@24.15.0:
+    resolution: {integrity: sha512-2iy0iBeWbNyhgiCGd/wvGrDSo73emNFjSxYOcyAqYiagkYt5q4cPfVXaVDKBsukgc2fIIfLAalBZlaxldxdDYg==}
     engines: {node: '>=18'}
 
   pure-rand@7.0.1:
@@ -4745,7 +4745,7 @@ snapshots:
 
   chardet@0.7.0: {}
 
-  chromium-bidi@7.1.1(devtools-protocol@0.0.1464554):
+  chromium-bidi@7.2.0(devtools-protocol@0.0.1464554):
     dependencies:
       devtools-protocol: 0.0.1464554
       mitt: 3.0.1
@@ -6712,10 +6712,10 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-core@24.14.0:
+  puppeteer-core@24.15.0:
     dependencies:
       '@puppeteer/browsers': 2.10.6
-      chromium-bidi: 7.1.1(devtools-protocol@0.0.1464554)
+      chromium-bidi: 7.2.0(devtools-protocol@0.0.1464554)
       debug: 4.4.1
       devtools-protocol: 0.0.1464554
       typed-query-selector: 2.12.0
