@@ -266,7 +266,7 @@ jobs:
 
       - name: 📥 Download test output artifact
         if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && env.WORKFLOW_CONCLUSION != 'success' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: test-failure-output
           path: ./artifacts
