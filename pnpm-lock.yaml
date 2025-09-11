@@ -21,8 +21,8 @@ importers:
         specifier: 1.3.0
         version: 1.3.0
       mysql2:
-        specifier: 3.14.4
-        version: 3.14.4
+        specifier: 3.14.5
+        version: 3.14.5
       otplib:
         specifier: 12.0.1
         version: 12.0.1
@@ -2566,8 +2566,8 @@ packages:
   my-only-either@1.3.0:
     resolution: {integrity: sha512-Ww01dhgmQLLHwEww6b0F5eyPMz0zfCYId4SsP8p7VPxtxPrh6v+fwORrBDYAHgOcVE2Bg9+wwztDKkSEbuxZog==}
 
-  mysql2@3.14.4:
-    resolution: {integrity: sha512-Cs/jx3WZPNrYHVz+Iunp9ziahaG5uFMvD2R8Zlmc194AqXNxt9HBNu7ZsPYrUtmJsF0egETCWIdMIYAwOGjL1w==}
+  mysql2@3.14.5:
+    resolution: {integrity: sha512-40hDf8LPUsuuJ2hFq+UgOuPwt2IFLIRDvMv6ez9hKbXeYuZPxDDwiJW7KdknvOsQqKznaKczOT1kELgFkhDvFg==}
     engines: {node: '>= 8.0'}
 
   named-placeholders@1.1.3:
@@ -6422,7 +6422,7 @@ snapshots:
 
   my-only-either@1.3.0: {}
 
-  mysql2@3.14.4:
+  mysql2@3.14.5:
     dependencies:
       aws-ssl-profiles: 1.1.2
       denque: 2.1.0
