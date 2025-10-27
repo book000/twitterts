@@ -179,7 +179,7 @@ jobs:
 
       - name: 📤 Upload test output artifact
         if: ${{ failure() && steps.run-tests.conclusion == 'failure' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-failure-output
           path: test-output.log
@@ -198,7 +198,7 @@ jobs:
 
       - name: 📦 Upload dist artifact
         if: steps.check-dist.outputs.exists == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: dist
           path: dist
@@ -212,7 +212,7 @@ jobs:
 
       - name: 📦 Upload output artifact
         if: steps.check-output.outputs.exists == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: output
           path: output
@@ -266,7 +266,7 @@ jobs:
 
       - name: 📥 Download test output artifact
         if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && env.WORKFLOW_CONCLUSION != 'success' }}
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: test-failure-output
           path: ./artifacts
