@@ -33,8 +33,8 @@ importers:
         specifier: 0.6.0
         version: 0.6.0
       ulid:
-        specifier: 3.0.1
-        version: 3.0.1
+        specifier: 3.0.2
+        version: 3.0.2
     devDependencies:
       '@book000/eslint-config':
         specifier: 1.12.11
@@ -3304,8 +3304,8 @@ packages:
     engines: {node: '>=0.8.0'}
     hasBin: true
 
-  ulid@3.0.1:
-    resolution: {integrity: sha512-dPJyqPzx8preQhqq24bBG1YNkvigm87K8kVEHCD+ruZg24t6IFEFv00xMWfxcC4djmFtiTLdFuADn4+DOz6R7Q==}
+  ulid@3.0.2:
+    resolution: {integrity: sha512-yu26mwteFYzBAot7KVMqFGCVpsF6g8wXfJzQUHvu1no3+rRRSFcSV2nKeYvNPLD2J4b08jYBDhHUjeH0ygIl9w==}
     hasBin: true
 
   unbox-primitive@1.1.0:
@@ -7244,7 +7244,7 @@ snapshots:
   uglify-js@3.19.3:
     optional: true
 
-  ulid@3.0.1: {}
+  ulid@3.0.2: {}
 
   unbox-primitive@1.1.0:
     dependencies:
