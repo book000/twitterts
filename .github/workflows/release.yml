@@ -1,12 +1,10 @@
 name: Release
 
 on:
-  pull_request_target:
+  push:
     branches:
       - main
       - master
-    types:
-      - closed
 
 concurrency:
   group: ${{ github.workflow }}
@@ -15,7 +13,12 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
 
     steps:
       - name: 🛎 Checkout
@@ -74,8 +77,6 @@ jobs:
       - name: 📦 Publish
         run: |
           pnpm publish --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: 📃 Create Release
         id: create_release
