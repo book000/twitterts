@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@book000/node-utils':
-        specifier: 1.24.15
-        version: 1.24.15
+        specifier: 1.24.16
+        version: 1.24.16
       genson-js:
         specifier: 0.0.8
         version: 0.0.8
@@ -281,8 +281,8 @@ packages:
       eslint: 9.39.2
       eslint-config-standard: 17.1.0
 
-  '@book000/node-utils@1.24.15':
-    resolution: {integrity: sha512-YvqVHF3/w/2J9RxHjjEpS/5zDyKGsEU3Kys+k4q56eKCEY+BZFi6X7THSTHEMzkZ+MHAogJtKz4or9+fIgz6vQ==}
+  '@book000/node-utils@1.24.16':
+    resolution: {integrity: sha512-OeutUexMbx3zMFltAGSDLWTtaFdvZnm76ElyqFZwU/12GnhWahNyl45ba62SdADRJsyiB9YBZFaaI6eBV9GcKg==}
 
   '@colors/colors@1.6.0':
     resolution: {integrity: sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA==}
@@ -3653,7 +3653,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@book000/node-utils@1.24.15':
+  '@book000/node-utils@1.24.16':
     dependencies:
       axios: 1.13.2
       cycle: 1.0.3
