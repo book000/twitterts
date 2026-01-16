@@ -834,7 +834,6 @@ export class Twitter {
         setTimeout(
           () => {
             clearInterval(interval)
-            // eslint-disable-next-line unicorn/no-useless-undefined
             resolve(undefined)
           },
           1000 * 60 * 2

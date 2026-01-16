@@ -16,6 +16,7 @@ import {
   TwitterTimeoutError,
 } from './models/exceptions'
 import { setTimeout } from 'node:timers/promises'
+import path from 'node:path'
 import { ResponseDatabase, ResponseDatabaseOptions } from './saving-responses'
 
 // puppeteer-real-browser は内部的に rebrowser-puppeteer-core を使用する
@@ -1161,6 +1162,17 @@ export class TwitterScraper {
   private async createBrowser(): Promise<{ browser: Browser; page: Page }> {
     const puppeteerArguments: string[] = []
 
+    // CI環境やDocker環境ではサンドボックスを無効化し、安定性のための追加オプションを設定
+    if (process.env.CI || process.env.DOCKER) {
+      puppeteerArguments.push(
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage', // /dev/shm が小さい環境で必要
+        '--disable-gpu', // 仮想環境での安定性向上
+        '--disable-software-rasterizer'
+      )
+    }
+
     if (this.options.puppeteerOptions?.enableDevtools) {
       puppeteerArguments.push('--auto-open-devtools-for-tabs')
     }
@@ -1177,9 +1189,16 @@ export class TwitterScraper {
     } = {}
     if (this.options.puppeteerOptions?.executablePath) {
       customConfig.chromePath = this.options.puppeteerOptions.executablePath
+    } else if (process.env.CHROME_PATH || process.env.CHROMIUM_PATH) {
+      // 環境変数 CHROME_PATH または CHROMIUM_PATH が設定されている場合はそれを使用
+      customConfig.chromePath =
+        process.env.CHROME_PATH ?? process.env.CHROMIUM_PATH
     }
     if (this.options.puppeteerOptions?.userDataDirectory) {
-      customConfig.userDataDir = this.options.puppeteerOptions.userDataDirectory
+      // 絶対パスに変換して渡す（相対パスだと ECONNREFUSED エラーが発生する）
+      customConfig.userDataDir = path.resolve(
+        this.options.puppeteerOptions.userDataDirectory
+      )
     }
 
     // puppeteer.connect() に渡すオプション（defaultViewport）
@@ -1192,14 +1211,27 @@ export class TwitterScraper {
     }
 
     // ボット検出回避のため puppeteer-real-browser を使用
+    // 内部の xvfb は競合や環境依存の問題を起こすため、常に無効化
+    // xvfb が必要な場合は外部で xvfb-run を使用する
+    console.log('[TwitterTs] Connecting to browser...', {
+      platform: process.platform,
+      ci: process.env.CI,
+      display: process.env.DISPLAY,
+      envChromePath: process.env.CHROME_PATH,
+      envChromiumPath: process.env.CHROMIUM_PATH,
+      customConfigChromePath: customConfig.chromePath,
+      customConfigUserDataDir: customConfig.userDataDir,
+      args: puppeteerArguments,
+    })
     const result = await connect({
       headless: false,
       args: puppeteerArguments,
       turnstile: true,
-      disableXvfb: process.platform === 'win32',
+      disableXvfb: true,
       customConfig,
       connectOption,
     })
+    console.log('[TwitterTs] Browser connected!')
 
     const browser = result.browser as unknown as Browser
     const page = result.page as unknown as Page
