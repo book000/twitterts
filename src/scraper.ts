@@ -1199,6 +1199,12 @@ export class TwitterScraper {
     // ボット検出回避のため puppeteer-real-browser を使用
     // 内部の xvfb は競合や環境依存の問題を起こすため、常に無効化
     // xvfb が必要な場合は外部で xvfb-run を使用する
+    console.log('[TwitterTs] Connecting to browser...', {
+      platform: process.platform,
+      ci: process.env.CI,
+      display: process.env.DISPLAY,
+      chromePath: process.env.CHROME_PATH,
+    })
     const result = await connect({
       headless: false,
       args: puppeteerArguments,
@@ -1207,6 +1213,7 @@ export class TwitterScraper {
       customConfig,
       connectOption,
     })
+    console.log('[TwitterTs] Browser connected!')
 
     const browser = result.browser as unknown as Browser
     const page = result.page as unknown as Page
