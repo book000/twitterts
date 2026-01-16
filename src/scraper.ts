@@ -1191,7 +1191,7 @@ export class TwitterScraper {
     } else if (process.env.CHROME_PATH || process.env.CHROMIUM_PATH) {
       // 環境変数 CHROME_PATH または CHROMIUM_PATH が設定されている場合はそれを使用
       customConfig.chromePath =
-        process.env.CHROME_PATH || process.env.CHROMIUM_PATH
+        process.env.CHROME_PATH ?? process.env.CHROMIUM_PATH
     }
     if (this.options.puppeteerOptions?.userDataDirectory) {
       customConfig.userDataDir = this.options.puppeteerOptions.userDataDirectory
