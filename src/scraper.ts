@@ -16,6 +16,7 @@ import {
   TwitterTimeoutError,
 } from './models/exceptions'
 import { setTimeout } from 'node:timers/promises'
+import path from 'node:path'
 import { ResponseDatabase, ResponseDatabaseOptions } from './saving-responses'
 
 // puppeteer-real-browser は内部的に rebrowser-puppeteer-core を使用する
@@ -1181,10 +1182,19 @@ export class TwitterScraper {
       )
     }
 
-    // chrome-launcher に渡すオプション（executablePath, userDataDirectory）
+    // userDataDirectory は customConfig ではなく --user-data-dir 引数で渡す
+    // Windows で customConfig.userDataDir を使用すると ECONNREFUSED エラーが発生するため
+    if (this.options.puppeteerOptions?.userDataDirectory) {
+      // 絶対パスに変換
+      const absoluteUserDataDir = path.resolve(
+        this.options.puppeteerOptions.userDataDirectory
+      )
+      puppeteerArguments.push(`--user-data-dir=${absoluteUserDataDir}`)
+    }
+
+    // chrome-launcher に渡すオプション（executablePath のみ）
     const customConfig: {
       chromePath?: string
-      userDataDir?: string
     } = {}
     if (this.options.puppeteerOptions?.executablePath) {
       customConfig.chromePath = this.options.puppeteerOptions.executablePath
@@ -1192,9 +1202,6 @@ export class TwitterScraper {
       // 環境変数 CHROME_PATH または CHROMIUM_PATH が設定されている場合はそれを使用
       customConfig.chromePath =
         process.env.CHROME_PATH ?? process.env.CHROMIUM_PATH
-    }
-    if (this.options.puppeteerOptions?.userDataDirectory) {
-      customConfig.userDataDir = this.options.puppeteerOptions.userDataDirectory
     }
 
     // puppeteer.connect() に渡すオプション（defaultViewport）
