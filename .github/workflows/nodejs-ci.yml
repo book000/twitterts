@@ -141,6 +141,7 @@ jobs:
         if: steps.package-json.outputs.test == 'true'
         run: |
           set -o pipefail
+          mkdir -p ./data/userdata
           xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' pnpm run test 2>&1 | tee test-output-raw.log
         env:
           NODE_OPTIONS: --experimental-vm-modules
