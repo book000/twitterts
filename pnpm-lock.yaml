@@ -30,7 +30,7 @@ importers:
         specifier: 24.35.0
         version: 24.35.0
       puppeteer-real-browser:
-        specifier: ^1.4.4
+        specifier: 1.4.4
         version: 1.4.4(puppeteer-core@24.35.0)(puppeteer@24.35.0(typescript@5.9.3))
       twitter-d:
         specifier: 0.6.0
