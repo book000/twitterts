@@ -51,7 +51,7 @@
     "@book000/eslint-config": "1.12.36",
     "@types/jest": "30.0.0",
     "@types/json-stable-stringify": "1.2.0",
-    "@types/node": "24.10.7",
+    "@types/node": "24.10.8",
     "ctix": "2.7.2",
     "eslint": "9.39.2",
     "eslint-config-standard": "17.1.0",
