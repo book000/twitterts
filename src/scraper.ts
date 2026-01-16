@@ -1161,6 +1161,12 @@ export class TwitterScraper {
   private async createBrowser(): Promise<{ browser: Browser; page: Page }> {
     const puppeteerArguments: string[] = []
 
+    // CI環境やDocker環境ではサンドボックスを無効化
+    if (process.env.CI || process.env.DOCKER) {
+      puppeteerArguments.push('--no-sandbox')
+      puppeteerArguments.push('--disable-setuid-sandbox')
+    }
+
     if (this.options.puppeteerOptions?.enableDevtools) {
       puppeteerArguments.push('--auto-open-devtools-for-tabs')
     }
