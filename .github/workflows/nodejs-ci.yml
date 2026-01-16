@@ -145,6 +145,7 @@ jobs:
           xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' pnpm run test 2>&1 | tee test-output-raw.log
         env:
           NODE_OPTIONS: --experimental-vm-modules
+          CHROME_PATH: /usr/bin/google-chrome-stable
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
           TWITTER_OTP_SECRET: ${{ secrets.TWITTER_OTP_SECRET }}

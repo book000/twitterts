@@ -1192,13 +1192,13 @@ export class TwitterScraper {
     }
 
     // ボット検出回避のため puppeteer-real-browser を使用
-    // CI環境では xvfb-run を外部で使用するため、内部の xvfb を無効化
-    const isCI = process.env.CI === 'true' || process.env.CI === '1'
+    // 内部の xvfb は競合や環境依存の問題を起こすため、常に無効化
+    // xvfb が必要な場合は外部で xvfb-run を使用する
     const result = await connect({
       headless: false,
       args: puppeteerArguments,
       turnstile: true,
-      disableXvfb: process.platform === 'win32' || isCI,
+      disableXvfb: true,
       customConfig,
       connectOption,
     })
