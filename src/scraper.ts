@@ -18,8 +18,8 @@ import {
 import { setTimeout } from 'node:timers/promises'
 import { ResponseDatabase, ResponseDatabaseOptions } from './saving-responses'
 
-// puppeteer-real-browser uses rebrowser-puppeteer-core internally
-// Use a compatible type that works with both
+// puppeteer-real-browser は内部的に rebrowser-puppeteer-core を使用する
+// 両方で動作する互換性のある型エイリアスを定義
 type Browser = PuppeteerBrowser
 
 /**
@@ -774,7 +774,7 @@ export class TwitterScraper {
     debug('Configuring login page...')
     loginPage.setDefaultNavigationTimeout(120 * 1000)
 
-    // Block Google and Apple OAuth popups to prevent focus stealing during login
+    // ログイン中にフォーカスが奪われるのを防ぐため、Google と Apple の OAuth ポップアップをブロック
     await loginPage.setRequestInterception(true)
     loginPage.on('request', (request) => {
       if (this.isOAuthRequest(request.url())) {
@@ -841,13 +841,13 @@ export class TwitterScraper {
       await new Promise<void>((resolve, reject) => {
         const abortController = new AbortController()
         let lastUrl = ''
-        // Increased timeout from 10s to 60s to allow more time for login
+        // ログイン時間を確保するためタイムアウトを 10 秒から 60 秒に延長
         setTimeout(60_000, null, {
           signal: abortController.signal,
         })
           .then(async () => {
             debug(`Timeout reached. Last URL: ${lastUrl}`)
-            // Capture screenshot and page content for debugging
+            // デバッグ用にスクリーンショットとページ内容を取得
             try {
               const screenshotPath = `login-timeout-${Date.now()}.png`
               await loginPage.screenshot({
@@ -855,7 +855,7 @@ export class TwitterScraper {
                 fullPage: true,
               })
               debug(`Screenshot saved to: ${screenshotPath}`)
-              // Get page text content for error messages
+              // エラーメッセージ表示のためページテキストを取得
               const pageContent = await loginPage.evaluate(() => {
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 return document.body.textContent?.slice(0, 2000) || ''
@@ -893,8 +893,8 @@ export class TwitterScraper {
   }
 
   /**
-   * Check if the URL is an OAuth provider request that should be blocked.
-   * Uses URL parsing to properly check the hostname.
+   * ブロックすべき OAuth プロバイダーへのリクエストかどうかを判定します。
+   * URL パースを使用してホスト名を正確にチェックします。
    */
   private isOAuthRequest(url: string): boolean {
     try {
@@ -911,7 +911,7 @@ export class TwitterScraper {
     }
   }
 
-  // Helper function for random delay (more human-like)
+  // 人間らしいランダムな待機時間を挿入するヘルパー関数
   private async randomDelay(min: number, max: number): Promise<void> {
     const delay = Math.floor(Math.random() * (max - min + 1)) + min
     await setTimeout(delay)
@@ -923,7 +923,7 @@ export class TwitterScraper {
       await page.screenshot({ path: 'step-1-before-username.png' })
     }
 
-    // Add initial random delay for human-like behavior
+    // 人間らしい動作のため、最初にランダムな待機を入れる
     await this.randomDelay(500, 1500)
 
     const usernameInput = await this.getElement(
@@ -945,17 +945,17 @@ export class TwitterScraper {
       console.log('[InputUsername] Found username input, clicking to focus...')
     }
 
-    // Click on input first to focus (more human-like)
+    // 人間らしく見せるため、まず入力欄をクリックしてフォーカス
     await usernameInput.click()
     await this.randomDelay(200, 500)
 
     if (debug) {
       console.log('[InputUsername] Typing username with random delays...')
     }
-    // Type with random delay between characters (50-150ms)
+    // 1文字ごとにランダムな遅延を入れて入力 (50-150ms)
     await usernameInput.type(username, { delay: 50 + Math.random() * 100 })
 
-    // Wait a bit after typing (like a human would)
+    // 人間のように入力後に少し待機
     await this.randomDelay(500, 1500)
 
     if (debug) {
@@ -972,7 +972,7 @@ export class TwitterScraper {
       if (debug) {
         console.log('[InputUsername] Next button found, clicking...')
       }
-      // Random delay before clicking (like moving mouse)
+      // マウス移動のようにクリック前にランダムな遅延
       await this.randomDelay(300, 800)
       await nextButton.click()
     } else {
@@ -981,7 +981,7 @@ export class TwitterScraper {
           '[InputUsername] Next button not found with original selector, trying alternative...'
         )
       }
-      // Try clicking by text
+      // テキストでボタンを探してクリック
       const buttons = await page.$$('button')
       for (const button of buttons) {
         const text = await button.evaluate((el) => el.textContent)
@@ -1004,7 +1004,7 @@ export class TwitterScraper {
       await setTimeout(1000)
       await page.screenshot({ path: 'step-3-after-next-click.png' })
     }
-    // Wait for page transition
+    // ページ遷移を待機
     await setTimeout(3000)
   }
 
@@ -1060,7 +1060,7 @@ export class TwitterScraper {
       await setTimeout(1000)
       await page.screenshot({ path: 'step-6-after-login-click.png' })
     }
-    // Wait for login processing
+    // ログイン処理を待機
     await setTimeout(3000)
   }
 
@@ -1091,7 +1091,7 @@ export class TwitterScraper {
       throw new TwitterOperationError('Auth code next button not found.')
     }
     await nextButton.click()
-    // Wait for page transition
+    // ページ遷移を待機
     await setTimeout(3000)
   }
 
@@ -1123,7 +1123,7 @@ export class TwitterScraper {
       throw new TwitterOperationError('Email next button not found.')
     }
     await nextButton.click()
-    // Wait for page transition
+    // ページ遷移を待機
     await setTimeout(3000)
   }
 
@@ -1170,7 +1170,7 @@ export class TwitterScraper {
       )
     }
 
-    // Use puppeteer-real-browser for bot detection bypass
+    // ボット検出回避のため puppeteer-real-browser を使用
     const result = await connect({
       headless: false,
       args: puppeteerArguments,
@@ -1209,7 +1209,7 @@ export class TwitterScraper {
 
     page.setDefaultNavigationTimeout(120 * 1000)
 
-    // Block Google and Apple OAuth popups to prevent focus stealing during login
+    // ログイン中にフォーカスが奪われるのを防ぐため、Google と Apple の OAuth ポップアップをブロック
     await page.setRequestInterception(true)
     page.on('request', (request) => {
       if (this.isOAuthRequest(request.url())) {
