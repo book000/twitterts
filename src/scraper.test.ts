@@ -3,9 +3,9 @@ import { TwitterScraper } from './scraper'
 jest.setTimeout(60_000)
 
 describe('Scraper', () => {
-  let scraper: TwitterScraper
+  let scraper: TwitterScraper | undefined
 
-  test('login', async () => {
+  beforeAll(() => {
     const username = process.env.TWITTER_USERNAME
     const password = process.env.TWITTER_PASSWORD
     if (!username || !password) {
@@ -32,14 +32,25 @@ describe('Scraper', () => {
       otpSecret,
       emailAddress,
       puppeteerOptions: {
-        userDataDirectory: './data/userdata',
+        userDataDirectory: './data/userdata-scraper',
         proxy: proxyConfiguration,
       },
     })
+  })
+
+  test('login', async () => {
+    if (!scraper) {
+      throw new Error('Scraper not initialized')
+    }
     await expect(scraper.login()).resolves.not.toThrow()
   })
 
   afterAll(async () => {
-    await scraper.close()
+    // ログイン失敗時でもブラウザを確実にクリーンアップ
+    if (scraper) {
+      await scraper.close().catch(() => {
+        // close() が失敗してもエラーを無視
+      })
+    }
   })
 })

@@ -5,7 +5,16 @@ import { Twitter } from './twitter'
 jest.setTimeout(90_000)
 
 describe('Twitter', () => {
-  let twitter: Twitter
+  let twitter: Twitter | undefined
+
+  // ログインが成功している場合のみ、他のテストを実行
+  // ログイン失敗時は twitter が undefined のためテストがスキップされる
+  const getTwitter = (): Twitter => {
+    if (!twitter) {
+      throw new Error('Twitter not initialized - login may have failed')
+    }
+    return twitter
+  }
 
   test('login', async () => {
     const username = process.env.TWITTER_USERNAME
@@ -34,7 +43,7 @@ describe('Twitter', () => {
       otpSecret,
       emailAddress,
       puppeteerOptions: {
-        userDataDirectory: './data/userdata',
+        userDataDirectory: './data/userdata-twitter',
         proxy: proxyConfiguration,
       },
       debugOptions: {
@@ -46,7 +55,7 @@ describe('Twitter', () => {
   })
 
   test('getUserByScreenName', async () => {
-    const response = await twitter.getUserByScreenName({
+    const response = await getTwitter().getUserByScreenName({
       screenName: 'book000',
     })
     expect(response).toBeTruthy()
@@ -55,7 +64,7 @@ describe('Twitter', () => {
   })
 
   test('getScreenNameByUserId', async () => {
-    const response = await twitter.getScreenNameByUserId({
+    const response = await getTwitter().getScreenNameByUserId({
       userId: '286048624',
     })
     expect(response).toBeTruthy()
@@ -63,7 +72,7 @@ describe('Twitter', () => {
   })
 
   test('getUserByUserId', async () => {
-    const response = await twitter.getUserByUserId({
+    const response = await getTwitter().getUserByUserId({
       userId: '286048624',
     })
     expect(response).toBeTruthy()
@@ -71,7 +80,7 @@ describe('Twitter', () => {
   })
 
   test('getRawUserByUserId', async () => {
-    const response = await twitter.getRawUserByUserId({
+    const response = await getTwitter().getRawUserByUserId({
       userId: '286048624',
     })
     expect(response).toBeTruthy()
@@ -83,7 +92,7 @@ describe('Twitter', () => {
   })
 
   test('getHomeTimelineRawTweets', async () => {
-    const response = await twitter.getHomeTimelineRawTweets({
+    const response = await getTwitter().getHomeTimelineRawTweets({
       timelineType: TimelineType.RECOMMEND,
     })
     expect(response).toBeTruthy()
@@ -91,7 +100,7 @@ describe('Twitter', () => {
   })
 
   test('getHomeTimelineTweets:recommend', async () => {
-    const response = await twitter.getHomeTimelineTweets({
+    const response = await getTwitter().getHomeTimelineTweets({
       timelineType: TimelineType.RECOMMEND,
     })
     expect(response).toBeTruthy()
@@ -99,7 +108,7 @@ describe('Twitter', () => {
   })
 
   test('getHomeTimelineTweets:following', async () => {
-    const response = await twitter.getHomeTimelineTweets({
+    const response = await getTwitter().getHomeTimelineTweets({
       timelineType: TimelineType.FOLLOWING,
     })
     expect(response).toBeTruthy()
@@ -107,7 +116,7 @@ describe('Twitter', () => {
   })
 
   test('searchRawTweets', async () => {
-    const response = await twitter.searchRawTweets({
+    const response = await getTwitter().searchRawTweets({
       query: 'from:book000',
     })
     expect(response).toBeTruthy()
@@ -115,7 +124,7 @@ describe('Twitter', () => {
   })
 
   test('searchTweets:popular', async () => {
-    const response = await twitter.searchTweets({
+    const response = await getTwitter().searchTweets({
       query: 'from:book000',
     })
     expect(response).toBeTruthy()
@@ -123,7 +132,7 @@ describe('Twitter', () => {
   })
 
   test('searchTweets:live(limit100)', async () => {
-    const response = await twitter.searchTweets({
+    const response = await getTwitter().searchTweets({
       query: 'from:book000',
       searchType: SearchType.LIVE,
       limit: 100,
@@ -133,7 +142,7 @@ describe('Twitter', () => {
   })
 
   test('searchTweets:image', async () => {
-    const response = await twitter.searchTweets({
+    const response = await getTwitter().searchTweets({
       query: 'from:book000',
       searchType: SearchType.IMAGE,
     })
@@ -142,7 +151,7 @@ describe('Twitter', () => {
   })
 
   test('searchTweets:video', async () => {
-    const response = await twitter.searchTweets({
+    const response = await getTwitter().searchTweets({
       query: 'from:book000',
       searchType: SearchType.VIDEO,
     })
@@ -151,7 +160,7 @@ describe('Twitter', () => {
   })
 
   test('getUserTweets', async () => {
-    const response = await twitter.getUserTweets({
+    const response = await getTwitter().getUserTweets({
       screenName: 'book000',
     })
     expect(response).toBeTruthy()
@@ -159,7 +168,7 @@ describe('Twitter', () => {
   })
 
   test('getTweet', async () => {
-    const response = await twitter.getTweet({
+    const response = await getTwitter().getTweet({
       tweetId: '1685608131618086912',
     })
     expect(response).toBeTruthy()
@@ -170,7 +179,7 @@ describe('Twitter', () => {
 
   test('likeTweet', async () => {
     await expect(
-      twitter.likeTweet({
+      getTwitter().likeTweet({
         tweetId: '1685608131618086912',
       })
     ).resolves.toBe('Done')
@@ -178,7 +187,7 @@ describe('Twitter', () => {
 
   test('unlikeTweet', async () => {
     await expect(
-      twitter.unlikeTweet({
+      getTwitter().unlikeTweet({
         tweetId: '1685608131618086912',
       })
     ).resolves.toBe('Done')
@@ -186,7 +195,7 @@ describe('Twitter', () => {
 
   test('blockUser', async () => {
     await expect(
-      twitter.blockUser({
+      getTwitter().blockUser({
         screenName: 'X',
       })
     ).resolves.not.toThrow(TwitterOperationError)
@@ -194,13 +203,18 @@ describe('Twitter', () => {
 
   test('unblockUser', async () => {
     await expect(
-      twitter.unblockUser({
+      getTwitter().unblockUser({
         screenName: 'X',
       })
     ).resolves.not.toThrow(TwitterOperationError)
   })
 
   afterAll(async () => {
-    await twitter.close()
+    // ログイン失敗時でもブラウザを確実にクリーンアップ
+    if (twitter) {
+      await twitter.close().catch(() => {
+        // close() が失敗してもエラーを無視
+      })
+    }
   })
 })
