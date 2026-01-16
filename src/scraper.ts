@@ -1161,9 +1161,15 @@ export class TwitterScraper {
   private async createBrowser(): Promise<{ browser: Browser; page: Page }> {
     const puppeteerArguments: string[] = []
 
-    // CI環境やDocker環境ではサンドボックスを無効化
+    // CI環境やDocker環境ではサンドボックスを無効化し、安定性のための追加オプションを設定
     if (process.env.CI || process.env.DOCKER) {
-      puppeteerArguments.push('--no-sandbox', '--disable-setuid-sandbox')
+      puppeteerArguments.push(
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage', // /dev/shm が小さい環境で必要
+        '--disable-gpu', // 仮想環境での安定性向上
+        '--disable-software-rasterizer'
+      )
     }
 
     if (this.options.puppeteerOptions?.enableDevtools) {
@@ -1182,9 +1188,10 @@ export class TwitterScraper {
     } = {}
     if (this.options.puppeteerOptions?.executablePath) {
       customConfig.chromePath = this.options.puppeteerOptions.executablePath
-    } else if (process.env.CHROME_PATH) {
-      // 環境変数 CHROME_PATH が設定されている場合はそれを使用
-      customConfig.chromePath = process.env.CHROME_PATH
+    } else if (process.env.CHROME_PATH || process.env.CHROMIUM_PATH) {
+      // 環境変数 CHROME_PATH または CHROMIUM_PATH が設定されている場合はそれを使用
+      customConfig.chromePath =
+        process.env.CHROME_PATH || process.env.CHROMIUM_PATH
     }
     if (this.options.puppeteerOptions?.userDataDirectory) {
       customConfig.userDataDir = this.options.puppeteerOptions.userDataDirectory
@@ -1207,7 +1214,9 @@ export class TwitterScraper {
       ci: process.env.CI,
       display: process.env.DISPLAY,
       envChromePath: process.env.CHROME_PATH,
+      envChromiumPath: process.env.CHROMIUM_PATH,
       customConfigChromePath: customConfig.chromePath,
+      args: puppeteerArguments,
     })
     const result = await connect({
       headless: false,
