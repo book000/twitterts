@@ -1,9 +1,10 @@
-import puppeteer, {
-  Browser,
+import {
+  Browser as PuppeteerBrowser,
   ElementHandle,
   HTTPResponse,
   Page,
 } from 'puppeteer-core'
+import { connect } from 'puppeteer-real-browser'
 import { authenticator } from 'otplib'
 import {
   EndPointResponseType,
@@ -16,6 +17,10 @@ import {
 } from './models/exceptions'
 import { setTimeout } from 'node:timers/promises'
 import { ResponseDatabase, ResponseDatabaseOptions } from './saving-responses'
+
+// puppeteer-real-browser は内部的に rebrowser-puppeteer-core を使用する
+// 両方で動作する互換性のある型エイリアスを定義
+type Browser = PuppeteerBrowser
 
 /**
  * HTTP メソッド
@@ -98,6 +103,11 @@ export interface TwitterScraperDebugOptions {
    * 指定しない場合はデバッグ出力されません。
    */
   outputResponse?: TwitterScraperDebugOutputResponseOptions
+
+  /**
+   * デバッグログを出力するか
+   */
+  debugLog?: boolean
 }
 
 /**
@@ -743,46 +753,117 @@ export class TwitterScraper {
    * Twitter にログインします。
    */
   public async login(): Promise<void> {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const debug = (message: string) => {
+      if (this.options.debugOptions?.debugLog) {
+        console.log(`[TwitterScraper:Login] ${message}`)
+      }
+    }
+
     // データベース初期化
+    debug('Initializing database...')
     await this.initDatabase()
 
     // ブラウザ作成
-    this.browser = await this.createBrowser()
+    debug('Creating browser...')
+    const { browser, page: loginPage } = await this.createBrowser()
+    this.browser = browser
+    debug('Browser created')
 
-    // ログイン処理
-    const loginPage = await this.newPage()
+    // ログインページの設定
+    debug('Configuring login page...')
+    loginPage.setDefaultNavigationTimeout(120 * 1000)
 
+    // ログイン中にフォーカスが奪われるのを防ぐため、Google と Apple の OAuth ポップアップをブロック
+    await loginPage.setRequestInterception(true)
+    loginPage.on('request', (request) => {
+      if (this.isOAuthRequest(request.url())) {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        request.abort().catch(() => {})
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        request.continue().catch(() => {})
+      }
+    })
+
+    if (
+      this.options.puppeteerOptions?.proxy?.username &&
+      this.options.puppeteerOptions.proxy.password
+    ) {
+      await loginPage.authenticate({
+        username: this.options.puppeteerOptions.proxy.username,
+        password: this.options.puppeteerOptions.proxy.password,
+      })
+    }
+
+    this.setAutoSaveResponse(loginPage)
+    debug('Login page configured')
+
+    debug('Navigating to x.com...')
     await loginPage.goto('https://x.com', {
       waitUntil: ['load', 'networkidle2'],
     })
+    debug('Navigated to x.com')
     await setTimeout(3000)
 
     const href = await loginPage.evaluate(() => {
       return document.location.href
     })
+    debug(`Current URL: ${href}`)
     if (href !== 'https://x.com/home') {
+      debug('Not logged in, navigating to login flow...')
       await loginPage.goto('https://x.com/i/flow/login', {
         waitUntil: ['load', 'networkidle2'],
       })
+      debug('Login flow page loaded')
 
       // username
+      debug('Inputting username...')
       await this.inputUsername(loginPage, this.options.username)
+      debug('Username input complete')
 
       // need email address ?
+      debug('Checking if email is needed...')
       await this.inputEmailAddress(loginPage, this.options.emailAddress)
+      debug('Email check complete')
 
       // password
+      debug('Inputting password...')
       await this.inputPassword(loginPage, this.options.password)
+      debug('Password input complete')
 
       // need auth code ?
+      debug('Checking if OTP is needed...')
       await this.inputAuthCode(loginPage, this.options.otpSecret)
+      debug('OTP check complete')
 
+      debug('Waiting for redirect to home page...')
       await new Promise<void>((resolve, reject) => {
         const abortController = new AbortController()
-        setTimeout(10_000, null, {
+        let lastUrl = ''
+        // ログイン時間を確保するためタイムアウトを 10 秒から 60 秒に延長
+        setTimeout(60_000, null, {
           signal: abortController.signal,
         })
-          .then(() => {
+          .then(async () => {
+            debug(`Timeout reached. Last URL: ${lastUrl}`)
+            // デバッグ用にスクリーンショットとページ内容を取得
+            try {
+              const screenshotPath = `login-timeout-${Date.now()}.png`
+              await loginPage.screenshot({
+                path: screenshotPath,
+                fullPage: true,
+              })
+              debug(`Screenshot saved to: ${screenshotPath}`)
+              // エラーメッセージ表示のためページテキストを取得
+              const pageContent = await loginPage.evaluate(() => {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                return document.body.textContent?.slice(0, 2000) || ''
+              })
+              debug(`Page content: ${pageContent}`)
+            } catch {
+              debug('Failed to capture debug info')
+            }
             reject(new TwitterTimeoutError('Login timeout.'))
           })
           .catch((error: unknown) => {
@@ -793,7 +874,13 @@ export class TwitterScraper {
             throw error
           })
         const interval = setInterval(() => {
-          if (loginPage.url() === 'https://x.com/home') {
+          const currentUrl = loginPage.url()
+          if (currentUrl !== lastUrl) {
+            debug(`URL changed: ${currentUrl}`)
+            lastUrl = currentUrl
+          }
+          if (currentUrl === 'https://x.com/home') {
+            debug('Redirected to home page!')
             clearInterval(interval)
             abortController.abort()
             resolve()
@@ -805,54 +892,176 @@ export class TwitterScraper {
     }
   }
 
+  /**
+   * ブロックすべき OAuth プロバイダーへのリクエストかどうかを判定します。
+   * URL パースを使用してホスト名を正確にチェックします。
+   */
+  private isOAuthRequest(url: string): boolean {
+    try {
+      const parsedUrl = new URL(url)
+      const hostname = parsedUrl.hostname
+      return (
+        hostname === 'accounts.google.com' ||
+        hostname.endsWith('.accounts.google.com') ||
+        hostname === 'appleid.apple.com' ||
+        hostname.endsWith('.appleid.apple.com')
+      )
+    } catch {
+      return false
+    }
+  }
+
+  // 人間らしいランダムな待機時間を挿入するヘルパー関数
+  private async randomDelay(min: number, max: number): Promise<void> {
+    const delay = Math.floor(Math.random() * (max - min + 1)) + min
+    await setTimeout(delay)
+  }
+
   private async inputUsername(page: Page, username: string) {
+    const debug = this.options.debugOptions?.debugLog
+    if (debug) {
+      await page.screenshot({ path: 'step-1-before-username.png' })
+    }
+
+    // 人間らしい動作のため、最初にランダムな待機を入れる
+    await this.randomDelay(500, 1500)
+
     const usernameInput = await this.getElement(
       page,
       'input[autocomplete="username"]',
-      3000
+      10_000
     )
     if (!usernameInput) {
+      if (debug) {
+        console.log('[InputUsername] Username input not found')
+      }
       return
     }
     if (!username) {
       throw new TwitterOperationError('Username required.')
     }
-    await usernameInput.type(username, { delay: 100 })
+
+    if (debug) {
+      console.log('[InputUsername] Found username input, clicking to focus...')
+    }
+
+    // 人間らしく見せるため、まず入力欄をクリックしてフォーカス
+    await usernameInput.click()
+    await this.randomDelay(200, 500)
+
+    if (debug) {
+      console.log('[InputUsername] Typing username with random delays...')
+    }
+    // 1文字ごとにランダムな遅延を入れて入力 (50-150ms)
+    await usernameInput.type(username, { delay: 50 + Math.random() * 100 })
+
+    // 人間のように入力後に少し待機
+    await this.randomDelay(500, 1500)
+
+    if (debug) {
+      await page.screenshot({ path: 'step-2-after-username-type.png' })
+      console.log('[InputUsername] Username typed, looking for Next button...')
+    }
 
     const nextButton = await this.getElement(
       page,
       'div.css-175oi2r button.r-13qz1uu',
-      3000
+      10_000
     )
-    if (!nextButton) {
+    if (nextButton) {
+      if (debug) {
+        console.log('[InputUsername] Next button found, clicking...')
+      }
+      // マウス移動のようにクリック前にランダムな遅延
+      await this.randomDelay(300, 800)
+      await nextButton.click()
+    } else {
+      if (debug) {
+        console.log(
+          '[InputUsername] Next button not found with original selector, trying alternative...'
+        )
+      }
+      // テキストでボタンを探してクリック
+      const buttons = await page.$$('button')
+      for (const button of buttons) {
+        const text = await button.evaluate((el) => el.textContent)
+        if (text && (text.includes('Next') || text.includes('次へ'))) {
+          if (debug) {
+            console.log(
+              '[InputUsername] Found Next button by text, clicking...'
+            )
+          }
+          await this.randomDelay(300, 800)
+          await button.click()
+          await setTimeout(3000)
+          return
+        }
+      }
       throw new TwitterOperationError('Next button not found.')
     }
-    await nextButton.click()
+
+    if (debug) {
+      await setTimeout(1000)
+      await page.screenshot({ path: 'step-3-after-next-click.png' })
+    }
+    // ページ遷移を待機
+    await setTimeout(3000)
   }
 
   private async inputPassword(page: Page, password: string) {
+    const debug = this.options.debugOptions?.debugLog
+    if (debug) {
+      await page.screenshot({ path: 'step-4-before-password.png' })
+    }
+
     const passwordInput = await this.getElement(
       page,
       'input[autocomplete="current-password"]',
-      3000
+      10_000
     )
     if (!passwordInput) {
+      if (debug) {
+        console.log('[InputPassword] Password input not found')
+      }
       return
     }
     if (!password) {
       throw new TwitterOperationError('Password required.')
     }
+
+    if (debug) {
+      console.log('[InputPassword] Found password input, typing...')
+    }
     await passwordInput.type(password, { delay: 100 })
+
+    if (debug) {
+      await page.screenshot({ path: 'step-5-after-password-type.png' })
+      console.log('[InputPassword] Password typed, looking for Login button...')
+    }
 
     const loginButton = await this.getElement(
       page,
       'button[role="button"][data-testid="LoginForm_Login_Button"]',
-      3000
+      10_000
     )
     if (!loginButton) {
+      if (debug) {
+        console.log('[InputPassword] Login button not found')
+      }
       throw new TwitterOperationError('Login button not found.')
     }
+
+    if (debug) {
+      console.log('[InputPassword] Login button found, clicking...')
+    }
     await loginButton.click()
+
+    if (debug) {
+      await setTimeout(1000)
+      await page.screenshot({ path: 'step-6-after-login-click.png' })
+    }
+    // ログイン処理を待機
+    await setTimeout(3000)
   }
 
   private async inputAuthCode(
@@ -862,7 +1071,7 @@ export class TwitterScraper {
     const authCodeInput = await this.getElement(
       page,
       'input[data-testid="ocfEnterTextTextInput"][inputmode="numeric"]',
-      3000
+      10_000
     )
     if (!authCodeInput) {
       return
@@ -876,12 +1085,14 @@ export class TwitterScraper {
     const nextButton = await this.getElement(
       page,
       'button[role="button"][data-testid="ocfEnterTextNextButton"]',
-      3000
+      10_000
     )
     if (!nextButton) {
       throw new TwitterOperationError('Auth code next button not found.')
     }
     await nextButton.click()
+    // ページ遷移を待機
+    await setTimeout(3000)
   }
 
   private async inputEmailAddress(
@@ -891,7 +1102,7 @@ export class TwitterScraper {
     const emailInput = await this.getElement(
       page,
       'input[data-testid="ocfEnterTextTextInput"][inputmode="text"]',
-      3000
+      10_000
     )
     if (!emailInput) {
       return
@@ -906,12 +1117,14 @@ export class TwitterScraper {
     const nextButton = await this.getElement(
       page,
       'button[role="button"][data-testid="ocfEnterTextNextButton"]',
-      3000
+      10_000
     )
     if (!nextButton) {
       throw new TwitterOperationError('Email next button not found.')
     }
     await nextButton.click()
+    // ページ遷移を待機
+    await setTimeout(3000)
   }
 
   /**
@@ -943,24 +1156,10 @@ export class TwitterScraper {
   /**
    * Puppeteer ブラウザインスタンスを作成します。
    *
-   * @returns Puppeteer ブラウザインスタンス
+   * @returns Puppeteer ブラウザインスタンスと初期ページ
    */
-  private async createBrowser(): Promise<Browser> {
-    const width = this.options.puppeteerOptions?.defaultViewport?.width ?? 600
-    const height =
-      this.options.puppeteerOptions?.defaultViewport?.height ?? 1000
-    const puppeteerArguments = [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--no-first-run',
-      '--no-zygote',
-      '--disable-gpu',
-      '--lang=ja',
-      `--window-size=${width},${height}`,
-      '--disable-session-crashed-bubble',
-    ]
+  private async createBrowser(): Promise<{ browser: Browser; page: Page }> {
+    const puppeteerArguments: string[] = []
 
     if (this.options.puppeteerOptions?.enableDevtools) {
       puppeteerArguments.push('--auto-open-devtools-for-tabs')
@@ -971,19 +1170,39 @@ export class TwitterScraper {
       )
     }
 
-    const userDataDirectory =
-      this.options.puppeteerOptions?.userDataDirectory ?? '/data/userdata'
-    const browser = await puppeteer.launch({
+    // chrome-launcher に渡すオプション（executablePath, userDataDirectory）
+    const customConfig: {
+      chromePath?: string
+      userDataDir?: string
+    } = {}
+    if (this.options.puppeteerOptions?.executablePath) {
+      customConfig.chromePath = this.options.puppeteerOptions.executablePath
+    }
+    if (this.options.puppeteerOptions?.userDataDirectory) {
+      customConfig.userDataDir = this.options.puppeteerOptions.userDataDirectory
+    }
+
+    // puppeteer.connect() に渡すオプション（defaultViewport）
+    const connectOption: {
+      defaultViewport?: { width: number; height: number } | null
+    } = {}
+    if (this.options.puppeteerOptions?.defaultViewport) {
+      connectOption.defaultViewport =
+        this.options.puppeteerOptions.defaultViewport
+    }
+
+    // ボット検出回避のため puppeteer-real-browser を使用
+    const result = await connect({
       headless: false,
-      executablePath: this.options.puppeteerOptions?.executablePath,
-      channel: 'chrome',
       args: puppeteerArguments,
-      defaultViewport: {
-        width,
-        height,
-      },
-      userDataDir: userDataDirectory,
+      turnstile: true,
+      disableXvfb: process.platform === 'win32',
+      customConfig,
+      connectOption,
     })
+
+    const browser = result.browser as unknown as Browser
+    const page = result.page as unknown as Page
 
     process.on('SIGINT', () => {
       browser
@@ -997,7 +1216,7 @@ export class TwitterScraper {
         })
     })
 
-    return browser
+    return { browser, page }
   }
 
   /**
@@ -1013,13 +1232,16 @@ export class TwitterScraper {
 
     page.setDefaultNavigationTimeout(120 * 1000)
 
-    await page.evaluateOnNewDocument(() => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      Object.defineProperty(navigator, 'webdriver', () => {})
-
-      // @ts-expect-error __proto__ is not defined in types
-      // eslint-disable-next-line no-proto, @typescript-eslint/no-unsafe-member-access
-      delete navigator.__proto__.webdriver
+    // ログイン中にフォーカスが奪われるのを防ぐため、Google と Apple の OAuth ポップアップをブロック
+    await page.setRequestInterception(true)
+    page.on('request', (request) => {
+      if (this.isOAuthRequest(request.url())) {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        request.abort().catch(() => {})
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        request.continue().catch(() => {})
+      }
     })
 
     if (
@@ -1081,6 +1303,7 @@ export class TwitterScraper {
               endpoint: name,
               url,
               requestHeaders: JSON.stringify(request.headers()),
+              // eslint-disable-next-line @typescript-eslint/no-deprecated
               requestBody: request.postData() ?? '',
               responseType,
               statusCode: response.status(),
