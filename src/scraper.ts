@@ -1170,12 +1170,35 @@ export class TwitterScraper {
       )
     }
 
+    // chrome-launcher に渡すオプション（executablePath, userDataDirectory）
+    const customConfig: {
+      chromePath?: string
+      userDataDir?: string
+    } = {}
+    if (this.options.puppeteerOptions?.executablePath) {
+      customConfig.chromePath = this.options.puppeteerOptions.executablePath
+    }
+    if (this.options.puppeteerOptions?.userDataDirectory) {
+      customConfig.userDataDir = this.options.puppeteerOptions.userDataDirectory
+    }
+
+    // puppeteer.connect() に渡すオプション（defaultViewport）
+    const connectOption: {
+      defaultViewport?: { width: number; height: number } | null
+    } = {}
+    if (this.options.puppeteerOptions?.defaultViewport) {
+      connectOption.defaultViewport =
+        this.options.puppeteerOptions.defaultViewport
+    }
+
     // ボット検出回避のため puppeteer-real-browser を使用
     const result = await connect({
       headless: false,
       args: puppeteerArguments,
       turnstile: true,
       disableXvfb: process.platform === 'win32',
+      customConfig,
+      connectOption,
     })
 
     const browser = result.browser as unknown as Browser
