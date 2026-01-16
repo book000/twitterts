@@ -1182,6 +1182,9 @@ export class TwitterScraper {
     } = {}
     if (this.options.puppeteerOptions?.executablePath) {
       customConfig.chromePath = this.options.puppeteerOptions.executablePath
+    } else if (process.env.CHROME_PATH) {
+      // 環境変数 CHROME_PATH が設定されている場合はそれを使用
+      customConfig.chromePath = process.env.CHROME_PATH
     }
     if (this.options.puppeteerOptions?.userDataDirectory) {
       customConfig.userDataDir = this.options.puppeteerOptions.userDataDirectory
@@ -1203,7 +1206,8 @@ export class TwitterScraper {
       platform: process.platform,
       ci: process.env.CI,
       display: process.env.DISPLAY,
-      chromePath: process.env.CHROME_PATH,
+      envChromePath: process.env.CHROME_PATH,
+      customConfigChromePath: customConfig.chromePath,
     })
     const result = await connect({
       headless: false,
