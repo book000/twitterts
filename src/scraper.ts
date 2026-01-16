@@ -1163,8 +1163,7 @@ export class TwitterScraper {
 
     // CI環境やDocker環境ではサンドボックスを無効化
     if (process.env.CI || process.env.DOCKER) {
-      puppeteerArguments.push('--no-sandbox')
-      puppeteerArguments.push('--disable-setuid-sandbox')
+      puppeteerArguments.push('--no-sandbox', '--disable-setuid-sandbox')
     }
 
     if (this.options.puppeteerOptions?.enableDevtools) {
