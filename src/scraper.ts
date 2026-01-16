@@ -1182,19 +1182,10 @@ export class TwitterScraper {
       )
     }
 
-    // userDataDirectory は customConfig ではなく --user-data-dir 引数で渡す
-    // Windows で customConfig.userDataDir を使用すると ECONNREFUSED エラーが発生するため
-    if (this.options.puppeteerOptions?.userDataDirectory) {
-      // 絶対パスに変換
-      const absoluteUserDataDir = path.resolve(
-        this.options.puppeteerOptions.userDataDirectory
-      )
-      puppeteerArguments.push(`--user-data-dir=${absoluteUserDataDir}`)
-    }
-
-    // chrome-launcher に渡すオプション（executablePath のみ）
+    // chrome-launcher に渡すオプション（executablePath, userDataDirectory）
     const customConfig: {
       chromePath?: string
+      userDataDir?: string
     } = {}
     if (this.options.puppeteerOptions?.executablePath) {
       customConfig.chromePath = this.options.puppeteerOptions.executablePath
@@ -1202,6 +1193,12 @@ export class TwitterScraper {
       // 環境変数 CHROME_PATH または CHROMIUM_PATH が設定されている場合はそれを使用
       customConfig.chromePath =
         process.env.CHROME_PATH ?? process.env.CHROMIUM_PATH
+    }
+    if (this.options.puppeteerOptions?.userDataDirectory) {
+      // 絶対パスに変換して渡す（相対パスだと ECONNREFUSED エラーが発生する）
+      customConfig.userDataDir = path.resolve(
+        this.options.puppeteerOptions.userDataDirectory
+      )
     }
 
     // puppeteer.connect() に渡すオプション（defaultViewport）
@@ -1223,6 +1220,7 @@ export class TwitterScraper {
       envChromePath: process.env.CHROME_PATH,
       envChromiumPath: process.env.CHROMIUM_PATH,
       customConfigChromePath: customConfig.chromePath,
+      customConfigUserDataDir: customConfig.userDataDir,
       args: puppeteerArguments,
     })
     const result = await connect({
