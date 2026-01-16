@@ -35,9 +35,6 @@ describe('Scraper', () => {
         userDataDirectory: './data/userdata',
         proxy: proxyConfiguration,
       },
-      debugOptions: {
-        debugLog: true,
-      },
     })
     await expect(scraper.login()).resolves.not.toThrow()
   })

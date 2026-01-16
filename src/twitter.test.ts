@@ -41,7 +41,6 @@ describe('Twitter', () => {
         outputResponse: {
           enable: true,
         },
-        debugLog: true,
       },
     })
   })
