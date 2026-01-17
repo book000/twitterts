@@ -1,3 +1,14 @@
+# ***This project is no longer maintained and has been archived.***
+
+This project is being archived because it can no longer be maintained for the following reasons:
+- It has become difficult to circumvent bot countermeasures due to changes in Twitter (X) specifications.
+- The number of response patterns has increased, making it difficult to dynamically extract response patterns.
+- The developer can no longer dedicate time to this project.
+- Approaches using browser automation like Puppeteer are being replaced by methods that directly call internal APIs.
+
+We are very grateful for the many people who starred this repository and for the fact that some repositories had dependencies on it.  
+Thank you for everything❤
+
 # 🕊 twitterts
 
 [Twitter](https://x.com) Unofficial Scraping API Library for TypeScript
